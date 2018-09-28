@@ -1,7 +1,7 @@
 homeassistant:
   name: Dashboard
-  latitude: 49.663828
-  longitude: 12.157807
+  latitude: !secret home_lat
+  longitude: !secret home_long
   elevation: 1230
   unit_system: imperial
   time_zone: Europe/Berlin
@@ -9,8 +9,8 @@ homeassistant:
 
 zone:
   name: Work
-  latitude: 49.712427
-  longitude: 11.901287
+  latitude: !secret work_lat
+  longitude: !secret work_long
   radius: 1000
   icon: mdi:worker
 
@@ -22,9 +22,9 @@ http:
 
 influxdb:
   host: 10.0.10.10
-  database: homeassistant
-  username: admin
-  password: password123
+  database: !secret influx_database
+  username: !secret influx_username
+  password: !secret influx_password
   default_measurement: state
   max_retries: 3
   include:
@@ -36,7 +36,7 @@ influxdb:
        - sensor.dark_sky_humidity
 
 ifttt:
-  key: LVgv822Q_tIFf9Tc-ahrGPaYSUxaJdHcuiEgMJd494
+  key: !secret ifttt_key
 
 mqtt:
   broker: 10.0.10.10
@@ -73,7 +73,7 @@ device_tracker:
     port: 8443
     #consider_home: 180
     detection_time: 180
-    username: web
+    username: !secret unifi_username
     password: !secret unifi_password
     verify_ssl: false
     #site_id: 7tbm06ky
@@ -106,7 +106,7 @@ history:
 
 weather:
   - platform: darksky
-    api_key: 7abceb2b826b08477b512a8bdc603787
+    api_key: !secret darksky_api_key
 
 ################
 ####INCLUDES####
