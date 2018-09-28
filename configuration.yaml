@@ -1,0 +1,152 @@
+homeassistant:
+  name: Dashboard
+  latitude: 49.663828
+  longitude: 12.157807
+  elevation: 1230
+  unit_system: imperial
+  time_zone: Europe/Berlin
+  customize: !include customize.yaml
+
+zone:
+  name: Work
+  latitude: 49.712427
+  longitude: 11.901287
+  radius: 1000
+  icon: mdi:worker
+
+http:
+  api_password: !secret http_password
+  base_url: ha.flamingotter.com
+  ip_ban_enabled: True
+  login_attempts_threshold: 5
+
+influxdb:
+  host: 10.0.10.10
+  database: homeassistant
+  username: admin
+  password: password123
+  default_measurement: state
+  max_retries: 3
+  include:
+    entities:
+       - sensor.bedroom_heatidx
+       - sensor.bedroom_temp
+       - sensor.bedroom_hum
+       - sensor.dark_sky_temperature
+       - sensor.dark_sky_humidity
+
+ifttt:
+  key: LVgv822Q_tIFf9Tc-ahrGPaYSUxaJdHcuiEgMJd494
+
+mqtt:
+  broker: 10.0.10.10
+  port: 1883
+  keepalive: 60
+  client_id: home-assistant-1
+  username: !secret mqtt_username
+  password: !secret mqtt_password
+
+media_player:
+  - platform: kodi
+    host: 10.0.10.199
+    name: Kodi Living Room
+    username: kodi
+    password: !secret kodi_living_room
+    enable_websocket: true
+  - platform: samsungtv
+    name: Samsung Q7
+    host: 10.0.10.208
+    port: 8001
+    mac: E4:7D:BD:A7:02:0A
+
+device_tracker:
+#  - platform: nmap_tracker
+#    hosts:
+#      - 10.0.10.0/24
+#    home_interval: 5
+#    consider_home: 180
+#    interval_seconds: 15
+  - platform: owntracks
+    max_gps_accuracy: 100
+  - platform: unifi
+    host: 10.0.10.10
+    port: 8443
+    #consider_home: 180
+    detection_time: 180
+    username: web
+    password: !secret unifi_password
+    verify_ssl: false
+    #site_id: 7tbm06ky
+    new_device_defaults:
+      track_new_devices: false
+      hide_if_away: false
+    #ssid_filter:
+    #  - 'CastleGraySkull'
+    #  - 'IOT'
+
+tts:
+  - platform: google
+    language: 'en-us'
+
+history:
+  include:
+    domains:
+      #- automation
+      - switch
+      - light
+      - media_player
+    entities:
+      - device_tracker.flamingotter_mqtt_josh
+      - device_tracker.flamingotter_mqtt_mj
+      - input_select.home_status
+      - input_select.josh_status
+      - input_select.mj_status
+      - sensor.bedroom_temp
+      - sensor.bedroom_hum
+
+weather:
+  - platform: darksky
+    api_key: 7abceb2b826b08477b512a8bdc603787
+
+################
+####INCLUDES####
+################
+sensor: !include sensors.yaml
+light: !include lights.yaml
+switch: !include switches.yaml
+group: !include groups.yaml
+input_boolean: !include misc/input_boolean.yaml
+input_select: !include misc/input_select.yaml
+input_number: !include misc/input_number.yaml
+scene: !include_dir_merge_list scenes/
+automation: !include_dir_merge_list automation/
+script: !include scripts.yaml
+notify: !include notify.yaml
+#alexa: !include alexa.yaml
+cloud: !include cloud.yaml
+shell_command: !include shell_commands.yaml
+binary_sensor: !include binary_sensors.yaml
+camera: !include camera.yaml
+
+
+
+################
+####ENABLES#####
+################
+map:
+discovery:
+sun:
+conversation:
+logbook:
+#frontend:
+config:
+
+frontend: !include frontend.yaml
+#panel_custom: !include panel_custom.yaml
+
+panel_custom:
+  - name: floorplan
+    sidebar_title: Floorplan
+    sidebar_icon: mdi:floor-plan
+    url_path: floorplan
+    config: !include floorplan.yaml

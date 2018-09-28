@@ -1,0 +1,18 @@
+alexa:
+  filter:
+    include_domains:
+      - switch
+      - light
+      - scene
+      - group
+      - input_boolean
+      - script
+    include_entities:
+      - group.living_room
+      - group.dining_room
+      - group.living_room_lamps
+      - group.front
+      - group.kitchen
+      - group.puppy_lights
+      - group.lights
+      - group.office

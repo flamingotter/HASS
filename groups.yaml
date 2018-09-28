@@ -1,0 +1,217 @@
+default view:
+ view: yes
+ icon: mdi:home
+ entities:
+   - device_tracker.flamingotter_mqtt_josh
+   - device_tracker.flamingotter_mqtt_mj
+   - sensor.dark_sky_temperature
+   - group.living_room
+   - group.bedroom
+   - group.stairs
+   #- group.dining_room
+   #- group.kitchen
+   - group.front
+   - group.office
+   - sensor.moonphases
+   #- group.maps
+
+
+Weather:
+  name: weather
+  icon: mdi:weather-lightning-rainy
+  view: yes
+  entities:
+    - group.daily_forecast
+    - sensor.moonphases
+    #- group.4_day_forecast
+
+Media:
+  name: media
+  icon: mdi:television
+  view: yes
+  entities:
+    - group.devices
+
+Family:
+  name: family
+  icon: mdi:account-multiple
+  view: yes
+  entities:
+    - group.family_status
+    - device_tracker.flamingotter_mqtt_josh
+    - device_tracker.flamingotter_mqtt_mj
+    - sensor.josh_to_home
+
+HA_Status:
+  name: HA Controls
+  icon: mdi:wrench
+  view: yes
+  entities:
+#    - group.speedtest
+    - group.system_monitor
+    - group.stream
+    - group.lockouts
+    - device_tracker.flamingotter_mqtt_josh
+    - device_tracker.flamingotter_mqtt_mj
+    - input_select.home_status
+    - input_select.josh_status
+    - input_select.mj_status
+    - sensor.time
+    - sensor.pws_temp_f
+    - group.bed_node
+    - group.stairs
+    - group.device_status
+    - group.test_node
+
+Floorplan:
+  name: Floorplan
+  icon: mdi:floor-plan
+  view: no
+  entities:
+    - group.floorplan_group
+
+####GROUPS####
+
+Maps:
+    - camera.josh
+    - camera.mj
+
+Test Node:
+    - sensor.motion_test
+
+Device Status:
+    - device_tracker.basement_stair_node
+    - device_tracker.bed_node_sensor
+    - device_tracker.sonoff_basement_light
+    - device_tracker.sonoff_bedroom_fan
+    - device_tracker.sonoff_foyer
+    - device_tracker.sonoff_test
+
+Floorplan Group:
+    - binary_sensor.floorplan
+
+Stairs:
+    - light.basement_light
+    - sensor.motion_basement_stairs
+
+Bed Node:
+    - sensor.motion_his_side
+    - sensor.motion_her_side
+    - sensor.duration_his_side
+    - sensor.duration_her_side
+    - sensor.motion_count_his_side
+    - sensor.motion_count_her_side
+    - sensor.bedroom_temp
+    - sensor.bedroom_hum
+    - sensor.bedroom_heatIdx
+    - sensor.motion_count
+    - sensor.ldr
+
+System Monitor:
+    - sensor.since_last_boot
+
+time_card:
+    - sensor.time
+    - sensor.time__date
+    - sensor.time_utc
+    - sensor.date
+    - sensor.date__time
+
+Stream:
+    - sensor.api_streams
+
+Lockouts:
+    - input_boolean.presence_lockout
+    - input_boolean.pet_presence_lockout
+    - input_boolean.media_lockout
+    - input_boolean.guests_lockout
+    - input_boolean.cleaning
+    - input_boolean.sexy_time
+
+Living Room:
+    - light.corner_lamp
+    - light.table_lamp
+    - light.spot_light
+    - switch.paper_lamp
+#    - switch.tv_light
+
+Dining Room:
+    - light.dining_light
+    - light.dinner_light
+
+Living Room Lamps:
+    - light.corner_lamp
+    - light.table_lamp
+
+
+Kitchen:
+   - light.kitchen_light
+   - switch.cabinet_light
+
+Office:
+   - switch.desk_light
+   - switch.office_light
+   - switch.test_light
+   - switch.office_fan
+
+Bedroom:
+    - sensor.bedroom_temp
+    - sensor.bedroom_hum
+    - sensor.bedroom_headIdx
+    - light.eugene
+    - sensor.motion_count_his_side
+    - light.rapunzel
+    - sensor.motion_count_her_side
+    - light.under_bed
+    - input_number.bed_animation_speed
+    - switch.bed_fan
+
+Puppy Lights:
+    - light.table_lamp
+    - switch.foyer_light
+
+Front:
+    - light.kitchen_light
+    - switch.cabinet_light
+    - switch.foyer_light
+    - light.dining_light
+    - light.dinner_light
+
+Lights:
+    - light.corner_lamp
+    - light.table_lamp
+    - switch.paper_lamp
+#    - switch.tv_light
+    - light.spot_light
+    - light.kitchen_light
+    - light.dining_light
+    - light.dinner_light
+    - switch.cabinet_light
+    - switch.foyer_light
+    - switch.desk_light
+    - light.basement_light
+    - switch.office_light
+
+Fans:
+    - switch.bed_fan
+    - switch.office_fan
+
+Devices:
+    - media_player.kodi_living_room
+    - media_player.samsung_q7
+
+Family Status:
+    - input_select.home_status
+    - input_select.josh_status
+    - input_select.mj_status
+    - camera.josh
+    - camera.mj
+
+Daily Forecast:
+#    - sensor.dark_sky_temperature
+#    - sensor.dark_sky_apparent_temperature
+#    - sensor.dark_sky_summary
+#    - sensor.dark_sky_hourly_summary
+#    - sensor.dark_sky_daily_summary
+    - weather.dark_sky
+    - sensor.moonphases
