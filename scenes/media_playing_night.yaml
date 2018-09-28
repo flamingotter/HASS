@@ -1,0 +1,14 @@
+- name: media_playing_night
+  entities:
+    switch.paper_lamp:
+      state: off
+    light.corner_lamp:
+      brightness_pct: 20
+      color_temp: 285
+      transition: 5
+      state: on    
+    light.table_lamp:
+      brightness_pct: 20
+      color_temp: 285
+      transition: 5
+      state: on

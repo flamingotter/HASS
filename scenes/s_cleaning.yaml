@@ -1,0 +1,48 @@
+- name: s_cleaning
+  entities:
+    light.rapunzel:
+      brightness_pct: 100
+      color_temp: 222
+      transition: 2
+      state: on
+    light.eugene:
+      brightness_pct: 100
+      color_temp: 222
+      transition: 2
+      state: on
+    light.corner_lamp:
+      brightness_pct: 100
+      color_temp: 222
+      transition: 2
+      state: on    
+    light.table_lamp:
+      brightness_pct: 100
+      color_temp: 222
+      transition: 2
+      state: on
+    light.dining_light:
+      brightness_pct: 100
+      color_temp: 222
+      transition: 2
+      state: on
+    light.dinner_light:
+      brightness_pct: 100
+      color_temp: 222
+      transition: 2
+      state: on
+    light.kitchen_light:
+      brightness_pct: 100
+      color_temp: 222
+      transition: 2
+      state: on
+    light.basement_light:
+      brightness_pct: 100
+      color_temp: 222
+      transition: 2
+      state: on
+    switch.paper_lamp:
+      state: on
+    switch.cabinet_light:
+      state: on
+    switch.foyer_light:
+      state: on

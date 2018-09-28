@@ -1,0 +1,15 @@
+sequence:
+- event: LOGBOOK_ENTRY
+  event_data:
+    name: EVENT
+    message: "Turning Lamps on."
+
+- service: light.turn_on
+  data:
+    entity_id: group.living_room_lamps
+    brightness: 255
+    color_temp: 222
+    transition: 10
+- service: notify.josh
+  data:
+    message: "Someone is Home and it's Sunset. Turning Lamps On!"

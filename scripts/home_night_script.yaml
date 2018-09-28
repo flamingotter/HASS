@@ -1,0 +1,37 @@
+sequence:
+- event: LOGBOOK_ENTRY
+  event_data:
+    name: EVENT
+    message: "Home Script"
+
+- service: light.lifx_set_state
+  data:
+    entity_id:
+     - group.living_room_lamps
+     - light.dining_room
+     - light.kitchen_light
+    transition: 3
+    power: on
+- service: switch.turn_on
+  data:
+    entity_id:
+      - switch.cabinet_light
+      - switch.tv_light
+      - switch.foyer_light
+      - switch.paper_lamp
+- service: input_select.select_option
+  data:
+    entity_id: input_select.home_status
+    option: Disarmed 
+- service: notify.josh
+  data_template:
+    title: "Disarmed"
+    message:  'HOME is now Disarmed {{now().strftime("%H:%M-%d %b")}}'
+
+- delay: 00:01:30
+- service: tts.google_say
+  entity_id:
+  - media_player.kodi_living_room
+  data_template:
+    message: >
+      '{{ ["Good Evening, Welcome home Lord and Lady of the dwelling", "Hello your Highness"] | random }}'

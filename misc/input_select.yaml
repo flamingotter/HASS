@@ -1,0 +1,56 @@
+josh_status:
+  name: Josh Status
+  #icon: mdi:human-male
+  options:
+  - "Work"
+  - "Home"
+  - "Just Arrived"
+  - "Just Left"
+  - "Away"
+  - "Sleeping"
+  - "Awake"
+  - "Extended Away"
+  initial: "Home"
+####
+mj_status:
+  name: MJ Status
+  #icon: mdi:human-female
+  options:
+  - "Work"
+  - "Home"
+  - "Just Arrived"
+  - "Just Left"
+  - "Away"
+  - "Sleeping"
+  - "Awake"
+  - "Extended Away"
+  initial: "Home"
+####
+home_status:
+  name: Home Status
+  #icon: mdi:castle
+  options:
+  - "Disarmed"
+  - "Away"
+  - "Locked Down"
+  - "Sleeping"
+  initial: "Disarmed"
+####
+his_lamp_status:
+  name: His Lamp
+  options:
+  - "1"
+  - "2"
+  - "3"
+  - "0"
+  initial: "0"
+  ####
+her_lamp_status:
+  name: Her Lamp
+  options:
+  - "1"
+  - "2"
+  - "3"
+  - "0"
+  initial: "0"
+####

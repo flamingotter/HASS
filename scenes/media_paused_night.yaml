@@ -1,0 +1,12 @@
+- name: media_paused_night
+  entities:
+    light.corner_lamp:
+      brightness_pct: 100
+      color_temp: 222
+      transition: 5
+      state: on    
+    light.table_lamp:
+      brightness_pct: 100
+      color_temp: 222
+      transition: 5
+      state: on

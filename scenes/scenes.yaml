@@ -1,0 +1,216 @@
+- name: s_his_sleep_mode
+  entities:
+    light.eugene:
+      state: off
+      transition: 2
+    light.under_bed:
+      state: off
+      
+- name: s_her_sleep_mode
+  entities:
+    light.rapunzel:
+      state: off
+      transition: 2
+    light.under_bed:
+      state: off
+      
+- name: s_his_sleep_ext_away
+  entities:
+    light.eugene:
+      state: off
+      transition: 2
+    light.rapunzel:
+      state: off
+      transition: 2
+    light.under_bed:
+      state: off
+      
+- name: s_her_sleep_ext_away
+  entities:
+    light.eugene:
+      state: off
+      transition: 2
+    light.rapunzel:
+      state: off
+      transition: 2
+    light.under_bed:
+      state: off
+
+- name: s_awake_dark
+  entities:
+    light.under_bed:
+      brightness_pct: 30
+      color_name: red
+      state: on
+    light.kitchen_light:
+      state: on
+      brightness_pct: 30
+    light.corner_lamp:
+      state: on
+      brightness_pct: 30
+      
+- name: s_awake_light
+  entities:
+    light.under_bed:
+      state: on
+      brightness_pct: 30
+      color_name: red
+      
+- name: s_his_awake_home_above
+  entities:
+    light.under_bed:
+      state: off
+    light.dining_light:
+      state: off
+    light.basement_light:
+      state: off
+      
+- name: s_his_awake_home_below
+  entities:
+    light.under_bed:
+      state: off
+    light.kitchen_light:
+      state: on
+      brightness_pct: 100
+      color_temp: 222
+      transition: 30
+    light.dining_light:
+      state: on
+      brightness_pct: 100
+      color_temp: 222
+      transition: 30
+    switch.cabinet_light:
+      state: on
+    switch.desk_light:
+      state: on
+    switch.office_light:
+      state: on
+    light.corner_lamp:
+      state: on
+      brightness_pct: 100
+      color_temp: 222
+      transition: 30
+      
+- name: s_her_awake_home
+  entities:
+    light.under_bed:
+      state: off
+      
+- name: leave_for_work_action
+  entities:
+    group.all_lights:
+      state: off      
+      transition: 3
+    group.all_switches:
+      state: off
+
+#### NIGHTSTAND LAMP DIMMING ####       
+- name: his_dim_lev_0
+  entities:
+    light.eugene:
+      state: off
+      transition: 1
+- name: his_dim_lev_1 
+  entities:
+    light.eugene:
+      state: on
+      brightness_pct: 25
+      color_temp: 222
+      transition: 1
+- name: his_dim_lev_2
+  entities:
+    light.eugene:
+      state: on
+      brightness_pct: 50
+      color_temp: 222
+      transition: 1
+- name: his_dim_lev_3
+  entities:
+    light.eugene:
+      state: on
+      brightness_pct: 100
+      color_temp: 222
+      transition: 1
+- name: her_dim_lev_0
+  entities:
+    light.rapunzel:
+      state: off
+      transition: 1
+- name: her_dim_lev_1 
+  entities:
+    light.rapunzel:
+      state: on
+      brightness_pct: 25
+      color_temp: 222
+      transition: 1
+- name: her_dim_lev_2
+  entities:
+    light.rapunzel:
+      state: on
+      brightness_pct: 50
+      color_temp: 222
+      transition: 1
+- name: her_dim_lev_3
+  entities:
+    light.rapunzel:
+      state: on
+      brightness_pct: 100
+      color_temp: 222
+      transition: 1
+
+#### NIGHTLIGHT ####       
+- name: nightlight_bright
+  entities:
+    light.under_bed:
+      brightness_pct: 20
+      color_name: red
+      state: on
+    light.basement_light:
+      brightness_pct: 20
+      color_name: red
+      transition: 2
+      state: on
+    light.dining_light:
+      brightness_pct: 20
+      color_name: red
+      transition: 2
+      state: on
+      
+- name: nightlight_dim 
+  entities:
+    light.under_bed:
+      state: off
+    light.basement_light:
+      transition: 2
+      state: off
+    light.dining_light:
+      transition: 2
+      state: off
+
+#### SEXY TIME ####       
+- name: s_bed_mood_light
+  entities:
+    light.under_bed:      
+      state: on
+      brightness_pct: 100
+      effect: noise
+    light.eugene:
+      state: off
+      transition: 2
+    light.rapunzel:
+      state: off
+      transition: 2
+ 
+#### BASEMENT STAIRS MOTION ####      
+- name: basement_stairs_on
+  entities:
+    light.basement_light:
+      brightness_pct: 100
+      color_temp: 222      
+      state: on
+      
+- name: basement_stairs_off
+  entities:
+    light.basement_light:      
+      state: off
+      transition: 2

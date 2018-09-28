@@ -1,0 +1,66 @@
+############DIMMER COUNT############
+- id: his_motion_count
+  alias: His Motion Count
+  trigger:
+  - platform: state
+    entity_id: sensor.motion_count_his_side
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: input_boolean.presence_lockout
+        state: "on"
+      - condition: or
+        conditions:
+        - condition: template
+          value_template: "{% if states('input_select.josh_status') == 'Home' %}true{% else %}false{% endif %}"
+        - condition: template
+          value_template: "{% if states('input_select.josh_status') == 'Just Arrived' %}true{% else %}false{% endif %}"
+        - condition: template
+          value_template: "{% if states('input_select.josh_status') == 'Awake' %}true{% else %}false{% endif %}"
+  action:
+  - service: scene.turn_on
+    data_template:
+      entity_id: >
+        {% if trigger.to_state.state == '1' %}
+          scene.his_dim_lev_1
+        {% elif trigger.to_state.state == '2' %}
+          scene.his_dim_lev_2
+        {% elif trigger.to_state.state == '3' %}
+          scene.his_dim_lev_3
+        {% elif trigger.to_state.state == '0' %}
+          scene.his_dim_lev_0
+        {% endif %}
+
+- id: her_motion_count
+  alias: Her Motion Count
+  trigger:
+  - platform: state
+    entity_id: sensor.motion_count_her_side
+  condition:
+    condition: and
+    conditions:
+      - condition: state
+        entity_id: input_boolean.presence_lockout
+        state: "on"
+      - condition: or
+        conditions:
+        - condition: template
+          value_template: "{% if states('input_select.mj_status') == 'Home' %}true{% else %}false{% endif %}"
+        - condition: template
+          value_template: "{% if states('input_select.mj_status') == 'Just Arrived' %}true{% else %}false{% endif %}"
+        - condition: template
+          value_template: "{% if states('input_select.mj_status') == 'Awake' %}true{% else %}false{% endif %}"
+  action:
+  - service: scene.turn_on
+    data_template:
+      entity_id: >
+        {% if trigger.to_state.state == '1' %}
+          scene.her_dim_lev_1
+        {% elif trigger.to_state.state == '2' %}
+          scene.her_dim_lev_2
+        {% elif trigger.to_state.state == '3' %}
+          scene.her_dim_lev_3
+        {% elif trigger.to_state.state == '0' %}
+          scene.her_dim_lev_0
+        {% endif %}

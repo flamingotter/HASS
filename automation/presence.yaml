@@ -1,0 +1,521 @@
+####When status changes from HOME to AWAY fire 'away_script'####
+####turns OFF all lights, sets home_status "Locked Down" and sends notification####
+#- id: away_action
+#  alias: "Away Global Actions"
+#  initial_state: True
+#  hide_entity: False
+#  trigger:
+#    - platform: state
+#      entity_id: input_select.josh_status
+#    - platform: state
+#      entity_id: input_select.mj_status
+#  condition:
+#  - condition: template
+#    value_template: "{% if states('input_select.josh_status') == 'Away' and states('input_select.mj_status') == 'Away' %}true{% else %}false{% endif %}"
+#  - condition: state
+#    entity_id: input_boolean.presence_lockout
+#    state: "on"
+#  action:
+#  - service: script.away_script
+
+####When status changes from AWAY to HOME fire 'home_script'####
+####if 1 hour before sunset and not if we have been 'HOME' for < 5min####
+####turns ON all lights, sets home_status "Open" and sends notification####
+- id: home_day_action
+  alias: "Home Day Actions"
+  initial_state: True
+  hide_entity: False
+  trigger:
+    - platform: state
+      entity_id: input_select.josh_status
+      from: Away
+      to: Just Arrived
+    - platform: state
+      entity_id: input_select.mj_status
+      from: Away
+      to: Just Arrived
+  condition:
+    condition: and
+    conditions:
+      - condition: sun
+        before: sunset
+        before_offset: '-1:00:00'
+      - condition: state
+        entity_id: input_boolean.presence_lockout
+        state: "on"
+      - condition: or
+        conditions:
+        - condition: template
+          value_template: "{% if is_state('input_select.josh_status', 'Just Arrived') and is_state('input_select.mj_status', 'Home') %}true{% else %}false{% endif %}"
+        - condition: template
+          value_template: "{% if is_state('input_select.josh_status', 'Home') and is_state('input_select.mj_status', 'Just Arrived') %}true{% else %}false{% endif %}"
+        - condition: template
+          value_template: "{% if is_state('input_select.josh_status', 'Just Arrived') and is_state('input_select.mj_status', 'Just Arrived') %}true{% else %}false{% endif %}"
+  action:
+    - service: script.home_day_script
+
+- id: home_night_action
+  alias: "Home Night Actions"
+  initial_state: True
+  hide_entity: False
+  trigger:
+    - platform: state
+      entity_id: input_select.josh_status
+      from: Away
+      to: Just Arrived
+    - platform: state
+      entity_id: input_select.mj_status
+      from: Away
+      to: Just Arrived
+  condition:
+    condition: and
+    conditions:
+      - condition: sun
+        after: sunset
+        after_offset: '-1:00:00'
+      - condition: state
+        entity_id: input_boolean.presence_lockout
+        state: "on"
+      - condition: or
+        conditions:
+        - condition: template
+          value_template: "{% if states('input_select.josh_status') == 'Just Arrived' and states('input_select.mj_status') != 'Home' %}true{% else %}false{% endif %}"
+        - condition: template
+          value_template: "{% if states('input_select.mj_status') == 'Just Arrived' and states('input_select.josh_status') != 'Home' %}true{% else %}false{% endif %}"
+        - condition: template
+          value_template: "{% if states('input_select.josh_status') == 'Just Arrived' and states('input_select.mj_status') == 'Just Arrived' %}true{% else %}false{% endif %}"
+  action:
+    - service: script.home_night_script
+
+- id: away_night_action
+  alias: "Away Night Actions"
+  initial_state: True
+  hide_entity: False
+  trigger:
+  - platform: state
+    entity_id: input_select.home_status
+    from: Disarmed
+    to: Locked Down
+  condition:
+  - condition: template
+    value_template: "{% if states('input_select.josh_status') == 'Away' and states('input_select.mj_status') == 'Away' %}true{% else %}false{% endif %}"
+  - condition: state
+    entity_id: input_boolean.pet_presence_lockout
+    state: "on"
+  - condition: state
+    entity_id: sun.sun
+    state: "below_horizon"
+  action:
+  - service: switch.turn_on
+    data:
+      entity_id:
+        - switch.foyer_light
+  - service: light.turn_on
+    data:
+      entity_id: light.table_lamp
+      brightness: 255
+      color_temp: 222
+      transition: 5
+  - service: notify.josh
+    data:
+      title: "Puppy Lights"
+      message:  "Puppy Lights Engaged"
+
+- id: leave_for work_action
+  alias: his_leave_for work_action
+  trigger:
+  - platform: state
+    entity_id: input_select.josh_status
+    to: 'Away'
+  condition:
+  - condition: state
+    entity_id: input_boolean.presence_lockout
+    state: "on"
+  - condition: state
+    entity_id: input_select.mj_status
+    state: 'Sleeping'
+  action:
+  - service: scene.turn_on
+    entity_id: scene.leave_for_work_action
+
+- id: home_sunset
+  alias: "Sunset"
+  initial_state: True
+  hide_entity: False
+  trigger:
+    platform: sun
+    event: sunset
+    offset: "-1:30:00"
+  condition:
+  - condition: state
+    entity_id: input_select.home_status
+    state: "Disarmed"
+  - condition: state
+    entity_id: input_boolean.presence_lockout
+    state: "on"
+  action:
+    - service: light.lifx_set_state
+      data:
+        entity_id:
+          - group.living_room_lamps
+        brightness: 255
+        color_temp: 222
+        power: on
+        transition: 60
+
+############PRESENSE############
+- id: just_arrived
+  alias: Mark person as just arrived
+  trigger:
+  - platform: state
+    entity_id: device_tracker.flamingotter_mqtt_josh
+    from: not_home
+    to: home
+  - platform: state
+    entity_id: device_tracker.flamingotter_mqtt_mj
+    from: not_home
+    to: home
+  action:
+  - service: input_select.select_option
+    data_template:
+      entity_id: >
+        {% if trigger.entity_id == 'device_tracker.flamingotter_mqtt_josh' %}
+          input_select.josh_status
+        {% else %}
+          input_select.mj_status
+        {% endif %}
+      option: >
+        {% if trigger.entity_id == 'device_tracker.flamingotter_mqtt_josh' %}
+          {% if states.input_select.josh_status.state == 'Just Left' %}
+            Home
+          {% else %}
+            Just Arrived
+          {% endif %}
+        {% else %}
+          {% if states.input_select.mj_status.state == 'Just Left' %}
+          Home
+          {% else %}
+          Just Arrived
+          {% endif %}
+        {% endif %}
+#  - service: notify.josh
+#    data_template:
+#      title: Just Arrived NEW
+#      message:  >        
+#        {% if states('input_select.josh_status') == 'Just Arrived'%}
+#          Josh's status is {{states.input_select.josh_status.state}} {{now().strftime('%H:%M-%d%b')}}
+#        {% else %}
+#          MJ's status is {{states.input_select.mj_status.state}} {{now().strftime('%H:%M-%d%b')}}
+#        {% endif %}
+
+- id: person_home
+  alias: Mark person as home
+  trigger:
+  - platform: state
+    entity_id: input_select.josh_status
+    to: 'Just Arrived'
+    for:
+      minutes: 3
+  - platform: state
+    entity_id: input_select.mj_status
+    to: 'Just Arrived'
+    for:
+      minutes: 3
+  - platform: state
+    entity_id: input_select.josh_status
+    from: 'Just Left'
+    to: 'Just Arrived'
+  - platform: state
+    entity_id: input_select.mj_status
+    from: 'Just Left'
+    to: 'Just Arrived'
+  action:
+  - service: input_select.select_option
+    data_template:
+      entity_id: >
+        {% if trigger.entity_id == 'input_select.josh_status' %}
+          input_select.josh_status
+        {% else %}
+          input_select.mj_status
+        {% endif %}
+      option: Home
+
+- id: just_left
+  alias: Mark person as just left
+  trigger:
+  - platform: state
+    entity_id: device_tracker.flamingotter_mqtt_josh
+    from: 'home'
+    to: 'not_home'
+  - platform: state
+    entity_id: device_tracker.flamingotter_mqtt_mj
+    from: 'home'
+    to: 'not_home'
+  action:
+  - service: input_select.select_option
+    data_template:
+      entity_id: >
+        {% if trigger.entity_id == 'device_tracker.flamingotter_mqtt_josh' %}
+          input_select.josh_status
+        {% else %}
+          input_select.mj_status
+        {% endif %}
+      option: Just Left
+
+- id: person_away
+  alias: Mark person as away
+  trigger:
+  - platform: state
+    entity_id: input_select.josh_status
+    to: 'Just Left'
+    for:
+      minutes: 3
+  - platform: state
+    entity_id: input_select.mj_status
+    to: 'Just Left'
+    for:
+      minutes: 3
+  action:
+  - service: input_select.select_option
+    data_template:
+      entity_id: >
+        {% if trigger.entity_id == 'input_select.josh_status' %}
+          input_select.josh_status
+        {% else %}
+          input_select.mj_status
+        {% endif %}
+      option: Away
+  - service: notify.josh
+    data_template:
+      title: "Away"
+      message:  >
+        {% if states('input_select.josh_status') == 'Away'%}
+          Josh's status is {{states.input_select.josh_status.state}} {{now().strftime('%H:%M-%d%b')}}
+        {% else %}
+          MJ's status is {{states.input_select.mj_status.state}} {{now().strftime('%H:%M-%d%b')}}
+        {% endif %}
+
+- id: extended_away
+  alias: Mark person as extended away
+  trigger:
+  - platform: state
+    entity_id: input_select.josh_status
+    to: 'Away'
+    for:
+      hours: 24
+  - platform: state
+    entity_id: input_select.mj_status
+    to: 'Away'
+    for:
+      hours: 24
+  action:
+  - service: input_select.select_option
+    data_template:
+      entity_id: >
+        {% if trigger.entity_id == 'input_select.josh_status' %}
+          input_select.josh_status
+        {% else %}
+          input_select.mj_status
+        {% endif %}
+      option: Extended Away
+
+- id: stay_sleeping
+  alias: Stay asleep
+  trigger:
+  - platform: state
+    entity_id: input_select.josh_status
+    from: 'Sleeping'
+    to: 'Just Left'
+  - platform: state
+    entity_id: input_select.mj_status
+    from: 'Sleeping'
+    to: 'Just Left'
+  action:
+  - service: input_select.select_option
+    data_template:
+      entity_id: >
+        {% if trigger.entity_id == 'input_select.josh_status' %}
+          input_select.josh_status
+        {% else %}
+          input_select.mj_status
+        {% endif %}
+      option: Sleeping
+
+
+- id: set_sleep_status  
+  alias: Set person as sleeping
+  trigger:
+  - platform: state
+    entity_id: sensor.longtrig_his_side
+    to: '1'
+  - platform: state
+    entity_id: sensor.longtrig_her_side
+    to: '1'
+  action:
+  - service: input_select.select_option
+    data_template:
+      entity_id:  >
+        {% if trigger.entity_id == 'sensor.longtrig_his_side' %}
+          input_select.josh_status
+        {% else %}
+          input_select.mj_status
+        {% endif %}
+      option:  >
+        {% if trigger.entity_id == 'sensor.longtrig_his_side' %}
+          {% if states('input_select.josh_status') != 'Sleeping' %}          
+            Sleeping
+          {% endif %}
+        {% else %}
+          {% if states('input_select.mj_status') != 'Sleeping' %}
+            Sleeping
+          {% endif %}
+        {% endif %}
+
+- id: set_awake_status  
+  alias: Set person as awake
+  trigger:
+  - platform: state
+    entity_id: sensor.longtrig_his_side
+    to: '1'
+  - platform: state
+    entity_id: sensor.longtrig_her_side
+    to: '1'
+  action:
+  - service: input_select.select_option
+    data_template:
+      entity_id: >
+        {% if trigger.entity_id == 'sensor.longtrig_his_side' %}
+          input_select.josh_status
+        {% else %}
+          input_select.mj_status
+        {% endif %}
+      option: >
+        {% if trigger.entity_id == 'sensor.longtrig_his_side' %}
+          {% if is_state('input_select.josh_status', 'Sleeping') %}
+            Awake
+          {% endif %}
+        {% else %}
+          {% if is_state('input_select.mj_status', 'Sleeping') %}
+            Awake
+          {% endif %}
+        {% endif %}
+
+#- id: awake_to_home
+#  alias: Mark person from Awake to Home
+#  trigger:
+#  - platform: state
+#   entity_id: input_select.josh_status
+#    to: 'Awake'
+#    for:
+#      minutes: 3
+#  - platform: state
+#    entity_id: input_select.mj_status
+#    to: 'Awake'
+#    for:
+#      minutes: 3
+#  action:
+#  - service: input_select.select_option
+#    data_template:
+#      entity_id: >
+#        {% if trigger.entity_id == 'input_select.josh_status' %}
+#          input_select.josh_status
+#        {% else %}
+#          input_select.mj_status
+#        {% endif %}
+#      option: Home
+
+
+############HOME STATUS############
+
+
+
+############SLEEP/AWAKE FUNCTIONS############
+#- id: his_sleep_state
+#  alias: his_sleep_state
+#  trigger:
+#  - platform: state
+#    entity_id: input_select.josh_status
+#    to: 'Sleeping'
+#  condition:
+#    - condition: state
+#      entity_id: input_boolean.presence_lockout
+#      state: "on"
+#  action:
+#  - service: scene.turn_on
+#    entity_id: scene.his_sleep_mode
+
+#- id: his_awake_state
+#  alias: his_awake_state
+#  trigger:
+#  - platform: state
+#    entity_id: input_select.josh_status
+#    to: 'Awake'
+#  condition:
+#  - condition: state
+#    entity_id: input_boolean.presence_lockout
+#    state: "on"
+#  - condition: sun
+#    after: sunset
+#  - condition: sun
+#    before: sunrise
+#  action:
+#  - service: scene.turn_on
+#    entity_id: scene.his_awake_mode
+
+#- id: his_awake_home_action
+#  alias: his_awake_home_action
+#  trigger:
+#    - platform: state
+#      entity_id: input_select.josh_status
+#      from: 'Awake'
+#      to: 'Home'
+#  condition:
+#    - condition: state
+#      entity_id: input_boolean.presence_lockout
+#      state: "on"
+#  action:
+#  - service: scene.turn_on
+#    entity_id: scene.his_awake_home_mode
+
+#- id: her_sleep_state
+#  alias: her_sleep_state
+#  trigger:
+#  - platform: state
+#    entity_id: input_select.mj_status
+#    to: 'Sleeping'
+#  condition:
+#    - condition: state
+#      entity_id: input_boolean.presence_lockout
+#      state: "on"
+#  action:
+#  - service: scene.turn_on
+#    entity_id: scene.her_sleep_mode
+
+#- id: her_awake_state
+#  alias: her_awake_state
+#  trigger:
+#  - platform: state
+#    entity_id: input_select.mj_status
+#    to: 'Awake'
+#  condition:
+#    - condition: state
+#      entity_id: input_boolean.presence_lockout
+#      state: "on"
+#  action:
+#  - service: scene.turn_on
+#    entity_id: scene.her_awake_mode
+
+#- id: her_awake_home_action
+#  alias: her_awake_home_action
+#  trigger:
+#    - platform: state
+#      entity_id: input_select.mj_status
+#      from: 'Awake'
+#      to: 'Home'
+#  condition:
+#    - condition: state
+#      entity_id: input_boolean.presence_lockout
+#      state: "on"
+#  action:
+#  - service: scene.turn_on
+#    entity_id: scene.her_awake_home_mode
