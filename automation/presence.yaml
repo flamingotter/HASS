@@ -21,71 +21,71 @@
 ####When status changes from AWAY to HOME fire 'home_script'####
 ####if 1 hour before sunset and not if we have been 'HOME' for < 5min####
 ####turns ON all lights, sets home_status "Open" and sends notification####
-- id: home_day_action
-  alias: "Home Day Actions"
-  initial_state: True
-  hide_entity: False
-  trigger:
-    - platform: state
-      entity_id: input_select.josh_status
-      from: Away
-      to: Just Arrived
-    - platform: state
-      entity_id: input_select.mj_status
-      from: Away
-      to: Just Arrived
-  condition:
-    condition: and
-    conditions:
-      - condition: sun
-        before: sunset
-        before_offset: '-1:00:00'
-      - condition: state
-        entity_id: input_boolean.presence_lockout
-        state: "on"
-      - condition: or
-        conditions:
-        - condition: template
-          value_template: "{% if is_state('input_select.josh_status', 'Just Arrived') and is_state('input_select.mj_status', 'Home') %}true{% else %}false{% endif %}"
-        - condition: template
-          value_template: "{% if is_state('input_select.josh_status', 'Home') and is_state('input_select.mj_status', 'Just Arrived') %}true{% else %}false{% endif %}"
-        - condition: template
-          value_template: "{% if is_state('input_select.josh_status', 'Just Arrived') and is_state('input_select.mj_status', 'Just Arrived') %}true{% else %}false{% endif %}"
-  action:
-    - service: script.home_day_script
+#- id: home_day_action
+#  alias: "Home Day Actions"
+#  initial_state: True
+#  hide_entity: False
+#  trigger:
+#    - platform: state
+#      entity_id: input_select.josh_status
+#      from: Away
+#      to: Just Arrived
+#    - platform: state
+#      entity_id: input_select.mj_status
+#      from: Away
+#      to: Just Arrived
+#  condition:
+#    condition: and
+#    conditions:
+#      - condition: sun
+#        before: sunset
+#        before_offset: '-1:00:00'
+#      - condition: state
+#        entity_id: input_boolean.presence_lockout
+#        state: "on"
+#      - condition: or
+#        conditions:
+#        - condition: template
+#          value_template: "{% if is_state('input_select.josh_status', 'Just Arrived') and is_state('input_select.mj_status', 'Home') %}true{% else %}false{% endif %}"
+#        - condition: template
+#          value_template: "{% if is_state('input_select.josh_status', 'Home') and is_state('input_select.mj_status', 'Just Arrived') %}true{% else %}false{% endif %}"
+#        - condition: template
+#          value_template: "{% if is_state('input_select.josh_status', 'Just Arrived') and is_state('input_select.mj_status', 'Just Arrived') %}true{% else %}false{% endif %}"
+#  action:
+#    - service: script.home_day_script
 
-- id: home_night_action
-  alias: "Home Night Actions"
-  initial_state: True
-  hide_entity: False
-  trigger:
-    - platform: state
-      entity_id: input_select.josh_status
-      from: Away
-      to: Just Arrived
-    - platform: state
-      entity_id: input_select.mj_status
-      from: Away
-      to: Just Arrived
-  condition:
-    condition: and
-    conditions:
-      - condition: sun
-        after: sunset
-        after_offset: '-1:00:00'
-      - condition: state
-        entity_id: input_boolean.presence_lockout
-        state: "on"
-      - condition: or
-        conditions:
-        - condition: template
-          value_template: "{% if states('input_select.josh_status') == 'Just Arrived' and states('input_select.mj_status') != 'Home' %}true{% else %}false{% endif %}"
-        - condition: template
-          value_template: "{% if states('input_select.mj_status') == 'Just Arrived' and states('input_select.josh_status') != 'Home' %}true{% else %}false{% endif %}"
-        - condition: template
-          value_template: "{% if states('input_select.josh_status') == 'Just Arrived' and states('input_select.mj_status') == 'Just Arrived' %}true{% else %}false{% endif %}"
-  action:
-    - service: script.home_night_script
+#- id: home_night_action
+#  alias: "Home Night Actions"
+#  initial_state: True
+#  hide_entity: False
+#  trigger:
+#    - platform: state
+#      entity_id: input_select.josh_status
+#      from: Away
+#      to: Just Arrived
+#    - platform: state
+#      entity_id: input_select.mj_status
+#      from: Away
+#      to: Just Arrived
+#  condition:
+#    condition: and
+#    conditions:
+#      - condition: sun
+#        after: sunset
+#        after_offset: '-1:00:00'
+#      - condition: state
+#        entity_id: input_boolean.presence_lockout
+#        state: "on"
+#      - condition: or
+#        conditions:
+#        - condition: template
+#          value_template: "{% if states('input_select.josh_status') == 'Just Arrived' and states('input_select.mj_status') != 'Home' %}true{% else %}false{% endif %}"
+#        - condition: template
+#          value_template: "{% if states('input_select.mj_status') == 'Just Arrived' and states('input_select.josh_status') != 'Home' %}true{% else %}false{% endif %}"
+#        - condition: template
+#          value_template: "{% if states('input_select.josh_status') == 'Just Arrived' and states('input_select.mj_status') == 'Just Arrived' %}true{% else %}false{% endif %}"
+#  action:
+#    - service: script.home_night_script
 
 - id: away_night_action
   alias: "Away Night Actions"
