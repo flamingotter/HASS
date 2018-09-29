@@ -127,6 +127,7 @@ Lockouts:
     - input_boolean.guests_lockout
     - input_boolean.cleaning
     - input_boolean.sexy_time
+    - input_boolean.googlesay
 
 Living Room:
     - light.corner_lamp
