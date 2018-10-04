@@ -76,7 +76,7 @@ device_tracker:
     username: !secret unifi_username
     password: !secret unifi_password
     verify_ssl: false
-    #site_id: 7tbm06ky
+    site_id: default
     new_device_defaults:
       track_new_devices: false
       hide_if_away: false
