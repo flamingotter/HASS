@@ -55,7 +55,7 @@ media_player:
     enable_websocket: true
   - platform: samsungtv
     name: Samsung Q7
-    host: 10.0.10.208
+    host: 10.0.10.245
     port: 8001
     mac: E4:7D:BD:A7:02:0A
 
