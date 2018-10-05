@@ -2,27 +2,27 @@
 
 - platform: mqtt_json
   name: "Under Bed"
-  state_topic: "flamingotter/bedLed1"
-  command_topic: "flamingotter/bedLed1/set"
+  state_topic: "home/bedLed1"
+  command_topic: "home/bedLed1/set"
   effect: true
   effect_list:
     - bpm
-    - candy cane  
-    - confetti  
-    - cyclon rainbow  
-    - dots  
-    - fire  
-    - glitter  
-    - juggle  
+    - candy cane
+    - confetti
+    - cyclon rainbow
+    - dots
+    - fire
+    - glitter
+    - juggle
     - lightning
-    - noise  
+    - noise
     - police all  
-    - police one  
-    - rainbow  
-    - rainbow with glitter  
-    - ripple  
-    - sinelon  
-    - solid  
+    - police one
+    - rainbow
+    - rainbow with glitter
+    - ripple
+    - sinelon
+    - solid
     - twinkle
   brightness: true
   flash: true

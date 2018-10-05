@@ -57,8 +57,8 @@ HA_Status:
     - input_select.josh_status
     - input_select.mj_status
     - sensor.time
-    - sensor.pws_temp_f
     - group.bed_node
+    - group.bedroom_node
     - group.stairs
     - group.device_status
     - group.test_node
@@ -101,14 +101,16 @@ Bed Node:
     - sensor.duration_her_side
     - sensor.motion_count_his_side
     - sensor.motion_count_her_side
+
+Bedroom Node:
     - sensor.bedroom_temp
     - sensor.bedroom_hum
     - sensor.bedroom_heatIdx
-    - sensor.motion_count
-    - sensor.ldr
+    - sensor.bedroom_ldr
 
 System Monitor:
     - sensor.since_last_boot
+    - sensor.api_streams
 
 time_card:
     - sensor.time
@@ -117,9 +119,6 @@ time_card:
     - sensor.date
     - sensor.date__time
 
-Stream:
-    - sensor.api_streams
-
 Lockouts:
     - input_boolean.presence_lockout
     - input_boolean.pet_presence_lockout
@@ -127,7 +126,6 @@ Lockouts:
     - input_boolean.guests_lockout
     - input_boolean.cleaning
     - input_boolean.sexy_time
-    - input_boolean.googlesay
 
 Living Room:
     - light.corner_lamp
@@ -156,9 +154,6 @@ Office:
    - switch.office_fan
 
 Bedroom:
-    - sensor.bedroom_temp
-    - sensor.bedroom_hum
-    - sensor.bedroom_headIdx
     - light.eugene
     - sensor.motion_count_his_side
     - light.rapunzel
