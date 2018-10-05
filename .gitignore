@@ -11,6 +11,7 @@ www/moons/
 *.db-shm
 *.db-wal
 *.red
+*.mp3
 !*.yaml
 !.gitignore
 secrets.yaml
