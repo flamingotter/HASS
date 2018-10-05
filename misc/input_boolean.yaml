@@ -27,7 +27,3 @@ sexy_time:
   name: Sexy Time
   initial: off
   icon: mdi:emoticon-devil
-
-googlesay:
-  name: googlesay
-  initial: off

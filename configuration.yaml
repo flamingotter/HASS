@@ -111,7 +111,7 @@ weather:
 ################
 ####INCLUDES####
 ################
-sensor: !include sensors.yaml
+sensor: !include_dir_merge_list sensors/
 light: !include lights.yaml
 switch: !include switches.yaml
 group: !include groups.yaml
@@ -138,10 +138,10 @@ discovery:
 sun:
 conversation:
 logbook:
-#frontend:
+frontend:
 config:
 
-frontend: !include frontend.yaml
+#frontend: !include frontend.yaml
 #panel_custom: !include panel_custom.yaml
 
 panel_custom:

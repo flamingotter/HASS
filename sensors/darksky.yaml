@@ -1,0 +1,37 @@
+- platform: darksky
+  api_key: 7abceb2b826b08477b512a8bdc603787
+  update_interval: '00:10'
+  forecast:
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - 7
+  monitored_conditions:
+    - summary
+    - precip_type
+    - precip_intensity
+    - precip_probability
+    - precip_accumulation
+    - icon
+    - nearest_storm_distance
+    - temperature
+    - temperature_high
+    - temperature_low
+    - wind_speed
+    - wind_bearing
+    - cloud_cover
+    - humidity
+    - pressure
+    - visibility
+    - minutely_summary
+    - hourly_summary
+    - daily_summary
+    - apparent_temperature
+    - apparent_temperature_high
+    - apparent_temperature_low
+    - precip_intensity_max
+    - uv_index
+    - moon_phase

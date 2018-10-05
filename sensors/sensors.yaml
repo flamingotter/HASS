@@ -1,0 +1,24 @@
+- platform: yr
+
+- platform: time_date
+  display_options:
+    - 'time'
+    - 'date'
+    - 'date_time'
+    - 'time_date'
+    - 'time_utc'
+
+- platform: api_streams
+
+- platform: systemmonitor
+  resources:
+    - type: since_last_boot
+
+#- platform: speedtest
+#  minute:
+#    - 0
+#    - 30
+#  monitored_conditions:
+#    - ping
+#    - download
+#    - uplo

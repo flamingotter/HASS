@@ -1,0 +1,27 @@
+- platform: mqtt
+  state_topic: "home/bedNode"
+  name: "Motion Count His Side"
+  value_template: '{{ value_json.moCnt }}'
+- platform: mqtt
+  state_topic: "home/bedNode"
+  name: "Motion Count Her Side"
+  value_template: '{{ value_json.moCnt1 }}'
+
+
+- platform: mqtt
+  state_topic: "home/bedNode"
+  name: "Motion His Side"
+  value_template: '{{ value_json.mo }}'
+- platform: mqtt
+  state_topic: "home/bedNode"
+  name: "Motion Her Side"
+  value_template: '{{ value_json.mo1 }}'
+
+- platform: mqtt
+  state_topic: "home/bedNode"
+  name: "Duration His Side"
+  value_template: '{{ value_json.lTrig }}'
+- platform: mqtt
+  state_topic: "home/bedNode"
+  name: "Duration Her Side"
+  value_template: '{{ value_json.lTrig1 }}'
