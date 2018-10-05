@@ -97,8 +97,8 @@
     from: Disarmed
     to: Locked Down
   condition:
-  - condition: template
-    value_template: "{% if states('input_select.josh_status') == 'Away' and states('input_select.mj_status') == 'Away' %}true{% else %}false{% endif %}"
+  #- condition: template
+  #  value_template: "{% if states('input_select.josh_status') == 'Away' and states('input_select.mj_status') == 'Away' %}true{% else %}false{% endif %}"
   - condition: state
     entity_id: input_boolean.pet_presence_lockout
     state: "on"
@@ -201,7 +201,7 @@
 #  - service: notify.josh
 #    data_template:
 #      title: Just Arrived NEW
-#      message:  >        
+#      message:  >
 #        {% if states('input_select.josh_status') == 'Just Arrived'%}
 #          Josh's status is {{states.input_select.josh_status.state}} {{now().strftime('%H:%M-%d%b')}}
 #        {% else %}
@@ -362,7 +362,7 @@
         {% endif %}
       option:  >
         {% if trigger.entity_id == 'sensor.longtrig_his_side' %}
-          {% if states('input_select.josh_status') != 'Sleeping' %}          
+          {% if states('input_select.josh_status') != 'Sleeping' %}
             Sleeping
           {% endif %}
         {% else %}
@@ -371,7 +371,7 @@
           {% endif %}
         {% endif %}
 
-- id: set_awake_status  
+- id: set_awake_status
   alias: Set person as awake
   trigger:
   - platform: state
