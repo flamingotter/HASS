@@ -193,7 +193,7 @@
     light.under_bed:
       state: on
       brightness_pct: 50
-      #effect: noise
+      effect: noise
     light.eugene:
       state: off
       transition: 2
@@ -214,3 +214,14 @@
     light.basement_light:
       state: off
       transition: 2
+
+### Puppy Lights ####
+- name: s_puppy_lights_on
+  entities:
+    light.table_lamp:
+      brightness: 255
+      color_temp: 222
+      transition: 5
+      state: on
+    switch.foyer_light:
+      state: on

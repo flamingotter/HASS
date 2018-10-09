@@ -5,19 +5,8 @@
   - platform: state
     entity_id: sensor.motion_count_his_side
   condition:
-    condition: and
-    conditions:
-      - condition: state
-        entity_id: input_boolean.presence_lockout
-        state: "on"
-      - condition: or
-        conditions:
-        - condition: template
-          value_template: "{% if states('input_select.josh_status') == 'Home' %}true{% else %}false{% endif %}"
-        - condition: template
-          value_template: "{% if states('input_select.josh_status') == 'Just Arrived' %}true{% else %}false{% endif %}"
-        - condition: template
-          value_template: "{% if states('input_select.josh_status') == 'Awake' %}true{% else %}false{% endif %}"
+  - condition: template
+    value_template: "{% if states('input_select.josh_status') != 'Sleeping' %}true{% else %}false{% endif %}"
   action:
   - service: scene.turn_on
     data_template:
@@ -38,19 +27,8 @@
   - platform: state
     entity_id: sensor.motion_count_her_side
   condition:
-    condition: and
-    conditions:
-      - condition: state
-        entity_id: input_boolean.presence_lockout
-        state: "on"
-      - condition: or
-        conditions:
-        - condition: template
-          value_template: "{% if states('input_select.mj_status') == 'Home' %}true{% else %}false{% endif %}"
-        - condition: template
-          value_template: "{% if states('input_select.mj_status') == 'Just Arrived' %}true{% else %}false{% endif %}"
-        - condition: template
-          value_template: "{% if states('input_select.mj_status') == 'Awake' %}true{% else %}false{% endif %}"
+  - condition: template
+    value_template: "{% if states('input_select.mj_status') != 'Sleeping' %}true{% else %}false{% endif %}"
   action:
   - service: scene.turn_on
     data_template:
