@@ -108,6 +108,12 @@ weather:
   - platform: darksky
     api_key: !secret darksky_api_key
 
+octoprint:
+  host: !secret octo_ip
+  api_key: !secret octo_api_key
+  bed: true
+  number_of_tools: 1
+
 ################
 ####INCLUDES####
 ################
@@ -141,8 +147,6 @@ logbook:
 frontend:
 config:
 
-#frontend: !include frontend.yaml
-#panel_custom: !include panel_custom.yaml
 
 panel_custom:
   - name: floorplan

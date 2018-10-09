@@ -87,39 +87,34 @@
 #  action:
 #    - service: script.home_night_script
 
-- id: away_night_action
-  alias: "Away Night Actions"
-  initial_state: True
-  hide_entity: False
-  trigger:
-  - platform: state
-    entity_id: input_select.home_status
-    from: Disarmed
-    to: Locked Down
-  condition:
+#- id: away_night_action
+#  alias: "Away Night Actions"
+#  initial_state: True
+#  hide_entity: False
+#  trigger:
+#  - platform: state
+#    entity_id: input_select.home_status
+#    from: Disarmed
+#    to: Locked Down
+#  condition:
   #- condition: template
   #  value_template: "{% if states('input_select.josh_status') == 'Away' and states('input_select.mj_status') == 'Away' %}true{% else %}false{% endif %}"
-  - condition: state
-    entity_id: input_boolean.pet_presence_lockout
-    state: "on"
-  - condition: state
-    entity_id: sun.sun
-    state: "below_horizon"
-  action:
-  - service: switch.turn_on
-    data:
-      entity_id:
-        - switch.foyer_light
-  - service: light.turn_on
-    data:
-      entity_id: light.table_lamp
-      brightness: 255
-      color_temp: 222
-      transition: 5
-  - service: notify.josh
-    data:
-      title: "Puppy Lights"
-      message:  "Puppy Lights Engaged"
+#  - condition: state
+#    entity_id: sun.sun
+#    state: "below_horizon"
+#  action:
+#  - service: switch.turn_on
+#    entity_id: switch.foyer_light
+#  - service: light.turn_on
+#    data:
+#      entity_id: light.table_lamp
+#      brightness: 255
+#      color_temp: 222
+#      transition: 5
+#  - service: notify.josh
+#    data:
+#      title: "Puppy Lights"
+#      message:  "Puppy Lights Engaged"
 
 - id: leave_for work_action
   alias: his_leave_for work_action
@@ -342,26 +337,26 @@
       option: Sleeping
 
 
-- id: set_sleep_status  
+- id: set_sleep_status
   alias: Set person as sleeping
   trigger:
   - platform: state
-    entity_id: sensor.longtrig_his_side
+    entity_id: sensor.duration_his_side
     to: '1'
   - platform: state
-    entity_id: sensor.longtrig_her_side
+    entity_id: sensor.duration_her_side
     to: '1'
   action:
   - service: input_select.select_option
     data_template:
       entity_id:  >
-        {% if trigger.entity_id == 'sensor.longtrig_his_side' %}
+        {% if trigger.entity_id == 'sensor.duration_his_side' %}
           input_select.josh_status
         {% else %}
           input_select.mj_status
         {% endif %}
       option:  >
-        {% if trigger.entity_id == 'sensor.longtrig_his_side' %}
+        {% if trigger.entity_id == 'sensor.duration_his_side' %}
           {% if states('input_select.josh_status') != 'Sleeping' %}
             Sleeping
           {% endif %}
@@ -375,22 +370,22 @@
   alias: Set person as awake
   trigger:
   - platform: state
-    entity_id: sensor.longtrig_his_side
+    entity_id: sensor.duration_his_side
     to: '1'
   - platform: state
-    entity_id: sensor.longtrig_her_side
+    entity_id: sensor.duration_her_side
     to: '1'
   action:
   - service: input_select.select_option
     data_template:
       entity_id: >
-        {% if trigger.entity_id == 'sensor.longtrig_his_side' %}
+        {% if trigger.entity_id == 'sensor.duration_his_side' %}
           input_select.josh_status
         {% else %}
           input_select.mj_status
         {% endif %}
       option: >
-        {% if trigger.entity_id == 'sensor.longtrig_his_side' %}
+        {% if trigger.entity_id == 'sensor.duration_his_side' %}
           {% if is_state('input_select.josh_status', 'Sleeping') %}
             Awake
           {% endif %}

@@ -62,6 +62,7 @@ HA_Status:
     - group.stairs
     - group.device_status
     - group.test_node
+    - group.octoprint
 
 Floorplan:
   name: Floorplan
@@ -72,15 +73,30 @@ Floorplan:
 
 ####GROUPS####
 
+OctoPrint:
+    - camera.octoprint
+    - sensor.octoprint_actual_bed_temp
+    - sensor.octoprint_target_bed_temp
+    - sensor.octoprint_actual_tool0_temp
+    - sensor.octoprint_target_tool0_temp
+    - sensor.octoprint_current_state
+    - sensor.octoprint_job_percentage
+    - sensor.octoprint_time_remaining
+    - sensor.octoprint_time_elapsed
+
 Maps:
     - camera.josh
     - camera.mj
 
 Test Node:
     - sensor.motion_test
+    - sensor.test_temp
+    - sensor.test_hum
+    - sensor.test_lux
 
 Device Status:
     - device_tracker.basement_stair_node
+    - device_tracker.octopi
     - device_tracker.bed_node_sensor
     - device_tracker.sonoff_basement_light
     - device_tracker.sonoff_bedroom_fan

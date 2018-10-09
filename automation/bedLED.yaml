@@ -9,5 +9,5 @@
   action:
   - service: mqtt.publish
     data_template:
-      topic: "flamingotter/bedLed1/set"
+      topic: "home/bedLed1/set"
       payload: '{"transition":{{ trigger.to_state.state | int }}}'

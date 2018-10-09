@@ -1,0 +1,8 @@
+- platform: octoprint
+  name: OctoPrint
+  monitored_conditions:
+    - Current State
+    - Temperatures
+    - Job Percentage
+    - Time Elapsed
+    - Time Remaining
