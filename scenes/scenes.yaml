@@ -101,7 +101,15 @@
     group.all_lights:
       state: off
       transition: 3
-    group.all_switches:
+    switch.cabinet_light:
+      state: off
+    switch.desk_light:
+      state: off
+    switch.office_light:
+      state: off
+    switch.foyer_light:
+      state: off
+    switch.paper_lamp:
       state: off
 
 #### NIGHTSTAND LAMP DIMMING ####

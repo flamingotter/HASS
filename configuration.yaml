@@ -32,6 +32,9 @@ influxdb:
        - sensor.bedroom_heatidx
        - sensor.bedroom_temp
        - sensor.bedroom_hum
+       - sensor.test_lux
+       - sensor.test_temp
+       - sensor.test_hum
        - sensor.dark_sky_temperature
        - sensor.dark_sky_humidity
 
@@ -101,8 +104,9 @@ history:
       - input_select.home_status
       - input_select.josh_status
       - input_select.mj_status
-      - sensor.bedroom_temp
-      - sensor.bedroom_hum
+      - sensor.test_temp
+      - sensor.test_hum
+      - sensor.test_lux
 
 weather:
   - platform: darksky
