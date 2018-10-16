@@ -8,53 +8,53 @@
         {% if states('sensor.dark_sky_moon_phase') | float == 0 %}
           /local/moons/0.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.04 %}
-          /local/moons/2.png
+          /local/moons/26.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.08 %}
-          /local/moons/3.png
+          /local/moons/25.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.12 %}
-          /local/moons/4.png
+          /local/moons/24.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.16 %}
-          /local/moons/5.png
+          /local/moons/23.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.20 %}
-          /local/moons/6.png
+          /local/moons/22.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.25 %}
-          /local/moons/7.png
+          /local/moons/21.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.28 %}
-          /local/moons/8.png
+          /local/moons/20.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.32 %}
-          /local/moons/9.png
+          /local/moons/19.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.36 %}
-          /local/moons/10.png
+          /local/moons/18.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.40 %}
-          /local/moons/11.png
+          /local/moons/17.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.44 %}
-          /local/moons/12.png
+          /local/moons/16.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.50 %}
-          /local/moons/13.png
+          /local/moons/15.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.52 %}
           /local/moons/14.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.56 %}
-          /local/moons/15.png
+          /local/moons/13.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.60 %}
-          /local/moons/16.png
+          /local/moons/12.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.64 %}
-          /local/moons/17.png
+          /local/moons/11.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.68 %}
-          /local/moons/18.png
+          /local/moons/10.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.72 %}
-          /local/moons/19.png
+          /local/moons/9.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.75 %}
-          /local/moons/20.png
+          /local/moons/8.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.80 %}
-          /local/moons/21.png
+          /local/moons/7.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.84 %}
-          /local/moons/22.png
+          /local/moons/6.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.88 %}
-          /local/moons/23.png
+          /local/moons/5.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.92 %}
-          /local/moons/24.png
+          /local/moons/4.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.96 %}
-          /local/moons/25.png
+          /local/moons/3.png
         {% elif states('sensor.dark_sky_moon_phase') | float <= 0.99 %}
-          /local/moons/26.png
+          /local/moons/2.png
         {% endif %}
