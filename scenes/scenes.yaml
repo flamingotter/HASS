@@ -170,9 +170,9 @@
 - name: nightlight_bright
   entities:
     light.under_bed:
+      state: on
       brightness_pct: 20
       color_name: red
-      state: on
     light.basement_light:
       brightness_pct: 20
       color_name: red
@@ -201,7 +201,7 @@
     light.under_bed:
       state: on
       brightness_pct: 50
-      effect: noise
+      effect: rainbow
     light.eugene:
       state: off
       transition: 2
