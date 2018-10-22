@@ -1,0 +1,10 @@
+- id: update
+  alias: updtae
+  trigger:
+  - platform: state
+    entity_id: input_boolean.update
+    to: 'on'
+  action:
+  - service: script.get_latest_config
+  - service: input_boolean.turn_off
+    entity_id: input_boolean.update
