@@ -221,8 +221,8 @@ Family Status:
     - input_select.home_status
     - input_select.josh_status
     - input_select.mj_status
-    - camera.josh
-    - camera.mj
+    #- camera.josh
+    #- camera.mj
 
 Daily Forecast:
 #    - sensor.dark_sky_temperature
