@@ -63,6 +63,7 @@ HA_Status:
     - group.device_status
     - group.test_node
     - group.octoprint
+    - group.travis_ci
 
 Floorplan:
   name: Floorplan
@@ -72,6 +73,10 @@ Floorplan:
     - group.floorplan_group
 
 ####GROUPS####
+
+Travis CI:
+    - sensor.flamingotterhass_state
+    - sensor.flamingotterhass_last_build_finished_at
 
 OctoPrint:
     - camera.octoprint
