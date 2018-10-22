@@ -285,9 +285,9 @@
       title: "Away"
       message:  >
         {% if states('input_select.josh_status') == 'Away'%}
-          Josh's status is {{states.input_select.josh_status.state}} {{now().strftime('%H:%M-%d%b')}}
+          Josh is {{states.input_select.josh_status.state}} {{now().strftime('%H:%M %d-%b')}} via {{states.device_tracker.flamingotter_mqtt_josh.attributes.source_type}}
         {% else %}
-          MJ's status is {{states.input_select.mj_status.state}} {{now().strftime('%H:%M-%d%b')}}
+          MJ is {{states.input_select.mj_status.state}} {{now().strftime('%H:%M %d-%b')}} via {{states.device_tracker.flamingotter_mqtt_josh.attributes.source_type}}
         {% endif %}
 
 - id: extended_away
