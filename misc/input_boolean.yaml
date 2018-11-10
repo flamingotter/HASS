@@ -28,7 +28,6 @@ sexy_time:
   initial: off
   icon: mdi:emoticon-devil
 
-Update:
+update:
   name: Update
   initial: off
-  

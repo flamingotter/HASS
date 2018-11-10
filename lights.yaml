@@ -1,4 +1,4 @@
-- platform: lifx
+#- platform: lifx
 
 - platform: mqtt_json
   name: "Under Bed"
@@ -16,7 +16,7 @@
     - juggle
     - lightning
     - noise
-    - police all  
+    - police all
     - police one
     - rainbow
     - rainbow with glitter
