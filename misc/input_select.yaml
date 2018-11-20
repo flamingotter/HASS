@@ -10,7 +10,7 @@ josh_status:
   - "Sleeping"
   - "Awake"
   - "Extended Away"
-  initial: "Home"
+  #initial: "Home"
 ####
 mj_status:
   name: MJ Status
@@ -24,7 +24,7 @@ mj_status:
   - "Sleeping"
   - "Awake"
   - "Extended Away"
-  initial: "Home"
+  #initial: "Home"
 ####
 home_status:
   name: Home Status
@@ -34,7 +34,7 @@ home_status:
   - "Away"
   - "Locked Down"
   - "Sleeping"
-  initial: "Disarmed"
+  #initial: "Disarmed"
 ####
 his_lamp_status:
   name: His Lamp
@@ -43,7 +43,7 @@ his_lamp_status:
   - "2"
   - "3"
   - "0"
-  initial: "0"
+  #initial: "0"
   ####
 her_lamp_status:
   name: Her Lamp
@@ -52,5 +52,5 @@ her_lamp_status:
   - "2"
   - "3"
   - "0"
-  initial: "0"
+  #initial: "0"
 ####
