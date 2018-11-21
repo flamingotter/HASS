@@ -41,6 +41,7 @@
     light.under_bed:
       brightness_pct: 30
       color_name: red
+      effect: solid
       state: on
     light.kitchen_light:
       state: on
@@ -55,13 +56,16 @@
       state: on
       brightness_pct: 30
       color_name: red
+      effect: solid
 
 - name: s_his_awake_home_above
   entities:
     light.under_bed:
       state: off
     light.dining_light:
-      state: off
+      state: false
+      brightness_pct: 100
+      color_temp: 222
     light.basement_light:
       state: off
 
@@ -85,6 +89,10 @@
       brightness_pct: 100
       color_temp: 222
       transition: 30
+    light.dining_light:
+      state: false
+      brightness_pct: 100
+      color_temp: 222
 
 - name: s_her_awake_home
   entities:

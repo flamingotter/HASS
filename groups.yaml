@@ -64,15 +64,30 @@ HA_Status:
     - group.test_node
     - group.octoprint
     - group.travis_ci
+    - group.josh_sleep_status    
+    - group.mj_sleep_status
 
-Floorplan:
-  name: Floorplan
-  icon: mdi:floor-plan
-  view: no
-  entities:
-    - group.floorplan_group
+# Floorplan:
+  # name: Floorplan
+  # icon: mdi:floor-plan
+  # view: no
+  # entities:
+    # - group.floorplan_group
 
 ####GROUPS####
+    
+Josh Sleep Status:
+  control: hidden
+  entities:
+    - input_boolean.ib_j_status_sleeping
+    - sensor.sen_j_status_sleeping
+    
+MJ Sleep Status:
+  control: hidden
+  entities:
+    - input_boolean.ib_m_status_sleeping
+    - sensor.sen_m_status_sleeping
+
 
 Travis CI:
     - sensor.flamingotterhass_state
@@ -108,8 +123,8 @@ Device Status:
     - device_tracker.sonoff_foyer
     - device_tracker.sonoff_test
 
-Floorplan Group:
-    - binary_sensor.floorplan
+# Floorplan Group:
+    # - binary_sensor.floorplan
 
 Stairs:
     - light.basement_light
@@ -153,7 +168,6 @@ Living Room:
     - light.table_lamp
     - light.spot_light
     - switch.paper_lamp
-#    - switch.tv_light
 
 Dining Room:
     - light.dining_light
@@ -173,6 +187,7 @@ Office:
    - switch.office_light
    - switch.test_light
    - switch.office_fan
+   #- switch.3d_printer
 
 Bedroom:
     - light.eugene
@@ -198,7 +213,6 @@ Lights:
     - light.corner_lamp
     - light.table_lamp
     - switch.paper_lamp
-#    - switch.tv_light
     - light.spot_light
     - light.kitchen_light
     - light.dining_light

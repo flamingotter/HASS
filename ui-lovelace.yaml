@@ -1,64 +1,63 @@
-title: My Lovely Home Automation
+title: Dashboard
+
 views:
-  - title: Home
+##Main Tab
+  - title: Main
+    icon: mdi:home
     cards:
-      - type: picture-entity
-        title: Josh
-        entity: camera.josh
-        camera_image: camera.josh
-        show_info: true
-        tap_action: dialog
 
-      - type: picture-entity
-        title: MJ
-        entity: camera.mj
-        camera_image: camera.mj
-        show_info: true
-        tap_action: dialog
+      - type: glance
+        title: Living Room
+        show_state: false
+        entities:
+          - entity: group.living_room
+            icon: mdi:lamp
+            name: All
+            tap_action: toggle
+          - entity: group.living_room_lamps
+            icon: mdi:lamp
+            name: Lamps
+            tap_action: toggle
+          - entity: light.corner_lamp
+            tap_action: toggle
+          - entity: light.table_lamp
+            tap_action: toggle
+          - entity: light.spot_light
+            tap_action: toggle
+          - entity: switch.paper_lamp
+            icon: mdi:floor-lamp
+            tap_action: toggle
 
-      - type: picture-entity
-        title: OctoPrint
-        entity: camera.octoprint
+      - type: glance
+        title: Kitchen
+        show_state: false
+        entities:
+          - entity: group.kitchen
+            icon: mdi:lamp
+            name: All
+            tap_action: toggle
+          - entity: light.kitchen_light
+            tap_action: toggle
+          - entity: switch.cabinet_light
+            icon: mdi:led-strip
+            tap_action: toggle
+
+      - type: picture-glance
+        title: Office
+        show_state: false
         camera_image: camera.octoprint
-        show_info: true
-        tap_action: dialog
-
-      - type: media-control
-        entity: media_player.kodi_living_room
-
-      - type: media-control
-        entity: media_player.living_room_speaker
-
-      - type: media-control
-        entity: media_player.samsung_q7
-
-      - type: entities
-        title: Automations
-        show_header_toggle: true
         entities:
-          - automation.her_motion_count
-          - automation.his_bed_animation_speed
-          - automation.his_leave_for_work_action
-          - automation.his_motion_count
-          - automation.mark_person_as_away
-          - automation.mark_person_as_extended_away
-          - automation.mark_person_as_home
-          - automation.mark_person_as_just_arrived
-          - automation.mark_person_as_just_left
-          - automation.refresh_owntracks
-          - automation.set_nightlight_to_bright
-          - automation.set_nightlight_to_dim
-          - automation.set_person_as_awake
-          - automation.set_person_as_sleeping
-          - automation.stay_asleep
-          - automation.sunset
-
-      - type: entities
-        title: Binary Sensors
-        show_header_toggle: true
-        entities:
-          - binary_sensor.floorplan
-          - binary_sensor.josh_home
+          - entity: switch.desk_light
+            icon: mdi:desk-lamp
+            tap_action: toggle
+          - entity: switch.office_light
+            tap_action: toggle
+          - entity: switch.office_fan
+            icon: mdi:fan
+            tap_action: toggle
+          - entity: sensor.test_temp
+          - entity: sensor.motion_test
+            icon: mdi:run
 
       - type: entity-filter
         title: Device Trackers
@@ -81,336 +80,79 @@ views:
           title: My Device Trackers
 
 
-      - type: entities
-        title: Groups
-        show_header_toggle: true
-        entities:
-          - group.all_automations
-          - group.all_devices
-          - group.all_lights
-          - group.all_switches
-          - group.bed_node
-          - group.bedroom
-          - group.bedroom_node
-          - group.daily_forecast
-          - group.default_view
-          - group.device_status
-          - group.devices
-          - group.dining_room
-          - group.family
-          - group.family_status
-          - group.fans
-          - group.floorplan
-          - group.floorplan_group
-          - group.front
-          - group.ha_status
-          - group.kitchen
-          - group.lights
-          - group.living_room
-          - group.living_room_lamps
-          - group.lockouts
-          - group.maps
-          - group.media
-          - group.octoprint
-          - group.office
-          - group.puppy_lights
-          - group.stairs
-          - group.system_monitor
-          - group.test_node
-          - group.time_card
-          - group.weather
 
-      - type: entities
-        title: Input Booleans
-        show_header_toggle: true
+##Living Room Tab
+  - title: Living Room
+    icon: mdi:sofa
+    cards:
+      - type: glance
+        title: Living Room
+        show_state: false
         entities:
-          - input_boolean.cleaning
-          - input_boolean.guests_lockout
-          - input_boolean.media_lockout
-          - input_boolean.pet_presence_lockout
-          - input_boolean.presence_lockout
-          - input_boolean.sexy_time
+          - entity: group.living_room_lamps
+            icon: mdi:lamp
+            name: Lamps
+            tap_action: toggle
+          - entity: light.corner_lamp
+            tap_action: toggle
+          - entity: light.table_lamp
+            tap_action: toggle
+          - entity: light.spot_light
+            tap_action: toggle
+          - entity: switch.paper_lamp
+            icon: mdi:floor-lamp
+            tap_action: toggle
 
-      - type: entities
-        title: Input Numbers
-        show_header_toggle: true
+##Living Room Tab
+  - title: Kitchen
+    icon: mdi:silverware-fork-knife
+    cards:
+      - type: glance
+        title: Kitchen
+        show_state: false
         entities:
-          - input_number.bed_animation_speed
-          - input_number.stairs1_animation_speed
+          - entity: group.kitchen
+            icon: mdi:lamp
+            name: All
+            tap_action: toggle
+          - entity: light.kitchen_light
+            tap_action: toggle
+          - entity: switch.cabinet_light
+            icon: mdi:led-strip
+            tap_action: toggle
 
-      - type: entities
-        title: Input Selects
-        show_header_toggle: true
+##Offcie Tab
+  - title: Office
+    icon: mdi:desktop-tower-monitor
+    cards:
+      - type: picture-glance
+        title: Office
+        show_state: false
+        camera_image: camera.octoprint
         entities:
-          - input_select.her_lamp_status
-          - input_select.his_lamp_status
-          - input_select.home_status
-          - input_select.josh_status
-          - input_select.mj_status
+          - entity: switch.desk_light
+            icon: mdi:desk-lamp
+            tap_action: toggle
+          - entity: switch.office_light
+            tap_action: toggle
+          - entity: switch.office_fan
+            icon: mdi:fan
+            tap_action: toggle
+          - entity: sensor.test_temp
+          - entity: sensor.motion_test
+            icon: mdi:run
+      - type: sensor
+        entity: sensor.test_temp
+        name: Office Temp
+        hours_to_show: 72
 
-      - type: entities
-        title: Lights
-        show_header_toggle: true
-        entities:
-          - light.basement_light
-          - light.corner_lamp
-          - light.dining_light
-          - light.dinner_light
-          - light.eugene
-          - light.kitchen_light
-          - light.rapunzel
-          - light.spot_light
-          - light.table_lamp
-          - light.under_bed
 
-      - type: entities
-        title: Scenes
-        show_header_toggle: true
-        entities:
-          - scene.basement_stairs_off
-          - scene.basement_stairs_on
-          - scene.her_dim_lev_0
-          - scene.her_dim_lev_1
-          - scene.her_dim_lev_2
-          - scene.her_dim_lev_3
-          - scene.his_dim_lev_0
-          - scene.his_dim_lev_1
-          - scene.his_dim_lev_2
-          - scene.his_dim_lev_3
-          - scene.leave_for_work_action
-          - scene.media_paused_night
-          - scene.media_playing_night
-          - scene.media_stopped_night
-          - scene.nightlight_bright
-          - scene.nightlight_dim
-          - scene.s_awake_dark
-          - scene.s_awake_light
-          - scene.s_bed_mood_light
-          - scene.s_cleaning
-          - scene.s_her_awake_home
-          - scene.s_her_sleep_ext_away
-          - scene.s_her_sleep_mode
-          - scene.s_his_awake_home_above
-          - scene.s_his_awake_home_below
-          - scene.s_his_sleep_ext_away
-          - scene.s_his_sleep_mode
-          - scene.s_puppy_lights_on
-          - scene.s_test
+##Weather Tab
+  - title: Weather
+    icon: mdi:weather-lightning-rainy
+    cards:
 
-      - type: entities
-        title: Sensors
-        show_header_toggle: true
-        entities:
-          - sensor.bedroom_hum
-          - sensor.bedroom_temp
-          - sensor.connected_clients
-          - sensor.dark_sky_apparent_temperature
-          - sensor.dark_sky_cloud_coverage
-          - sensor.dark_sky_cloud_coverage_1
-          - sensor.dark_sky_cloud_coverage_2
-          - sensor.dark_sky_cloud_coverage_3
-          - sensor.dark_sky_cloud_coverage_4
-          - sensor.dark_sky_cloud_coverage_5
-          - sensor.dark_sky_cloud_coverage_6
-          - sensor.dark_sky_cloud_coverage_7
-          - sensor.dark_sky_daily_max_precip_intensity
-          - sensor.dark_sky_daily_max_precip_intensity_1
-          - sensor.dark_sky_daily_max_precip_intensity_2
-          - sensor.dark_sky_daily_max_precip_intensity_3
-          - sensor.dark_sky_daily_max_precip_intensity_4
-          - sensor.dark_sky_daily_max_precip_intensity_5
-          - sensor.dark_sky_daily_max_precip_intensity_6
-          - sensor.dark_sky_daily_max_precip_intensity_7
-          - sensor.dark_sky_daily_summary
-          - sensor.dark_sky_daytime_high_apparent_temperature
-          - sensor.dark_sky_daytime_high_apparent_temperature_1
-          - sensor.dark_sky_daytime_high_apparent_temperature_2
-          - sensor.dark_sky_daytime_high_apparent_temperature_3
-          - sensor.dark_sky_daytime_high_apparent_temperature_4
-          - sensor.dark_sky_daytime_high_apparent_temperature_5
-          - sensor.dark_sky_daytime_high_apparent_temperature_6
-          - sensor.dark_sky_daytime_high_apparent_temperature_7
-          - sensor.dark_sky_daytime_high_temperature
-          - sensor.dark_sky_daytime_high_temperature_1
-          - sensor.dark_sky_daytime_high_temperature_2
-          - sensor.dark_sky_daytime_high_temperature_3
-          - sensor.dark_sky_daytime_high_temperature_4
-          - sensor.dark_sky_daytime_high_temperature_5
-          - sensor.dark_sky_daytime_high_temperature_6
-          - sensor.dark_sky_daytime_high_temperature_7
-          - sensor.dark_sky_hourly_summary
-          - sensor.dark_sky_humidity
-          - sensor.dark_sky_humidity_1
-          - sensor.dark_sky_humidity_2
-          - sensor.dark_sky_humidity_3
-          - sensor.dark_sky_humidity_4
-          - sensor.dark_sky_humidity_5
-          - sensor.dark_sky_humidity_6
-          - sensor.dark_sky_humidity_7
-          - sensor.dark_sky_icon
-          - sensor.dark_sky_icon_1
-          - sensor.dark_sky_icon_2
-          - sensor.dark_sky_icon_3
-          - sensor.dark_sky_icon_4
-          - sensor.dark_sky_icon_5
-          - sensor.dark_sky_icon_6
-          - sensor.dark_sky_icon_7
-          - sensor.dark_sky_minutely_summary
-          - sensor.dark_sky_moon_phase
-          - sensor.dark_sky_moon_phase_1
-          - sensor.dark_sky_moon_phase_2
-          - sensor.dark_sky_moon_phase_3
-          - sensor.dark_sky_moon_phase_4
-          - sensor.dark_sky_moon_phase_5
-          - sensor.dark_sky_moon_phase_6
-          - sensor.dark_sky_moon_phase_7
-          - sensor.dark_sky_nearest_storm_distance
-          - sensor.dark_sky_overnight_low_apparent_temperature
-          - sensor.dark_sky_overnight_low_apparent_temperature_1
-          - sensor.dark_sky_overnight_low_apparent_temperature_2
-          - sensor.dark_sky_overnight_low_apparent_temperature_3
-          - sensor.dark_sky_overnight_low_apparent_temperature_4
-          - sensor.dark_sky_overnight_low_apparent_temperature_5
-          - sensor.dark_sky_overnight_low_apparent_temperature_6
-          - sensor.dark_sky_overnight_low_apparent_temperature_7
-          - sensor.dark_sky_overnight_low_temperature
-          - sensor.dark_sky_overnight_low_temperature_1
-          - sensor.dark_sky_overnight_low_temperature_2
-          - sensor.dark_sky_overnight_low_temperature_3
-          - sensor.dark_sky_overnight_low_temperature_4
-          - sensor.dark_sky_overnight_low_temperature_5
-          - sensor.dark_sky_overnight_low_temperature_6
-          - sensor.dark_sky_overnight_low_temperature_7
-          - sensor.dark_sky_precip
-          - sensor.dark_sky_precip_1
-          - sensor.dark_sky_precip_2
-          - sensor.dark_sky_precip_3
-          - sensor.dark_sky_precip_4
-          - sensor.dark_sky_precip_5
-          - sensor.dark_sky_precip_6
-          - sensor.dark_sky_precip_7
-          - sensor.dark_sky_precip_accumulation
-          - sensor.dark_sky_precip_accumulation_1
-          - sensor.dark_sky_precip_accumulation_2
-          - sensor.dark_sky_precip_accumulation_3
-          - sensor.dark_sky_precip_accumulation_4
-          - sensor.dark_sky_precip_accumulation_5
-          - sensor.dark_sky_precip_accumulation_6
-          - sensor.dark_sky_precip_accumulation_7
-          - sensor.dark_sky_precip_intensity
-          - sensor.dark_sky_precip_intensity_1
-          - sensor.dark_sky_precip_intensity_2
-          - sensor.dark_sky_precip_intensity_3
-          - sensor.dark_sky_precip_intensity_4
-          - sensor.dark_sky_precip_intensity_5
-          - sensor.dark_sky_precip_intensity_6
-          - sensor.dark_sky_precip_intensity_7
-          - sensor.dark_sky_precip_probability
-          - sensor.dark_sky_precip_probability_1
-          - sensor.dark_sky_precip_probability_2
-          - sensor.dark_sky_precip_probability_3
-          - sensor.dark_sky_precip_probability_4
-          - sensor.dark_sky_precip_probability_5
-          - sensor.dark_sky_precip_probability_6
-          - sensor.dark_sky_precip_probability_7
-          - sensor.dark_sky_pressure
-          - sensor.dark_sky_pressure_1
-          - sensor.dark_sky_pressure_2
-          - sensor.dark_sky_pressure_3
-          - sensor.dark_sky_pressure_4
-          - sensor.dark_sky_pressure_5
-          - sensor.dark_sky_pressure_6
-          - sensor.dark_sky_pressure_7
-          - sensor.dark_sky_summary
-          - sensor.dark_sky_temperature
-          - sensor.dark_sky_uv_index
-          - sensor.dark_sky_uv_index_1
-          - sensor.dark_sky_uv_index_2
-          - sensor.dark_sky_uv_index_3
-          - sensor.dark_sky_uv_index_4
-          - sensor.dark_sky_uv_index_5
-          - sensor.dark_sky_uv_index_6
-          - sensor.dark_sky_uv_index_7
-          - sensor.dark_sky_visibility
-          - sensor.dark_sky_visibility_1
-          - sensor.dark_sky_visibility_2
-          - sensor.dark_sky_visibility_3
-          - sensor.dark_sky_visibility_4
-          - sensor.dark_sky_visibility_5
-          - sensor.dark_sky_visibility_6
-          - sensor.dark_sky_visibility_7
-          - sensor.dark_sky_wind_bearing
-          - sensor.dark_sky_wind_bearing_1
-          - sensor.dark_sky_wind_bearing_2
-          - sensor.dark_sky_wind_bearing_3
-          - sensor.dark_sky_wind_bearing_4
-          - sensor.dark_sky_wind_bearing_5
-          - sensor.dark_sky_wind_bearing_6
-          - sensor.dark_sky_wind_bearing_7
-          - sensor.dark_sky_wind_speed
-          - sensor.dark_sky_wind_speed_1
-          - sensor.dark_sky_wind_speed_2
-          - sensor.dark_sky_wind_speed_3
-          - sensor.dark_sky_wind_speed_4
-          - sensor.dark_sky_wind_speed_5
-          - sensor.dark_sky_wind_speed_6
-          - sensor.dark_sky_wind_speed_7
-          - sensor.date
-          - sensor.date__time
-          - sensor.duration_her_side
-          - sensor.duration_his_side
-          - sensor.moonphases
-          - sensor.motion_basement_stairs
-          - sensor.motion_count_her_side
-          - sensor.motion_count_his_side
-          - sensor.motion_her_side
-          - sensor.motion_his_side
-          - sensor.motion_test
-          - sensor.octoprint_actual_bed_temp
-          - sensor.octoprint_actual_tool0_temp
-          - sensor.octoprint_current_state
-          - sensor.octoprint_job_percentage
-          - sensor.octoprint_target_bed_temp
-          - sensor.octoprint_target_tool0_temp
-          - sensor.octoprint_time_elapsed
-          - sensor.octoprint_time_remaining
-          - sensor.since_last_boot
-          - sensor.test_hum
-          - sensor.test_lux
-          - sensor.test_temp
-          - sensor.time
-          - sensor.time__date
-          - sensor.time_utc
-          - sensor.yr_symbol
-
-      - type: entities
-        title: Sun
-        show_header_toggle: true
-        entities:
-          - sun.sun
-
-      - type: entities
-        title: Switchs
-        show_header_toggle: true
-        entities:
-          - switch.bed_fan
-          - switch.cabinet_light
-          - switch.desk_light
-          - switch.foyer_light
-          - switch.office_fan
-          - switch.office_light
-          - switch.paper_lamp
-          - switch.test_light
-
-      - type: entities
+      - type: weather-forecast
         title: Weather
-        show_header_toggle: true
-        entities:
-          - weather.dark_sky
-
-      - type: entities
-        title: Zones
-        show_header_toggle: true
-        entities:
-          - zone.home
-          - zone.work
+        #show_header_toggle: true
+        entity: weather.dark_sky

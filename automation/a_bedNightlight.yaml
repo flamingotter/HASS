@@ -10,7 +10,7 @@
     to: 'detected'
   condition:
   - condition: template
-    value_template: "{% if states('input_select.josh_status') == 'Sleeping' or states('input_select.mj_status') == 'Sleeping' %}true{% else %}false{% endif %}"
+    value_template: "{% if states('input_boolean.ib_j_status_sleeping') == 'on' or states('input_boolean.ib_m_status_sleeping') == 'on' %}true{% else %}false{% endif %}"
   - condition: template
     value_template: "{% if states('light.under_bed') == 'off' or states('light.basement_light') == 'off' %}true{% else %}false{% endif %}"
   action:
@@ -28,7 +28,7 @@
     to: 'detected'
   condition:
   - condition: template
-    value_template: "{% if states('input_select.josh_status') == 'Sleeping' or states('input_select.mj_status') == 'Sleeping' %}true{% else %}false{% endif %}"
+    value_template: "{% if states('input_boolean.ib_j_status_sleeping') == 'on' or states('input_boolean.ib_m_status_sleeping') == 'on' %}true{% else %}false{% endif %}"
   - condition: numeric_state
     entity_id: light.under_bed
     value_template: '{{ state.attributes.brightness }}'

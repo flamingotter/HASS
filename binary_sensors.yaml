@@ -1,8 +1,8 @@
-- platform: mqtt
-  state_topic: dummy/floorplan/sensor
-  name: Floorplan
+# - platform: mqtt
+  # state_topic: dummy/floorplan/sensor
+  # name: Floorplan
     
-- platform: 'bayesian'
+- platform: bayesian
   name: 'josh_home'
   prior: 0.50
   probability_threshold: 0.95
@@ -12,3 +12,67 @@
         prob_given_false: 0.4
         platform: 'state'
         to_state: 'home'
+        
+####################################################
+# HA HOME STATUS Display only                      #
+####################################################
+
+# - platform: template
+  # sensors:
+    # bs_sen_home_status:
+      # friendly_name: "Home Status"
+      # entity_id: sensor.sen_home_status
+      # value_template: >-
+        # {{ is_state('sensor.sen_home_status', 'disarmed') 
+           # or is_state('sensor.sen_home_status', 'locked down')
+           # or is_state('sensor.sen_home_status', 'away')
+           # or is_state('sensor.sen_home_status', 'sleeping') }}
+      # icon_template: >-
+        # {% if is_state('sensor.sen_home_status', 'disarmed') %}
+           # mdi:bell-off-outline
+        # {% elif is_state('sensor.sen_home_status', 'locked down') %}
+           # mdi:bell-outline
+        # {% elif is_state('sensor.sen_home_status', 'away') %}
+           # mdi:airplane-takeoff
+        # {% elif is_state('sensor.sen_home_status', 'sleeping') %}
+           # mdi:weather-night
+         # {% endif %}
+         
+         
+####################################################
+# JOSH SLEEP STATUS Display only                      #
+####################################################
+
+- platform: template
+  sensors:
+    bs_sen_j_sleep_status:
+      friendly_name: "Josh Sleep Status"
+      entity_id: sensor.sen_j_status_sleeping
+      value_template: >-
+        {{ is_state('input_boolean.ib_j_status_sleeping', 'on') 
+           or is_state('input_boolean.ib_j_status_sleeping', 'off') }}
+      icon_template: >-
+        {% if is_state('input_boolean.ib_j_status_sleeping', 'on') %}
+           mdi:sleep
+        {% elif is_state('input_boolean.ib_j_status_sleeping', 'off') %}
+           mdi:sleep-off
+         {% endif %}
+         
+####################################################
+# MJ SLEEP STATUS Display only                      #
+####################################################
+
+- platform: template
+  sensors:
+    bs_sen_m_sleep_status:
+      friendly_name: "MJ Sleep Status"
+      entity_id: sensor.sen_m_status_sleeping
+      value_template: >-
+        {{ is_state('sensor.sen_m_status_sleeping', 'sleeping') 
+           or is_state('sensor.sen_m_status_sleeping', 'awake') }}
+      icon_template: >-
+        {% if is_state('sensor.sen_m_status_sleeping', 'sleeping') %}
+           mdi:sleep
+        {% elif is_state('sensor.sen_m_status_sleeping', 'awake') %}
+           mdi:sleep-off
+         {% endif %}
