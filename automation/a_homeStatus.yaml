@@ -1,0 +1,15 @@
+- id: a_home_status_set
+  alias: Home Status Set
+  trigger:
+    platform: state
+    entity_id: input_boolean.ib_home_status_disarmed,
+               input_boolean.ib_home_status_locked_down,
+               input_boolean.ib_home_status_away, 
+               input_boolean.ib_home_status_sleeping
+    to: 'on'
+  action:
+    - service: input_boolean.turn_off
+      data_template:
+        entity_id: >
+          {% set booleans = [ 'input_boolean.ib_home_status_disarmed', 'input_boolean.ib_home_status_locked_down', 'input_boolean.ib_home_status_away', 'input_boolean.ib_home_status_sleeping' ] | reject('equalto', trigger.entity_id) %}
+          {{ booleans | list | join(', ') }}

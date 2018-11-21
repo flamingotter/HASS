@@ -314,110 +314,110 @@
         {% endif %}
       option: Extended Away
 
-- id: stay_sleeping
-  alias: Stay asleep
-  trigger:
-  - platform: state
-    entity_id: input_select.josh_status
-    from: 'Sleeping'
-    to: 'Just Left'
-  - platform: state
-    entity_id: input_select.mj_status
-    from: 'Sleeping'
-    to: 'Just Left'
-  action:
-  - service: input_select.select_option
-    data_template:
-      entity_id: >
-        {% if trigger.entity_id == 'input_select.josh_status' %}
-          input_select.josh_status
-        {% else %}
-          input_select.mj_status
-        {% endif %}
-      option: Sleeping
+# - id: stay_sleeping
+  # alias: Stay asleep
+  # trigger:
+  # - platform: state
+    # entity_id: input_select.josh_status
+    # from: 'Sleeping'
+    # to: 'Just Left'
+  # - platform: state
+    # entity_id: input_select.mj_status
+    # from: 'Sleeping'
+    # to: 'Just Left'
+  # action:
+  # - service: input_select.select_option
+    # data_template:
+      # entity_id: >
+        # {% if trigger.entity_id == 'input_select.josh_status' %}
+          # input_select.josh_status
+        # {% else %}
+          # input_select.mj_status
+        # {% endif %}
+      # option: Sleeping
 
 
-- id: set_sleep_status
-  alias: Set person as sleeping
-  trigger:
-  - platform: state
-    entity_id: sensor.duration_his_side
-    to: '1'
-  - platform: state
-    entity_id: sensor.duration_her_side
-    to: '1'
-  action:
-  - service: input_select.select_option
-    data_template:
-      entity_id:  >
-        {% if trigger.entity_id == 'sensor.duration_his_side' %}
-          input_select.josh_status
-        {% else %}
-          input_select.mj_status
-        {% endif %}
-      option:  >
-        {% if trigger.entity_id == 'sensor.duration_his_side' %}
-          {% if states('input_select.josh_status') != 'Sleeping' %}
-            Sleeping
-          {% endif %}
-        {% else %}
-          {% if states('input_select.mj_status') != 'Sleeping' %}
-            Sleeping
-          {% endif %}
-        {% endif %}
+# - id: set_sleep_status
+  # alias: Set person as sleeping
+  # trigger:
+  # - platform: state
+    # entity_id: sensor.duration_his_side
+    # to: '1'
+  # - platform: state
+    # entity_id: sensor.duration_her_side
+    # to: '1'
+  # action:
+  # - service: input_select.select_option
+    # data_template:
+      # entity_id:  >
+        # {% if trigger.entity_id == 'sensor.duration_his_side' %}
+          # input_select.josh_status
+        # {% else %}
+          # input_select.mj_status
+        # {% endif %}
+      # option:  >
+        # {% if trigger.entity_id == 'sensor.duration_his_side' %}
+          # {% if states('input_select.josh_status') != 'Sleeping' %}
+            # Sleeping
+          # {% endif %}
+        # {% else %}
+          # {% if states('input_select.mj_status') != 'Sleeping' %}
+            # Sleeping
+          # {% endif %}
+        # {% endif %}
 
-- id: set_awake_status
-  alias: Set person as awake
-  trigger:
-  - platform: state
-    entity_id: sensor.duration_his_side
-    to: '1'
-  - platform: state
-    entity_id: sensor.duration_her_side
-    to: '1'
-  action:
-  - service: input_select.select_option
-    data_template:
-      entity_id: >
-        {% if trigger.entity_id == 'sensor.duration_his_side' %}
-          input_select.josh_status
-        {% else %}
-          input_select.mj_status
-        {% endif %}
-      option: >
-        {% if trigger.entity_id == 'sensor.duration_his_side' %}
-          {% if is_state('input_select.josh_status', 'Sleeping') %}
-            Awake
-          {% endif %}
-        {% else %}
-          {% if is_state('input_select.mj_status', 'Sleeping') %}
-            Awake
-          {% endif %}
-        {% endif %}
+# - id: set_awake_status
+  # alias: Set person as awake
+  # trigger:
+  # - platform: state
+    # entity_id: sensor.duration_his_side
+    # to: '1'
+  # - platform: state
+    # entity_id: sensor.duration_her_side
+    # to: '1'
+  # action:
+  # - service: input_select.select_option
+    # data_template:
+      # entity_id: >
+        # {% if trigger.entity_id == 'sensor.duration_his_side' %}
+          # input_select.josh_status
+        # {% else %}
+          # input_select.mj_status
+        # {% endif %}
+      # option: >
+        # {% if trigger.entity_id == 'sensor.duration_his_side' %}
+          # {% if is_state('input_select.josh_status', 'Sleeping') %}
+            # Awake
+          # {% endif %}
+        # {% else %}
+          # {% if is_state('input_select.mj_status', 'Sleeping') %}
+            # Awake
+          # {% endif %}
+        # {% endif %}
 
-#- id: awake_to_home
-#  alias: Mark person from Awake to Home
-#  trigger:
-#  - platform: state
-#   entity_id: input_select.josh_status
-#    to: 'Awake'
-#    for:
-#      minutes: 3
-#  - platform: state
-#    entity_id: input_select.mj_status
-#    to: 'Awake'
-#    for:
-#      minutes: 3
-#  action:
-#  - service: input_select.select_option
-#    data_template:
-#      entity_id: >
-#        {% if trigger.entity_id == 'input_select.josh_status' %}
-#          input_select.josh_status
-#        {% else %}
-#          input_select.mj_status
-#        {% endif %}
-#      option: Home
+# - id: awake_to_home
+ # alias: Mark person from Awake to Home
+ # trigger:
+ # - platform: state
+  # entity_id: input_select.josh_status
+   # to: 'Awake'
+   # for:
+     # minutes: 3
+ # - platform: state
+   # entity_id: input_select.mj_status
+   # to: 'Awake'
+   # for:
+     # minutes: 3
+ # action:
+ # - service: input_select.select_option
+   # data_template:
+     # entity_id: >
+       # {% if trigger.entity_id == 'input_select.josh_status' %}
+         # input_select.josh_status
+       # {% else %}
+         # input_select.mj_status
+       # {% endif %}
+     # option: Home
 
 
 ############HOME STATUS############

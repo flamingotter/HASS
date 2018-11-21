@@ -20,6 +20,8 @@ http:
   ip_ban_enabled: True
   login_attempts_threshold: 5
 
+# websocket_api:
+
 influxdb:
   host: 10.0.10.10
   database: !secret influx_database
@@ -38,16 +40,13 @@ influxdb:
        - sensor.dark_sky_temperature
        - sensor.dark_sky_humidity
 
-ifttt:
-  key: !secret ifttt_key
-
-mqtt:
-  broker: 10.0.10.10
-  port: 1883
-  keepalive: 60
-  client_id: home-assistant-1
-  username: !secret mqtt_username
-  password: !secret mqtt_password
+#mqtt:
+#  broker: 10.0.10.10
+#  port: 1883
+#  keepalive: 60
+#  client_id: home-assistant-1
+#  username: !secret mqtt_username
+#  password: !secret mqtt_password
 
 media_player:
   - platform: kodi
@@ -145,17 +144,17 @@ camera: !include camera.yaml
 ####ENABLES#####
 ################
 map:
-discovery:
+#discovery:
 sun:
-conversation:
+#conversation:
 logbook:
 frontend:
 config:
 
 
-panel_custom:
-  - name: floorplan
-    sidebar_title: Floorplan
-    sidebar_icon: mdi:floor-plan
-    url_path: floorplan
-    config: !include floorplan.yaml
+# panel_custom:
+  # - name: floorplan
+    # sidebar_title: Floorplan
+    # sidebar_icon: mdi:floor-plan
+    # url_path: floorplan
+    # config: !include floorplan.yaml

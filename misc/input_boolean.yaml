@@ -28,6 +28,49 @@ sexy_time:
   initial: off
   icon: mdi:emoticon-devil
 
-update:
-  name: Update
-  initial: off
+####################################################
+# HA HOME STATUS                                   #
+####################################################
+
+# ib_home_status_disarmed:
+  # name: Disarmed
+  # icon: mdi:bell-off-outline
+  
+# ib_home_status_locked_down:
+  # name: Locked Down
+  # icon: mdi:bell-outline
+
+# ib_home_status_away:
+  # name: Away
+  # icon: mdi:airplane-takeoff
+
+# ib_home_status_sleeping:
+  # name: Sleeping
+  # icon: mdi:weather-night
+  
+  
+####################################################
+# JOSH SLEEP STATUS                                   #
+####################################################
+
+ib_j_status_sleeping:
+  name: Sleeping
+  icon: mdi:sleep
+  
+# ib_j_status_awake:
+  # name: Awake
+  # initial: on
+  # icon: mdi:sleep-off
+  
+####################################################
+# MJ SLEEP STATUS                                   #
+####################################################
+
+ib_m_status_sleeping:
+  name: Sleeping
+  icon: mdi:sleep
+  
+# ib_m_status_awake:
+  # name: Awake
+  # initial: on
+  # icon: mdi:sleep-off

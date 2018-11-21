@@ -1,7 +1,7 @@
-#- platform: tplink
-#  name: TV Light
-#  host: 10.0.10.43
-- platform: tplink  
+- platform: tplink
+  name: 3D Printer
+  host: 10.0.10.43
+- platform: tplink
   name: Paper Lamp
   host: 10.0.10.42
 - platform: mqtt
@@ -27,8 +27,8 @@
   qos: 1
   payload_on: "ON"
   payload_off: "OFF"
-  retain: true  
-  
+  retain: true
+
 - platform: mqtt
   name: "Bed Fan"
   command_topic: "cmnd/sonoff4/power"
