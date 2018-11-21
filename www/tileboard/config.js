@@ -1,12 +1,3 @@
-/*
- This is an example configuration file.
-
- COPY OR RENAME THIS FILE TO config.js.
-
- Make sure you use real IDs from your HA entities.
-*/
-
-
 var CONFIG = {
   customTheme: CUSTOM_THEMES.TRANSPARENT, // CUSTOM_THEMES.TRANSPARENT, CUSTOM_THEMES.MATERIAL, CUSTOM_THEMES.MOBILE, CUSTOM_THEMES.COMPACT, CUSTOM_THEMES.HOMEKIT, CUSTOM_THEMES.WINPHONE, CUSTOM_THEMES.WIN95
   transition: TRANSITIONS.ANIMATED_GPU, //ANIMATED or SIMPLE (better perfomance)
@@ -281,7 +272,7 @@ var CONFIG = {
           }*/
         ]
       },
-	  {
+      {
         title: 'Living Room',
         bg: '[]',
         icon: 'mdi-sofa',
