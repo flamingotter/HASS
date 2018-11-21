@@ -1,6 +1,5 @@
 josh_status:
   name: Josh Status
-  #icon: mdi:human-male
   options:
   - "Work"
   - "Home"
@@ -10,11 +9,9 @@ josh_status:
   - "Sleeping"
   - "Awake"
   - "Extended Away"
-  # initial: "Home"
 ####
 mj_status:
   name: MJ Status
-  #icon: mdi:human-female
   options:
   - "Work"
   - "Home"
@@ -24,7 +21,6 @@ mj_status:
   - "Sleeping"
   - "Awake"
   - "Extended Away"
-  # initial: "Home"
 ####
 home_status:
   name: Home Status
@@ -34,7 +30,6 @@ home_status:
   - "Away"
   - "Locked Down"
   - "Sleeping"
-  # initial: "Disarmed"
 ####
 his_lamp_status:
   name: His Lamp
@@ -43,8 +38,7 @@ his_lamp_status:
   - "2"
   - "3"
   - "0"
-  initial: "0"
-  ####
+####
 her_lamp_status:
   name: Her Lamp
   options:
@@ -52,5 +46,4 @@ her_lamp_status:
   - "2"
   - "3"
   - "0"
-  initial: "0"
 ####
