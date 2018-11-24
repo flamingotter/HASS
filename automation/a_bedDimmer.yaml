@@ -6,7 +6,7 @@
     entity_id: sensor.motion_count_his_side 
   condition:
   - condition: template
-    value_template: "{% if states('input_boolean.ib_j_status_sleeping') == 'on' %}true{% else %}false{% endif %}"
+    value_template: "{% if states('input_boolean.ib_j_status_sleeping') == 'off' %}true{% else %}false{% endif %}"
   action:
   - service: scene.turn_on
     data_template:
@@ -28,7 +28,7 @@
     entity_id: sensor.motion_count_her_side
   condition:
   - condition: template
-    value_template: "{% if states('input_boolean.ib_m_status_sleeping') == 'on' %}true{% else %}false{% endif %}"
+    value_template: "{% if states('input_boolean.ib_m_status_sleeping') == 'off' %}true{% else %}false{% endif %}"
   action:
   - service: scene.turn_on
     data_template:

@@ -40,7 +40,7 @@
          
          
 ####################################################
-# JOSH SLEEP STATUS Display only                      #
+# JOSH SLEEP STATUS Display only                   #
 ####################################################
 
 - platform: template
@@ -59,7 +59,7 @@
          {% endif %}
          
 ####################################################
-# MJ SLEEP STATUS Display only                      #
+# MJ SLEEP STATUS Display only                     #
 ####################################################
 
 - platform: template
