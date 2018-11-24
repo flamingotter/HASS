@@ -6,8 +6,8 @@ josh_status:
   - "Just Arrived"
   - "Just Left"
   - "Away"
-  - "Sleeping"
-  - "Awake"
+#  - "Sleeping"
+#  - "Awake"
   - "Extended Away"
 ####
 mj_status:
@@ -18,8 +18,8 @@ mj_status:
   - "Just Arrived"
   - "Just Left"
   - "Away"
-  - "Sleeping"
-  - "Awake"
+#  - "Sleeping"
+#  - "Awake"
   - "Extended Away"
 ####
 home_status:
