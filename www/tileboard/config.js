@@ -829,7 +829,7 @@ var CONFIG = {
                 },
               },
               {
-                position: [0, 1],
+                position: [0, 2],
                 id: 'camera.octoprint',
                 type: TYPES.CAMERA_THUMBNAIL,
                 bgSize: 'cover',
@@ -837,7 +837,7 @@ var CONFIG = {
                 state: false,
                 fullscreen: {
                     type: TYPES.CAMERA,
-                    refresh: 1500, // can be number in milliseconds
+                    refresh: 500, // can be number in milliseconds
                     bgSize: 'contain'
                 },
                 refresh: function () { // can also be a function
