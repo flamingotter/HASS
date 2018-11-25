@@ -1,31 +1,29 @@
 presence_lockout:
   name: Presence Automations
-  initial: on
   icon: mdi:account-multiple
 
 guests_lockout:
   name: House Guests
-  initial: off
   icon: mdi:account-multiple-plus
 
 pet_presence_lockout:
   name: Pet Presence Automations
-  initial: on
   icon: mdi:paw
 
 media_lockout:
   name: Media Automations
-  initial: off
   icon: mdi:television
 
 cleaning:
   name: Cleaning
-  initial: off
   icon: mdi:broom
+
+office_presence:
+  name: Office Presence
+  icon: mdi:desk-lamp
 
 sexy_time:
   name: Sexy Time
-  initial: off
   icon: mdi:emoticon-devil
 
 ####################################################
@@ -57,11 +55,6 @@ ib_j_status_sleeping:
   name: Sleeping
   icon: mdi:sleep
   
-# ib_j_status_awake:
-  # name: Awake
-  # initial: on
-  # icon: mdi:sleep-off
-  
 ####################################################
 # MJ SLEEP STATUS                                   #
 ####################################################
@@ -69,8 +62,3 @@ ib_j_status_sleeping:
 ib_m_status_sleeping:
   name: Sleeping
   icon: mdi:sleep
-  
-# ib_m_status_awake:
-  # name: Awake
-  # initial: on
-  # icon: mdi:sleep-off
