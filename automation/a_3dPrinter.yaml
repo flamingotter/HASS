@@ -1,0 +1,24 @@
+- id: 3dprinter_50_percent
+  alias: "Send me a notification when the print is above 50%"
+  trigger:
+  - platform: numeric_state
+    entity_id: sensor.octoprint_job_percentage
+    above: 50
+  action:
+  - service: notify.josh
+    data:
+    message: "Print is at 50%" 
+- id: 3dprinter_50_finished
+  alias: "Send me a notification when the print is finished"
+  trigger:
+  - platform: state
+    entity_id: sensor.octoprint_current_state
+    from: 'Printing'
+    to: 'Operational'
+  action:
+  - service: notify.josh
+    data:
+    message: "Print has been finished"
+
+
+
