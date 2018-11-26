@@ -1,6 +1,7 @@
-# - platform: mqtt
-  # state_topic: dummy/floorplan/sensor
-  # name: Floorplan
+- platform: octoprint
+    monitored_conditions:
+      - Printing
+      - Printing Error
     
 - platform: bayesian
   name: 'josh_home'
