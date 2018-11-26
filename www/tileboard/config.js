@@ -793,7 +793,7 @@ var CONFIG = {
           },
           {
             title: 'Misc',
-            width: 1,
+            width: 2,
             height: 3,
             items: [
               {
@@ -828,6 +828,22 @@ var CONFIG = {
                   off: "mdi-printer-3d",
                 },
               },
+              {
+                position: [0, 2],
+                id: 'camera.octoprint',
+                type: TYPES.CAMERA_THUMBNAIL,
+                bgSize: 'cover',
+                width: 2,
+                state: false,
+                fullscreen: {
+                    type: TYPES.CAMERA,
+                    refresh: 500, // can be number in milliseconds
+                    bgSize: 'contain'
+                },
+                refresh: function () { // can also be a function
+                    return 3000 + Math.random() * 1000
+                }
+              }
             ]
           },
           {
