@@ -833,7 +833,7 @@ var CONFIG = {
                 id: 'camera.octoprint',
                 type: TYPES.CAMERA_THUMBNAIL,
                 bgSize: 'cover',
-                width: 2,
+                width: 1,
                 state: false,
                 fullscreen: {
                     type: TYPES.CAMERA,

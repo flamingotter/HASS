@@ -1,7 +1,7 @@
 - platform: octoprint
   monitored_conditions:
-    - Printing
-    - Printing Error
+  - Printing
+  - Printing Error
     
 - platform: bayesian
   name: 'josh_home'
