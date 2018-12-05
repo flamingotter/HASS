@@ -19,7 +19,7 @@ var CONFIG = {
 
   header: { // https://github.com/resoai/TileBoard/wiki/Header-configuration
     styles: {
-        padding: '30px 130px 0',
+        padding: '50px 130px 0',
         fontSize: '18px'
     },
       right: [
