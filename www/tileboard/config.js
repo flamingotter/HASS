@@ -13,7 +13,7 @@ var CONFIG = {
   // next fields are optional
   events: [],
   timeFormat: 24,
-  menuPosition: MENU_POSITIONS.LEFT, // or BOTTOM
+  menuPosition: MENU_POSITIONS.BOTTOM, // or BOTTOM
   hideScrollbar: false, // horizontal scrollbar
   groupsAlign: GROUP_ALIGNS.HORIZONTALLY, // or VERTICALLY
 
@@ -749,7 +749,7 @@ var CONFIG = {
 	  {
         title: 'Office page',
         bg: '[]',
-        icon: 'mdi-desk-lamp',
+        icon: 'mdi-desktop-tower-monitor',
         groups: [
           {
             title: 'Lights',
@@ -828,7 +828,7 @@ var CONFIG = {
                   off: "mdi-printer-3d",
                 },
               },
-              {
+              /*{
                 position: [0, 2],
                 id: 'camera.octoprint',
                 type: TYPES.CAMERA_THUMBNAIL,
@@ -843,7 +843,7 @@ var CONFIG = {
                 refresh: function () { // can also be a function
                     return 3000 + Math.random() * 1000
                 }
-              }
+              }*/
             ]
           },
           {
@@ -914,6 +914,85 @@ var CONFIG = {
         groups: [
           {
             title: 'On/Off',
+            width: 2,
+            height: 3,
+            items:
+            [
+              {
+                position: [0, 0],
+                title: 'Cleaning',
+                //subtitle: 'Lounge',
+                id: 'input_boolean.cleaning',
+                type: TYPES.INPUT_BOOLEAN,
+                state: false,
+				states: {
+                  on: "On",
+                  off: "Off",
+                },
+                icons: {
+                  on: "mdi-broom",
+                  off: "mdi-broom",
+                },
+              },
+              {
+                position: [1, 0],
+                title: 'House Guests',
+                //subtitle: 'Lounge',
+                id: 'input_boolean.guests_lockout',
+                type: TYPES.INPUT_BOOLEAN,
+                state: false,
+				states: {
+                  on: "On",
+                  off: "Off",
+                },
+                icons: {
+                  on: "mdi-account-multiple-plus",
+                  off: "mdi-account-multiple-plus",
+                },
+              },
+			  {
+                position: [0, 1],
+                title: 'Pets Home',
+                //subtitle: 'Lounge',
+                id: 'input_boolean.pet_presence_lockout',
+                type: TYPES.INPUT_BOOLEAN,
+                state: false,
+				states: {
+                  on: "On",
+                  off: "Off",
+                },
+                icons: {
+                  on: "mdi-paw",
+                  off: "mdi-paw",
+                },
+              },
+			  {
+                position: [1, 1],
+                title: 'Media Actions',
+                //subtitle: 'Lounge',
+                id: 'input_boolean.media_lockout',
+                type: TYPES.INPUT_BOOLEAN,
+                state: false,
+				states: {
+                  on: "On",
+                  off: "Off",
+                },
+                icons: {
+                  on: "mdi-television",
+                  off: "mdi-television",
+                },
+              },
+            ]
+          },
+        ]
+      },
+	  {
+        title: 'Garage',
+        bg: '[]',
+        icon: 'mdi-garage',
+        groups: [
+          {
+            title: 'Items',
             width: 2,
             height: 3,
             items:
