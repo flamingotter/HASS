@@ -105,7 +105,7 @@ views:
 
 ##Living Room Tab
   - title: Kitchen
-    icon: mdi:silverware-fork-knife
+    icon: mdi:stove
     cards:
       - type: glance
         title: Kitchen
