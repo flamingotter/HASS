@@ -17,10 +17,11 @@ var CONFIG = {
   menuPosition: MENU_POSITIONS.BOTTOM, // or BOTTOM
   hideScrollbar: false, // horizontal scrollbar
   groupsAlign: GROUP_ALIGNS.HORIZONTALLY, // or VERTICALLY
-
+  
+  
   header: { // https://github.com/resoai/TileBoard/wiki/Header-configuration
     styles: {
-        padding: '0px 130px 100px 50px',
+        padding: '0px 50px 0px 50px',
         fontSize: '18px'
     },
       right: [
@@ -46,9 +47,7 @@ var CONFIG = {
           fields: {
             summary: '&sensor.dark_sky_summary.state',
             temperature: '&sensor.dark_sky_temperature.state',
-            temperatureUnit: '&sensor.dark_sky_temperature.attributes.unit_of_measurement',
-            //feels: '&sensor.dark_sky_apparent_temperature.state'
-            //feelsUnit: '&sensor.dark_sky_apparent_temperature.attributes.unit_of_measurement',
+            temperatureUnit: '&sensor.dark_sky_temperature.attributes.unit_of_measurement'
           }
         }
       ],
@@ -932,12 +931,12 @@ var CONFIG = {
          groups: [
             {
                // title: 'Weather',
-               width: 9,
+               width: 8,
                height: 3,
                items: [
                   {
                      position: [0, 0],
-                     width: 9,
+                     width: 8,
                      height: 1,
                      title: 'Forecast Summary',
                      id: {}, // since we are binding each list item to different sensor, so we simply use an empty object
@@ -987,7 +986,7 @@ var CONFIG = {
                      }
                   },*/
                   {
-                     position: [0, 1],
+                     position: [3, 1],
                      type: TYPES.WEATHER_LIST,
                      width: 3,
                      height: 3,
@@ -1006,7 +1005,7 @@ var CONFIG = {
                         'partly-cloudy-night': 'nt-partlycloudy'
                      },
                      hideHeader: false,
-                     secondaryTitle: 'Rain',
+                     secondaryTitle: 'Precip.',
                      list: [1,2,3,4,5,6,7].map(function (id) {
                         var d = new Date(Date.now() + id * 24 * 60 * 60 * 1000);
                         var date = d.toString().split(' ').slice(1,3).join(' ');
@@ -1024,6 +1023,56 @@ var CONFIG = {
                         }
                      })
                   },
+                  {
+                    position: [0, 1],
+                    width: 3,
+                    height: 3, // 1 for compact
+                    //classes: ['-compact'],
+                    type: TYPES.WEATHER,
+                    id: {},
+                    state: '&sensor.dark_sky_summary.state', // label with weather summary
+                    icon: '&sensor.dark_sky_icon.state',
+                    icons: {
+                      'clear-day': 'clear',
+                      'clear-night': 'nt-clear',
+                      'cloudy': 'cloudy',
+                      'rain': 'rain',
+                      'sleet': 'sleet',
+                      'snow': 'snow',
+                      'wind': 'hazy',
+                      'fog': 'fog',
+                      'partly-cloudy-day': 'partlycloudy',
+                      'partly-cloudy-night': 'nt-partlycloudy'
+                    },
+                    fields: {
+                      summary: '&sensor.dark_sky_summary.state',
+                      temperature: '&sensor.dark_sky_temperature.state',
+                      temperatureUnit: '&sensor.dark_sky_temperature.attributes.unit_of_measurement',
+                      windSpeed: '&sensor.dark_sky_wind_speed.state',
+                      humidity: '&sensor.dark_sky_humidity.state',
+                      humidityUnit: '&sensor.dark_sky_humidity.attributes.unit_of_measurement',
+                      list: [
+                        'H/L '
+                          + '&sensor.dark_sky_daytime_high_temperature.state'
+                          + '&sensor.dark_sky_apparent_temperature.attributes.unit_of_measurement'
+                          + ' - '
+                          + '&sensor.dark_sky_overnight_low_temperature.state'
+                          + '&sensor.dark_sky_apparent_temperature.attributes.unit_of_measurement',
+                        
+                        'Feels like '
+                          + '&sensor.dark_sky_apparent_temperature.state'
+                          + '&sensor.dark_sky_apparent_temperature.attributes.unit_of_measurement',
+
+                        'Pressure '
+                          + '&sensor.dark_sky_pressure.state'
+                          + '&sensor.dark_sky_pressure.attributes.unit_of_measurement',
+
+                        '&sensor.dark_sky_precip_probability.state'
+                          + '&sensor.dark_sky_precip_probability.attributes.unit_of_measurement'
+                          + ' chance of rain'
+                      ]
+                    }
+                  }
                ]
             },
          ]
