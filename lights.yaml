@@ -1,5 +1,4 @@
-#- platform: lifx
-
+#### UNDER BED LIGHT MASTER BDR
 - platform: mqtt_json
   name: "Under Bed"
   state_topic: "home/bedLed1"

@@ -1,3 +1,4 @@
+/* Background star field code */
 #stars {
   width: 1px;
   height: 1px;
@@ -57,6 +58,7 @@
     transform: translateY(0px);
   }
 }
+/* END Background star field code */
 
 .item.-th-transparent {
   background-color: rgba(84, 92, 102, 0.6);
@@ -202,7 +204,7 @@ body {
   padding: 0;
   color: #444;
   //background-color: #1a4957;
-  background: radial-gradient(ellipse at left, #1B2735 0%, #090A0F 100%);
+  background: radial-gradient(ellipse at bottom, #1B2735 0%, #090A0F 100%);
   overflow: hidden;
 }
 .errors-container {
@@ -832,7 +834,7 @@ body {
   line-height: 40px;
 }
 .-small-entity .item-entity--value {
-  font-size: 25px;
+  font-size: 24px;
 }
 .-small-entity .weather-icon {
   margin: 10px 0 0;
@@ -846,8 +848,8 @@ body {
   margin-bottom: 7px;
 }
 .-small-entity .weather-line {
-  line-height: 16px;
-  font-size: 0.95em;
+  line-height: 20px;
+  font-size: 1.1em;
 }
 .-small-entity .weather-line.-items {
   margin-bottom: 5px;
@@ -961,8 +963,8 @@ body {
   vertical-align: middle;
   text-overflow: ellipsis;
   overflow: hidden;
-  white-space: nowrap;
-  width: 50%;
+  white-space: normal;
+  width: 100%;
 }
 .item-list--name {
   float: left;

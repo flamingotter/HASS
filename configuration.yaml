@@ -39,23 +39,23 @@ logbook:
       - sensor.time_utc
       - sensor.yr_symbol
 
-influxdb:
-  host: 10.0.10.10
-  database: !secret influx_database
-  username: !secret influx_username
-  password: !secret influx_password
-  default_measurement: state
-  max_retries: 3
-  include:
-    entities:
-       - sensor.bedroom_heatidx
-       - sensor.bedroom_temp
-       - sensor.bedroom_hum
-       - sensor.test_lux
-       - sensor.test_temp
-       - sensor.test_hum
-       - sensor.dark_sky_temperature
-       - sensor.dark_sky_humidity
+# influxdb:
+  # host: 10.0.10.10
+  # database: !secret influx_database
+  # username: !secret influx_username
+  # password: !secret influx_password
+  # default_measurement: state
+  # max_retries: 3
+  # include:
+    # entities:
+       # - sensor.bedroom_heatidx
+       # - sensor.bedroom_temp
+       # - sensor.bedroom_hum
+       # - sensor.test_lux
+       # - sensor.test_temp
+       # - sensor.test_hum
+       # - sensor.dark_sky_temperature
+       # - sensor.dark_sky_humidity
 
 media_player:
   - platform: kodi

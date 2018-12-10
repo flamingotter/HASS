@@ -1,8 +1,10 @@
+####OCTOPRINT
 - platform: octoprint
   monitored_conditions:
   - Printing
   - Printing Error
-    
+
+####JOSH_HOME BAYESIAN  
 - platform: bayesian
   name: 'josh_home'
   prior: 0.50
@@ -14,35 +16,7 @@
         platform: 'state'
         to_state: 'home'
         
-####################################################
-# HA HOME STATUS Display only                      #
-####################################################
-
-# - platform: template
-  # sensors:
-    # bs_sen_home_status:
-      # friendly_name: "Home Status"
-      # entity_id: sensor.sen_home_status
-      # value_template: >-
-        # {{ is_state('sensor.sen_home_status', 'disarmed') 
-           # or is_state('sensor.sen_home_status', 'locked down')
-           # or is_state('sensor.sen_home_status', 'away')
-           # or is_state('sensor.sen_home_status', 'sleeping') }}
-      # icon_template: >-
-        # {% if is_state('sensor.sen_home_status', 'disarmed') %}
-           # mdi:bell-off-outline
-        # {% elif is_state('sensor.sen_home_status', 'locked down') %}
-           # mdi:bell-outline
-        # {% elif is_state('sensor.sen_home_status', 'away') %}
-           # mdi:airplane-takeoff
-        # {% elif is_state('sensor.sen_home_status', 'sleeping') %}
-           # mdi:weather-night
-         # {% endif %}
-         
-         
-####################################################
-# JOSH SLEEP STATUS Display only                   #
-####################################################
+#### JOSH SLEEP STATUS Display only
 
 - platform: template
   sensors:
@@ -59,9 +33,7 @@
            mdi:sleep-off
          {% endif %}
          
-####################################################
-# MJ SLEEP STATUS Display only                     #
-####################################################
+#### MJ SLEEP STATUS Display only
 
 - platform: template
   sensors:

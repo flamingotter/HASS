@@ -8,6 +8,7 @@
 #  still_image_url: https://maps.googleapis.com/maps/api/staticmap?center={{ states.device_tracker.flamingotter_mqtt_mj.attributes.latitude }},{{ states.device_tracker.flamingotter_mqtt_mj.attributes.longitude }}&zoom=13&size=500x500&maptype=roadmap&markers=color:blue%7Clabel:M%7C{{ states.device_tracker.flamingotter_mqtt_mj.attributes.latitude }},{{ states.device_tracker.flamingotter_mqtt_mj.attributes.longitude }}
 #  limit_refetch_to_url_change: true
 
+#### OCTOPRINT WEBCAM
 - name: OctoPrint
   platform: mjpeg
   still_image_url: http://10.0.10.5/webcam/?action=snapshot
