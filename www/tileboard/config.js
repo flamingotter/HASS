@@ -1,4 +1,5 @@
 var CONFIG = {
+  ignoreErrors: true,
   customTheme: CUSTOM_THEMES.TRANSPARENT, // CUSTOM_THEMES.TRANSPARENT, CUSTOM_THEMES.MATERIAL, CUSTOM_THEMES.MOBILE, CUSTOM_THEMES.COMPACT, CUSTOM_THEMES.HOMEKIT, CUSTOM_THEMES.WINPHONE, CUSTOM_THEMES.WIN95
   transition: TRANSITIONS.ANIMATED_GPU, //ANIMATED or SIMPLE (better perfomance)
   entitySize: ENTITY_SIZES.SMALL, //SMALL, BIG are available
@@ -19,7 +20,7 @@ var CONFIG = {
 
   header: { // https://github.com/resoai/TileBoard/wiki/Header-configuration
     styles: {
-        padding: '50px 130px 0',
+        padding: '0px 130px 100px 50px',
         fontSize: '18px'
     },
       right: [
@@ -102,8 +103,8 @@ var CONFIG = {
                   off: "Off"
                 },
                 icons: {
-                  on: "mdi-desk-lamp",
-                  off: "mdi-desk-lamp",
+                  on: "mdi-desktop-tower-monitor",
+                  off: "mdi-desktop-tower-monitor",
                 },
               },
               {
@@ -612,6 +613,7 @@ var CONFIG = {
                 //subtitle: 'Lounge',
                 id: 'light.under_bed',
                 type: TYPES.LIGHT,
+                state: false,
                 states: {
                   on: "On",
                   off: "Off"
@@ -793,7 +795,7 @@ var CONFIG = {
           },
           {
             title: 'Misc',
-            width: 2,
+            width: 1,
             height: 3,
             items: [
               {
@@ -814,18 +816,34 @@ var CONFIG = {
               },
               {
                 position: [0, 1],
-                title: '3D Printer',
+                title: '3D Saftey',
                 width: 1,
                 type: TYPES.SWITCH,
-                id: 'switch.3d_printer', // using empty object for an unknown id
+                id: 'input_boolean.3dprinter_saftey',
                 state: false,
 				states: {
                   on: "On",
                     off: "Off",
                 },
                 icons: {
-                  on: "mdi-printer-3d",
-                  off: "mdi-printer-3d",
+                  on: "mdi-lock-open",
+                  off: "mdi-lock",
+                },
+              },
+              {
+                position: [0, 2],
+                title: '3D Power',
+                width: 1,
+                type: TYPES.SWITCH,
+                id: 'input_boolean.3dprinter_power',
+                state: false,
+				states: {
+                  on: "On",
+                    off: "Off",
+                },
+                icons: {
+                  on: "mdi-power-plug",
+                  off: "mdi-power-plug-off",
                 },
               },
               /*{
@@ -907,6 +925,110 @@ var CONFIG = {
           },
         ]
       },
+      
+      {
+         title: 'Weather',
+         icon: 'mdi-weather-partlycloudy',
+         groups: [
+            {
+               // title: 'Weather',
+               width: 9,
+               height: 3,
+               items: [
+                  {
+                     position: [0, 0],
+                     width: 9,
+                     height: 1,
+                     title: 'Forecast Summary',
+                     id: {}, // since we are binding each list item to different sensor, so we simply use an empty object
+                     type: TYPES.TEXT_LIST,
+                     state: false,
+                     list: [
+                        {
+                           title: '&sensor.dark_sky_hourly_summary.state'
+                        },
+                        {
+                           title: '&sensor.dark_sky_daily_summary.state'
+                        },
+                     ]
+                  },
+                  /*{
+                     position: [2, 1],
+                     id: 'camera.rainradar',
+                     type: TYPES.CAMERA_THUMBNAIL,
+                     bgSize: 'cover',
+                     width: 3,
+                     height: 3,
+                     state: false,
+                     fullscreen: {
+                        type: TYPES.CAMERA,
+                        refresh: 1500, // can be number in milliseconds
+                        bgSize: 'contain'
+                     },
+                     refresh: function () { // can also be a function
+                        return 3000 + Math.random() * 1000
+                     }
+                  },
+                  {
+                     position: [5, 1],
+                     id: 'camera.sydney',
+                     type: TYPES.CAMERA_THUMBNAIL,
+                     bgSize: 'cover',
+                     width: 3,
+                     height: 3,
+                     state: false,
+                     fullscreen: {
+                        type: TYPES.CAMERA,
+                        refresh: 1500, // can be number in milliseconds
+                        bgSize: 'contain'
+                     },
+                     refresh: function () { // can also be a function
+                        return 3000 + Math.random() * 1000
+                     }
+                  },*/
+                  {
+                     position: [0, 1],
+                     type: TYPES.WEATHER_LIST,
+                     width: 3,
+                     height: 3,
+                     title: 'Forecast',
+                     id: {},
+                     icons: {
+                        'clear-day': 'clear',
+                        'clear-night': 'nt-clear',
+                        'cloudy': 'cloudy',
+                        'rain': 'rain',
+                        'sleet': 'sleet',
+                        'snow': 'snow',
+                        'wind': 'hazy',
+                        'fog': 'fog',
+                        'partly-cloudy-day': 'partlycloudy',
+                        'partly-cloudy-night': 'nt-partlycloudy'
+                     },
+                     hideHeader: false,
+                     secondaryTitle: 'Rain',
+                     list: [1,2,3,4,5,6,7].map(function (id) {
+                        var d = new Date(Date.now() + id * 24 * 60 * 60 * 1000);
+                        var date = d.toString().split(' ').slice(1,3).join(' ');
+                        var forecast = "&sensor.dark_sky_daytime_high_temperature_" + id + ".state - ";
+                        forecast += "&sensor.dark_sky_overnight_low_temperature_" + id + ".state";
+                        forecast += "&sensor.dark_sky_daytime_high_temperature_" + id + ".attributes.unit_of_measurement";
+                        var rain = "&sensor.dark_sky_precip_probability_" + id + ".state";
+                        rain += " &sensor.dark_sky_precip_probability_" + id + ".attributes.unit_of_measurement";
+                        return {
+                           date: date,
+                           icon: "&sensor.dark_sky_icon_" + id + ".state",
+                           //iconImage: null, replace icon with image
+                           primary: forecast,
+                           secondary: rain
+                        }
+                     })
+                  },
+               ]
+            },
+         ]
+      },
+      
 	  {
         title: 'Settings',
         bg: '[]',

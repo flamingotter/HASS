@@ -40,7 +40,15 @@ Family:
     - group.family_status
     - device_tracker.flamingotter_mqtt_josh
     - device_tracker.flamingotter_mqtt_mj
-    - sensor.josh_to_home
+    - group.josh_sleep_status    
+    - group.mj_sleep_status
+
+3D_Print:
+  name: 3D Print
+  icon: mdi:printer-3d
+  view: yes
+  entities:
+    - group.3d_printer
 
 HA_Status:
   name: HA Controls
@@ -53,19 +61,16 @@ HA_Status:
     - group.lockouts
     - device_tracker.flamingotter_mqtt_josh
     - device_tracker.flamingotter_mqtt_mj
-    - input_select.home_status
-    - input_select.josh_status
-    - input_select.mj_status
+    #- input_select.home_status
+    #- input_select.josh_status
+    #- input_select.mj_status
     - sensor.time
     - group.bed_node
     - group.bedroom_node
     - group.stairs
     - group.device_status
     - group.test_node
-    - group.octoprint
     - group.travis_ci
-    - group.josh_sleep_status    
-    - group.mj_sleep_status
 
 # Floorplan:
   # name: Floorplan
@@ -93,7 +98,9 @@ Travis CI:
     - sensor.flamingotterhass_state
     - sensor.flamingotterhass_last_build_finished_at
 
-OctoPrint:
+3D Printer:
+    - input_boolean.3dprinter_saftey
+    - input_boolean.3dprinter_power
     - camera.octoprint
     - sensor.octoprint_actual_bed_temp
     - sensor.octoprint_target_bed_temp

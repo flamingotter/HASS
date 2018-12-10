@@ -22,42 +22,35 @@ office_presence:
   name: Office Presence
   icon: mdi:desk-lamp
 
+####SCENES
+  
 sexy_time:
   name: Sexy Time
   icon: mdi:emoticon-devil
-
-####################################################
-# HA HOME STATUS                                   #
-####################################################
-
-# ib_home_status_disarmed:
-  # name: Disarmed
-  # icon: mdi:bell-off-outline
   
-# ib_home_status_locked_down:
-  # name: Locked Down
-  # icon: mdi:bell-outline
-
-# ib_home_status_away:
-  # name: Away
-  # icon: mdi:airplane-takeoff
-
-# ib_home_status_sleeping:
-  # name: Sleeping
-  # icon: mdi:weather-night
+romantic_dinner:
+  name: Romantic Dinner
   
+artful:
+  name: Artfull
+
+####3D PRINTER
   
-####################################################
-# JOSH SLEEP STATUS                                   #
-####################################################
+3dprinter_saftey:
+  name: 3D Printer Saftey
+  icon: mdi:lock
+
+3dprinter_power:
+  name: 3D Printer Power
+  icon: mdi:printer-3d
+
+#### JOSH SLEEP STATUS
 
 ib_j_status_sleeping:
   name: Sleeping
   icon: mdi:sleep
   
-####################################################
-# MJ SLEEP STATUS                                   #
-####################################################
+#### MJ SLEEP STATUS
 
 ib_m_status_sleeping:
   name: Sleeping
