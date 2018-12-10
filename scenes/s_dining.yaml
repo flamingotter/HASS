@@ -1,0 +1,42 @@
+- name: s_romantic_dine
+  entities:
+    light.dining_light:
+      brightness_pct: 75
+      color_temp: 312
+      transition: 2
+      state: on
+    light.dinner_light:
+      brightness_pct: 75
+      color_temp: 312
+      transition: 2
+      state: on
+    light.kitchen_light:
+      brightness_pct: 30
+      color_temp: 222
+      transition: 2
+      state: on
+    light.corner_lamp:
+      state: off
+    light.table_lamp:
+      state: off
+    light.basement_light:
+      state: off
+    switch.paper_lamp:
+      state: off
+    switch.cabinet_light:
+      state: off
+    switch.foyer_light:
+      state: off
+
+- name: s_art_time
+  entities:
+    light.dining_light:
+      brightness: 195
+      color_temp: 329
+      transition: 2
+      state: on
+    light.dinner_light:
+      brightness: 160
+      color_temp: 312
+      transition: 2
+      state: on

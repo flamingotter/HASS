@@ -13,12 +13,3 @@
 - platform: systemmonitor
   resources:
     - type: since_last_boot
-
-#- platform: speedtest
-#  minute:
-#    - 0
-#    - 30
-#  monitored_conditions:
-#    - ping
-#    - download
-#    - uplo

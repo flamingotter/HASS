@@ -1,6 +1,4 @@
-####################################################
-# DIARMED SCENE                                                                                                              #
-####################################################
+#### DIARMED SCENE
 
 - name: s_disarmed_day
   entities:
@@ -35,9 +33,7 @@
       brightness_pct: 100
       color_temp: 222
 
-####################################################
-# SLEEP SCENE                                                                                                                     #
-####################################################
+#### SLEEP SCENE
 
 - name: s_his_sleep_mode
   entities:
@@ -77,9 +73,7 @@
     light.under_bed:
       state: off
 
-####################################################
-# Awake Scenes                                     #
-####################################################
+#### Awake Scenes
       
 - name: s_awake_dark
   entities:
@@ -160,9 +154,7 @@
     switch.paper_lamp:
       state: off
 
-####################################################
-# NIGHTSTAND LAMP DIMMING                          #
-####################################################
+#### NIGHTSTAND LAMP DIMMING
 
 - name: his_dim_lev_0
   entities:
@@ -217,9 +209,8 @@
       color_temp: 222
       transition: 1
 
-####################################################
-# NIGHTLIGHT                                       #
-####################################################
+#### NIGHTLIGHT
+
 - name: nightlight_bright
   entities:
     light.under_bed:
@@ -247,9 +238,8 @@
     light.dining_light:
       transition: 2
       state: off
-####################################################
-# SEXY TIME                                        #
-####################################################
+      
+#### SEXY TIME
 
 - name: s_bed_mood_light
   entities:
@@ -263,9 +253,8 @@
     light.rapunzel:
       state: off
       transition: 2
-####################################################
-# BASEMENT STAIRS MOTION                           #
-####################################################
+      
+#### BASEMENT STAIRS MOTION
 
 - name: basement_stairs_on
   entities:
@@ -280,9 +269,8 @@
       state: off
       transition: 2
 
-####################################################
-# Puppy Lights                                     #
-####################################################
+#### Puppy Lights
+
 - name: s_puppy_lights_on
   entities:
     light.table_lamp:

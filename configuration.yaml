@@ -19,8 +19,25 @@ http:
   base_url: ha.flamingotter.com
   ip_ban_enabled: True
   login_attempts_threshold: 5
+  
+logger:
+  default: warning
 
-# websocket_api:
+recorder:
+  exclude:
+    entities:
+     - sensor.since_last_boot
+     - automation.refresh_owntracks
+     
+logbook:
+  exclude:
+    entities:
+      - sensor.date
+      - sensor.time
+      - sensor.time__date      
+      - sensor.date__time
+      - sensor.time_utc
+      - sensor.yr_symbol
 
 influxdb:
   host: 10.0.10.10
@@ -39,14 +56,6 @@ influxdb:
        - sensor.test_hum
        - sensor.dark_sky_temperature
        - sensor.dark_sky_humidity
-
-#mqtt:
-#  broker: 10.0.10.10
-#  port: 1883
-#  keepalive: 60
-#  client_id: home-assistant-1
-#  username: !secret mqtt_username
-#  password: !secret mqtt_password
 
 media_player:
   - platform: kodi
@@ -73,7 +82,6 @@ device_tracker:
   - platform: unifi
     host: 10.0.10.10
     port: 8443
-    #consider_home: 180
     detection_time: 180
     username: !secret unifi_username
     password: !secret unifi_password
@@ -82,9 +90,6 @@ device_tracker:
     new_device_defaults:
       track_new_devices: false
       hide_if_away: false
-    #ssid_filter:
-    #  - 'CastleGraySkull'
-    #  - 'IOT'
 
 tts:
   - platform: google
@@ -93,7 +98,6 @@ tts:
 history:
   include:
     domains:
-      #- automation
       - switch
       - light
       - media_player
@@ -132,7 +136,6 @@ scene: !include_dir_merge_list scenes/
 automation: !include_dir_merge_list automation/
 script: !include_dir_merge_list scripts/
 notify: !include notify.yaml
-#alexa: !include alexa.yaml
 cloud: !include cloud.yaml
 shell_command: !include_dir_merge_list shell_commands/
 binary_sensor: !include binary_sensors.yaml
@@ -144,17 +147,6 @@ camera: !include camera.yaml
 ####ENABLES#####
 ################
 map:
-#discovery:
 sun:
-#conversation:
-logbook:
 frontend:
 config:
-
-
-# panel_custom:
-  # - name: floorplan
-    # sidebar_title: Floorplan
-    # sidebar_icon: mdi:floor-plan
-    # url_path: floorplan
-    # config: !include floorplan.yaml
