@@ -7,12 +7,6 @@
 
 # Hardware:
 * Shuttle XPC Slim DH110
-* Amazon Echo/Dot
-* Amazon Fire 7 (Gen 7)
-* Google Home Mini
-* Lifx A19
-* Lifx Mini
-* Sonoff Basic
 
 # Connected Devices
 
@@ -20,3 +14,9 @@
 * Ender 3 Pro
   * OctoPi (RPI3 B+)
   * Cisco PrecisionHD Webcam
+* Amazon Echo/Dot
+* Amazon Fire 7 (Gen 7)
+* Google Home Mini
+* Lifx A19
+* Lifx Mini
+* Sonoff Basic
