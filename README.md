@@ -8,12 +8,14 @@
 # Hardware:
 * Shuttle XPC Slim DH110
 
-# Connected Devices
+# Connected Devices:
 
 ## 3D Printers:
 * Ender 3 Pro
   * OctoPi (RPI3 B+)
   * Cisco PrecisionHD Webcam
+
+## Components:
 * Amazon Echo/Dot
 * Amazon Fire 7 (Gen 7)
 * Google Home Mini
