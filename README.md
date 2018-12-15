@@ -10,12 +10,7 @@
 
 # Connected Devices:
 
-## 3D Printers:
-* Ender 3 Pro
-  * OctoPi (RPI3 B+)
-  * Cisco PrecisionHD Webcam
-
-## Components:
+## Enabling Components:
 * Amazon Echo (Gen. 1)
 * Amazon Echo Dot (Gen. 2)
 * Amazon Echo Dot (Gen. 3)
@@ -24,3 +19,13 @@
 * Lifx A19
 * Lifx Mini
 * Sonoff Basic
+
+## Network:
+* Unifi Security Gateway
+* Unifi AP-AC-LC
+* Unifi Controller
+
+## 3D Printers:
+* Ender 3 Pro
+  * OctoPi (RPI3 B+)
+  * Cisco PrecisionHD Webcam
