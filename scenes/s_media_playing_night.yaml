@@ -1,4 +1,4 @@
-- name: media_playing_night
+- name: s_media_playing_night
   entities:
     switch.paper_lamp:
       state: off

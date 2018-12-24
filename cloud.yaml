@@ -16,3 +16,34 @@ alexa:
       - group.puppy_lights
       - group.lights
       - group.office
+    exclude_entities:
+      - input_boolean.guests_lockout
+      - input_boolean.3dprinter_power
+      - input_boolean.3dprinter_saftey
+      - input_boolean.presence_lockout
+      - input_boolean.pet_presence_lockout
+      - group.maps
+      - group.3d_printer
+      - group.3d_print
+      - group.all_switches
+      - group.bed_node
+      - group.family_status
+      - group.josh_sleep_status
+      - group.mj_sleep_status
+      - group.time_card
+      - group.bedroom_node
+      - group.system_monitor
+      - group.lockouts
+      - group.test_node
+      - group.travis_ci
+      - group.daily_forecast
+      - group.family
+      - group.all_devices
+      - group.device_status
+      - group.media
+      - group.default_view
+      - group.devices
+      - group.all_lights
+      - group.all_automations
+      - group.weather
+      - group.ha_status

@@ -1,9 +1,4 @@
 sequence:
-- event: LOGBOOK_ENTRY
-  event_data:
-    name: EVENT
-    message: "Turning Lamps on."
-
 - service: light.turn_on
   data:
     entity_id: group.living_room_lamps

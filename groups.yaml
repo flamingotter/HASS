@@ -71,6 +71,8 @@ HA_Status:
     - group.device_status
     - group.test_node
     - group.travis_ci
+    - weblink.control_panel
+    - camera.kitchen_cam
 
 # Floorplan:
   # name: Floorplan

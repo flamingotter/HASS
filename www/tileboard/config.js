@@ -84,7 +84,7 @@ var CONFIG = {
       {
         title: 'Main page',
         bg: [],
-        icon: 'mdi-home-outline', // home icon
+        icon: 'mdi-home-heart', // home icon
         groups: [
           {
             title: 'Rooms',

@@ -1,6 +1,7 @@
 ############DIMMER COUNT############
 - id: his_motion_count
   alias: His Motion Count
+  initial_state: True
   trigger:
   - platform: state
     entity_id: sensor.motion_count_his_side 
@@ -23,6 +24,7 @@
 
 - id: her_motion_count
   alias: Her Motion Count
+  initial_state: True
   trigger:
   - platform: state
     entity_id: sensor.motion_count_her_side

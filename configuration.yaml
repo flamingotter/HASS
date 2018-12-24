@@ -6,6 +6,12 @@ homeassistant:
   unit_system: imperial
   time_zone: Europe/Berlin
   customize: !include customize.yaml
+  auth_providers:
+   - type: homeassistant
+   - type: legacy_api_password
+   
+lovelace:
+  mode: yaml
 
 zone:
   name: Work
@@ -19,6 +25,11 @@ http:
   base_url: ha.flamingotter.com
   ip_ban_enabled: True
   login_attempts_threshold: 5
+  
+weblink:
+  entities:
+    - name: Control Panel
+      url: https://ha.flamingotter.com/local/tileboard/index.html
   
 logger:
   default: warning
@@ -69,14 +80,19 @@ media_player:
     host: 10.0.10.245
     port: 8001
     mac: E4:7D:BD:A7:02:0A
+    
+  - platform: alexa
+    email: !secret amazon_username
+    password: !secret amazon_password
+    url: amazon.com
 
 device_tracker:
-#  - platform: nmap_tracker
-#    hosts:
-#      - 10.0.10.0/24
-#    home_interval: 5
-#    consider_home: 180
-#    interval_seconds: 15
+  # - platform: nmap_tracker
+    # hosts:
+      # - 10.0.10.0/24
+    # home_interval: 5
+    # consider_home: 180
+    # interval_seconds: 15
   - platform: owntracks
     max_gps_accuracy: 100
   - platform: unifi
@@ -141,6 +157,8 @@ shell_command: !include_dir_merge_list shell_commands/
 binary_sensor: !include binary_sensors.yaml
 camera: !include camera.yaml
 
+# android_ip_webcam: !include_dir_merge_list android_ip_webcam/
+
 
 
 ################
@@ -150,3 +168,4 @@ map:
 sun:
 frontend:
 config:
+# websocket_api:

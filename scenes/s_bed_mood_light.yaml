@@ -1,0 +1,14 @@
+#### SEXY TIME
+
+- name: s_bed_mood_light
+  entities:
+    light.under_bed:
+      state: on
+      brightness_pct: 50
+      effect: rainbow
+    light.eugene:
+      state: off
+      transition: 2
+    light.rapunzel:
+      state: off
+      transition: 2

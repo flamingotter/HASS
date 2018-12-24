@@ -8,8 +8,8 @@
     - 'time_date'
     - 'time_utc'
 
-- platform: api_streams
+#- platform: api_streams
 
 - platform: systemmonitor
   resources:
-    - type: since_last_boot
+    - type: last_boot
