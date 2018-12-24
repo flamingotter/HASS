@@ -1,0 +1,24 @@
+- id: home_sunset
+  alias: "Sunset"
+  initial_state: True
+  hide_entity: False
+  trigger:
+    platform: sun
+    event: sunset
+    offset: "-1:30:00"
+  condition:
+  - condition: state
+    entity_id: input_select.home_status
+    state: "Disarmed"
+  - condition: state
+    entity_id: input_boolean.presence_lockout
+    state: "on"
+  action:
+    - service: light.lifx_set_state
+      data:
+        entity_id:
+          - group.living_room_lamps
+        brightness: 255
+        color_temp: 222
+        power: on
+        transition: 60

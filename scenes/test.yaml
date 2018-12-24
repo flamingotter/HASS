@@ -1,4 +1,0 @@
-- name: s_test
-  entities:
-    switch.desk_light:
-      state: on

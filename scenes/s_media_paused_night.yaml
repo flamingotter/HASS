@@ -1,4 +1,4 @@
-- name: media_paused_night
+- name: s_media_paused_night
   entities:
     light.corner_lamp:
       brightness_pct: 100

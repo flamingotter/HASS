@@ -1,0 +1,30 @@
+#### NIGHTLIGHT
+
+- name: nightlight_bright
+  entities:
+    light.under_bed:
+      state: on
+      brightness_pct: 20
+      effect: solid
+      color_name: red
+    light.basement_light:
+      brightness_pct: 20
+      color_name: red
+      transition: 2
+      state: on
+    light.dining_light:
+      brightness_pct: 20
+      color_name: red
+      transition: 2
+      state: on
+
+- name: nightlight_dim
+  entities:
+    light.under_bed:
+      state: off
+    light.basement_light:
+      transition: 2
+      state: off
+    light.dining_light:
+      transition: 2
+      state: off

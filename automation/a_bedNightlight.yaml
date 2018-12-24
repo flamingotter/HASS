@@ -1,6 +1,7 @@
 ############NIGHTLIGHT FUNCTION############
 - id: nightlight_bright
   alias: Set Nightlight to bright
+  initial_state: True
   trigger:
   - platform: state
     entity_id: sensor.motion_his_side
@@ -19,6 +20,7 @@
 
 - id: nightlight_dim
   alias: Set Nightlight to dim
+  initial_state: True
   trigger:
   - platform: state
     entity_id: sensor.motion_his_side

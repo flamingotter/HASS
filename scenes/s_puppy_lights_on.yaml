@@ -1,0 +1,11 @@
+#### Puppy Lights
+
+- name: s_puppy_lights_on
+  entities:
+    light.table_lamp:
+      brightness: 255
+      color_temp: 222
+      transition: 5
+      state: on
+    switch.foyer_light:
+      state: on

@@ -3,10 +3,10 @@ title: Dashboard
 views:
 ##Main Tab
   - title: Main
-    icon: mdi:home
+    icon: mdi:home-heart
     cards:
 
-      - type: glance
+      - type: entities
         title: Living Room
         show_state: false
         entities:
@@ -85,10 +85,22 @@ views:
   - title: Living Room
     icon: mdi:sofa
     cards:
-      - type: glance
+      - type: light
+        entity: light.spot_light
+      - type: horizontal-stack
+        cards:
+          - type: light
+            entity: light.corner_lamp
+          - type: light
+            entity: light.table_lamp
+      - type: entities
         title: Living Room
         show_state: false
         entities:
+          - entity: group.living_room
+            icon: mdi:lamp
+            name: All
+            tap_action: toggle
           - entity: group.living_room_lamps
             icon: mdi:lamp
             name: Lamps
@@ -103,7 +115,7 @@ views:
             icon: mdi:floor-lamp
             tap_action: toggle
 
-##Living Room Tab
+##Kitchen Tab
   - title: Kitchen
     icon: mdi:stove
     cards:

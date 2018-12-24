@@ -1,0 +1,14 @@
+#### BASEMENT STAIRS MOTION
+
+- name: basement_stairs_on
+  entities:
+    light.basement_light:
+      brightness_pct: 100
+      color_temp: 222
+      state: on
+
+- name: basement_stairs_off
+  entities:
+    light.basement_light:
+      state: off
+      transition: 2

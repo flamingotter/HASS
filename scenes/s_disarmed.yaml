@@ -1,0 +1,34 @@
+#### DIARMED SCENE
+
+- name: s_disarmed_day
+  entities:
+    switch.foyer_light:
+      state: on
+    light.kitchen_light:
+      state: on
+      brightness_pct: 100
+      color_temp: 222
+    switch.cabinet_light:
+      state: on
+    switch.paper_lamp:
+      state: on
+    light.corner_lamp:
+      state: on
+      brightness_pct: 100
+      color_temp: 222
+    light.table_lamp:
+      state: on
+      brightness_pct: 100
+      color_temp: 222
+    light.dining_light:
+      state: on
+      brightness_pct: 100
+      color_temp: 222
+    light.dinner_light:
+      state: on
+      brightness_pct: 100
+      color_temp: 222
+    light.basement_light:
+      state: on
+      brightness_pct: 100
+      color_temp: 222

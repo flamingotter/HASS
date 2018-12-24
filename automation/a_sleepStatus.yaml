@@ -1,5 +1,6 @@
 - id: a_set_sleep_status
   alias: Set person as sleeping
+  initial_state: True
   trigger:
   - platform: state
     entity_id: sensor.duration_his_side
@@ -8,7 +9,6 @@
     entity_id: sensor.duration_her_side
     to: '1'
   action:
-  #- service: input_boolean.turn_on
     service_template:  >
         {% if trigger.entity_id == 'sensor.duration_his_side' %}
           {% if states('input_boolean.ib_j_status_sleeping') == 'off' %}
@@ -30,32 +30,3 @@
         {% else %}
           input_boolean.ib_m_status_sleeping
         {% endif %}
-
-# WILL NOT NEED BELOW IF NO USING AWAKE BOOLEAN        
-# - id: a_j_sleep_set
-  # alias: Josh Sleep Set
-  # trigger:
-    # platform: state
-    # entity_id: input_boolean.ib_j_status_sleeping,
-               # input_boolean.ib_j_status_awake
-    # to: 'on'
-  # action:
-    # - service: input_boolean.turn_off
-      # data_template:
-        # entity_id: >
-          # {% set booleans = [ 'input_boolean.ib_j_status_sleeping', 'input_boolean.ib_j_status_awake' ] | reject('equalto', trigger.entity_id) %}
-          # {{ booleans | list | join(', ') }}
-          
-# - id: a_m_sleep_set
-  # alias: MJ Sleep Set
-  # trigger:
-    # platform: state
-    # entity_id: input_boolean.ib_m_status_sleeping,
-               # input_boolean.ib_m_status_awake
-    # to: 'on'
-  # action:
-    # - service: input_boolean.turn_off
-      # data_template:
-        # entity_id: >
-          # {% set booleans = [ 'input_boolean.ib_m_status_sleeping', 'input_boolean.ib_m_status_awake' ] | reject('equalto', trigger.entity_id) %}
-          # {{ booleans | list | join(', ') }}

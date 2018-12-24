@@ -1,2 +1,0 @@
-#test changes 2
-restart_ha: service home-assistant@homeassistant restart &

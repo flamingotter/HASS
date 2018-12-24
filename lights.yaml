@@ -1,5 +1,6 @@
 #### UNDER BED LIGHT MASTER BDR
-- platform: mqtt_json
+- platform: mqtt
+  schema: json
   name: "Under Bed"
   state_topic: "home/bedLed1"
   command_topic: "home/bedLed1/set"
