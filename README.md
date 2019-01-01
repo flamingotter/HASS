@@ -19,6 +19,7 @@
 * Lifx A19
 * Lifx Mini
 * Sonoff Basic
+* Custom Sensors (D1 Minis)
 
 ## Network:
 * Unifi Security Gateway

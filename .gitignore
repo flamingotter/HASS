@@ -1,6 +1,7 @@
 www/googlef62d7edb89f95f8b.html
 www/moons/
 deps/
+custom_components/media_player/
 *.pid
 *.xml
 *.csr
