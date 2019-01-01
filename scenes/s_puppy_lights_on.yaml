@@ -7,5 +7,5 @@
       color_temp: 222
       transition: 5
       state: on
-    switch.foyer_light:
+    light.foyer_light:
       state: on

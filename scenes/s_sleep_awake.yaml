@@ -82,11 +82,11 @@
       brightness_pct: 100
       color_temp: 222
       transition: 30
-    switch.cabinet_light:
+    light.cabinet_light:
       state: on
-    switch.desk_light:
+    light.desk_light:
       state: on
-    switch.office_light:
+    light.office_light:
       state: on
     light.corner_lamp:
       state: on
@@ -106,15 +106,4 @@
 - name: s_leave_for_work_action
   entities:
     group.all_lights:
-      state: off
-      transition: 3
-    switch.cabinet_light:
-      state: off
-    switch.desk_light:
-      state: off
-    switch.office_light:
-      state: off
-    switch.foyer_light:
-      state: off
-    switch.paper_lamp:
       state: off

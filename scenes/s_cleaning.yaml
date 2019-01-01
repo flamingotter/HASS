@@ -20,6 +20,11 @@
       color_temp: 222
       transition: 2
       state: on
+    light.spot_light:
+      brightness_pct: 100
+      color_temp: 222
+      transition: 2
+      state: on 
     light.dining_light:
       brightness_pct: 100
       color_temp: 222
@@ -40,9 +45,9 @@
       color_temp: 222
       transition: 2
       state: on
-    switch.paper_lamp:
+    light.paper_lamp:
       state: on
-    switch.cabinet_light:
+    light.cabinet_light:
       state: on
-    switch.foyer_light:
+    light.foyer_light:
       state: on

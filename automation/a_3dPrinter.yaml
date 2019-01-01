@@ -11,7 +11,9 @@
       title: "50% done"
       message: "Print is at 50%"
   - service: media_player.alexa_tts
-    entity_id: media_player.living_room
+    entity_id: 
+      - media_player.living_room #living room echo
+      - media_player.office # office echo dot
     data:
       message: '3D print is half way finished boss'
 
@@ -29,7 +31,9 @@
       title: '3D Print Complete'
       message: 'Print has been finished'
   - service: media_player.alexa_tts
-    entity_id: media_player.living_room
+    entity_id: 
+      - media_player.living_room #living room echo
+      - media_player.office # office echo dot
     data:
       message: 'Pardon the interuption, your 3D print has finished'
 
