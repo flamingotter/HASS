@@ -1,5 +1,6 @@
 www/googlef62d7edb89f95f8b.html
 www/moons/
+deps/
 *.pid
 *.xml
 *.csr
