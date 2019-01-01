@@ -18,7 +18,7 @@
       data:
         entity_id:
           - group.living_room_lamps
-        brightness: 255
-        color_temp: 222
-        power: on
+        power: true
         transition: 60
+        brightness_pct: 100
+        kelvin: 4500
