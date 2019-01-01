@@ -3,7 +3,6 @@ alexa:
     include_domains:
       - switch
       - light
-      - scene
       - group
       - input_boolean
       - script
@@ -17,6 +16,11 @@ alexa:
       - group.lights
       - group.office
     exclude_entities:
+      - switch.paper_lamp
+      - switch.cabinet_light
+      - switch.foyer_light
+      - switch.desk_light
+      - switch.office_light
       - input_boolean.guests_lockout
       - input_boolean.3dprinter_power
       - input_boolean.3dprinter_saftey

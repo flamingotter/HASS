@@ -15,17 +15,17 @@
       color_temp: 222
       transition: 2
       state: on
+    light.cabinet_light:
+      state: off
     light.corner_lamp:
       state: off
     light.table_lamp:
       state: off
     light.basement_light:
       state: off
-    switch.paper_lamp:
+    light.paper_lamp:
       state: off
-    switch.cabinet_light:
-      state: off
-    switch.foyer_light:
+    light.foyer_light:
       state: off
 
 - name: s_art_time

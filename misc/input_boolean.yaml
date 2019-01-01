@@ -55,3 +55,8 @@ ib_j_status_sleeping:
 ib_m_status_sleeping:
   name: Sleeping
   icon: mdi:sleep
+
+#### NORMALIZE
+
+ib_normal:
+  name: Normal

@@ -8,7 +8,7 @@ var CONFIG = {
   serverUrl: "https://ha.flamingotter.com",
   wsUrl: "wss://ha.flamingotter.com/api/websocket",
   authToken: null, // optional: make an long live token and put it here
-  //googleApiKey: "XXXXXXXXXX", // Required if you are using Google Maps for device tracker
+  //googleApiKey: "XXXXXXXXXX", // Required if you are using Google Maps for device tracker.
   debug: false, // Prints entities and state change info to the console.
 
   // next fields are optional
@@ -216,7 +216,39 @@ var CONFIG = {
                 type: TYPES.INPUT_SELECT,
                 id: 'input_select.mj_status',
                 state: false
-              }
+              },
+              {
+                position: [0, 2],
+                title: 'Josh Sleep',
+                width: 1,
+                type: TYPES.SWITCH,
+                id: 'input_boolean.ib_j_status_sleeping',
+                state: false,
+                states: {
+                  on: "On",
+                  off: "Off",
+              },
+                icons: {
+                  on: "mdi-sleep",
+                  off: "mdi-sleep-off",
+                },
+              },
+              {
+                position: [1, 2],
+                title: 'MJ Sleep',
+                width: 1,
+                type: TYPES.SWITCH,
+                id: 'input_boolean.ib_m_status_sleeping',
+                state: false,
+                states: {
+                  on: "On",
+                  off: "Off",
+                },
+                icons: {
+                  on: "mdi-sleep",
+                  off: "mdi-sleep-off",
+                },
+              },
             ]
           },
           /*{
@@ -279,7 +311,7 @@ var CONFIG = {
         groups: [
           {
             title: 'Lights',
-            width: 1,
+            width: 2,
             height: 3,
             items:
             [
@@ -407,6 +439,29 @@ var CONFIG = {
                     }
                   },
 				]
+              },
+            ]
+          },
+          {
+            title: 'Scenes',
+            width: 2,
+            height: 3,
+            items: [
+              {
+                position: [0, 0],
+                title: 'Media Actions',
+                //subtitle: 'Lounge',
+                id: 'input_boolean.media_lockout',
+                type: TYPES.INPUT_BOOLEAN,
+                state: false,
+                states: {
+                  on: "On",
+                  off: "Off",
+                },
+                icons: {
+                  on: "mdi-television",
+                  off: "mdi-television",
+                },
               },
             ]
           },
@@ -549,6 +604,45 @@ var CONFIG = {
               },
             ]
           },
+          {
+            title: 'Scenes',
+            width: 2,
+            height: 3,
+            items: [
+              {
+                position: [0, 0],
+                title: 'Artful',
+                //subtitle: 'Lounge',
+                id: 'input_boolean.artful',
+                type: TYPES.INPUT_BOOLEAN,
+                state: false,
+                states: {
+                  on: "On",
+                  off: "Off",
+                },
+                icons: {
+                  on: "mdi-brush",
+                  off: "mdi-brush",
+                },
+              },
+              {
+                position: [0, 1],
+                title: 'Romantic',
+                //subtitle: 'Lounge',
+                id: 'input_boolean.romantic_dinner',
+                type: TYPES.INPUT_BOOLEAN,
+                state: false,
+                states: {
+                  on: "On",
+                  off: "Off",
+                },
+                icons: {
+                  on: "mdi-candle",
+                  off: "mdi-candle",
+                },
+              },
+            ]
+          },
         ]
       },
       {
@@ -685,7 +779,7 @@ var CONFIG = {
           },
           {
             title: 'Misc',
-            width: 2,
+            width: 1,
             height: 3,
             items: [
               {
@@ -702,6 +796,29 @@ var CONFIG = {
                 icons: {
                   on: "mdi-fan",
                   off: "mdi-fan-off",
+                },
+              },
+            ]
+          },
+          {
+            title: 'Scenes',
+            width: 1,
+            height: 3,
+            items: [
+              {
+                position: [0, 0],
+                title: 'Sexy Time',
+                //subtitle: 'Lounge',
+                id: 'input_boolean.sexy_time',
+                type: TYPES.INPUT_BOOLEAN,
+                state: false,
+                states: {
+                  on: "On",
+                  off: "Off",
+                },
+                icons: {
+                  on: "mdi-emoticon-devil",
+                  off: "mdi-emoticon-devil",
                 },
               },
             ]
@@ -1077,14 +1194,13 @@ var CONFIG = {
             },
          ]
       },
-      
 	  {
-        title: 'Settings',
+        title: 'Garage',
         bg: '[]',
-        icon: 'mdi-wrench',
+        icon: 'mdi-garage',
         groups: [
           {
-            title: 'On/Off',
+            title: 'Items',
             width: 2,
             height: 3,
             items:
@@ -1137,14 +1253,14 @@ var CONFIG = {
                   off: "mdi-paw",
                 },
               },
-			  {
+              {
                 position: [1, 1],
                 title: 'Media Actions',
                 //subtitle: 'Lounge',
                 id: 'input_boolean.media_lockout',
                 type: TYPES.INPUT_BOOLEAN,
                 state: false,
-				states: {
+                states: {
                   on: "On",
                   off: "Off",
                 },
@@ -1157,13 +1273,14 @@ var CONFIG = {
           },
         ]
       },
+      
 	  {
-        title: 'Garage',
+        title: 'Settings',
         bg: '[]',
-        icon: 'mdi-garage',
+        icon: 'mdi-settings',
         groups: [
           {
-            title: 'Items',
+            title: 'Scenes',
             width: 2,
             height: 3,
             items:
