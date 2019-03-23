@@ -6,7 +6,7 @@
 </h4>
 
 # Hardware:
-* <a href="https://www.amazon.com/Shuttle-DH110-Barebone-Kabylake-Heatpipe/dp/B01C87CD0M" target="_blank">Shuttle XPC Slim DH110</a>
+* <a href="https://www.amazon.com/Shuttle-DH110-Barebone-Kabylake-Heatpipe/dp/B01C87CD0M" target="_blank">Shuttle XPC Slim DS61</a>
 
 # Connected Devices:
 
