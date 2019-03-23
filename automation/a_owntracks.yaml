@@ -1,16 +1,16 @@
-- id: Refresh Owtracks
-  alias: Refresh Owntracks
-  initial_state: True
-  trigger:
-    - platform: time
-      minutes: '/5'
-      seconds: 00
-  action:
-    - service: mqtt.publish
-      data:
-        topic: "owntracks/flamingotter_mqtt/Josh/cmd"
-        payload_template: '{"_type": "cmd","action": "reportLocation"}'
-    - service: mqtt.publish
-      data:
-        topic: "owntracks/flamingotter_mqtt/MJ/cmd"
-        payload_template: '{"_type": "cmd","action": "reportLocation"}'
+# - id: Refresh Owtracks
+#   alias: Refresh Owntracks
+#   initial_state: True
+#   trigger:
+#     - platform: time_pattern
+#       minutes: '/5'
+#       seconds: 00
+#   action:
+#     - service: mqtt.publish
+#       data:
+#         topic: "owntracks/flamingotter_mqtt/Josh/cmd"
+#         payload_template: '{"_type": "cmd","action": "reportLocation"}'
+#     - service: mqtt.publish
+#       data:
+#         topic: "owntracks/flamingotter_mqtt/MJ/cmd"
+#         payload_template: '{"_type": "cmd","action": "reportLocation"}'

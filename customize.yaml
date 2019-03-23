@@ -2,12 +2,15 @@ input_select.josh_status:
   entity_picture: /local/josh.jpg
 input_select.mj_status:
   entity_picture: /local/mj.jpg
+
 input_select.home_status:
   icon: mdi:home-heart
+
 sensor.josh_status:
   entity_picture: /local/josh.jpg
 sensor.mj_status:
   entity_picture: /local/mj.jpg
+
 media_player.samsung_q7_series_65_qn65q7fam:
   friendly_name: Samsung Q7
   icon: mdi:television
@@ -41,13 +44,13 @@ switch.tv_light:
   icon: mdi:led-strip
 switch.paper_lamp:
   friendly_name: Paper Lamp
-  icon: mdi:lamp
+  icon: mdi:floor-lamp
 light.spot_light:
   friendly_name: Spot Light
   icon: mdi:spotlight-beam
 switch.desk_light:
   friendly_name: Desk Light
-  icon: mdi:lamp
+  icon: mdi:floor-lamp
 switch.office_light:
   friendly_name: Office Light
   icon: mdi:ceiling-light
@@ -104,5 +107,5 @@ sensor.octoprint_actual_tool0_temp:
 
 sensor.octoprint_current_state:
   friendly_name: Current State
-sensor.octoprint_job_percentage:  
+sensor.octoprint_job_percentage:
   friendly_name: Percentage Complete

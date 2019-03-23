@@ -10,9 +10,6 @@
   - condition: state
     entity_id: input_select.home_status
     state: "Disarmed"
-  - condition: state
-    entity_id: input_boolean.presence_lockout
-    state: "on"
   action:
     - service: light.lifx_set_state
       data:

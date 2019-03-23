@@ -2,8 +2,11 @@ default view:
  view: yes
  icon: mdi:home
  entities:
-   - device_tracker.flamingotter_mqtt_josh
-   - device_tracker.flamingotter_mqtt_mj
+   - sensor.sen_home_status
+   - device_tracker.mobile_pix3_josh
+   - person.josh
+   - person.mj
+   - device_tracker.mobile_pix3_mj
    - sensor.dark_sky_temperature
    - group.living_room
    - group.bedroom
@@ -12,7 +15,6 @@ default view:
    #- group.kitchen
    - group.front
    - group.office
-   - sensor.moonphases
    #- group.maps
 
 
@@ -38,9 +40,9 @@ Family:
   view: yes
   entities:
     - group.family_status
-    - device_tracker.flamingotter_mqtt_josh
-    - device_tracker.flamingotter_mqtt_mj
-    - group.josh_sleep_status    
+    - device_tracker.flamingotter_mqtt_pix3j
+    - device_tracker.flamingotter_mqtt_pix3m
+    - group.josh_sleep_status
     - group.mj_sleep_status
 
 3D_Print:
@@ -59,8 +61,8 @@ HA_Status:
     - group.system_monitor
     - group.stream
     - group.lockouts
-    - device_tracker.flamingotter_mqtt_josh
-    - device_tracker.flamingotter_mqtt_mj
+    - device_tracker.flamingotter_mqtt_pix3j
+    - device_tracker.flamingotter_mqtt_pix3m
     #- input_select.home_status
     #- input_select.josh_status
     #- input_select.mj_status
@@ -82,13 +84,13 @@ HA_Status:
     # - group.floorplan_group
 
 ####GROUPS####
-    
+
 Josh Sleep Status:
   control: hidden
   entities:
     - input_boolean.ib_j_status_sleeping
     - sensor.sen_j_status_sleeping
-    
+
 MJ Sleep Status:
   control: hidden
   entities:
@@ -159,10 +161,10 @@ System Monitor:
 
 time_card:
     - sensor.time
-    - sensor.time__date
+    - sensor.time_date
     - sensor.time_utc
     - sensor.date
-    - sensor.date__time
+    - sensor.date_time
 
 Lockouts:
     - input_boolean.presence_lockout

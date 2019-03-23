@@ -1,6 +1,6 @@
 - platform: darksky
   api_key: 7abceb2b826b08477b512a8bdc603787
-  update_interval: '00:10'
+  scan_interval: '00:10'
   forecast:
     - 1
     - 2

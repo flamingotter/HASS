@@ -8,8 +8,8 @@ homeassistant:
   customize: !include customize.yaml
   auth_providers:
    - type: homeassistant
-   - type: legacy_api_password
-   
+   #- type: legacy_api_password
+
 lovelace:
   mode: yaml
 
@@ -21,16 +21,16 @@ zone:
   icon: mdi:worker
 
 http:
-  api_password: !secret http_password
+  #api_password: !secret http_password
   base_url: ha.flamingotter.com
   ip_ban_enabled: True
   login_attempts_threshold: 5
-  
+
 weblink:
   entities:
     - name: Control Panel
       url: https://ha.flamingotter.com/local/tileboard/index.html
-  
+
 logger:
   default: warning
 
@@ -39,16 +39,17 @@ recorder:
     entities:
      - sensor.since_last_boot
      - automation.refresh_owntracks
-     
+
 logbook:
   exclude:
     entities:
       - sensor.date
       - sensor.time
-      - sensor.time__date      
-      - sensor.date__time
+      - sensor.time_date
+      - sensor.date_time
       - sensor.time_utc
       - sensor.yr_symbol
+      - sensor.internet_time
 
 # influxdb:
   # host: 10.0.10.10
@@ -79,8 +80,8 @@ media_player:
     name: Samsung Q7
     host: 10.0.10.245
     port: 8001
-    mac: E4:7D:BD:A7:02:0A
-    
+    #mac: E4:7D:BD:A7:02:0A
+
   - platform: alexa
     email: !secret amazon_username
     password: !secret amazon_password
@@ -90,13 +91,15 @@ media_player:
     - "Maryleigh's Alexa Apps"
     - "Joshua's Alexa Apps"
 
+person:
+
 device_tracker:
-  # - platform: nmap_tracker
-    # hosts:
-      # - 10.0.10.0/24
-    # home_interval: 5
-    # consider_home: 180
-    # interval_seconds: 15
+#   - platform: nmap_tracker
+#     hosts:
+#       - 10.0.10.0/24
+#     home_interval: 5
+#     consider_home: 180
+#     interval_seconds: 15
   - platform: owntracks
     max_gps_accuracy: 100
   - platform: unifi
@@ -106,7 +109,7 @@ device_tracker:
     username: !secret unifi_username
     password: !secret unifi_password
     verify_ssl: false
-    site_id: default
+#     site_id: default
     new_device_defaults:
       track_new_devices: false
       hide_if_away: false
@@ -122,8 +125,8 @@ history:
       - light
       - media_player
     entities:
-      - device_tracker.flamingotter_mqtt_josh
-      - device_tracker.flamingotter_mqtt_mj
+      - device_tracker.flamingotter_mqtt_pix3j
+      - device_tracker.mobile_pix3_m
       - input_select.home_status
       - input_select.josh_status
       - input_select.mj_status
@@ -171,5 +174,7 @@ camera: !include camera.yaml
 map:
 sun:
 frontend:
+  javascript_version: auto
 config:
+system_health:
 # websocket_api:

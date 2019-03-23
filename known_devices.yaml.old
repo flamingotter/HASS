@@ -1,0 +1,539 @@
+
+flamingotter_mqtt_mj:
+  hide_if_away: false
+  mac: ac:5f:3e:2a:bc:2c
+  name: MJ
+  picture: /local/mj.jpg
+  track: yes
+  vendor: Samsung Electronics Co.,Ltd
+
+flamingotter_mqtt_josh:
+  hide_if_away: false
+  mac: d8:5b:2a:36:57:7b
+  name: Josh
+  picture: /local/josh.jpg
+  track: yes
+  vendor: Samsung Electronics Co.,Ltd
+
+fire_panel_01:
+  hide_if_away: false
+  icon: mdi:tablet
+  mac: 3C:5C:C4:96:51:40
+  name: Fire Panel 01
+  picture:
+  track: yes
+
+fire_panel_02:
+  hide_if_away: false
+  icon: mdi:tablet
+  mac: 44:00:49:77:74:9F
+  name: Fire Panel 02
+  picture:
+  track: yes
+
+fire_panel_03:
+  hide_if_away: false
+  icon: mdi:tablet
+  mac: C4:95:00:49:E8:96
+  name: Fire Panel 03
+  picture:
+  track: yes
+
+fire_panel_04:
+  hide_if_away: false
+  icon: mdi:tablet
+  mac: 44:00:49:71:DF:5A
+  name: Fire Panel 04
+  picture:
+  track: yes
+
+bed_node_sensor:
+  hide_if_away: false
+  icon:
+  mac: 60:01:94:4E:DD:61
+  name: Bed Node Sensor
+  picture:
+  track: yes
+  vendor: unknown
+
+basement_stair_node:
+  hide_if_away: false
+  icon:
+  mac: 60:01:94:4E:DD:13
+  name: Basement Stair Node
+  picture:
+  track: yes
+  vendor: unknown
+
+sonoff_test:
+  hide_if_away: false
+  icon:
+  mac: EC:FA:BC:07:AB:3F
+  name: sonoff_test
+  picture:
+  track: yes
+  vendor: Espressif Inc.
+
+lifx_spot:
+  hide_if_away: false
+  icon:
+  mac: D0:73:D5:27:4A:0D
+  name: LIFX SPOT
+  picture:
+  track: no
+
+sonoff0777:
+  hide_if_away: false
+  icon:
+  mac: EC:FA:BC:06:23:09
+  name: sonoff-0777
+  picture:
+  track: no
+
+svr_dmz:
+  hide_if_away: false
+  icon:
+  mac: 80:EE:73:60:75:45
+  name: SVR DMZ
+  picture:
+  track: no
+
+sonoff51310:
+  hide_if_away: false
+  icon:
+  mac: 60:01:94:68:C5:1E
+  name: sonoff5-1310
+  picture:
+  track: no
+
+sonoff15132:
+  hide_if_away: false
+  icon:
+  mac: 60:01:94:68:D4:0C
+  name: sonoff1-5132
+  picture:
+  track: no
+
+lifx_dining:
+  hide_if_away: false
+  icon:
+  mac: D0:73:D5:27:68:7D
+  name: LIFX DINING
+  picture:
+  track: no
+
+lifx_white_800:
+  hide_if_away: false
+  icon:
+  mac: D0:73:D5:10:B7:3A
+  name: LIFX White 800
+  picture:
+  track: no
+
+google_living_room:
+  hide_if_away: false
+  icon:
+  mac: 20:DF:B9:0E:01:0B
+  name: GOOGLE LIVING ROOM
+  picture: mdi:google-assistant
+  track: no
+
+lifx_basement:
+  hide_if_away: false
+  icon:
+  mac: D0:73:D5:27:8F:1E
+  name: LIFX BASEMENT
+  picture:
+  track: no
+
+fire_living_room:
+  hide_if_away: false
+  icon:
+  mac: 84:D6:D0:27:45:E7
+  name: FIRE LIVING ROOM
+  picture:
+  track: no
+
+svr_ha:
+  hide_if_away: false
+  icon:
+  mac: 80:EE:73:99:8A:F4
+  name: SVR HA
+  picture:
+  track: no
+
+lifx_a19_20f423:
+  hide_if_away: false
+  icon:
+  mac: D0:73:D5:20:F4:23
+  name: LIFX A19 20F423
+  picture:
+  track: no
+
+lifx_rapunzel:
+  hide_if_away: false
+  icon:
+  mac: D0:73:D5:31:96:8B
+  name: LIFX RAPUNZEL
+  picture:
+  track: no
+
+samsung_tv_65:
+  hide_if_away: false
+  icon:
+  mac: E4:7D:BD:A7:02:0A
+  name: SAMSUNG TV 65
+  picture:
+  track: no
+
+tplink_paper_lamp:
+  hide_if_away: false
+  icon:
+  mac: 50:C7:BF:02:10:9E
+  name: TPLINK PAPER LAMP
+  picture:
+  track: no
+
+sonoff27331:
+  hide_if_away: false
+  icon:
+  mac: EC:FA:BC:06:5C:A3
+  name: sonoff2-7331
+  picture:
+  track: no
+
+lifx_eugene:
+  hide_if_away: false
+  icon:
+  mac: D0:73:D5:31:56:CF
+  name: LIFX EUGENE
+  picture:
+  track: no
+
+lifx_a19_207abd:
+  hide_if_away: false
+  icon:
+  mac: D0:73:D5:20:7A:BD
+  name: LIFX A19 207ABD
+  picture:
+  track: no
+
+sonoff67315:
+  hide_if_away: false
+  icon:
+  mac: EC:FA:BC:06:9C:93
+  name: sonoff6-7315
+  picture:
+  track: no
+
+svr_file:
+  hide_if_away: false
+  icon:
+  mac: 1C:6F:65:96:46:AC
+  name: SVR FILE
+  picture:
+  track: no
+
+44650df42130:
+  hide_if_away: false
+  icon:
+  mac: 44:65:0D:F4:21:30
+  name: 44650df42130
+  picture:
+  track: no
+
+desktop60bncig:
+  hide_if_away: false
+  icon:
+  mac: D4:81:D7:55:8D:D4
+  name: DESKTOP-60BNCIG
+  picture:
+  track: no
+
+sonoff44438:
+  hide_if_away: false
+  icon:
+  mac: 68:C6:3A:8A:71:56
+  name: sonoff4-4438
+  picture:
+  track: no
+
+amazon37be7697c:
+  hide_if_away: false
+  icon:
+  mac: 50:DC:E7:D0:A5:EC
+  name: amazon-37be7697c
+  picture:
+  track: no
+
+amazon975a943d2:
+  hide_if_away: false
+  icon:
+  mac: 18:74:2E:C8:8F:48
+  name: amazon-975a943d2
+  picture:
+  track: no
+
+desktopr2aa56g:
+  hide_if_away: false
+  icon:
+  mac: F8:59:71:26:F3:59
+  name: DESKTOP-R2AA56G
+  picture:
+  track: no
+
+lifx_white_800_10b6c4_aj:
+  hide_if_away: false
+  icon:
+  mac: D0:73:D5:10:B6:C4
+  name: LIFX White 800 10b6c4 AJ
+  picture:
+  track: no
+
+ap_scale:
+  hide_if_away: false
+  icon:
+  mac: 84:1B:5E:CF:51:00
+  name: AP SCALE
+  picture:
+  track: no
+
+009acdc8bbd9:
+  hide_if_away: false
+  icon:
+  mac: 00:9A:CD:C8:BB:D9
+  name: 009acdc8bbd9
+  picture:
+  track: no
+
+amazon6ea85012c:
+  hide_if_away: false
+  icon:
+  mac: FC:65:DE:DB:AF:E9
+  name: amazon-6ea85012c
+  picture:
+  track: no
+
+desktop60bncig_2:
+  hide_if_away: false
+  icon:
+  mac: F8:59:71:27:12:67
+  name: DESKTOP-60BNCIG
+  picture:
+  track: no
+
+prnt_hp3600:
+  hide_if_away: false
+  icon:
+  mac: 00:1B:78:70:3F:CE
+  name: PRNT HP3600
+  picture:
+  track: no
+
+esp_b88022:
+  hide_if_away: false
+  icon:
+  mac: 68:C6:3A:B8:80:22
+  name: ESP B88022
+  picture:
+  track: no
+
+b827ebdea5f4:
+  hide_if_away: false
+  icon:
+  mac: B8:27:EB:DE:A5:F4
+  name: b827ebdea5f4
+  picture:
+  track: no
+
+octopi:
+  hide_if_away: false
+  icon:
+  mac: B8:27:EB:8B:F0:A1
+  name: octopi
+  picture:
+  track: yes
+
+6c3be5003c1d:
+  hide_if_away: false
+  icon:
+  mac: 6C:3B:E5:00:3C:1D
+  name: 6c3be5003c1d
+  picture:
+  track: no
+
+testnode:
+  hide_if_away: false
+  icon:
+  mac: 60:01:94:4E:DE:F1
+  name: testNode
+  picture:
+  track: yes
+
+ashlee_a5:
+  hide_if_away: false
+  icon:
+  mac: E0:AA:96:E0:3C:F0
+  name: Ashlee-A5
+  picture:
+  track: yes
+
+esp_4edc25:
+  hide_if_away: false
+  icon:
+  mac: 60:01:94:4E:DC:25
+  name: ESP 4EDC25
+  picture:
+  track: no
+
+esp_4edf45:
+  hide_if_away: false
+  icon:
+  mac: 60:01:94:4E:DF:45
+  name: ESP 4EDF45
+  picture:
+  track: no
+
+esp_4141a7:
+  hide_if_away: false
+  icon:
+  mac: 80:7D:3A:41:41:A7
+  name: ESP 4141A7
+  picture:
+  track: no
+
+google_bathroom:
+  hide_if_away: false
+  icon:
+  mac: 40:9F:38:9B:BE:0B
+  name: GOOGLE BATHROOM
+  picture:
+  track: no
+
+chasesmbp5:
+  hide_if_away: false
+  icon:
+  mac: E4:CE:8F:4D:6C:BE
+  name: Chases-MBP-5
+  picture:
+  track: no
+
+ac3743a07716:
+  hide_if_away: false
+  icon:
+  mac: AC:37:43:A0:77:16
+  name: ac3743a07716
+  picture:
+  track: no
+
+606bbdb17f09:
+  hide_if_away: false
+  icon:
+  mac: 60:6B:BD:B1:7F:09
+  name: 606bbdb17f09
+  picture:
+  track: no
+
+amazone88dc18f0:
+  hide_if_away: false
+  icon:
+  mac: F0:81:73:A0:0C:B5
+  name: amazon-e88dc18f0
+  picture:
+  track: no
+
+3d_printer:
+  hide_if_away: false
+  icon:
+  mac: 50:C7:BF:00:40:85
+  name: 3D Printer
+  picture:
+  track: no
+
+DOT3_BEDROOM:
+  hide_if_away: false
+  icon: mdi:amazon-alexa
+  mac: 68:9A:87:0C:AA:19
+  name: DOT3_BEDROOM
+  picture:
+  track: no
+
+DOT3_BATHROOM:
+  hide_if_away: false
+  icon: mdi:amazon-alexa
+  mac: CC:F7:35:3E:51:3C
+  name: DOT3_BATHROOM
+  picture:
+  track: no
+
+samsung_10_tablet:
+  hide_if_away: false
+  icon:
+  mac: 08:FD:0E:F6:89:58
+  name: SAMSUNG 10 TABLET
+  picture:
+  track: yes
+
+allisonmoore:
+  hide_if_away: false
+  icon:
+  mac: 70:56:81:4A:79:C3
+  name: Allison-Moore
+  picture:
+  track: no
+
+garmin_fenix_3_hr:
+  hide_if_away: false
+  icon:
+  mac: 14:8F:21:AF:D4:B5
+  name: GARMIN FENIX 3 HR
+  picture:
+  track: yes
+
+80ee73607544:
+  hide_if_away: false
+  icon:
+  mac: 80:EE:73:60:75:44
+  name: 80ee73607544
+  picture:
+  track: no
+
+winn2k47naf90u:
+  hide_if_away: false
+  icon:
+  mac: F8:59:71:26:F2:2D
+  name: WIN-N2K47NAF90U
+  picture:
+  track: no
+
+MOBILE_JOANNA:
+  hide_if_away: false
+  icon:
+  mac: C8:3C:85:69:89:ED
+  name: MOBILE_JOANNA
+  picture:
+  track: yes
+
+5c93a24e09ab:
+  hide_if_away: false
+  icon:
+  mac: 5C:93:A2:4E:09:AB
+  name: 5c93a24e09ab
+  picture:
+  track: no
+
+laptopmjslfg9t:
+  hide_if_away: false
+  icon:
+  mac: 30:E3:7A:2E:73:EF
+  name: LAPTOP-MJSLFG9T
+  picture:
+  track: no
+
+e4b97a92dcdf:
+  hide_if_away: false
+  icon:
+  mac: E4:B9:7A:92:DC:DF
+  name: e4b97a92dcdf
+  picture:
+  track: no
