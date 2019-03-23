@@ -2,27 +2,24 @@
   sensors:
     sen_home_status:
       friendly_name: 'Home Status'
-      entity_id: input_boolean.ib_home_status_disarmed,
-                 input_boolean.ib_home_status_locked_down,
-                 input_boolean.ib_home_status_away, 
-                 input_boolean.ib_home_status_sleeping
+      entity_id: input_select.home_status
       value_template: >-
-        {% if is_state('input_boolean.ib_home_status_disarmed', 'on') %}
+        {% if states.input_select.home_status.state == 'Disarmed' %}
           Disarmed
-        {% elif is_state('input_boolean.ib_home_status_locked_down', 'on') %}
+        {% elif states.input_select.home_status.state == 'Locked Down' %}
           Locked Down
-        {% elif is_state('input_boolean.ib_home_status_away', 'on') %}
+        {% elif states.input_select.home_status.state == 'Away' %}
           Away
-        {% elif is_state('input_boolean.ib_home_status_sleeping', 'on') %}
+        {% elif states.input_select.home_status.state == 'Sleeping' %}
           Sleeping
         {% endif %}
       icon_template: >-
-        {% if is_state('input_boolean.ib_home_status_disarmed', 'on') %}
+        {% if states.input_select.home_status.state == 'Disarmed' %}
           mdi:bell-off-outline
-        {% elif is_state('input_boolean.ib_home_status_locked_down', 'on') %}
+        {% elif states.input_select.home_status.state == 'Locked Down' %}
           mdi:bell-outline
-        {% elif is_state('input_boolean.ib_home_status_away', 'on') %}
+        {% elif states.input_select.home_status.state == 'Away' %}
           mdi:airplane-takeoff
-        {% elif is_state('input_boolean.ib_home_status_sleeping', 'on') %}
+        {% elif states.input_select.home_status.state == 'Sleeping' %}
           mdi:weather-night
         {% endif %}

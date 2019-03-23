@@ -10,10 +10,24 @@
     entity_id: sensor.motion_her_side
     to: 'detected'
   condition:
-  - condition: template
-    value_template: "{% if states('input_boolean.ib_j_status_sleeping') == 'on' or states('input_boolean.ib_m_status_sleeping') == 'on' %}true{% else %}false{% endif %}"
-  - condition: template
-    value_template: "{% if states('light.under_bed') == 'off' or states('light.basement_light') == 'off' %}true{% else %}false{% endif %}"
+    condition: and
+    conditions:
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: 'input_boolean.ib_j_status_sleeping'
+            state: 'on'
+          - condition: state
+            entity_id: 'input_boolean.ib_m_status_sleeping'
+            state: 'on'
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: 'light.under_bed'
+            state: 'off'
+          - condition: state
+            entity_id: 'light.basement_light'
+            state: 'off'
   action:
   - service: scene.turn_on
     entity_id: scene.nightlight_bright
@@ -29,12 +43,20 @@
     entity_id: sensor.motion_her_side
     to: 'detected'
   condition:
-  - condition: template
-    value_template: "{% if states('input_boolean.ib_j_status_sleeping') == 'on' or states('input_boolean.ib_m_status_sleeping') == 'on' %}true{% else %}false{% endif %}"
-  - condition: numeric_state
-    entity_id: light.under_bed
-    value_template: '{{ state.attributes.brightness }}'
-    below: 75
+    condition: and
+    conditions:
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: 'input_boolean.ib_j_status_sleeping'
+            state: 'on'
+          - condition: state
+            entity_id: 'input_boolean.ib_m_status_sleeping'
+            state: 'on'
+      - condition: numeric_state
+        entity_id: light.under_bed
+        value_template: '{{ state.attributes.brightness }}'
+        below: 75
   action:
   - service: scene.turn_on
     entity_id: scene.nightlight_dim

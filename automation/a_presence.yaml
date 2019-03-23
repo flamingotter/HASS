@@ -22,24 +22,24 @@
   initial_state: True
   trigger:
   - platform: state
-    entity_id: device_tracker.flamingotter_mqtt_josh
+    entity_id: person.josh
     from: not_home
     to: home
   - platform: state
-    entity_id: device_tracker.flamingotter_mqtt_mj
+    entity_id: person.mj
     from: not_home
     to: home
   action:
   - service: input_select.select_option
     data_template:
       entity_id: >
-        {% if trigger.entity_id == 'device_tracker.flamingotter_mqtt_josh' %}
+        {% if trigger.entity_id == 'person.josh' %}
           input_select.josh_status
         {% else %}
           input_select.mj_status
         {% endif %}
       option: >
-        {% if trigger.entity_id == 'device_tracker.flamingotter_mqtt_josh' %}
+        {% if trigger.entity_id == 'person.josh' %}
           {% if states.input_select.josh_status.state == 'Just Left' %}
             Home
           {% else %}
@@ -100,18 +100,18 @@
   initial_state: True
   trigger:
   - platform: state
-    entity_id: device_tracker.flamingotter_mqtt_josh
+    entity_id: person.josh
     from: 'home'
     to: 'not_home'
   - platform: state
-    entity_id: device_tracker.flamingotter_mqtt_mj
+    entity_id: person.mj
     from: 'home'
     to: 'not_home'
   action:
   - service: input_select.select_option
     data_template:
       entity_id: >
-        {% if trigger.entity_id == 'device_tracker.flamingotter_mqtt_josh' %}
+        {% if trigger.entity_id == 'person.josh' %}
           input_select.josh_status
         {% else %}
           input_select.mj_status
@@ -147,9 +147,9 @@
       title: "Away"
       message:  >
         {% if states('input_select.josh_status') == 'Away'%}
-          Josh is {{states.input_select.josh_status.state}} {{now().strftime('%H:%M %d-%b')}} via {{states.device_tracker.flamingotter_mqtt_josh.attributes.source_type}}
+          Josh is {{states.input_select.josh_status.state}} {{now().strftime('%H:%M %d-%b')}} via {{states.person.josh.attributes.source_type}}
         {% else %}
-          MJ is {{states.input_select.mj_status.state}} {{now().strftime('%H:%M %d-%b')}} via {{states.device_tracker.flamingotter_mqtt_josh.attributes.source_type}}
+          MJ is {{states.input_select.mj_status.state}} {{now().strftime('%H:%M %d-%b')}} via {{states.person.josh.attributes.source_type}}
         {% endif %}
 
 - id: extended_away
