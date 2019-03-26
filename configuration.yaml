@@ -94,12 +94,6 @@ media_player:
 person:
 
 device_tracker:
-#   - platform: nmap_tracker
-#     hosts:
-#       - 10.0.10.0/24
-#     home_interval: 5
-#     consider_home: 180
-#     interval_seconds: 15
   - platform: owntracks
     max_gps_accuracy: 100
   - platform: unifi

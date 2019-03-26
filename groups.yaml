@@ -24,7 +24,6 @@ Weather:
   view: yes
   entities:
     - group.daily_forecast
-    - sensor.moonphases
     #- group.4_day_forecast
 
 Media:
@@ -76,13 +75,6 @@ HA_Status:
     - weblink.control_panel
     - camera.kitchen_cam
 
-# Floorplan:
-  # name: Floorplan
-  # icon: mdi:floor-plan
-  # view: no
-  # entities:
-    # - group.floorplan_group
-
 ####GROUPS####
 
 Josh Sleep Status:
@@ -96,11 +88,6 @@ MJ Sleep Status:
   entities:
     - input_boolean.ib_m_status_sleeping
     - sensor.sen_m_status_sleeping
-
-
-Travis CI:
-    - sensor.flamingotterhass_state
-    - sensor.flamingotterhass_last_build_finished_at
 
 3D Printer:
     - input_boolean.3dprinter_saftey
@@ -133,9 +120,6 @@ Device Status:
     - device_tracker.sonoff_bedroom_fan
     - device_tracker.sonoff_foyer
     - device_tracker.sonoff_test
-
-# Floorplan Group:
-    # - binary_sensor.floorplan
 
 Stairs:
     - light.basement_light
@@ -188,7 +172,6 @@ Dining Room:
 Living Room Lamps:
     - light.corner_lamp
     - light.table_lamp
-
 
 Kitchen:
    - light.kitchen_light
@@ -257,4 +240,3 @@ Daily Forecast:
 #    - sensor.dark_sky_hourly_summary
 #    - sensor.dark_sky_daily_summary
     - weather.dark_sky
-    - sensor.moonphases
