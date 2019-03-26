@@ -1,5 +1,0 @@
-- host: 10.0.10.221
-  name: kitchen_cam
-  username: kitchen
-  password: kitchen
-  scan_interval: 5
