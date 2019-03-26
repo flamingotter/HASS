@@ -24,7 +24,6 @@ Weather:
   view: yes
   entities:
     - group.daily_forecast
-    - sensor.moonphases
     #- group.4_day_forecast
 
 Media:
@@ -257,4 +256,3 @@ Daily Forecast:
 #    - sensor.dark_sky_hourly_summary
 #    - sensor.dark_sky_daily_summary
     - weather.dark_sky
-    - sensor.moonphases
