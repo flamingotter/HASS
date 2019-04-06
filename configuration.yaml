@@ -2,9 +2,9 @@ homeassistant:
   name: Dashboard
   latitude: !secret home_lat
   longitude: !secret home_long
-  elevation: 1230
+  elevation: 876
   unit_system: imperial
-  time_zone: Europe/Berlin
+  time_zone: America/Chicago
   customize: !include customize.yaml
   auth_providers:
    - type: homeassistant
@@ -14,11 +14,17 @@ lovelace:
   mode: yaml
 
 zone:
-  name: Work
-  latitude: !secret work_lat
-  longitude: !secret work_long
-  radius: 1000
-  icon: mdi:worker
+  - name: Work
+    latitude: !secret work_lat
+    longitude: !secret work_long
+    radius: 1000
+    icon: mdi:worker
+  
+  - name: Home
+    latitude: !secret home_lat
+    longitude: !secret home_long
+    radius: 75
+    icon: mdi:home-heart
 
 http:
   #api_password: !secret http_password
@@ -132,6 +138,10 @@ weather:
   - platform: darksky
     api_key: !secret darksky_api_key
 
+nest:
+  client_id: !secret nest_id
+  client_secret: !secret nest_secret
+
 octoprint:
   host: !secret octo_ip
   api_key: !secret octo_api_key
@@ -157,9 +167,6 @@ cloud: !include cloud.yaml
 shell_command: !include_dir_merge_list shell_commands/
 binary_sensor: !include binary_sensors.yaml
 camera: !include camera.yaml
-
-# android_ip_webcam: !include_dir_merge_list android_ip_webcam/
-
 
 
 ################
