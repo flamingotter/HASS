@@ -107,8 +107,8 @@ binary_sensor:
             mdi:lock
           {% elif is_state('binary_sensor.door_locks', 'on') %}
             mdi:lock-open
-          #{% else %}
-            #mdi:lock-alert
+          {% else %}
+            mdi:lock-alert
           {% endif %}
       # windows:
       #   friendly_name: Windows
