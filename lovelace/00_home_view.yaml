@@ -1,0 +1,170 @@
+title: Main
+id: 0
+icon: mdi:home-heart
+cards:
+##Compact Header Config
+  - type: custom:compact-custom-header
+    main_config: true
+    swipe: true
+    background: '#636B75'
+    menu: show
+    options: show
+    voice: hide
+    notifications: clock
+    clock_format: '12'
+    clock_date: true
+    disable: false
+    exceptions:
+      - conditions:
+          user: mj
+        config:
+          hide_tabs: '8'
+      - conditions:
+          user_agent: Mobile
+        config:
+          hide_tabs: '7'
+      # - conditions:
+      #     user_agent: Windows NT
+      #   config:
+      #     hide_tabs: '9'
+
+
+##Home -
+  - type: entities
+    show_header_toggle: false
+    title: Status
+    entities:
+      - sensor.sen_home_status
+      - lock.schlage_front
+      - lock.schlage_back
+      # - binary_sensor.alarm
+      - type: divider
+      - person.josh
+      - person.mj
+      # - binary_sensor.windows
+      # - binary_sensor.garage
+      # - type: divider
+      # - binary_sensor.trash
+##Parlor Lights
+  - type: custom:tiles-card
+    card_settings:
+      background: var(--paper-card-background-color)
+      columns: 4
+      rows: 2
+      gap: 24px
+      title: Parlor
+    global_settings:
+      background:
+        value: none
+      # icon:
+      #   color: var('--paper-item-icon-color')
+      #   size: 2.3em
+    entities:
+      - entity: light.living_room_lamps #(Entity specific settings. Overwrite the global settings)
+        icon:
+          value: mdi:lamp
+          color:  #(optional)
+            value_on: var(--accent-color) #(optional)
+            value_off: var(--text-color) #(optional)
+          size: 2.3em #(optional)
+        label_sec: Parlor Lamps
+      - entity: light.corner_lamp #(Entity specific settings. Overwrite the global settings)
+        icon:
+          value: mdi:lightbulb
+          color:  #(optional)
+            value_on: var(--accent-color) #(optional)
+            value_off: var(--text-color) #(optional)
+          size: 2.3em #(optional)
+        label_sec: Corner
+      - entity: light.table_lamp #(Entity specific settings. Overwrite the global settings)
+        icon:
+          value: mdi:lightbulb
+          color:  #(optional)
+            value_on: var(--accent-color) #(optional)
+            value_off: var(--text-color) #(optional)
+          size: 2.3em #(optional)
+        label_sec: Table
+      - entity: light.front_door_light #(Entity specific settings. Overwrite the global settings)
+        icon:
+          value: mdi:ceiling-light
+          color:  #(optional)
+            value_on: var(--accent-color) #(optional)
+            value_off: var(--text-color) #(optional)
+          size: 2.3em #(optional)
+        label_sec: Front Door
+      - entity: light.hall
+        icon:
+          value: mdi:ceiling-light
+          color:  #(optional)
+            value_on: var(--accent-color) #(optional)
+            value_off: var(--text-color) #(optional)
+          size: 2.3em #(optional)
+        label_sec: Hall Lights
+##Kitchen/Dining Lights
+  - type: custom:tiles-card
+    card_settings:
+      background: var(--paper-card-background-color)
+      columns: 4
+      gap: 24px
+      title: Kitchen
+    global_settings:
+      background:
+        value: none
+      # icon:
+      #   color: var('--paper-item-icon-color')
+      #   size: 2.3em
+    entities:
+      - entity: light.dining_room
+        icon:
+          value: mdi:ceiling-light
+          color:  #(optional)
+            value_on: var(--accent-color) #(optional)
+            value_off: var(--text-color) #(optional)
+          size: 2.3em #(optional)
+        label_sec: Dining
+      - entity: light.kitchen
+        icon:
+          value: mdi:ceiling-light
+          color:  #(optional)
+            value_on: var(--accent-color) #(optional)
+            value_off: var(--text-color) #(optional)
+          size: 2.3em #(optional)
+        label_sec: Kitchen
+##MBR Lights
+  - type: custom:tiles-card
+    card_settings:
+      background: var(--paper-card-background-color)
+      columns: 4
+      gap: 24px
+      title: MBR
+    global_settings:
+      background:
+        value: none
+      # icon:
+      #   color: var('--paper-item-icon-color')
+      #   size: 2.3em
+    entities:
+      - entity: light.bedroom_lamps #(Entity specific settings. Overwrite the global settings)
+        icon:
+          value: mdi:lamp
+          color:  #(optional)
+            value_on: var(--accent-color) #(optional)
+            value_off: var(--text-color) #(optional)
+          size: 2.3em #(optional)
+        label_sec: MBR Lamps
+      - entity: light.eugene #(Entity specific settings. Overwrite the global settings)
+        icon:
+          value: mdi:lamp
+          color:  #(optional)
+            value_on: var(--accent-color) #(optional)
+            value_off: var(--text-color) #(optional)
+          size: 2.3em #(optional)
+        label_sec: Eugene
+      - entity: light.rapunzel #(Entity specific settings. Overwrite the global settings)
+        icon:
+          value: mdi:lamp
+          color:  #(optional)
+            value_on: var(--accent-color) #(optional)
+            value_off: var(--text-color) #(optional)
+          size: 2.3em #(optional)
+        label_sec: rapunzel

@@ -1,0 +1,15 @@
+title: Master Bedroom
+id: 6
+icon: mdi:hotel
+cards:
+##Compact Header Config
+  - type: custom:compact-custom-header
+
+  - type: horizontal-stack
+    cards:
+      - type: light
+        entity: light.eugene
+      - type: light
+        entity: light.rapunzel
+  - type: entity-button
+    entity: switch.bed_fan

@@ -1,0 +1,73 @@
+#### UNDER BED LIGHT MASTER BDR
+- platform: mqtt
+  schema: json
+  name: "Under Bed"
+  state_topic: "home/bedLed1"
+  command_topic: "home/bedLed1/set"
+  effect: true
+  effect_list:
+    - bpm
+    - candy cane
+    - confetti
+    - cyclon rainbow
+    - dots
+    - fire
+    - glitter
+    - juggle
+    - lightning
+    - noise
+    - police all
+    - police one
+    - rainbow
+    - rainbow with glitter
+    - ripple
+    - sinelon
+    - solid
+    - twinkle
+  brightness: true
+  # flash: true
+  rgb: true
+  optimistic: false
+  qos: 0
+
+- platform: switch
+  name: Cabinet Light
+  entity_id: switch.cabinet_light
+
+- platform: switch
+  name: Desk Light
+  entity_id: switch.desk_light
+
+- platform: switch
+  name: Foyer Light
+  entity_id: switch.foyer_light
+
+- platform: switch
+  name: Office Light
+  entity_id: switch.office_light
+
+- platform: switch
+  name: Paper Lamp
+  entity_id: switch.paper_lamp
+
+- platform: switch
+  name: Front Door Light
+  entity_id: switch.front_door_light
+
+- platform: group
+  name: Dining Room
+  entities:
+    - light.dining_one
+    - light.dining_two
+
+- platform: group
+  name: Living Room Lamps
+  entities:
+    - light.corner_lamp
+    - light.table_lamp
+
+- platform: group
+  name: Bedroom Lamps
+  entities:
+    - light.eugene
+    - light.rapunzel

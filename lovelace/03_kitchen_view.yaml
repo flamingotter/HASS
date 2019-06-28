@@ -1,0 +1,16 @@
+##Kitchen Tab#############################################################################################
+title: Kitchen
+id: 3
+icon: mdi:silverware
+cards:
+##Compact Header Config
+  - type: custom:compact-custom-header
+
+  - type: horizontal-stack
+    cards:
+      - type: light
+        entity: light.dining_one
+      - type: light
+        entity: light.dining_two
+      - type: light
+        entity: light.dining_room

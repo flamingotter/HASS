@@ -1,5 +1,5 @@
 customElements.whenDefined('card-tools').then(() => {
-class CardModder extends cardTools.litElement() {
+class CardModder extends cardTools.LitElement {
 
   constructor() {
     super();
@@ -29,13 +29,16 @@ class CardModder extends cardTools.litElement() {
       config.card.entities = config.entities;
 
     this.card = cardTools.createCard(config.card);
+    this._cards = [this.card];
     if(this._hass)
       this.card.hass = this._hass;
 
     if(this._config)
-      this._cardMod();
+      this._cardMod(this.card);
 
     this._config = config;
+
+    this.recurse = config.recurse !== undefined ? config.recurse : true;
 
     window.addEventListener("location-changed", () => this.hass = this._hass);
   }
@@ -44,27 +47,32 @@ class CardModder extends cardTools.litElement() {
     return this;
   }
   render() {
-    return cardTools.litHtml()`
+    return cardTools.LitHtml`
     <div id="root">${this.card}</div>
     `;
   }
 
   async firstUpdated() {
-    this._cardMod();
+    this._cardMod(this.card);
   }
 
-  async _cardMod() {
-    if(!this._config.style) return;
+  async _cardMod(root) {
+    if(!this._config.style && !this._config.extra_styles) return;
 
-    let root = this.card;
+    if (this.recurse && root._cards && root._cards.length) {
+      root._cards.forEach(c => this._cardMod(c));
+      return;
+    }
+
     let target = null;
     let styles = null;
-    if(this.classList.contains("element")) {
-      target = this.card;
-      root = this;
-    }
     while(!target) {
       await root.updateComplete;
+      if(root._cardModder) {
+        target = root._cardModder.target;
+        styles = root._cardModder.styles;
+        continue;
+      }
       if(root.querySelector("style"))
         styles = root.querySelector("style");
       if(root.querySelector("ha-card")) {
@@ -93,8 +101,13 @@ class CardModder extends cardTools.litElement() {
       }
       break;
     }
+    if(this.classList.contains("element")) {
+      if(!target)
+        target = this.card;
+      root = this;
+    }
     if(!target && this.attempts) // Try again
-      setTimeout(() => this._cardMod(), 100);
+      setTimeout(() => this._cardMod(root), 100);
     this.attempts--;
     target = target || this.card;
 
