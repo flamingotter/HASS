@@ -103,9 +103,9 @@ binary_sensor:
           {{ is_state('lock.schlage_front', 'locked')
             and is_state('lock.schlage_back', 'locked') }}
         icon_template: >-
-          {% if is_state('binary_sensor.door_locks', 'off') %}
+          {% if is_state('binary_sensor.door_locks', 'on') %}
             mdi:lock
-          {% elif is_state('binary_sensor.door_locks', 'on') %}
+          {% elif is_state('binary_sensor.door_locks', 'off') %}
             mdi:lock-open
           {% else %}
             mdi:lock-alert
