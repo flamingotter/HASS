@@ -1,216 +1,30 @@
-title: Dashboard
 resources:
-  - url: /local/custom-lovelace/card-modder.js?v=2
+  - url: /local/custom-lovelace/card-modder.js
     type: js
-  - url: /local/custom-lovelace/card-tools.js?v=0.3
+  - url: /local/custom-lovelace/card-tools.js?
     type: js
-  - url: /local/custom-lovelace/compact-custom-header.js?v=0.0.3
+  - url: /local/custom-lovelace/compact-custom-header.js
     type: module
-    
-background: center / cover no-repeat url("/local/star1.jpg") fixed
+  - url: /local/custom-lovelace/tracker-card.js?track=true
+    type: module
+  - url: /local/custom-lovelace/slider-entity-row.js
+    type: js
+  - url: /local/custom-lovelace/circle-sensor-card.js
+    type: module
+  - url: /local/custom-lovelace/tiles-card.js
+    type: js
 
+background: var(--background-image)
+
+title: Dashboard
 views:
-##Main Tab
-  - title: Main
-    icon: mdi:home-heart
-    cards:
-      - type: custom:compact-custom-header
-        main_config: false
-        menu: show
-        notifications: overflow
-        options: clock
-        voice: hide
-        clock_format: 12
-        
-      - type: vertical-stack
-        cards:
-          - type: horizontal-stack
-            cards:
-            
-          - type: custom:card-modder
-            report_size: 3
-            style:
-              background-color: rgba(0,0,0,0.3)
-              background-size: 100% 100%
-              border-radius: 10px
-              border: solid 0px #rgba(0,153,255,1.3)  # (0,153,255,1.1) purple border
-              box-shadow: 3px 3px rgba(128, 128, 128,0.2)
-              color: rgba(255,255,255,5.9)
-            card:
-              type: picture-glance
-              title: Master Bedroom
-              #icon: mdi:hotel
-              entities:
-                - light.eugene
-                - light.rapunzel
-                - light.under_bed
-                - switch.bed_fan
-              image: /local/mbr.jpg
-              aspect_ratio: 16x6
-              hold_action:
-                action: navigate
-                navigation_path: /lovelace/mbr/
-
-          - type: picture-glance
-            title: Living Room
-            entities:
-              - light.corner_lamp
-              - light.table_lamp
-              - light.paper_lamp
-              - light.spot_light
-            image: /local/lr.jpg
-            aspect_ratio: 16x9
-            hold_action:
-              action: navigate
-              navigation_path: /lovelace/lr/
-          
-          - type: entity-button
-            entity: group.stairs
-            icon: mdi:stairs
-            hold_action:
-              action: navigate
-              navigation_path: /lovelace/1/
-          - type: entity-button
-            entity: group.dining_room
-            icon: mdi:silverware
-            hold_action:
-              action: navigate
-              navigation_path: /lovelace/0/
-          - type: entity-button
-            entity: group.kitchen
-            icon: mdi:stove
-            hold_action:
-              action: navigate
-              navigation_path: /lovelace/2/
-          - type: entity-button
-            entity: group.office
-            icon: mdi:desktop-tower-monitor
-            hold_action:
-              action: navigate
-              navigation_path: /lovelace/4/
-
-
-
-          - type: entity-filter
-            title: Device Trackers
-            show_header_toggle: true
-            entities:
-              - device_tracker.ashlee_a5
-              - device_tracker.basement_stair_node
-              - device_tracker.bed_node_sensor
-              - device_tracker.esp_4edc25
-              - device_tracker.esp_4edf45
-              - device_tracker.flamingotter_mqtt_pix3j
-              - device_tracker.flamingotter_mqtt_pix3m
-              - device_tracker.octopi
-              - device_tracker.sonoff_test
-              - device_tracker.testnode
-            state_filter:
-              - 'home'
-            card:
-              type: glance
-              title: My Device Trackers
-
-##Living Room Tab
-  - title: Living Room
-    path: lr
-    icon: mdi:sofa
-    cards:
-      - type: light
-        entity: light.spot_light
-      - type: horizontal-stack
-        cards:
-          - type: light
-            entity: light.corner_lamp
-          - type: light
-            entity: light.table_lamp
-      - type: entities
-        title: Living Room
-        show_state: false
-        entities:
-          - entity: group.living_room
-            icon: mdi:lamp
-            name: All
-            tap_action: toggle
-          - entity: group.living_room_lamps
-            icon: mdi:lamp
-            name: Lamps
-            tap_action: toggle
-          - entity: light.corner_lamp
-            tap_action: toggle
-          - entity: light.table_lamp
-            tap_action: toggle
-          - entity: light.spot_light
-            tap_action: toggle
-          - entity: switch.paper_lamp
-            icon: mdi:floor-lamp
-            tap_action: toggle
-
-##Kitchen Tab
-  - title: Kitchen
-    icon: mdi:stove
-    cards:
-      - type: horizontal-stack
-        cards:
-          - type: light
-            entity: light.kitchen_light
-          - type: light
-            entity: light.cabinet_light
-      - type: entities
-        title: Kitchen
-        show_state: false
-        entities:
-          - entity: light.kitchen_light
-            tap_action: toggle
-          - entity: light.cabinet_light
-            tap_action: toggle
-
-##Master Bedroom Tab
-  - title: Master Bedroom
-    path: mbr
-    icon: mdi:hotel
-    cards:
-      - type: horizontal-stack
-        cards:
-          - type: light
-            entity: light.eugene
-          - type: light
-            entity: light.rapunzel
-      - type: entity-button
-        entity: switch.bed_fan
-
-##Offcie Tab
-  - title: Office
-    icon: mdi:desktop-tower-monitor
-    cards:
-      - type: picture-glance
-        title: Office
-        show_state: false
-        camera_image: camera.octoprint
-        entities:
-          - entity: switch.desk_light
-            icon: mdi:desk-lamp
-            tap_action: toggle
-          - entity: switch.office_light
-            tap_action: toggle
-          - entity: switch.office_fan
-            icon: mdi:fan
-            tap_action: toggle
-          - entity: sensor.test_temp
-          - entity: sensor.motion_test
-            icon: mdi:run
-      - type: sensor
-        entity: sensor.test_temp
-        name: Office Temp
-        hours_to_show: 72
-
-
-##Weather Tab
-  - title: Weather
-    icon: mdi:weather-lightning-rainy
-    cards:
-
-      - type: weather-forecast
-        title: Weather
-        #show_header_toggle: true
-        entity: weather.dark_sky
+  - !include lovelace/00_home_view.yaml
+  - !include lovelace/01_security_view.yaml
+  - !include lovelace/02_parlor_view.yaml
+  - !include lovelace/03_kitchen_view.yaml
+  - !include lovelace/04_family_view.yaml
+  - !include lovelace/05_office_view.yaml
+  - !include lovelace/06_mbr_view.yaml
+  - !include lovelace/07_weather_view.yaml
+  - !include lovelace/08_settings_view.yaml
+  - !include lovelace/09_mobile_home_view.yaml

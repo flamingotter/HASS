@@ -1,0 +1,8 @@
+title: Settings
+id: 8
+icon: mdi:settings-outline
+cards:
+##Compact Header Config
+  - type: custom:compact-custom-header
+
+  - type: custom:tracker-card

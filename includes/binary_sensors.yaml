@@ -1,0 +1,51 @@
+####OCTOPRINT
+- platform: octoprint
+  monitored_conditions:
+  - Printing
+  - Printing Error
+
+####JOSH_HOME BAYESIAN
+- platform: bayesian
+  name: 'josh_home'
+  prior: 0.50
+  probability_threshold: 0.95
+  observations:
+      - entity_id: 'device_tracker.flamingotter_mqtt_pix3j'
+        prob_given_true: 0.9
+        prob_given_false: 0.4
+        platform: 'state'
+        to_state: 'home'
+
+# #### JOSH SLEEP STATUS Display only
+
+# - platform: template
+  # sensors:
+    # bs_sen_j_sleep_status:
+      # friendly_name: "Josh Sleep Status"
+      # entity_id: sensor.sen_j_status_sleeping
+      # value_template: >-
+        # {{ is_state('input_boolean.ib_j_status_sleeping', 'on')
+           # or is_state('input_boolean.ib_j_status_sleeping', 'off') }}
+      # icon_template: >-
+        # {% if is_state('input_boolean.ib_j_status_sleeping', 'on') %}
+           # mdi:sleep
+        # {% elif is_state('input_boolean.ib_j_status_sleeping', 'off') %}
+           # mdi:sleep-off
+         # {% endif %}
+
+# #### MJ SLEEP STATUS Display only
+
+# - platform: template
+  # sensors:
+    # bs_sen_m_sleep_status:
+      # friendly_name: "MJ Sleep Status"
+      # entity_id: sensor.sen_m_status_sleeping
+      # value_template: >-
+        # {{ is_state('sensor.sen_m_status_sleeping', 'sleeping')
+           # or is_state('sensor.sen_m_status_sleeping', 'awake') }}
+      # icon_template: >-
+        # {% if is_state('sensor.sen_m_status_sleeping', 'sleeping') %}
+           # mdi:sleep
+        # {% elif is_state('sensor.sen_m_status_sleeping', 'awake') %}
+           # mdi:sleep-off
+         # {% endif %}

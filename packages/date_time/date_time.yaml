@@ -1,0 +1,73 @@
+#################################################################
+#                                                               #
+#                     Packages/Date & Time                      #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                       Binary Sensors                          #
+#                                                               #
+#################################################################
+
+binary_sensor:
+
+####################################################
+#                                                  #
+#            Binary Sensors - Workday              #
+#                                                  #
+#################################################### 
+
+  - platform: workday
+    country: US
+    workdays: [mon, tue, wed, thu, fri]
+    
+#################################################################
+#                                                               #
+#                            Sensors                            #
+#                                                               #
+#################################################################
+
+sensor:
+
+####################################################
+#                                                  #
+#                 Sensor - Template                #
+#                                                  #
+####################################################
+
+
+  - platform: template
+    sensors:
+      dayoftheweek:
+        value_template: "{{ ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'][now().weekday()] }}"
+        entity_id: sensor.time
+
+####################################################
+#                                                  #
+#                Sensor - Time/Date                #
+#                                                  #
+####################################################
+
+  - platform: time_date
+    display_options:
+      - time
+      - date
+      - date_time
+      - time_date
+      - time_utc
+      - beat
+      
+####################################################
+#                                                  #
+#               Sensor - World Clock               #
+#                                                  #
+####################################################
+
+  - platform: worldclock
+    time_zone: America/Chicago
+    name: Local Time
+  
+  - platform: worldclock
+    time_zone: Europe/London
+    name: London Time

@@ -1,0 +1,15 @@
+- id: '1561559000353'
+  alias: unlock front
+  trigger:
+  - entity_id: lock.schlage_front
+    from: locked
+    platform: state
+    to: unlocked
+  condition:
+  - condition: state
+    entity_id: input_select.home_status
+    state: locked down
+  action:
+  - data: {}
+    service: notify.josh
+

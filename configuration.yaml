@@ -1,14 +1,20 @@
 homeassistant:
-  name: Dashboard
-  latitude: !secret home_lat
-  longitude: !secret home_long
-  elevation: 876
-  unit_system: imperial
-  time_zone: America/Chicago
-  customize: !include customize.yaml
+  # name: Dashboard
+  # latitude: !secret home_lat
+  # longitude: !secret home_long
+  # elevation: 876
+  # unit_system: imperial
+  # time_zone: America/Chicago
+  customize: !include includes/customize.yaml
+  packages: !include_dir_named packages
   auth_providers:
    - type: homeassistant
-   #- type: legacy_api_password
+
+custom_updater:
+#https://github.com/custom-components/custom_updater/wiki/Installation
+  component_urls:
+# Released build
+    - https://raw.githubusercontent.com/keatontaylor/alexa_media_player/master/custom_components.json
 
 lovelace:
   mode: yaml
@@ -19,7 +25,7 @@ zone:
     longitude: !secret work_long
     radius: 1000
     icon: mdi:worker
-  
+
   - name: Home
     latitude: !secret home_lat
     longitude: !secret home_long
@@ -88,34 +94,45 @@ media_player:
     port: 8001
     #mac: E4:7D:BD:A7:02:0A
 
-  - platform: alexa
-    email: !secret amazon_username
-    password: !secret amazon_password
-    url: amazon.com
-    exclude_devices:
-    - "This Device"
-    - "Maryleigh's Alexa Apps"
-    - "Joshua's Alexa Apps"
+  # - platform: alexa
+    # email: !secret amazon_username
+    # password: !secret amazon_password
+    # url: amazon.com
+    # exclude_devices:
+    # - "This Device"
+    # - "Maryleigh's Alexa Apps"
+    # - "Joshua's Alexa Apps"
+
+alexa_media:
+  accounts:
+    - email: !secret amazon_username
+      password: !secret amazon_password
+      url: amazon.com
+      exclude_devices:
+        - "This Device"
+        - "Maryleigh's Alexa Apps"
+        - "Joshua's Alexa Apps"
 
 person:
 
 device_tracker:
-  - platform: owntracks
-    max_gps_accuracy: 100
+  # - platform: owntracks
+  #   max_gps_accuracy: 100
   - platform: unifi
-    host: 10.0.10.10
+    host: 10.0.10.223
     port: 8443
     detection_time: 180
     username: !secret unifi_username
     password: !secret unifi_password
     verify_ssl: false
-#     site_id: default
+    site_id: 3q1vqa71
     new_device_defaults:
       track_new_devices: false
       hide_if_away: false
 
 tts:
-  - platform: google
+  - platform: google_translate
+    service_name: google_say
     language: 'en-us'
 
 history:
@@ -134,10 +151,6 @@ history:
       - sensor.test_hum
       - sensor.test_lux
 
-weather:
-  - platform: darksky
-    api_key: !secret darksky_api_key
-
 nest:
   client_id: !secret nest_id
   client_secret: !secret nest_secret
@@ -152,21 +165,21 @@ octoprint:
 ################
 ####INCLUDES####
 ################
-sensor: !include_dir_merge_list sensors/
-light: !include lights.yaml
-switch: !include switches.yaml
-group: !include groups.yaml
-input_boolean: !include misc/input_boolean.yaml
-input_select: !include misc/input_select.yaml
-input_number: !include misc/input_number.yaml
-scene: !include_dir_merge_list scenes/
-automation: !include_dir_merge_list automation/
-script: !include_dir_merge_list scripts/
-notify: !include notify.yaml
-cloud: !include cloud.yaml
-shell_command: !include_dir_merge_list shell_commands/
-binary_sensor: !include binary_sensors.yaml
-camera: !include camera.yaml
+automation: !include_dir_merge_list includes/automation/
+binary_sensor: !include includes/binary_sensors.yaml
+camera: !include includes/camera.yaml
+cloud: !include includes/cloud.yaml
+group: !include includes/groups.yaml
+input_boolean: !include includes/input_boolean.yaml
+input_select: !include includes/input_select.yaml
+input_number: !include includes/input_number.yaml
+light: !include includes/lights.yaml
+notify: !include includes/notify.yaml
+scene: !include_dir_merge_list includes/scenes/
+script: !include_dir_merge_list includes/scripts/
+sensor: !include_dir_merge_list includes/sensors/
+shell_command: !include_dir_merge_list includes/shell_commands/
+switch: !include includes/switches.yaml
 
 
 ################
@@ -175,7 +188,8 @@ camera: !include camera.yaml
 map:
 sun:
 frontend:
-  javascript_version: auto
+  themes: !include includes/themes.yaml
+  javascript_version: latest
 config:
 system_health:
-# websocket_api:
+tplink:

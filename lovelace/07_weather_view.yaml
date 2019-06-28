@@ -1,0 +1,11 @@
+title: Weather
+id: 7
+icon: mdi:weather-lightning-rainy
+cards:
+##Compact Header Config
+  - type: custom:compact-custom-header
+
+  - type: weather-forecast
+    title: Weather
+    #show_header_toggle: true
+    entity: weather.dark_sky
