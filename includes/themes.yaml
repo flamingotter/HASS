@@ -4,6 +4,10 @@ clear:
 
   ha-card-border-radius: 5px
 
+  # CCH Styles
+  cch-background: 'var(--text-color)'
+  cch-active-tab-color: 'var(--accent-color)'
+
   # Colors
   text-color: '#636B75'                                                           # Grey text
   text-medium-color: '#8c96a5'                                                    # Medium grey text

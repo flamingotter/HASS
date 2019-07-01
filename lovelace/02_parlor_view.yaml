@@ -4,7 +4,7 @@ id: 2
 icon: mdi:piano
 cards:
 ##Compact Header Config
-  - type: custom:compact-custom-header
+  # - type: custom:compact-custom-header
 
   # - type: light
   #   entity: light.living_room_lamps

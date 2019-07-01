@@ -4,7 +4,7 @@ id: 3
 icon: mdi:silverware
 cards:
 ##Compact Header Config
-  - type: custom:compact-custom-header
+  # - type: custom:compact-custom-header
 
   - type: horizontal-stack
     cards:

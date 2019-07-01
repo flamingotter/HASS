@@ -3,7 +3,7 @@ id: 0
 icon: mdi:home-heart
 cards:
 ##Compact Header Config
-  - type: custom:compact-custom-header
+  # - type: custom:compact-custom-header
   #   main_config: true
   #   swipe: true
   #   background: '#636B75'
@@ -35,8 +35,7 @@ cards:
     title: Status
     entities:
       - sensor.sen_home_status
-      - lock.schlage_front
-      - lock.schlage_back
+      - binary_sensor.door_locks
       # - binary_sensor.alarm
       - type: divider
       - person.josh

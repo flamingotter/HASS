@@ -3,7 +3,7 @@ id: 6
 icon: mdi:hotel
 cards:
 ##Compact Header Config
-  - type: custom:compact-custom-header
+  # - type: custom:compact-custom-header
 
   - type: horizontal-stack
     cards:

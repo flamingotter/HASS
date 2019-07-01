@@ -1,12 +1,10 @@
-swipe: true
-background: '#636B75'
+swipe: 'true'
 menu: show
 options: show
 voice: hide
 notifications: clock
 clock_format: '12'
 clock_date: true
-disable: false
 exceptions:
   - conditions:
       user: mj
@@ -16,7 +14,3 @@ exceptions:
       user_agent: Mobile
     config:
       hide_tabs: '7'
-  # - conditions:
-  #     user_agent: Windows NT
-  #   config:
-  #     hide_tabs: '9'
