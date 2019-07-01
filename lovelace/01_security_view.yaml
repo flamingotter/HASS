@@ -2,7 +2,6 @@ title: Security
 id: 1
 icon: mdi:shield-home
 cards:
-##Compact Header Config
   - type: custom:compact-custom-header
 ##Cameras
   - type: picture-entity

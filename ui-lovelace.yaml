@@ -16,6 +16,32 @@ resources:
 
 background: var(--background-image)
 
+cch:
+  - !include lovelace/cch.yaml
+  # - type: custom:compact-custom-header
+  # swipe: true
+  # background: '#636B75'
+  # menu: show
+  # options: show
+  # voice: hide
+  # notifications: clock
+  # clock_format: '12'
+  # clock_date: true
+  # disable: false
+  # exceptions:
+  #   - conditions:
+  #       user: mj
+  #     config:
+  #       hide_tabs: '8'
+  #   - conditions:
+  #       user_agent: Mobile
+  #     config:
+  #       hide_tabs: '7'
+    # - conditions:
+    #     user_agent: Windows NT
+    #   config:
+    #     hide_tabs: '9'
+
 title: Dashboard
 views:
   - !include lovelace/00_home_view.yaml
@@ -27,4 +53,4 @@ views:
   - !include lovelace/06_mbr_view.yaml
   - !include lovelace/07_weather_view.yaml
   - !include lovelace/08_settings_view.yaml
-  - !include lovelace/09_mobile_home_view.yaml
+  # - !include lovelace/09_mobile_home_view.yaml
