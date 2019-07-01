@@ -6,3 +6,9 @@ cards:
   # - type: custom:compact-custom-header
 
   - type: custom:tracker-card
+
+  - type: entities
+    show_header_toggle: false
+    title: Status
+    entities:
+      - sensor.potential_breaking_changes
