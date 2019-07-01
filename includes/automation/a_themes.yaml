@@ -1,20 +1,20 @@
-- id: Theme Day
-  alias: "Day Theme after Sunrise"
+- id: Theme Set
+  alias: 'Set HA theme for day and night'
   trigger:
-    platform: sun
-    event: sunrise
-    offset: "+00:00:00"
+    - platform: homeassistant
+      event: start
+    - platform: state
+      entity_id: sun.sun
+      to: above_horizon
+    - platform: state
+      entity_id: sun.sun
+      to: below_horizon
   action:
-    - service: frontend.set_theme
-      data:
-        name: clear
-- id: Theme Night
-  alias: "Dark Theme after Sunset"
-  trigger:
-    platform: sun
-    event: sunset
-    offset: "+00:00:00"
-  action:
-    - service: frontend.set_theme
-      data:
-        name: dark
+    - service_template: frontend.set_theme
+      data_template:
+      name: >
+        {% if states.sun.sun.state == "above_horizon" %}
+          clear
+        {% else %}
+          dark
+        {% endif %}
