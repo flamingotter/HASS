@@ -14,6 +14,8 @@ custom_components/media_player/
 *.db-wal
 *.red
 *.mp3
+*.pickle
+*.sqlite
 !*.yaml
 !.gitignore
 secrets.yaml
@@ -21,7 +23,10 @@ known_devices.yaml
 home-assistant_v2.db
 home-assistant.log
 gitupdate.sh
+OZW_Log.txt
+ip_bans.yaml
 .uuid
 .HA_VERSION
 .storage
 .cloud
+
