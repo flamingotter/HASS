@@ -12,6 +12,7 @@
 
 ## Enabling Components:
 * Amazon Echo (Gen. 1)
+* Amazon Echo (Gen. 2)
 * Amazon Echo Dot (Gen. 2)
 * Amazon Echo Dot (Gen. 3)
 * Amazon Fire 7 (Gen. 7)
@@ -20,8 +21,8 @@
 * Lifx Mini
 * Sonoff Basic
 * Aeotec Z-Stick Gen5
-* GE Z-wave Smart Switches
-* Schlage Connect Z-Wave Locks
+* GE Z-wave Smart Switch
+* Schlage Connect Z-Wave Lock
 * Custom Sensors (D1 Minis)
 
 ## Network:
