@@ -14,7 +14,7 @@
     data_template:
       name: >
         {% if states.sun.sun.state == "above_horizon" %}
-          clear
-        {% else %}
           dark
+        {% else %}
+          clear
         {% endif %}
