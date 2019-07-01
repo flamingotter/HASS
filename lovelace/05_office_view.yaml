@@ -3,7 +3,7 @@ id: 5
 icon: mdi:desktop-tower-monitor
 cards:
 ##Compact Header Config
-  - type: custom:compact-custom-header
+  # - type: custom:compact-custom-header
 
   - type: picture-glance
     title: Office

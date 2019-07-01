@@ -2,7 +2,16 @@ title: Security
 id: 1
 icon: mdi:shield-home
 cards:
-  - type: custom:compact-custom-header
+  # - type: custom:compact-custom-header
+
+  - type: entities
+    show_header_toggle: false
+    title: Doors
+    entities:
+      - binary_sensor.door_locks
+      - type: divider
+      - lock.schlage_front
+      - lock.schlage_back
 ##Cameras
   - type: picture-entity
     entity: camera.inside_parlor
