@@ -4,29 +4,29 @@ icon: mdi:home-heart
 cards:
 ##Compact Header Config
   - type: custom:compact-custom-header
-    main_config: true
-    swipe: true
-    background: '#636B75'
-    menu: show
-    options: show
-    voice: hide
-    notifications: clock
-    clock_format: '12'
-    clock_date: true
-    disable: false
-    exceptions:
-      - conditions:
-          user: mj
-        config:
-          hide_tabs: '8'
-      - conditions:
-          user_agent: Mobile
-        config:
-          hide_tabs: '7'
-      # - conditions:
-      #     user_agent: Windows NT
-      #   config:
-      #     hide_tabs: '9'
+  #   main_config: true
+  #   swipe: true
+  #   background: '#636B75'
+  #   menu: show
+  #   options: show
+  #   voice: hide
+  #   notifications: clock
+  #   clock_format: '12'
+  #   clock_date: true
+  #   disable: false
+  #   exceptions:
+  #     - conditions:
+  #         user: mj
+  #       config:
+  #         hide_tabs: '8'
+  #     - conditions:
+  #         user_agent: Mobile
+  #       config:
+  #         hide_tabs: '7'
+  #     # - conditions:
+  #     #     user_agent: Windows NT
+  #     #   config:
+  #     #     hide_tabs: '9'
 
 
 ##Home -
@@ -35,7 +35,8 @@ cards:
     title: Status
     entities:
       - sensor.sen_home_status
-      - binary_sensor.door_locks
+      - lock.schlage_front
+      - lock.schlage_back
       # - binary_sensor.alarm
       - type: divider
       - person.josh

@@ -6,18 +6,18 @@ cards:
 ##Compact Header Config
   - type: custom:compact-custom-header
 
-  - type: light
-    entity: light.living_room_lamps
-  - type: horizontal-stack
-    cards:
-      - type: light
-        entity: light.corner_lamp
-      - type: light
-        entity: light.table_lamp
-  - type: entity-button
-    entity: light.front_door_light
-  - type: light
-    entity: light.hall
+  # - type: light
+  #   entity: light.living_room_lamps
+  # - type: horizontal-stack
+  #   cards:
+  #     - type: light
+  #       entity: light.corner_lamp
+  #     - type: light
+  #       entity: light.table_lamp
+  # - type: entity-button
+  #   entity: light.front_door_light
+  # - type: light
+  #   entity: light.hall
 
   - type: entities
     title: Parlor
