@@ -19,12 +19,21 @@
 * Lifx A19
 * Lifx Mini
 * Sonoff Basic
+* Aeotec Z-Stick Gen5
+* GE Z-wave Smart Switches
+* Schlage Connect Z-Wave Locks
 * Custom Sensors (D1 Minis)
 
 ## Network:
+* UniFi Cloud Key Gen2 Plus
 * Unifi Security Gateway
 * Unifi AP-AC-LC
 * Unifi Controller
+
+## Cameras:
+* Unifi Protect NVR
+* Unifi G3 Micro
+* Unifi G3
 
 ## 3D Printers:
 * Ender 3 Pro
