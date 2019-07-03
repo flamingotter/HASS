@@ -147,11 +147,11 @@ cards:
     entity: climate.kitchen
     step_size: 1
     sensors:
-      - entity: sensor.family_room_thermostat_humidity
-        name: Humidity
       - entity: sensor.family_room_thermostat_hvac_state
         name: Current Mode
+      - entity: sensor.family_room_thermostat_humidity
+        name: Humidity
       - attribute: away_mode
         name: Away mode
     hide:
-      mode: false
+      mode: true
