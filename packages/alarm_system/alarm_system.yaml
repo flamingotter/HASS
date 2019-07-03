@@ -67,15 +67,15 @@ group:
 #                                                               #
 #################################################################
 
-sensor:
-  - platform: template
-    sensors:
-      door_count:
-        value_template: >-
-           {{ states.binary_sensor | selectattr('state', 'eq', 'locked') | selectattr('attributes.device_class', 'eq', 'lock') | list | count | int }}
-      # window_count:
-      #   value_template: >-
-      #      {{ states.binary_sensor | selectattr('state', 'eq', 'on') | selectattr('attributes.device_class', 'eq', 'window') | list | count | int }}
+# sensor:
+#   - platform: template
+#     sensors:
+#       door_count:
+#         value_template: >-
+#            {{ states.binary_sensor | selectattr('state', 'eq', 'locked') | selectattr('attributes.device_class', 'eq', 'lock') | list | count | int }}
+#       window_count:
+#         value_template: >-
+#            {{ states.binary_sensor | selectattr('state', 'eq', 'on') | selectattr('attributes.device_class', 'eq', 'window') | list | count | int }}
 
 #################################################################
 #                                                               #
