@@ -149,7 +149,7 @@ cards:
     sensors:
       - entity: sensor.family_room_thermostat_humidity
         name: Humidity
-      - attribute: min_temp
-        name: Min temp
+#       - attribute: min_temp
+#         name: Min temp
     hide:
-      mode: true
+      mode: false
