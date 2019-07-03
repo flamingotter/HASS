@@ -2,15 +2,18 @@
 title: Kitchen
 id: 3
 icon: mdi:silverware
-cards:
-##Compact Header Config
-  # - type: custom:compact-custom-header
-
-  - type: horizontal-stack
-    cards:
-      - type: light
-        entity: light.dining_one
-      - type: light
-        entity: light.dining_two
-      - type: light
+cards:  
+  - type: entities
+    title: Kitchen
+    show_state: false
+    entities:
+      - type: custom:slider-entity-row
         entity: light.dining_room
+        icon: mdi:ceiling-light
+      - type: divider
+      - type: custom:slider-entity-row
+        entity: light.dining_one
+        icon: mdi:ceiling-light
+      - type: custom:slider-entity-row
+        entity: light.dining_two
+        icon: mdi:ceiling-light
