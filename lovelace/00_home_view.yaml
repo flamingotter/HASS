@@ -2,32 +2,6 @@ title: Main
 id: 0
 icon: mdi:home-heart
 cards:
-##Compact Header Config
-  # - type: custom:compact-custom-header
-  #   main_config: true
-  #   swipe: true
-  #   background: '#636B75'
-  #   menu: show
-  #   options: show
-  #   voice: hide
-  #   notifications: clock
-  #   clock_format: '12'
-  #   clock_date: true
-  #   disable: false
-  #   exceptions:
-  #     - conditions:
-  #         user: mj
-  #       config:
-  #         hide_tabs: '8'
-  #     - conditions:
-  #         user_agent: Mobile
-  #       config:
-  #         hide_tabs: '7'
-  #     # - conditions:
-  #     #     user_agent: Windows NT
-  #     #   config:
-  #     #     hide_tabs: '9'
-
 
 ##Home -
   - type: entities
@@ -167,3 +141,15 @@ cards:
             value_off: var(--text-color) #(optional)
           size: 2.3em #(optional)
         label_sec: rapunzel
+
+##Climate
+  - type: custom:simple-thermostat
+    entity: climate.kitchen
+    step_size: 1
+    sensors:
+      - entity: sensor.family_room_thermostat_humidity
+        name: Humidity
+      - attribute: min_temp
+        name: Min temp
+    hide:
+      mode: true
