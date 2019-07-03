@@ -13,6 +13,8 @@ resources:
     type: module
   - url: /local/custom-lovelace/tiles-card.js
     type: js
+  - url: /local/custom-lovelace/simple-thermostat.js?v=1
+    type: module
 
 background: var(--background-image)
 
