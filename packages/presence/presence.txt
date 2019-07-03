@@ -1,0 +1,160 @@
+#################################################################
+#                                                               #
+#                    Packages/Presence                          #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+
+homeassistant:
+  customize:
+    binary_sensor.door_locks:
+      friendly_name: Door Locks
+      device_class: lock
+
+
+#################################################################
+#                                                               #
+#                           Group                               #
+#                                                               #
+#################################################################
+
+group:
+  security:
+    name: Security
+    icon: mdi:security-home
+    view: yes
+    entities:
+      # - group.alarms
+      - group.door_locks
+
+  # alarms:
+  #   name: Alarms
+  #   icon: mdi:security
+  #   view: no
+  #   entities:
+  #     - alarm_control_panel.ha_alarm
+
+  door_locks:
+    name: Door Locks
+    icon: mdi:door
+    view: no
+    entities:
+      - lock.schlage_front
+      - lock.schlage_back
+
+#################################################################
+#                                                               #
+#                     MQTT Control Panel                        #
+#                                                               #
+#################################################################
+
+# alarm_control_panel:
+#   - platform: manual_mqtt
+#     code: !secret alarm_code
+#     state_topic: home/alarm
+#     command_topic: home/alarm/set
+
+#################################################################
+#                                                               #
+#                      Template Sensors                         #
+#                                                               #
+#################################################################
+
+sensor:
+  - platform: template
+    sensors:
+      door_count:
+        value_template: >-
+           {{ states.binary_sensor | selectattr('state', 'eq', 'locked') | selectattr('attributes.device_class', 'eq', 'lock') | list | count | int }}
+      # window_count:
+      #   value_template: >-
+      #      {{ states.binary_sensor | selectattr('state', 'eq', 'on') | selectattr('attributes.device_class', 'eq', 'window') | list | count | int }}
+
+#################################################################
+#                                                               #
+#                       Binary Sensors                          #
+#                                                               #
+#################################################################
+
+### For Lovelace UI ###
+
+####################################################
+#                                                  #
+#             Binary Sensor - Template             #
+#                                                  #
+####################################################
+
+binary_sensor:
+  - platform: template
+    sensors:
+## Door Sensors
+      door_locks:
+        friendly_name: Door Locks
+        device_class: lock
+        # entity_id: group.door_locks
+        value_template: >-
+          {{ is_state('lock.schlage_front', 'unlocked')
+            or is_state('lock.schlage_back', 'unlocked') }}
+        icon_template: >-
+          {% if is_state('binary_sensor.door_locks', 'off') %}
+            mdi:lock
+          {% elif is_state('binary_sensor.door_locks', 'on') %}
+            mdi:lock-open
+          {% else %}
+            mdi:lock-alert
+          {% endif %}
+      # windows:
+      #   friendly_name: Windows
+      #   device_class: window
+      #   entity_id: group.windows
+      #   value_template: "{{ is_state('group.windows', 'on') }}"
+      #   icon_template: >-
+      #     {% if is_state('group.windows', 'on') %}
+      #       mdi:window-open
+      #     {% elif is_state('group.windows', 'off') %}
+      #       mdi:window-closed
+      #     {% else %}
+      #       mdi:alert
+      #     {% endif %}
+      # alarm:
+      #   friendly_name: Alarm
+      #   entity_id: alarm_control_panel.ha_alarm
+      #   value_template: >-
+      #     {% if is_state('alarm_control_panel.ha_alarm', 'armed_home') %}
+      #       on
+      #     {% elif is_state('alarm_control_panel.ha_alarm', 'armed_away') %}
+      #       on
+      #     {% elif is_state('alarm_control_panel.ha_alarm', 'pending') %}
+      #       on
+      #     {% elif is_state('alarm_control_panel.ha_alarm', 'triggered') %}
+      #       on
+      #     {% else %}
+      #       off
+      #     {% endif %}
+      #   icon_template: >-
+      #     {% if is_state('alarm_control_panel.ha_alarm', 'armed_home') %}
+      #       mdi:shield-home
+      #     {% elif is_state('alarm_control_panel.ha_alarm', 'armed_away') %}
+      #       mdi:shield-lock
+      #     {% elif is_state('alarm_control_panel.ha_alarm', 'pending') %}
+      #       mdi:security
+      #     {% elif is_state('alarm_control_panel.ha_alarm', 'triggered') %}
+      #       mdi:shield-close
+      #     {% elif is_state('alarm_control_panel.ha_alarm', 'disarmed') %}
+      #       mdi:shield-home
+      #     {% else %}
+      #       mdi:alert
+      #     {% endif %}
+
+#################################################################
+#                                                               #
+#                          Automations                          #
+#                                                               #
+#################################################################
+
+## All automations for this package have now been moved to Node-RED please see Node-Red Flows folder within this package for more infomation! ##
