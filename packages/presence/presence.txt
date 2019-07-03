@@ -112,8 +112,9 @@ input_select:
 #################################################################
 
 automation:
-  - id: just_arrived
-    alias: Mark person as just arrived
+### JUST ARRIVED
+  #- id: just_arrived
+  - alias: Tag person just arrived
     initial_state: True
     trigger:
     - platform: state
@@ -157,8 +158,9 @@ automation:
   #          MJ's status is {{states.input_select.mj_status.state}} {{now().strftime('%H:%M-%d%b')}}
   #        {% endif %}
 
-  - id: person_home
-    alias: Mark person as home
+### HOME
+  #- id: person_home
+  - alias: Tag person home
     initial_state: True
     trigger:
     - platform: state
@@ -190,8 +192,9 @@ automation:
           {% endif %}
         option: Home
 
-  - id: just_left
-    alias: Mark person as just left
+### JUST LEFT  
+  #- id: just_left
+  - alias: Mark person as just left
     initial_state: True
     trigger:
     - platform: state
@@ -213,8 +216,9 @@ automation:
           {% endif %}
         option: Just Left
 
-  - id: person_away
-    alias: Mark person as away
+### AWAY
+  #- id: person_away
+  - alias: Mark person as away
     initial_state: True
     trigger:
     - platform: state
@@ -246,8 +250,10 @@ automation:
           {% else %}
             MJ is {{states.input_select.mj_status.state}} {{now().strftime('%H:%M %d-%b')}} via {{states.person.josh.attributes.source_type}}
           {% endif %}
-  - id: extended_away
-    alias: Mark person as extended away
+          
+### EXTENDED AWAY          
+  #- id: extended_away
+  - alias: Mark person as extended away
     initial_state: True
     trigger:
     - platform: state
