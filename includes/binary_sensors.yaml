@@ -11,16 +11,16 @@
   probability_threshold: 0.9
   observations:
       #Owntracks
-      - entity_id: 'device_tracker.josh_pix3j'
+      - platform: 'state'
+        entity_id: 'device_tracker.josh_pix3j'
         prob_given_true: 0.9
-        prob_given_false: 0.4
-        platform: 'state'
+        prob_given_false: 0.4        
         to_state: 'home'
       #Router  
-      - entity_id: 'device_tracker.mobile_pix3_josh'
+      - platform: 'state'
+        entity_id: 'device_tracker.mobile_pix3_josh'
         prob_given_true: 0.9
         prob_given_false: 0.2
-        platform: 'state'
         to_state: 'home'
 
 # #### JOSH SLEEP STATUS Display only
