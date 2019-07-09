@@ -1,102 +1,89 @@
-default view:
- view: yes
- icon: mdi:home
- entities:
-   - sensor.sen_home_status
-   - device_tracker.mobile_pix3_josh
-   - person.josh
-   - person.mj
-   - device_tracker.mobile_pix3_mj
-   - sensor.dark_sky_temperature
-   - group.living_room
-   - group.bedroom
-   - group.stairs
-   #- group.dining_room
-   #- group.kitchen
-   - group.front
-   - group.office
-   #- group.maps
+# default view:
+#  view: yes
+#  icon: mdi:home
+#  entities:
+#    - sensor.sen_home_status
+#    - device_tracker.mobile_pix3_josh
+#    - person.josh
+#    - person.mj
+#    - device_tracker.mobile_pix3_mj
+#    - sensor.dark_sky_temperature
+#    - group.living_room
+#    - group.bedroom
+#    - group.stairs
+#    #- group.dining_room
+#    #- group.kitchen
+#    - group.front
+#    - group.office
+#    #- group.maps
 
 
-Weather:
-  name: weather
-  icon: mdi:weather-lightning-rainy
-  view: yes
-  entities:
-    - group.daily_forecast
-    #- group.4_day_forecast
+# Weather:
+#   name: weather
+#   icon: mdi:weather-lightning-rainy
+#   view: yes
+#   entities:
+#     - group.daily_forecast
+#     #- group.4_day_forecast
 
-Media:
-  name: media
-  icon: mdi:television
-  view: yes
-  entities:
-    - group.devices
+# Media:
+#   name: media
+#   icon: mdi:television
+#   view: yes
+#   entities:
+#     - group.devices
 
-Family:
-  name: family
-  icon: mdi:account-multiple
-  view: yes
-  entities:
-    - group.family_status
-    - device_tracker.flamingotter_mqtt_pix3j
-    - device_tracker.flamingotter_mqtt_pix3m
-    - device_tracker.mom_iphone
-    - group.josh_sleep_status
-    - group.mj_sleep_status
+# Family:
+#   name: family
+#   icon: mdi:account-multiple
+#   view: yes
+#   entities:
+#     - group.family_status
+#     - device_tracker.flamingotter_mqtt_pix3j
+#     - device_tracker.flamingotter_mqtt_pix3m
+#     - device_tracker.mom_iphone
+#     - group.josh_sleep_status
+#     - group.mj_sleep_status
 
-3D_Print:
-  name: 3D Print
-  icon: mdi:printer-3d
-  view: yes
-  entities:
-    - group.3d_printer
+# 3D_Print:
+#   name: 3D Print
+#   icon: mdi:printer-3d
+#   view: yes
+#   entities:
+#     - group.3d_printer
 
-HA_Status:
-  name: HA Controls
-  icon: mdi:wrench
-  view: yes
-  entities:
-#    - group.speedtest
-    - group.system_monitor
-    - group.stream
-    - group.lockouts
-    - device_tracker.flamingotter_mqtt_pix3j
-    - device_tracker.flamingotter_mqtt_pix3m
-    #- input_select.home_status
-    #- input_select.josh_status
-    #- input_select.mj_status
-    - sensor.time
-    - group.bed_node
-    - group.bedroom_node
-    - group.stairs
-    - group.device_status
-    - group.test_node
-    - group.travis_ci
-    - weblink.control_panel
-    - camera.kitchen_cam
+# HA_Status:
+#   name: HA Controls
+#   icon: mdi:wrench
+#   view: yes
+#   entities:
+# #    - group.speedtest
+#     - group.system_monitor
+#     - group.stream
+#     - group.lockouts
+#     - device_tracker.flamingotter_mqtt_pix3j
+#     - device_tracker.flamingotter_mqtt_pix3m
+#     #- input_select.home_status
+#     #- input_select.josh_status
+#     #- input_select.mj_status
+#     - sensor.time
+#     - group.bed_node
+#     - group.bedroom_node
+#     - group.stairs
+#     - group.device_status
+#     - group.test_node
+#     - group.travis_ci
+#     - weblink.control_panel
+#     - camera.kitchen_cam
 
-# Floorplan:
-  # name: Floorplan
-  # icon: mdi:floor-plan
-  # view: no
-  # entities:
-    # - group.floorplan_group
+# # Floorplan:
+#   # name: Floorplan
+#   # icon: mdi:floor-plan
+#   # view: no
+#   # entities:
+#     # - group.floorplan_group
 
 ####GROUPS####
-
-# Josh Sleep Status:
-  # control: hidden
-  # entities:
-    # - input_boolean.ib_j_status_sleeping
-    # - sensor.sen_j_status_sleeping
-
-# MJ Sleep Status:
-  # control: hidden
-  # entities:
-    # - input_boolean.ib_m_status_sleeping
-    # - sensor.sen_m_status_sleeping
-
 
 Travis CI:
     - sensor.flamingotterhass_state
@@ -115,10 +102,6 @@ Travis CI:
     - sensor.octoprint_time_remaining
     - sensor.octoprint_time_elapsed
 
-Maps:
-    - camera.josh
-    - camera.mj
-
 Test Node:
     - sensor.motion_test
     - sensor.test_temp
@@ -133,9 +116,6 @@ Device Status:
     - device_tracker.sonoff_bedroom_fan
     - device_tracker.sonoff_foyer
     - device_tracker.sonoff_test
-
-# Floorplan Group:
-    # - binary_sensor.floorplan
 
 Stairs:
     - light.basement_light
@@ -206,13 +186,6 @@ Bedroom:
 Puppy Lights:
     - light.corner_lamp
     - light.front_door_light
-#
-# Front:
-#     - light.kitchen_light
-#     - light.cabinet_light
-#     - light.foyer_light
-#     - light.dining_light
-#     - light.dinner_light
 
 Lights:
     - light.corner_lamp
@@ -232,7 +205,7 @@ Lights:
 
 Fans:
     - switch.bed_fan
-    - switch.office_fan
+#     - switch.office_fan
 
 Devices:
     - media_player.kodi_living_room
