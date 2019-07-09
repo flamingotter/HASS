@@ -64,10 +64,10 @@ sensor:
 #                                                  #
 ####################################################
 
-  - platform: worldclock
-    time_zone: America/Chicago
-    name: Local Time
+#   - platform: worldclock
+#     time_zone: America/Chicago
+#     name: Local Time
   
-  - platform: worldclock
-    time_zone: Europe/London
-    name: London Time
+#   - platform: worldclock
+#     time_zone: Europe/London
+#     name: London Time
