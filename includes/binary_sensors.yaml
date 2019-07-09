@@ -8,7 +8,7 @@
 - platform: bayesian
   name: 'josh_home'
   prior: 0.50
-  probability_threshold: 0.9
+  probability_threshold: 0.8
   observations:
       #Owntracks
       - platform: 'state'
