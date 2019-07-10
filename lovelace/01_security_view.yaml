@@ -20,3 +20,7 @@ cards:
   - type: picture-entity
     entity: camera.inside_backdoor
     name: Inside Backdoor
+
+  - type: picture-entity
+    entity: camera.precip
+    name: Precip. Radar
