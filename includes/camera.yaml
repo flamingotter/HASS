@@ -1,6 +1,6 @@
 - name: precip
   platform: generic
-  still_image_url: https://maps.darksky.net/@radar,2019-7-10,{{ states.device_tracker.josh_pix3j.attributes.latitude }},{{ states.device_tracker.josh_pix3j.attributes.longitude }},9
+  still_image_url: https://maps.darksky.net/@radar,2019-7-10,{{ states.device_tracker.nest_downstairs.attributes.latitude }},{{ states.device_tracker.nest_downstairs.attributes.longitude }},9
   limit_refetch_to_url_change: true
 
 #- name: MJ
