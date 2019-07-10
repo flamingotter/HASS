@@ -1,8 +1,8 @@
-#- name: Josh
-#  platform: generic
-#  still_image_url: https://maps.googleapis.com/maps/api/staticmap?center={{ states.device_tracker.flamingotter_mqtt_josh.attributes.latitude }},{{ states.device_tracker.flamingotter_mqtt_josh.attributes.longitude }}&zoom=13&size=500x500&maptype=roadmap&markers=color:blue%7Clabel:J%7C{{ states.device_tracker.flamingotter_mqtt_josh.attributes.latitude }},{{ states.device_tracker.flamingotter_mqtt_josh.attributes.longitude }}
-#  limit_refetch_to_url_change: true
-#
+- name: precip
+  platform: generic
+  still_image_url: https://maps.darksky.net/@radar,2019-7-10,{{ states.device_tracker.josh_pix3j.attributes.latitude }},{{ states.device_tracker.josh_pix3j.attributes.longitude }},9
+  limit_refetch_to_url_change: true
+
 #- name: MJ
 #  platform: generic
 #  still_image_url: https://maps.googleapis.com/maps/api/staticmap?center={{ states.device_tracker.flamingotter_mqtt_mj.attributes.latitude }},{{ states.device_tracker.flamingotter_mqtt_mj.attributes.longitude }}&zoom=13&size=500x500&maptype=roadmap&markers=color:blue%7Clabel:M%7C{{ states.device_tracker.flamingotter_mqtt_mj.attributes.latitude }},{{ states.device_tracker.flamingotter_mqtt_mj.attributes.longitude }}
