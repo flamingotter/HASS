@@ -2,6 +2,11 @@
   platform: generic
   still_image_url: https://maps.darksky.net/@radar,39.227,-94.492,9
   limit_refetch_to_url_change: false
+  
+- name: temp
+  platform: generic
+  still_image_url: https://maps.darksky.net/@temperature,39.227,-94.492,9
+  limit_refetch_to_url_change: false
 
 #- name: MJ
 #  platform: generic
