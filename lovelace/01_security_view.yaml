@@ -24,3 +24,7 @@ cards:
   - type: picture-entity
     entity: camera.precip
     name: Precip. Radar
+
+  - type: picture-entity
+    entity: camera.temp
+    name: Temp. Radar
