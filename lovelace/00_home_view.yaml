@@ -10,7 +10,7 @@ cards:
     entities:
       - sensor.sen_home_status
       - binary_sensor.door_locks
-      - cover.garage_door
+      # - cover.garage_door
       # - binary_sensor.alarm
       - type: divider
       - person.josh
