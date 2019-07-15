@@ -12,6 +12,7 @@ cards:
       - type: divider
       - lock.schlage_front
       - lock.schlage_back
+      - cover.garage_door
 ##Cameras
   - type: picture-entity
     entity: camera.inside_parlor
