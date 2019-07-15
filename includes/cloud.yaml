@@ -7,6 +7,7 @@ alexa:
       - input_boolean
       - script
       - lock
+      - cover
     include_entities:
       - group.living_room
       - group.dining_room
