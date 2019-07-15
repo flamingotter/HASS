@@ -21,16 +21,3 @@ cards:
   - type: picture-entity
     entity: camera.inside_backdoor
     name: Inside Backdoor
-
-  - type: picture-entity
-    entity: camera.precip
-    name: Precip. Radar
-
-  - type: picture-entity
-    entity: camera.temp
-    name: Temp. Radar
-    
-  - type: iframe
-    title: Temp. Radar
-    url: https://maps.darksky.net/@temperature,39.182,-94.676,9
-    aspect_ratio: 75%
