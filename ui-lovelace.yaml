@@ -15,7 +15,7 @@ resources:
     type: js
   - url: /local/custom-lovelace/simple-thermostat.js?v=1
     type: module
-
+#
 background: var(--background-image)
 
 cch:
