@@ -80,6 +80,7 @@ dark:
 
   # Header
   primary-color: '#363941'                                                        # Background
+  dark-primary-color: 'var(--accent-color)'                                       # Hyperlinks
   text-primary-color: 'var(--text-color)'                                         # Text
 
   # Left Menu
