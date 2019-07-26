@@ -64,6 +64,8 @@ dark:
   # Background image
   background-image: 'center / cover no-repeat url("/local/night.jpg") fixed'
 
+  ha-card-border-radius: 5px
+
   # Colors
   text-color: '#DADADB'                                                           # Grey text
   text-medium-light-color: '#A0A2A8'                                              # Medium-light grey text
