@@ -11,22 +11,13 @@ sensor.josh_status:
 sensor.mj_status:
   entity_picture: /local/mj.jpg
 
-media_player.samsung_q7_series_65_qn65q7fam:
-  friendly_name: Samsung Q7
-  icon: mdi:television
+
 sensor.motion_count_his_side:
   friendly_name: His Dim Level
   icon: mdi:brightness-6
 sensor.motion_count_her_side:
   friendly_name: Her Dim Level
   icon: mdi:brightness-6
-sensor.bedroom_heatidx:
-  friendly_name: Bedroom Heat Index.
-sensor.bedroom_temp:
-  friendly_name: Bedroom Temp.
-sensor.bedroom_hum:
-  friendly_name: Bedroom Hum.
-  icon: mdi:water-percent
 light.under_bed:
   friendly_name: Under Bed Light.
   icon: mdi:led-strip
@@ -39,9 +30,6 @@ light.corner_lamp:
 light.table_lamp:
   friendly_name: Table Lamp
   icon: mdi:lamp
-switch.tv_light:
-  friendly_name: TV Back Light
-  icon: mdi:led-strip
 switch.paper_lamp:
   friendly_name: Paper Lamp
   icon: mdi:floor-lamp
@@ -71,18 +59,6 @@ light.rapunzel:
   icon: mdi:lamp
 light.kitchen_light:
   friendly_name: Kitchen Light
-  icon: mdi:ceiling-light
-switch.cabinet_light:
-  friendly_name: Cabinet Light
-  icon: mdi:led-strip
-switch.foyer_light:
-  friendly_name: Foyer Light
-  icon: mdi:ceiling-light
-light.dining_light:
-  friendly_name: Dining Light
-  icon: mdi:ceiling-light
-light.dinner_light:
-  friendly_name: Dinner Light
   icon: mdi:ceiling-light
 scene.sexy_time:
   friendly_name: Sexy Time

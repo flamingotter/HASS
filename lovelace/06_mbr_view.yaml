@@ -5,11 +5,15 @@ cards:
 ##Compact Header Config
   # - type: custom:compact-custom-header
 
-  - type: horizontal-stack
-    cards:
-      - type: light
+  - type: entities
+    title: Parlor
+    show_state: false
+    entities:
+      - type: custom:slider-entity-row
+        entity: light.bedroom_lamps
+        icon: mdi:lamp
+      - type: divider
+      - type: custom:slider-entity-row
         entity: light.eugene
-      - type: light
+      - type: custom:slider-entity-row
         entity: light.rapunzel
-  - type: entity-button
-    entity: switch.bed_fan

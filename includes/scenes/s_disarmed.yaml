@@ -2,16 +2,10 @@
 
 - name: s_disarmed_day
   entities:
-    light.foyer_light:
-      state: on
-    light.kitchen_light:
+    light.dining_room:
       state: on
       brightness_pct: 100
       color_temp: 222
-    light.cabinet_light:
-      state: on
-    light.paper_lamp:
-      state: on
     light.corner_lamp:
       state: on
       brightness_pct: 100
@@ -20,15 +14,5 @@
       state: on
       brightness_pct: 100
       color_temp: 222
-    light.dining_light:
+    light.front_door_light:
       state: on
-      brightness_pct: 100
-      color_temp: 222
-    light.dinner_light:
-      state: on
-      brightness_pct: 100
-      color_temp: 222
-    light.basement_light:
-      state: on
-      brightness_pct: 100
-      color_temp: 222

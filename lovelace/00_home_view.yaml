@@ -44,7 +44,7 @@ cards:
         label_sec: Parlor Lamps
       - entity: light.corner_lamp #(Entity specific settings. Overwrite the global settings)
         icon:
-          value: mdi:lightbulb
+          value: mdi:lamp
           color:  #(optional)
             value_on: var(--accent-color) #(optional)
             value_off: var(--text-color) #(optional)
@@ -52,7 +52,7 @@ cards:
         label_sec: Corner
       - entity: light.table_lamp #(Entity specific settings. Overwrite the global settings)
         icon:
-          value: mdi:lightbulb
+          value: mdi:lamp
           color:  #(optional)
             value_on: var(--accent-color) #(optional)
             value_off: var(--text-color) #(optional)
