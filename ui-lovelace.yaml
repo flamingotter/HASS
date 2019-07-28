@@ -3,7 +3,7 @@ resources:
     type: js
   - url: /local/custom-lovelace/card-tools.js?
     type: js
-  - url: /local/custom-lovelace/compact-custom-header.js?v=0.0.1
+  - url: /local/custom-lovelace/compact-custom-header.js?v=0.0.2
     type: module
   - url: /local/custom-lovelace/tracker-card.js?track=true
     type: module
@@ -15,26 +15,26 @@ resources:
     type: js
   - url: /local/custom-lovelace/simple-thermostat.js?v=1
     type: module
-
+#
 background: var(--background-image)
 
 cch:
   # - !include lovelace/cch.yaml
   swipe: true
-  swipe_amount: 40
+  swipe_amount: 30
   swipe_prevent_default: true
   active_tab_color: '#00a1ff'
   menu: show
-  options: show
+  options: clock
   voice: hide
-  notifications: clock
+  # notifications: clock
   clock_format: '12'
   clock_date: true
   exceptions:
     - conditions:
         user: mj
       config:
-        hide_tabs: '8'
+        hide_tabs: '7,8'
     - conditions:
         user_agent: Mobile
       config:

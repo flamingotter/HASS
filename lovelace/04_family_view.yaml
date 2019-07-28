@@ -2,14 +2,11 @@ title: Family Room
 id: 4
 icon: mdi:sofa
 cards:
-##Compact Header Config
-  # - type: custom:compact-custom-header
 
-  - type: horizontal-stack
-    cards:
-      - type: light
-        entity: light.eugene
-      - type: light
-        entity: light.rapunzel
-  - type: entity-button
-    entity: switch.bed_fan
+  - type: entities
+    title: Family Room
+    show_state: false
+    entities:
+      - binary_sensor.motion_basement_stairs
+      - type: custom:slider-entity-row
+        entity: light.basement_light

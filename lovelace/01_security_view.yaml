@@ -13,6 +13,12 @@ cards:
       - lock.schlage_front
       - lock.schlage_back
       - cover.garage_door
+
+  - type: entities
+    show_header_toggle: false
+    title: Motion
+    entities:
+      - binary_sensor.motion_basement_stairs
 ##Cameras
   - type: picture-entity
     entity: camera.inside_parlor
