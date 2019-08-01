@@ -168,7 +168,6 @@ octoprint:
 automation: !include_dir_merge_list includes/automation/
 binary_sensor: !include includes/binary_sensors.yaml
 camera: !include includes/camera.yaml
-cloud: !include includes/cloud.yaml
 group: !include includes/groups.yaml
 input_boolean: !include includes/input_boolean.yaml
 input_select: !include includes/input_select.yaml
@@ -187,6 +186,7 @@ cover: !include includes/cover.yaml
 ####ENABLES#####
 ################
 map:
+cloud:
 sun:
 frontend:
   themes: !include includes/themes.yaml

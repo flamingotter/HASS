@@ -1,7 +1,3 @@
-presence_lockout:
-  name: Presence Automations
-  icon: mdi:account-multiple
-
 guests_lockout:
   name: House Guests
   icon: mdi:account-multiple-plus
@@ -23,19 +19,19 @@ office_presence:
   icon: mdi:desk-lamp
 
 ####SCENES
-  
+
 sexy_time:
   name: Sexy Time
   icon: mdi:emoticon-devil
-  
+
 romantic_dinner:
   name: Romantic Dinner
-  
+
 artful:
   name: Artfull
 
 ####3D PRINTER
-  
+
 3dprinter_saftey:
   name: 3D Printer Saftey
   icon: mdi:lock
@@ -49,7 +45,7 @@ artful:
 # ib_j_status_sleeping:
   # name: Sleeping
   # icon: mdi:sleep
-  
+
 # #### MJ SLEEP STATUS
 
 # ib_m_status_sleeping:

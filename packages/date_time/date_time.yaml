@@ -16,12 +16,12 @@ binary_sensor:
 #                                                  #
 #            Binary Sensors - Workday              #
 #                                                  #
-#################################################### 
-
+####################################################
+  ##Workday=on Weekend=off
   - platform: workday
     country: US
     workdays: [mon, tue, wed, thu, fri]
-    
+
 #################################################################
 #                                                               #
 #                            Sensors                            #
@@ -57,7 +57,7 @@ sensor:
       - time_date
       - time_utc
       - beat
-      
+
 ####################################################
 #                                                  #
 #               Sensor - World Clock               #
@@ -67,7 +67,7 @@ sensor:
 #   - platform: worldclock
 #     time_zone: America/Chicago
 #     name: Local Time
-  
+
 #   - platform: worldclock
 #     time_zone: Europe/London
 #     name: London Time

@@ -2,18 +2,14 @@
 title: Kitchen
 id: 3
 icon: mdi:silverware
-cards:  
+cards:
   - type: entities
     title: Kitchen
     show_state: false
     entities:
-      - type: custom:slider-entity-row
-        entity: light.dining_room
+      - entity: light.kitchen_light
         icon: mdi:ceiling-light
       - type: divider
       - type: custom:slider-entity-row
-        entity: light.dining_one
-        icon: mdi:ceiling-light
-      - type: custom:slider-entity-row
-        entity: light.dining_two
+        entity: light.dining_room
         icon: mdi:ceiling-light
