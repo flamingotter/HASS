@@ -8,5 +8,8 @@ cards:
     show_state: false
     entities:
       - binary_sensor.motion_basement_stairs
+      - type: divider
       - type: custom:slider-entity-row
         entity: light.basement_light
+      - type: custom:slider-entity-row
+        entity: light.spot_light

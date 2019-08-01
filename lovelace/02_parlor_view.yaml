@@ -23,10 +23,6 @@ cards:
     title: Parlor
     show_state: false
     entities:
-      - entity: group.parlor
-        icon: mdi:lamp
-        name: All
-        tap_action: toggle
       - type: custom:slider-entity-row
         entity: light.living_room_lamps
         icon: mdi:lamp
@@ -34,6 +30,7 @@ cards:
         entity: light.corner_lamp
       - type: custom:slider-entity-row
         entity: light.table_lamp
+      - type: divider
       - entity: light.front_door_light
         icon: mdi:ceiling-light
       - type: custom:slider-entity-row

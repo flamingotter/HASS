@@ -7,5 +7,5 @@
       color_temp: 222
       transition: 5
       state: on
-    light.foyer_light:
+    light.front_door_light:
       state: on

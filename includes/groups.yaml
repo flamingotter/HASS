@@ -139,13 +139,6 @@ System Monitor:
     - sensor.since_last_boot
     - sensor.api_streams
 
-time_card:
-    - sensor.time
-    - sensor.time_date
-    - sensor.time_utc
-    - sensor.date
-    - sensor.date_time
-
 Lockouts:
     - input_boolean.presence_lockout
     - input_boolean.pet_presence_lockout
@@ -164,8 +157,8 @@ Parlor:
     - lock.schlage_back
 
 Kitchen:
-   - light.kitchen_one
-   - light.kitchen_two
+   - light.kitchen_light
+   - light.dining_room
 
 Office:
    - light.desk_light
@@ -192,15 +185,11 @@ Lights:
     - light.table_lamp
     - light.paper_lamp
     - light.spot_light
-    - light.kitchen_one
-    - light.kitchen_two
+    - light.kitchen_light
     - light.dining_one
     - light.dining_two
-    - light.cabinet_light
     - light.front_door_light
-    - light.desk_light
     - light.basement_light
-    - light.office_light
     - light.hall
 
 Fans:

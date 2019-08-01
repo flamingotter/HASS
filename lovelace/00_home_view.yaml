@@ -30,9 +30,6 @@ cards:
     global_settings:
       background:
         value: none
-      # icon:
-      #   color: var('--paper-item-icon-color')
-      #   size: 2.3em
     entities:
       - entity: light.living_room_lamps #(Entity specific settings. Overwrite the global settings)
         icon:
@@ -96,7 +93,7 @@ cards:
             value_off: var(--text-color) #(optional)
           size: 2.3em #(optional)
         label_sec: Dining
-      - entity: light.kitchen
+      - entity: light.kitchen_light
         icon:
           value: mdi:ceiling-light
           color:  #(optional)

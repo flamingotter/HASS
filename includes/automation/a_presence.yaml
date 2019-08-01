@@ -7,9 +7,6 @@
     to: 'Away'
   condition:
   - condition: state
-    entity_id: input_boolean.presence_lockout
-    state: "on"
-  - condition: state
     entity_id: input_boolean.ib_m_status_sleeping
     state: 'on'
   action:

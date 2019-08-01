@@ -54,6 +54,10 @@
   name: Front Door Light
   entity_id: switch.front_door_light
 
+- platform: switch
+  name: Kitchen Light
+  entity_id: switch.kitchen_light
+
 - platform: group
   name: Dining Room
   entities:

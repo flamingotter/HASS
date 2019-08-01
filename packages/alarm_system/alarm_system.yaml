@@ -94,11 +94,10 @@ group:
 binary_sensor:
   - platform: template
     sensors:
-## Door Sensors
+## Doors Locked or Unlocked
       door_locks:
         friendly_name: Door Locks
         device_class: lock
-        # entity_id: group.door_locks
         value_template: >-
           {{ is_state('lock.schlage_front', 'unlocked')
           or is_state('lock.schlage_back', 'unlocked')
