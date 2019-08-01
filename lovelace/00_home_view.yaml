@@ -3,7 +3,10 @@ id: 0
 icon: mdi:home-heart
 cards:
 
-##Home -
+
+###### HOME TAB
+
+##Status Card
   - type: entities
     show_header_toggle: false
     title: Status
@@ -19,6 +22,7 @@ cards:
       # - binary_sensor.garage
       # - type: divider
       # - binary_sensor.trash
+      
 ##Parlor Lights
   - type: custom:tiles-card
     card_settings:
@@ -71,6 +75,28 @@ cards:
             value_off: var(--text-color) #(optional)
           size: 2.3em #(optional)
         label_sec: Hall Lights
+        
+##Family Room
+  - type: custom:tiles-card
+    card_settings:
+      background: var(--paper-card-background-color)
+      columns: 4
+      rows: 2
+      gap: 24px
+      title: Family Room
+    global_settings:
+      background:
+        value: none
+    entities:
+      - entity: light.spot_light 
+        icon:
+          value: mdi:spotlight-beam
+          color:  #(optional)
+            value_on: var(--accent-color) #(optional)
+            value_off: var(--text-color) #(optional)
+          size: 2.3em #(optional)
+        #label_sec: Spot Light
+        
 ##Kitchen/Dining Lights
   - type: custom:tiles-card
     card_settings:
@@ -101,6 +127,7 @@ cards:
             value_off: var(--text-color) #(optional)
           size: 2.3em #(optional)
         label_sec: Kitchen
+        
 ##MBR Lights
   - type: custom:tiles-card
     card_settings:
