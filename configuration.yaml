@@ -46,11 +46,6 @@ weblink:
 logger:
   default: warning
 
-recorder:
-  exclude:
-    entities:
-     - sensor.last_boot
-
 logbook:
   exclude:
     entities:
@@ -173,6 +168,7 @@ input_select: !include includes/input_select.yaml
 input_number: !include includes/input_number.yaml
 light: !include includes/lights.yaml
 notify: !include includes/notify.yaml
+recorder: !include includes/recorder.yaml
 scene: !include_dir_merge_list includes/scenes/
 script: !include_dir_merge_list includes/scripts/
 sensor: !include_dir_merge_list includes/sensors/
