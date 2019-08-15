@@ -49,8 +49,7 @@ logger:
 recorder:
   exclude:
     entities:
-     - sensor.since_last_boot
-     - automation.refresh_owntracks
+     - sensor.last_boot
 
 logbook:
   exclude:
