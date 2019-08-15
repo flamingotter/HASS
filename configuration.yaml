@@ -48,6 +48,9 @@ logger:
 
 logbook:
   exclude:
+    domains:
+      - group
+      - sun
     entities:
       - sensor.date
       - sensor.time
