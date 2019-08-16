@@ -112,7 +112,7 @@ binary_sensor:
         icon_template: >-
           {% if is_state('binary_sensor.trash_icon', 'on') %}
             mdi:delete
-          {% else %}
+          {% elif is_state('binary_sensor.trash_icon', 'off') %}
             mdi:delete-empty
           {% endif %}
 
