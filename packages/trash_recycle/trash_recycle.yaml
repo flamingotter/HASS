@@ -39,18 +39,6 @@ group:
       - sensor.trash_pickup_day
       - input_select.trash_pickup_day
 
-  Date Time:
-    control: hidden
-    entities:
-      - sensor.time
-      - sensor.date
-      - sensor.time_utc
-      - sensor.date_time
-      - sensor.time_date
-      - sensor.internet_time
-      - sensor.rocket_launch_time
-      - sensor.beat
-
 #################################################################
 #                                                               #
 #                        User Inputs                            #
