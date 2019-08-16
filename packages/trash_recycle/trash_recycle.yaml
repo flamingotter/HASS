@@ -34,9 +34,8 @@ group:
     name: Trash Schedule
     view: no
     entities:
-      - sensor.trash_day
       - input_select.trash_reminders
-      - sensor.trash_pickup_day
+      - binary_sensor.trash_day
       - input_select.trash_pickup_day
 
 #################################################################
@@ -84,18 +83,6 @@ sensor:
 
 ####################################################
 #                                                  #
-#                   Sensor - MQTT                  #
-#                                                  #
-####################################################
-
-#   - platform: mqtt
-#     state_topic: "/home/trashpickupday"
-#     name: "Trash Pickup Day"
-#     value_template: "{{ value }}"
-#     qos: 1
-
-####################################################
-#                                                  #
 #                 Sensor - Template                #
 #                                                  #
 ####################################################
@@ -117,14 +104,9 @@ binary_sensor:
 ####################################################
   - platform: template
     sensors:
-#       trash_day:
-#         friendly_name: Trash Day?
-#         value_template: >-
-#           {{ states('sensor.dayoftheweek') == states('input_select.trash_pickup_day') }}
 
-      trash_icon:
-        friendly_name: Trash Icon
-#         entity_id: binary_sensor.trash_day
+      trash_day:
+        friendly_name: Trash Day
         value_template: >-
           {{ states('sensor.dayoftheweek') == states('input_select.trash_pickup_day') }}
         icon_template: >-
@@ -133,32 +115,6 @@ binary_sensor:
           {% else %}
             mdi:delete-empty
           {% endif %}
-
-      # recycle:
-      #   friendly_name: Recycle
-      #   entity_id: sensor.recycle_day
-      #   value_template: "{{ is_state('sensor.recycle_day', 'yes') }}"
-      #   icon_template: >-
-      #     {% if is_state('sensor.recycle_day', 'yes') %}
-      #       fas:recycle
-      #     {% elif is_state('sensor.recycle_day', 'no') %}
-      #       fas:recycle
-      #     {% else %}
-      #       mdi:alert
-      #     {% endif %}
-      #
-      # green:
-      #   friendly_name: Green
-      #   entity_id: sensor.green_day
-      #   value_template: "{{ is_state('sensor.green_day', 'yes') }}"
-      #   icon_template: >-
-      #     {% if is_state('sensor.green_day', 'yes') %}
-      #       mdi:leaf
-      #     {% elif is_state('sensor.green_day', 'no') %}
-      #       mdi:leaf
-      #     {% else %}
-      #       mdi:alert
-      #     {% endif %}
 
 #################################################################
 #                                                               #
