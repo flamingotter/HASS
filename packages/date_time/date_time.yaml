@@ -6,6 +6,25 @@
 
 #################################################################
 #                                                               #
+#                           Group                               #
+#                                                               #
+#################################################################
+
+group:
+  Date Time:
+    control: hidden
+    entities:
+      - sensor.time
+      - sensor.date
+      - sensor.time_utc
+      - sensor.date_time
+      - sensor.time_date
+      - sensor.internet_time
+      - sensor.rocket_launch_time
+      - sensor.beat
+
+#################################################################
+#                                                               #
 #                     Logbook/History/Recorder                  #
 #                                                               #
 #################################################################
