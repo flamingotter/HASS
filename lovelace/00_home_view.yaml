@@ -25,9 +25,9 @@ cards:
   - type: entity-filter
     show_empty: false
     entities:
-      - binary_sensor.trash_day
+      - sensor.trash_day
     state_filter:
-      - "on"
+      - "Put to Curb"
     card:
       type: glance
       title: Alerts!
