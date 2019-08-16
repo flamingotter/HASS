@@ -36,7 +36,6 @@ cards:
         title: Alerts!
     style:
       "--paper-item-icon-color": "green"
-      transform: scale(2, 2)
       
 ##Parlor Lights
   - type: custom:tiles-card
