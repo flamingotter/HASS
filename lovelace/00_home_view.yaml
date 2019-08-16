@@ -21,16 +21,21 @@ cards:
       # - binary_sensor.windows
       # - binary_sensor.garage
       # - type: divider
-      
-  - type: entity-filter
-    show_empty: false
-    entities:
-      - sensor.trash_day
-    state_filter:
-      - "Put to Curb"
+
+##Alert Card
+  - type: custom:card-modder
     card:
-      type: glance
-      title: Alerts!
+      type: entity-filter
+      show_empty: false
+      entities:
+        - sensor.trash_day
+      state_filter:
+        - "Put to Curb"
+      card:
+        type: glance
+        title: Alerts!
+    style:
+      "--paper-item-icon-color": "green"
       
 ##Parlor Lights
   - type: custom:tiles-card
