@@ -23,6 +23,7 @@ cards:
       # - type: divider
       
   - type: entity-filter
+    show_empty: false
     entities:
       - binary_sensor.trash_day
     state_filter:
