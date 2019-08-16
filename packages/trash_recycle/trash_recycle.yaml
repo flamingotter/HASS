@@ -220,18 +220,18 @@ binary_sensor:
         value_template: >-
           {{ states('sensor.dayoftheweek') == states('input_select.trash_pickup_day') }}
 
-#       trash:
-#         friendly_name: Trash
-#         entity_id: sensor.trash_day
-#         value_template: "{{ is_state('sensor.trash_day', 'yes') }}"
-#         icon_template: >-
-#           {% if is_state('sensor.trash_day', 'yes') %}
-#             fas:trash-alt
-#           {% elif is_state('sensor.trash_day', 'no') %}
-#             fas:trash-alt
-#           {% else %}
-#             mdi:alert
-#           {% endif %}
+      trash_icon:
+        friendly_name: Trash Icon
+        entity_id: binary_sensor.trash_day
+        value_template: "{{ is_state('binary_sensor.trash_day', 'on') }}"
+        icon_template: >-
+          {% if is_state('binary_sensor.trash_day', 'on') %}
+            mdi:delete
+          {% elif is_state('sensor.trash_day', 'off') %}
+            mdi:delete-empty
+          {% else %}
+            mdi:alert
+          {% endif %}
 
       # recycle:
       #   friendly_name: Recycle
