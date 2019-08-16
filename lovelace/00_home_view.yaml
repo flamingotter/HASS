@@ -28,6 +28,9 @@ cards:
       - binary_sensor.trash_day
     state_filter:
       - "on"
+    card:
+      type: glance
+      title: Alerts!
       
 ##Parlor Lights
   - type: custom:tiles-card
