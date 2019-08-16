@@ -21,7 +21,11 @@ cards:
       # - binary_sensor.windows
       # - binary_sensor.garage
       # - type: divider
-      # - binary_sensor.trash
+      - type: entity-filter
+        entities:
+          - binary_sensor.trash_day
+        state_filter:
+          - on
       
 ##Parlor Lights
   - type: custom:tiles-card
