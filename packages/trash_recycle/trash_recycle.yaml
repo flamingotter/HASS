@@ -12,9 +12,6 @@
 
 homeassistant:
   customize:
-    sensor.trash_day:
-      friendly_name: Is it Trash Day today?
-      icon: mdi:delete-variant
     sensor.trash_pickup_day:
       friendly_name: Trash Pickup Day
       icon: mdi:calendar-today
@@ -99,9 +96,9 @@ sensor:
             Not Today
           {% endif %}
         icon_template: >-
-          {% if is_state('sensor.trash_day', 'Put to Curb') %}
+          {% if is_state('binary_sensor.trash_day', 'on') %}
             mdi:delete
-          {% elif is_state('sensor.trash_day', 'Not Today') %}
+          {% elif is_state('binary_sensor.trash_day', 'off') %}
             mdi:delete-empty
           {% endif %}
 
