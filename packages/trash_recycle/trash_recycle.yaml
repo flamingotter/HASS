@@ -137,21 +137,21 @@ binary_sensor:
 
 ## Some automations for this package have now been moved to Node-RED please see Node-Red Flows folder within this package for more infomation! ##
 
-automation:
+# automation:
 
-  - alias: Reset Trash Reminders
-    initial_state: true
-    hide_entity: true
-    trigger:
-      - platform: time
-        at: '09:00:00'
-    action:
-      - service: input_boolean.turn_on
-        entity_id: input_boolean.trash_reminders
-      - service: input_select.select_option
-        data_template:
-          entity_id: input_select.trash_pickup_day
-          option: "{{states.sensor.trash_pickup_day.state}}"
+#   - alias: Reset Trash Reminders
+#     initial_state: true
+#     hide_entity: true
+#     trigger:
+#       - platform: time
+#         at: '09:00:00'
+#     action:
+#       - service: input_boolean.turn_on
+#         entity_id: input_boolean.trash_reminders
+#       - service: input_select.select_option
+#         data_template:
+#           entity_id: input_select.trash_pickup_day
+#           option: "{{states.sensor.trash_pickup_day.state}}"
       # - service: input_select.select_option
       #   data_template:
       #     entity_id: input_select.recycle_pickup_day
