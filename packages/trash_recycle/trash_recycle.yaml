@@ -29,9 +29,11 @@ homeassistant:
 group:
   trash schedule:
     name: Trash Schedule
+    icon: mdi:delete
     view: no
+    control: hidden
     entities:
-      - input_select.trash_reminders
+#       - input_select.trash_reminders
       - binary_sensor.trash_day
       - input_select.trash_pickup_day
 
