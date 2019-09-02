@@ -10,12 +10,6 @@ homeassistant:
   auth_providers:
    - type: homeassistant
 
-custom_updater:
-#https://github.com/custom-components/custom_updater/wiki/Installation
-  component_urls:
-# Released build
-    - https://raw.githubusercontent.com/keatontaylor/alexa_media_player/master/custom_components.json
-
 lovelace:
   mode: yaml
 
@@ -38,10 +32,10 @@ http:
   ip_ban_enabled: True
   login_attempts_threshold: 5
 
-weblink:
-  entities:
-    - name: Control Panel
-      url: https://ha.flamingotter.com/local/tileboard/index.html
+hacs:
+  token: c343dbd72eca2f3db19658992862ec16b50eb907
+  sidepanel_title: Community
+  sidepanel_icon: "mdi:alpha-c-box"
 
 logger:
   default: warning
@@ -78,18 +72,18 @@ logbook:
        # - sensor.dark_sky_temperature
        # - sensor.dark_sky_humidity
 
-media_player:
-  - platform: kodi
-    host: 10.0.10.199
-    name: Kodi Living Room
-    username: kodi
-    password: !secret kodi_living_room
-    enable_websocket: true
-  - platform: samsungtv
-    name: Samsung Q7
-    host: 10.0.10.245
-    port: 8001
-    #mac: E4:7D:BD:A7:02:0A
+# media_player:
+#   - platform: kodi
+#     host: 10.0.10.199
+#     name: Kodi Living Room
+#     username: kodi
+#     password: !secret kodi_living_room
+#     enable_websocket: true
+#   - platform: samsungtv
+#     name: Samsung Q7
+#     host: 10.0.10.245
+#     port: 8001
+#     #mac: E4:7D:BD:A7:02:0A
 
   # - platform: alexa
     # email: !secret amazon_username
@@ -105,27 +99,27 @@ alexa_media:
     - email: !secret amazon_username
       password: !secret amazon_password
       url: amazon.com
-      exclude_devices:
-        - "This Device"
-        - "Maryleigh's Alexa Apps"
-        - "Joshua's Alexa Apps"
+      # exclude_devices:
+      #   - "This Device"
+      #   - "Maryleigh's Alexa Apps"
+      #   - "Joshua's Alexa Apps"
 
 person:
 
 device_tracker:
   # - platform: owntracks
   #   max_gps_accuracy: 100
-  - platform: unifi
-    host: 10.0.10.223
-    port: 8443
-    detection_time: 180
-    username: !secret unifi_username
-    password: !secret unifi_password
-    verify_ssl: false
-    site_id: 3q1vqa71
-    new_device_defaults:
-      track_new_devices: false
-      hide_if_away: false
+  # - platform: unifi
+  #   host: 10.0.10.223
+  #   port: 8443
+  #   detection_time: 180
+  #   username: !secret unifi_username
+  #   password: !secret unifi_password
+  #   verify_ssl: false
+  #   site_id: 3q1vqa71
+  #   new_device_defaults:
+  #     track_new_devices: false
+  #     hide_if_away: false
 
 tts:
   - platform: google_translate

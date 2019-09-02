@@ -1,7 +1,7 @@
 www/googlef62d7edb89f95f8b.html
-www/moons/
+www/
 deps/
-custom_components/media_player/
+custom_components/
 *.pid
 *.xml
 *.csr
@@ -29,4 +29,3 @@ ip_bans.yaml
 .HA_VERSION
 .storage
 .cloud
-

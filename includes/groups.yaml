@@ -89,33 +89,33 @@ Travis CI:
     - sensor.flamingotterhass_state
     - sensor.flamingotterhass_last_build_finished_at
 
-3D Printer:
-    - input_boolean.3dprinter_saftey
-    - input_boolean.3dprinter_power
-    - camera.octoprint
-    - sensor.octoprint_actual_bed_temp
-    - sensor.octoprint_target_bed_temp
-    - sensor.octoprint_actual_tool0_temp
-    - sensor.octoprint_target_tool0_temp
-    - sensor.octoprint_current_state
-    - sensor.octoprint_job_percentage
-    - sensor.octoprint_time_remaining
-    - sensor.octoprint_time_elapsed
+# 3D Printer:
+#     - input_boolean.3dprinter_saftey
+#     - input_boolean.3dprinter_power
+#     - camera.octoprint
+#     - sensor.octoprint_actual_bed_temp
+#     - sensor.octoprint_target_bed_temp
+#     - sensor.octoprint_actual_tool0_temp
+#     - sensor.octoprint_target_tool0_temp
+#     - sensor.octoprint_current_state
+#     - sensor.octoprint_job_percentage
+#     - sensor.octoprint_time_remaining
+#     - sensor.octoprint_time_elapsed
 
-Test Node:
-    - sensor.motion_test
-    - sensor.test_temp
-    - sensor.test_hum
-    - sensor.test_lux
+# Test Node:
+#     - sensor.motion_test
+#     - sensor.test_temp
+#     - sensor.test_hum
+#     - sensor.test_lux
 
-Device Status:
-    - device_tracker.basement_stair_node
-    - device_tracker.octopi
-    - device_tracker.bed_node_sensor
-    - device_tracker.sonoff_basement_light
-    - device_tracker.sonoff_bedroom_fan
-    - device_tracker.sonoff_foyer
-    - device_tracker.sonoff_test
+# Device Status:
+#     - device_tracker.basement_stair_node
+#     - device_tracker.octopi
+#     - device_tracker.bed_node_sensor
+#     - device_tracker.sonoff_basement_light
+#     - device_tracker.sonoff_bedroom_fan
+#     - device_tracker.sonoff_foyer
+#     - device_tracker.sonoff_test
 
 Stairs:
     - light.basement_light
@@ -129,11 +129,11 @@ Bed Node:
     - sensor.motion_count_his_side
     - sensor.motion_count_her_side
 
-Bedroom Node:
-    - sensor.bedroom_temp
-    - sensor.bedroom_hum
-    - sensor.bedroom_heatIdx
-    - sensor.bedroom_ldr
+# Bedroom Node:
+#     - sensor.bedroom_temp
+#     - sensor.bedroom_hum
+#     - sensor.bedroom_heatIdx
+#     - sensor.bedroom_ldr
 
 System Monitor:
     - sensor.since_last_boot
@@ -161,11 +161,7 @@ Kitchen:
    - light.dining_room
 
 Office:
-   - light.desk_light
-   - light.office_light
-   - light.test_light
-   - switch.office_fan
-   #- switch.3d_printer
+   - light.office_lamp
 
 Bedroom:
     - light.eugene
@@ -183,7 +179,6 @@ Puppy Lights:
 Lights:
     - light.corner_lamp
     - light.table_lamp
-    - light.paper_lamp
     - light.spot_light
     - light.kitchen_light
     - light.dining_one
@@ -191,6 +186,7 @@ Lights:
     - light.front_door_light
     - light.basement_light
     - light.hall
+    - light.office_lamp
 
 Fans:
     - switch.bed_fan

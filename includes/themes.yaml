@@ -95,8 +95,7 @@ dark:
   mdc-theme-primary: 'var(--accent-medium-color)'                                 # Action Buttons (save, restart etc.)
 
   # Card
-  paper-card-background-color: 'var(--background-card-color)'                     # Background
-  dark-primary-color: 'var(--text-color)'
+  paper-card-background-color: 'var(--background-card-color)'
   primary-text-color: 'var(--text-color)'
   paper-listbox-color: 'var(--text-color)'
   light-primary-color: 'var(--text-dark-color)'

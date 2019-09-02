@@ -6,7 +6,7 @@ cards:
   # - type: custom:compact-custom-header
 
   - type: entities
-    title: Parlor
+    title: Master Suite
     show_state: false
     entities:
       - type: custom:slider-entity-row
@@ -17,3 +17,12 @@ cards:
         entity: light.eugene
       - type: custom:slider-entity-row
         entity: light.rapunzel
+
+  - type: custom:mini-media-player
+    entity: media_player.bedroom
+    icon: mdi:spotify
+    artwork: cover
+    hide:
+      volume: true
+      source: true
+      power_state: false

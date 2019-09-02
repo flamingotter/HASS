@@ -7,7 +7,7 @@ cards:
     title: Status
     entities:
       - sensor.last_boot
-      
+
   - type: entities
     show_header_toggle: false
     title: Trash Schedule
@@ -25,5 +25,3 @@ cards:
       - input_boolean.cleaning
       - input_boolean.sexy_time
       - input_boolean.office_presence
-
-  - type: custom:tracker-card

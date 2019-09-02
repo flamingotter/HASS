@@ -18,8 +18,14 @@ cards:
     show_header_toggle: false
     title: Motion
     entities:
+      - sensor.last_motion
       - binary_sensor.motion_basement_stairs
+      - binary_sensor.motion_kitchen
 ##Cameras
+  - type: picture-entity
+    entity: camera.outside_porch
+    name: Outside Porch
+
   - type: picture-entity
     entity: camera.inside_parlor
     name: Inside Parlor

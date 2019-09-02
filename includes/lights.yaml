@@ -30,25 +30,25 @@
   optimistic: false
   qos: 0
 
-- platform: switch
-  name: Cabinet Light
-  entity_id: switch.cabinet_light
+# - platform: switch
+#   name: Cabinet Light
+#   entity_id: switch.cabinet_light
+#
+# - platform: switch
+#   name: Desk Light
+#   entity_id: switch.desk_light
+#
+# - platform: switch
+#   name: Foyer Light
+#   entity_id: switch.foyer_light
+#
+# - platform: switch
+#   name: Office Light
+#   entity_id: switch.office_light
 
 - platform: switch
-  name: Desk Light
-  entity_id: switch.desk_light
-
-- platform: switch
-  name: Foyer Light
-  entity_id: switch.foyer_light
-
-- platform: switch
-  name: Office Light
-  entity_id: switch.office_light
-
-- platform: switch
-  name: Paper Lamp
-  entity_id: switch.paper_lamp
+  name: Office Lamp
+  entity_id: switch.office_lamp
 
 - platform: switch
   name: Front Door Light
