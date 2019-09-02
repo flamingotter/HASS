@@ -12,3 +12,17 @@
     light.basement_light:
       state: off
       transition: 2
+
+- name: kitchen_on
+  entities:
+    light.kitchen_light:
+      state: on
+    light.dining_room:
+      state: on
+
+- name: kitchen_off
+  entities:
+    light.kitchen_light:
+      state: off
+    light.dining_room:
+      state: off

@@ -13,3 +13,12 @@ cards:
       - type: custom:slider-entity-row
         entity: light.dining_room
         icon: mdi:ceiling-light
+
+  - type: custom:mini-media-player
+    entity: media_player.kitchen
+    icon: mdi:spotify
+    artwork: cover
+    hide:
+      volume: true
+      source: true
+      power_state: false

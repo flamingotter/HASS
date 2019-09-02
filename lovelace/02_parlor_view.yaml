@@ -36,3 +36,12 @@ cards:
       - type: custom:slider-entity-row
         entity: light.hall
         icon: mdi:ceiling-light
+
+  - type: custom:mini-media-player
+    entity: media_player.parlor
+    icon: mdi:spotify
+    artwork: cover
+    hide:
+      volume: true
+      source: true
+      power_state: false

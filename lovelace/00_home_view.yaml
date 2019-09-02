@@ -36,7 +36,7 @@ cards:
         title: Alerts!
     style:
       "--paper-item-icon-color": "green"
-      
+
 ##Parlor Lights
   - type: custom:tiles-card
     card_settings:
@@ -89,7 +89,7 @@ cards:
             value_off: var(--text-color) #(optional)
           size: 2.3em #(optional)
         label_sec: Hall Lights
-        
+
 ##Family Room
   - type: custom:tiles-card
     card_settings:
@@ -102,7 +102,7 @@ cards:
       background:
         value: none
     entities:
-      - entity: light.spot_light 
+      - entity: light.spot_light
         icon:
           value: mdi:spotlight-beam
           color:  #(optional)
@@ -110,7 +110,7 @@ cards:
             value_off: var(--text-color) #(optional)
           size: 2.3em #(optional)
         #label_sec: Spot Light
-        
+
 ##Kitchen/Dining Lights
   - type: custom:tiles-card
     card_settings:
@@ -141,7 +141,7 @@ cards:
             value_off: var(--text-color) #(optional)
           size: 2.3em #(optional)
         label_sec: Kitchen
-        
+
 ##MBR Lights
   - type: custom:tiles-card
     card_settings:
@@ -180,6 +180,26 @@ cards:
             value_off: var(--text-color) #(optional)
           size: 2.3em #(optional)
         label_sec: rapunzel
+
+##Players
+  - type: custom:mini-media-player
+    entity: media_player.downstairs_grp
+    icon: mdi:spotify
+    artwork: cover
+    hide:
+      volume: true
+      source: true
+      power_state: false
+
+  - type: custom:mini-media-player
+    entity: media_player.everywhere_grp
+    icon: mdi:spotify
+    artwork: cover
+    hide:
+      volume: true
+      source: true
+      power_state: false
+
 
 ##Climate
   - type: custom:simple-thermostat

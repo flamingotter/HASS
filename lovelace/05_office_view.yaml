@@ -4,24 +4,37 @@ icon: mdi:desktop-tower-monitor
 cards:
 ##Compact Header Config
   # - type: custom:compact-custom-header
-
-  - type: picture-glance
+  - type: entities
     title: Office
     show_state: false
-    camera_image: camera.octoprint
     entities:
-      - entity: switch.desk_light
-        icon: mdi:desk-lamp
-        tap_action: toggle
-      - entity: switch.office_light
-        tap_action: toggle
-      - entity: switch.office_fan
-        icon: mdi:fan
-        tap_action: toggle
-      - entity: sensor.test_temp
-      - entity: sensor.motion_test
-        icon: mdi:run
-  - type: sensor
-    entity: sensor.test_temp
-    name: Office Temp
-    hours_to_show: 72
+      - entity: light.office_lamp
+        icon: mdi:lamp
+
+  - type: entities
+    title: 3D Printer
+    show_state: false
+    show_header_toggle: false
+    entities:
+      - input_boolean.3dprinter_saftey
+      - input_boolean.3dprinter_power
+      - type: divider
+      - camera.octoprint
+      - type: divider
+      - sensor.octoprint_actual_bed_temp
+      - sensor.octoprint_target_bed_temp
+      - sensor.octoprint_actual_tool0_temp
+      - sensor.octoprint_target_tool0_temp
+      - sensor.octoprint_current_state
+      - sensor.octoprint_job_percentage
+      - sensor.octoprint_time_remaining
+      - sensor.octoprint_time_elapsed
+
+  - type: custom:mini-media-player
+    entity: media_player.lounge
+    icon: mdi:spotify
+    artwork: cover
+    hide:
+      volume: true
+      source: true
+      power_state: false
