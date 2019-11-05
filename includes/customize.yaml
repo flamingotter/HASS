@@ -24,15 +24,12 @@ light.under_bed:
 input_number.bed_animation_speed:
   friendly_name: Animation Speed
   icon: mdi:speedometer
-light.corner_lamp:
-  friendly_name: Corner Lamp
+light.piano_lamp:
+  friendly_name: Piano Lamp
   icon: mdi:lamp
 light.table_lamp:
   friendly_name: Table Lamp
   icon: mdi:lamp
-switch.paper_lamp:
-  friendly_name: Paper Lamp
-  icon: mdi:floor-lamp
 light.spot_light:
   friendly_name: Spot Light
   icon: mdi:spotlight-beam
@@ -42,8 +39,8 @@ switch.desk_light:
 switch.office_light:
   friendly_name: Office Light
   icon: mdi:ceiling-light
-light.basement_light:
-  friendly_name: Basement Light
+light.stair_light:
+  friendly_name: Stair Light
   icon: mdi:ceiling-light
 switch.bed_fan:
   friendly_name: Bedroom Fan

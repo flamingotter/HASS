@@ -9,10 +9,11 @@ cards:
     title: Doors
     entities:
       - binary_sensor.door_locks
+      - sensor.garage_door
       - type: divider
       - lock.schlage_front
       - lock.schlage_back
-      - cover.garage_door
+      - cover.shuttle_bay
 
   - type: entities
     show_header_toggle: false
@@ -21,6 +22,7 @@ cards:
       - sensor.last_motion
       - binary_sensor.motion_basement_stairs
       - binary_sensor.motion_kitchen
+      - binary_sensor.motion_front_porch
 ##Cameras
   - type: picture-entity
     entity: camera.outside_porch
@@ -33,3 +35,11 @@ cards:
   - type: picture-entity
     entity: camera.inside_backdoor
     name: Inside Backdoor
+
+  - type: picture-entity
+    entity: camera.outside_driveway
+    name: Outside Driveway
+
+  - type: picture-entity
+    entity: camera.inside_garage
+    name: Inside Garage

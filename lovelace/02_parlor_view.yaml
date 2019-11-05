@@ -11,7 +11,7 @@ cards:
   # - type: horizontal-stack
   #   cards:
   #     - type: light
-  #       entity: light.corner_lamp
+  #       entity: light.piano_lamp
   #     - type: light
   #       entity: light.table_lamp
   # - type: entity-button
@@ -27,7 +27,7 @@ cards:
         entity: light.living_room_lamps
         icon: mdi:lamp
       - type: custom:slider-entity-row
-        entity: light.corner_lamp
+        entity: light.piano_lamp
       - type: custom:slider-entity-row
         entity: light.table_lamp
       - type: divider

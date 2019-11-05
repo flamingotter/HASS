@@ -12,6 +12,6 @@
     light.rapunzel:
       state: off
       transition: 2
-    light.basement_light:
+    light.stair_light:
       state: off
       transition: 2

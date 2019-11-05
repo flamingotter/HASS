@@ -1,0 +1,53 @@
+#### BASEMENT STAIRS MOTION
+
+- name: media_normal
+  entities:
+    light.media_one:
+      brightness_pct: 100
+      color_temp: 222
+      state: on
+    light.media_two:
+      brightness_pct: 100
+      color_temp: 222
+      state: on
+    light.media_three:
+      brightness_pct: 100
+      color_temp: 222
+      state: on
+    light.media_four:
+      brightness_pct: 100
+      color_temp: 222
+      state: on
+
+- name: media_dim
+  entities:
+    light.media_one:
+      brightness_pct: 15
+      color_temp: 222
+      state: on
+    light.media_two:
+      brightness_pct: 15
+      color_temp: 222
+      state: on
+    light.media_three:
+      brightness_pct: 15
+      color_temp: 222
+      state: on
+    light.media_four:
+      brightness_pct: 15
+      color_temp: 222
+      state: on
+
+- name: media_mid_off
+  entities:
+    light.media_two:
+      state: off
+    light.media_three:
+      state: off
+
+- name: media_outer_off
+  entities:
+    light.media_one:
+      state: off
+    light.media_four:
+      state: off

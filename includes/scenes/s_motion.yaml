@@ -2,14 +2,14 @@
 
 - name: basement_stairs_on
   entities:
-    light.basement_light:
+    light.stair_light:
       brightness_pct: 100
       color_temp: 222
       state: on
 
 - name: basement_stairs_off
   entities:
-    light.basement_light:
+    light.stair_light:
       state: off
       transition: 2
 
@@ -17,12 +17,12 @@
   entities:
     light.kitchen_light:
       state: on
-    light.dining_room:
+    light.dining_room_light:
       state: on
 
 - name: kitchen_off
   entities:
     light.kitchen_light:
       state: off
-    light.dining_room:
+    light.dining_room_light:
       state: off

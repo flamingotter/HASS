@@ -4,15 +4,68 @@ icon: mdi:sofa
 cards:
 
   - type: entities
-    title: Family Room
+    title: Lights
     show_state: false
     entities:
-      - binary_sensor.motion_basement_stairs
+      - type: custom:slider-entity-row
+        entity: light.media_lights
       - type: divider
       - type: custom:slider-entity-row
-        entity: light.basement_light
+        entity: light.media_one
+      - type: custom:slider-entity-row
+        entity: light.media_two
+      - type: custom:slider-entity-row
+        entity: light.media_three
+      - type: custom:slider-entity-row
+        entity: light.media_four
+      - type: divider
+      - type: custom:slider-entity-row
+        entity: light.stair_light
       - type: custom:slider-entity-row
         entity: light.spot_light
+
+  - type: custom:tiles-card
+    card_settings:
+      background: var(--paper-card-background-color)
+      columns: 4
+      gap: 24px
+      title: Lights
+    global_settings:
+      background:
+        value: none
+    entities:
+      - entity: scene.media_normal
+        icon:
+          value: mdi:track-light
+          color:
+            value_on: var(--accent-color)
+            value_off: var(--text-color)
+          size: 2.3em
+        label_sec: Bright White
+      - entity: scene.media_dim
+        icon:
+          value: mdi:track-light
+          color:
+            value_on: var(--accent-color)
+            value_off: var(--text-color)
+          size: 2.3em
+        label_sec: Dim White
+      - entity: scene.media_mid_off
+        icon:
+          value: mdi:track-light
+          color:
+            value_on: var(--accent-color)
+            value_off: var(--text-color)
+          size: 2.3em
+        label_sec: Middle Off
+      - entity: scene.media_outer_off
+        icon:
+          value: mdi:track-light
+          color:
+            value_on: var(--accent-color)
+            value_off: var(--text-color)
+          size: 2.3em
+        label_sec: Outer Off
 
   - type: custom:mini-media-player
     entity: media_player.family_room

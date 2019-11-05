@@ -2,14 +2,11 @@ title: Weather
 id: 7
 icon: mdi:weather-lightning-rainy
 cards:
-##Compact Header Config
-  # - type: custom:compact-custom-header
 
-  - type: weather-forecast
-    title: Weather
-    #show_header_toggle: true
+  - type: custom:weather-card
     entity: weather.dark_sky
-    
+    icons: "/community_plugin/weather-card/icons/"
+
   - type: iframe
     title: Radars
     url: https://maps.darksky.net/@temperature,39.182,-94.676,9

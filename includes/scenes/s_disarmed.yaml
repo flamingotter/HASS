@@ -2,11 +2,15 @@
 
 - name: s_disarmed_day
   entities:
-    light.dining_room:
+    light.dining_room_light:
       state: on
       brightness_pct: 100
       color_temp: 222
-    light.corner_lamp:
+    light.kitchen_light:
+      state: on
+      brightness_pct: 100
+      color_temp: 222
+    light.piano_lamp:
       state: on
       brightness_pct: 100
       color_temp: 222

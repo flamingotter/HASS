@@ -1,12 +1,12 @@
 - name: s_media_paused_night
   entities:
-    light.corner_lamp:
-      brightness_pct: 100
+    light.media_two:
+      brightness_pct: 50
       color_temp: 222
       transition: 5
       state: on    
-    light.table_lamp:
-      brightness_pct: 100
+    light.media_three:
+      brightness_pct: 50
       color_temp: 222
       transition: 5
       state: on
