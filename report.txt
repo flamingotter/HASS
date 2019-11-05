@@ -1,0 +1,18 @@
+{% for state in states.lock -%}
+  {%- if loop.first %}The {% elif loop.last %} and the {% else %}, the {% endif -%}
+  {{ state.name | lower }} is {{state.state_with_unit}}
+{%- endfor %}
+
+WORKS
+
+THIS IS THE ONE
+
+{% if is_state('binary_sensor.door_locks', 'on') %}
+
+  The 
+  {%- for entity_id in states.group.door_locks.attributes.entity_id if states(entity_id) == 'unlocked' -%}
+    {%- if loop.first %} {% elif loop.last %}, and {% else %}, {% endif -%}{{ state_attr(entity_id, 'friendly_name') }}
+  {%- endfor %}
+  may be unlocked.
+
+{% endif %}
