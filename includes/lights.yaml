@@ -30,22 +30,7 @@
   optimistic: false
   qos: 0
 
-# - platform: switch
-#   name: Cabinet Light
-#   entity_id: switch.cabinet_light
-#
-# - platform: switch
-#   name: Desk Light
-#   entity_id: switch.desk_light
-#
-# - platform: switch
-#   name: Foyer Light
-#   entity_id: switch.foyer_light
-#
-# - platform: switch
-#   name: Office Light
-#   entity_id: switch.office_light
-
+###CONVERT SWITCHES TO LIGHT ENTITIES
 - platform: switch
   name: Office Lamp
   entity_id: switch.office_lamp
@@ -58,16 +43,23 @@
   name: Kitchen Light
   entity_id: switch.kitchen_light
 
+- platform: switch
+  name: Dining Room Light
+  entity_id: switch.dining_light
+
+###GROUP ENTITIES TO SINGLE ENTITY
 - platform: group
-  name: Dining Room
+  name: Media lights
   entities:
-    - light.dining_one
-    - light.dining_two
+    - light.media_one
+    - light.media_two
+    - light.media_three
+    - light.media_four
 
 - platform: group
   name: Living Room Lamps
   entities:
-    - light.corner_lamp
+    - light.piano_lamp
     - light.table_lamp
 
 - platform: group
@@ -75,3 +67,9 @@
   entities:
     - light.eugene
     - light.rapunzel
+
+- platform: group
+  name: Kitchen
+  entities:
+    - light.kitchen_light
+    - light.dining_room_light

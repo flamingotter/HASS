@@ -25,9 +25,6 @@
           - condition: state
             entity_id: 'light.under_bed'
             state: 'off'
-          - condition: state
-            entity_id: 'light.basement_light'
-            state: 'off'
   action:
   - service: scene.turn_on
     entity_id: scene.nightlight_bright

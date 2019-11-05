@@ -42,14 +42,14 @@ cards:
             value_off: var(--text-color) #(optional)
           size: 2.3em #(optional)
         label_sec: Parlor Lamps
-      - entity: light.corner_lamp #(Entity specific settings. Overwrite the global settings)
+      - entity: light.piano_lamp #(Entity specific settings. Overwrite the global settings)
         icon:
           value: mdi:lightbulb
           color:  #(optional)
             value_on: var(--accent-color) #(optional)
             value_off: var(--text-color) #(optional)
           size: 2.3em #(optional)
-        label_sec: Corner
+        label_sec: Piano
       - entity: light.table_lamp #(Entity specific settings. Overwrite the global settings)
         icon:
           value: mdi:lightbulb

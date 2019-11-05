@@ -1,21 +1,31 @@
 - name: s_cleaning
   entities:
-    light.rapunzel:
+    ###UPSTAIRS
+    light.bedroom_lamps:
       brightness_pct: 100
       color_temp: 222
       transition: 2
       state: on
-    light.eugene:
+    light.hall:
+      brightness_pct: 100
+      state: on
+    ###DOWNSTAIRS
+    light.living_room_lamps:
       brightness_pct: 100
       color_temp: 222
       transition: 2
       state: on
-    light.corner_lamp:
+    light.kitchen:
+      state: on
+    light.front_door_light:
+      state: on
+    ###BASEMENT
+    light.media_lights:
       brightness_pct: 100
       color_temp: 222
       transition: 2
-      state: on    
-    light.table_lamp:
+      state: on
+    light.stair_light:
       brightness_pct: 100
       color_temp: 222
       transition: 2
@@ -24,30 +34,6 @@
       brightness_pct: 100
       color_temp: 222
       transition: 2
-      state: on 
-    light.dining_light:
-      brightness_pct: 100
-      color_temp: 222
-      transition: 2
       state: on
-    light.dinner_light:
-      brightness_pct: 100
-      color_temp: 222
-      transition: 2
-      state: on
-    light.kitchen_light:
-      brightness_pct: 100
-      color_temp: 222
-      transition: 2
-      state: on
-    light.basement_light:
-      brightness_pct: 100
-      color_temp: 222
-      transition: 2
-      state: on
-    light.paper_lamp:
-      state: on
-    light.cabinet_light:
-      state: on
-    light.foyer_light:
+    light.office_lamp:
       state: on

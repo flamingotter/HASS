@@ -10,8 +10,7 @@ cards:
       - entity: light.kitchen_light
         icon: mdi:ceiling-light
       - type: divider
-      - type: custom:slider-entity-row
-        entity: light.dining_room
+      - entity: light.dining_room_light
         icon: mdi:ceiling-light
 
   - type: custom:mini-media-player

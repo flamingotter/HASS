@@ -39,7 +39,7 @@
       state: off
 
 #### AWAKE SCENES
-      
+
 - name: s_awake_dark
   entities:
     light.under_bed:
@@ -50,7 +50,7 @@
     light.kitchen_light:
       state: on
       brightness_pct: 30
-    light.corner_lamp:
+    light.piano_lamp:
       state: on
       brightness_pct: 30
 
@@ -66,11 +66,7 @@
   entities:
     light.under_bed:
       state: off
-    light.dining_light:
-      state: false
-      brightness_pct: 100
-      color_temp: 222
-    light.basement_light:
+    light.stair_light:
       state: off
 
 - name: s_his_awake_home_below
@@ -88,15 +84,11 @@
       state: on
     light.office_light:
       state: on
-    light.corner_lamp:
+    light.piano_lamp:
       state: on
       brightness_pct: 100
       color_temp: 222
       transition: 30
-    light.dining_light:
-      state: false
-      brightness_pct: 100
-      color_temp: 222
 
 - name: s_her_awake_home
   entities:

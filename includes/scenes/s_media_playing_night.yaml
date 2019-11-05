@@ -1,14 +1,12 @@
 - name: s_media_playing_night
   entities:
-    light.paper_lamp:
-      state: off
-    light.corner_lamp:
+    light.piano_lamp:
       brightness_pct: 20
       color_temp: 285
       transition: 5
       state: on    
-    light.table_lamp:
-      brightness_pct: 20
-      color_temp: 285
-      transition: 5
-      state: on
+    # light.table_lamp:
+    #   brightness_pct: 20
+    #   color_temp: 285
+    #   transition: 5
+    #   state: on

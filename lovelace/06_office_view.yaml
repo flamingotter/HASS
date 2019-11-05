@@ -31,7 +31,7 @@ cards:
       - sensor.octoprint_time_elapsed
 
   - type: custom:mini-media-player
-    entity: media_player.lounge
+    entity: media_player.office
     icon: mdi:spotify
     artwork: cover
     hide:

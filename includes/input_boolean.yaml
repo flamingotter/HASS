@@ -24,11 +24,11 @@ sexy_time:
   name: Sexy Time
   icon: mdi:emoticon-devil
 
-romantic_dinner:
-  name: Romantic Dinner
+# romantic_dinner:
+#   name: Romantic Dinner
 
-artful:
-  name: Artfull
+# artful:
+#   name: Artfull
 
 ####3D PRINTER
 
