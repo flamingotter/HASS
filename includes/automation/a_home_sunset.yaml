@@ -14,7 +14,8 @@
     - service: light.lifx_set_state
       data:
         entity_id:
-          - light.living_room_lamps
+          - light.piano_lamp
+          - light.table_lamp
         power: true
         transition: 60
         brightness_pct: 100

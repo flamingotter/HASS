@@ -63,7 +63,6 @@ Parlor:
     - light.piano_lamp
     - light.table_lamp
     - light.front_door_light
-    - light.spot_light
     - lock.schlage_front
     - lock.schlage_back
 

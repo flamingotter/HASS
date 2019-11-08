@@ -1,12 +1,7 @@
 - name: s_media_stopped_night
   entities:
-    light.piano_lamp:
+    light.media_one:
       brightness_pct: 100
       color_temp: 222
       transition: 5
-      state: on    
-    # light.table_lamp:
-    #   brightness_pct: 100
-    #   color_temp: 222
-    #   transition: 5
-    #   state: on
+      state: on
