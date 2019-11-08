@@ -17,7 +17,7 @@ resources:
     type: module
 
 background: var(--background-image)
-
+#
 cch:
   # - !include lovelace/cch.yaml
   swipe: true
