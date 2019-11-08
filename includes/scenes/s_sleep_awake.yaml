@@ -47,12 +47,11 @@
       color_name: red
       effect: solid
       state: on
-    light.kitchen_light:
+    light.kitchen:
       state: on
-      brightness_pct: 30
     light.piano_lamp:
       state: on
-      brightness_pct: 30
+      brightness_pct: 100
 
 - name: s_awake_light
   entities:
@@ -66,23 +65,12 @@
   entities:
     light.under_bed:
       state: off
-    light.stair_light:
-      state: off
 
 - name: s_his_awake_home_below
   entities:
     light.under_bed:
       state: off
-    light.kitchen_light:
-      state: on
-      brightness_pct: 100
-      color_temp: 222
-      transition: 30
-    light.cabinet_light:
-      state: on
-    light.desk_light:
-      state: on
-    light.office_light:
+    light.kitchen:
       state: on
     light.piano_lamp:
       state: on

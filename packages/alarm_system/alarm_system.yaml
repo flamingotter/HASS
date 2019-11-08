@@ -85,6 +85,7 @@ sensor:
               {{ sensor.name }}
             {% endif %}
           {% endfor %}
+      
       ###GARAGE DOOR STATE
       garage_door:
         friendly_name: "Garage Door"

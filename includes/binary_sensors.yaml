@@ -56,3 +56,45 @@
         # {% elif is_state('sensor.sen_m_status_sleeping', 'awake') %}
            # mdi:sleep-off
          # {% endif %}
+
+- platform: template
+  sensors:
+    bs_lock_back_batt_lvl:
+      friendly_name: "Back Door Lock"
+      value_template: "{{ states('sensor.schlage_allegion_be469zp_connect_smart_deadbolt_battery_level')|int < 30 }}"  
+      icon_template: >-
+        {% if is_state("binary_sensor.bs_lock_back_batt_lvl", "on") %}
+          mdi:battery-alert
+        {% else %}
+          mdi:battery
+        {% endif %}
+
+    bs_lock_frt_batt_lvl:
+      friendly_name: "Front Door Lock"
+      value_template: "{{ states('sensor.schlage_allegion_be469zp_connect_smart_deadbolt_battery_level_2')|int < 30 }}"  
+      icon_template: >-
+        {% if is_state("binary_sensor.bs_lock_frt_batt_lvl", "on") %}
+          mdi:battery-alert
+        {% else %}
+          mdi:battery
+        {% endif %}
+
+    bs_motion_bsmt_stairs_batt_lvl:
+      friendly_name: "Motion Basement Stairs"
+      value_template: "{{ states('sensor.motion_basement_stairs_battery_level')|int < 30 }}"  
+      icon_template: >-
+        {% if is_state("binary_sensor.bs_motion_bsmt_stairs_batt_lvl", "on") %}
+          mdi:battery-alert
+        {% else %}
+          mdi:battery
+        {% endif %}
+
+    bs_motion_kitchen_batt_lvl:
+      friendly_name: "Motion Kitchen"
+      value_template: "{{ states('sensor.motion_kitchen_battery_level')|int < 30 }}"  
+      icon_template: >-
+        {% if is_state("binary_sensor.bs_motion_kitchen_batt_lvl", "on") %}
+          mdi:battery-alert
+        {% else %}
+          mdi:battery
+        {% endif %}
