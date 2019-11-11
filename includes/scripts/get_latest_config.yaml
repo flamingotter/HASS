@@ -1,7 +1,0 @@
-alias: "Get Latest Config"
-sequence:
-  - condition: state
-    entity_id: sensor.flamingotterhass_state
-    state: 'passed'
-  - service: shell_command.update_config_from_github
-  - service: homeassistant.restart
