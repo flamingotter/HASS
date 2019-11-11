@@ -77,9 +77,9 @@ sensor:
         entity_id:
           - binary_sensor.motion_basement_stairs
           - binary_sensor.motion_kitchen
-          - binary_sensor.motion_front_porch
+          - binary_sensor.motion_parlor
         value_template: >
-          {%- set sensors = [states.binary_sensor.motion_basement_stairs, states.binary_sensor.motion_kitchen, states.binary_sensor.motion_front_porch] %}
+          {%- set sensors = [states.binary_sensor.motion_basement_stairs, states.binary_sensor.motion_kitchen, states.binary_sensor.motion_parlor] %}
           {% for sensor in sensors %}
             {% if as_timestamp(sensor.last_changed) == as_timestamp(sensors | map(attribute='last_changed') | max) %}
               {{ sensor.name }}
