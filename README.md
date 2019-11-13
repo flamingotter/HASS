@@ -22,19 +22,21 @@
 * Sonoff Basic
 * Aeotec Z-Stick Gen5
 * GE Z-wave Smart Switch
+* GE Z-wave Smart Dimmer
 * Schlage Connect Z-Wave Lock
 * Custom Sensors (D1 Minis)
+* WLED
 
 ## Network:
 * UniFi Cloud Key Gen2 Plus
 * Unifi Security Gateway
+* Unifi 16-Port POE Switch
 * Unifi AP-AC-LC
-* Unifi Controller
 
 ## Cameras:
-* Unifi Protect NVR
 * Unifi G3 Micro
-* Unifi G3
+* Unifi G3 AF
+* Unifi G3 Flex
 
 ## 3D Printers:
 * Ender 3 Pro
