@@ -6,12 +6,6 @@ input_select.mj_status:
 input_select.home_status:
   icon: mdi:home-heart
 
-sensor.josh_status:
-  entity_picture: /local/josh.jpg
-sensor.mj_status:
-  entity_picture: /local/mj.jpg
-
-
 sensor.motion_count_his_side:
   friendly_name: His Dim Level
   icon: mdi:brightness-6
