@@ -24,7 +24,7 @@ home_status:
   options:
   - "Disarmed"
   - "Away"
-  - "Locked Down"
+  - "Armed"
   - "Sleeping"
 ####
 his_lamp_status:
