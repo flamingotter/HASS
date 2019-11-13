@@ -1,0 +1,125 @@
+#################################################################
+#                                                               #
+#                     Packages/3D Print                         #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+
+homeassistant:
+  customize:
+    sensor.octoprint_actual_bed_temp:
+      friendly_name: Actual Bed Temp
+    sensor.octoprint_target_bed_temp:
+      friendly_name: Target Bed Temp
+    sensor.octoprint_target_tool0_temp:
+      friendly_name: Target Hot End Temp
+    sensor.octoprint_actual_tool0_temp:
+      friendly_name: Actual Hot End Temp
+    sensor.octoprint_current_state:
+      friendly_name: Current State
+    sensor.octoprint_job_percentage:
+      friendly_name: Percentage Complete
+
+
+#################################################################
+#                                                               #
+#                           Group                               #
+#                                                               #
+#################################################################
+
+#group:
+
+#################################################################
+#                                                               #
+#                            MQTT                               #
+#                                                               #
+#################################################################
+
+
+
+#################################################################
+#                                                               #
+#                      Template Sensors                         #
+#                                                               #
+#################################################################
+
+sensor:
+  - platform: octoprint
+    name: OctoPrint
+    monitored_conditions:
+    - Current State
+    - Temperatures
+    - Job Percentage
+    - Time Elapsed
+    - Time Remaining
+    
+#################################################################
+#                                                               #
+#                       Binary Sensors                          #
+#                                                               #
+#################################################################
+
+### For Lovelace UI ###
+
+####################################################
+#                                                  #
+#             Binary Sensor - Template             #
+#                                                  #
+####################################################
+
+binary_sensor:
+  - platform: octoprint
+    monitored_conditions:
+    - Printing
+    - Printing Error
+
+#################################################################
+#                                                               #
+#                          Automations                          #
+#                                                               #
+#################################################################
+
+automaiton:
+  - id: 3dprinter_50_percent
+    alias: "Send me a notification when the print is above 50%"
+    initial_state: True
+    trigger:
+    - platform: numeric_state
+      entity_id: sensor.octoprint_job_percentage
+      above: 50
+    action:
+    - service: notify.josh
+      data:
+        title: "50% done"
+        message: "Print is at 50%"
+    - service: media_player.alexa_tts
+      entity_id: 
+        - media_player.living_room #living room echo
+        - media_player.office # office echo dot
+      data:
+        message: '3D print is half way finished boss'
+
+  - id: 3dprinter_finished
+    alias: "Send notification when the print is finished"
+    initial_state: True
+    trigger:
+    - platform: state
+      entity_id: sensor.octoprint_current_state
+      from: 'Printing'
+      to: 'Operational'
+    action:
+    - service: notify.josh
+      data:
+        title: '3D Print Complete'
+        message: 'Print has been finished'
+    - service: media_player.alexa_tts
+      entity_id: 
+        - media_player.living_room #living room echo
+        - media_player.office # office echo dot
+      data:
+        message: 'Pardon the interuption, your 3D print has finished'
