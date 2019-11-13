@@ -14,5 +14,9 @@ THIS IS THE ONE
     {%- if loop.first %} {% elif loop.last %}, and {% else %}, {% endif -%}{{ state_attr(entity_id, 'friendly_name') }}
   {%- endfor %}
   may be unlocked.
+  
+{% else %}
+
+  All Secure
 
 {% endif %}
