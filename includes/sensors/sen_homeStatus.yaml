@@ -7,7 +7,7 @@
         {% if states.input_select.home_status.state == 'Disarmed' %}
           Disarmed
         {% elif states.input_select.home_status.state == 'Locked Down' %}
-          Locked Down
+          Armed
         {% elif states.input_select.home_status.state == 'Away' %}
           Away
         {% elif states.input_select.home_status.state == 'Sleeping' %}
@@ -16,7 +16,7 @@
       icon_template: >-
         {% if states.input_select.home_status.state == 'Disarmed' %}
           mdi:bell-off-outline
-        {% elif states.input_select.home_status.state == 'Locked Down' %}
+        {% elif states.input_select.home_status.state == 'Armed' %}
           mdi:bell-outline
         {% elif states.input_select.home_status.state == 'Away' %}
           mdi:airplane-takeoff
