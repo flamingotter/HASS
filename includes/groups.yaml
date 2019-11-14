@@ -102,13 +102,6 @@ Devices:
     - media_player.kodi_living_room
     - media_player.samsung_q7
 
-Family Status:
-    - input_select.home_status
-    - input_select.josh_status
-    - input_select.mj_status
-    #- camera.josh
-    #- camera.mj
-
 Daily Forecast:
 #    - sensor.dark_sky_temperature
 #    - sensor.dark_sky_apparent_temperature
