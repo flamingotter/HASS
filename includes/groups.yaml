@@ -78,9 +78,7 @@ Bedroom:
     - sensor.motion_count_his_side
     - light.rapunzel
     - sensor.motion_count_her_side
-    - light.under_bed
-    - input_number.bed_animation_speed
-    - switch.bed_fan
+    - light.wled_bed
 
 Puppy Lights:
     - light.piano_lamp

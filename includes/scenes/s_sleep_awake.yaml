@@ -5,7 +5,7 @@
     light.eugene:
       state: off
       transition: 2
-    light.under_bed:
+    light.wled_bed:
       state: off
 
 - name: s_her_sleep_mode
@@ -13,7 +13,7 @@
     light.rapunzel:
       state: off
       transition: 2
-    light.under_bed:
+    light.wled_bed:
       state: off
 
 - name: s_his_sleep_ext_away
@@ -24,7 +24,7 @@
     light.rapunzel:
       state: off
       transition: 2
-    light.under_bed:
+    light.wled_bed:
       state: off
 
 - name: s_her_sleep_ext_away
@@ -35,14 +35,14 @@
     light.rapunzel:
       state: off
       transition: 2
-    light.under_bed:
+    light.wled_bed:
       state: off
 
 #### AWAKE SCENES
 
 - name: s_awake_dark
   entities:
-    light.under_bed:
+    light.wled_bed:
       brightness_pct: 30
       color_name: red
       effect: solid
@@ -55,7 +55,7 @@
 
 - name: s_awake_light
   entities:
-    light.under_bed:
+    light.wled_bed:
       state: on
       brightness_pct: 30
       color_name: red
@@ -63,12 +63,12 @@
 
 - name: s_his_awake_home_above
   entities:
-    light.under_bed:
+    light.wled_bed:
       state: off
 
 - name: s_his_awake_home_below
   entities:
-    light.under_bed:
+    light.wled_bed:
       state: off
     light.kitchen:
       state: on
@@ -80,7 +80,7 @@
 
 - name: s_her_awake_home
   entities:
-    light.under_bed:
+    light.wled_bed:
       state: off
 
 - name: s_leave_for_work_action
