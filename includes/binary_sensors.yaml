@@ -1,9 +1,3 @@
-####OCTOPRINT
-- platform: octoprint
-  monitored_conditions:
-  - Printing
-  - Printing Error
-
 ####JOSH_HOME BAYESIAN
 - platform: bayesian
   name: 'josh_home'

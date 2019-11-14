@@ -7,12 +7,21 @@ WORKS
 
 THIS IS THE ONE
 
-{% if is_state('binary_sensor.door_locks', 'on') %}
+{% if is_state('binary_sensor.door_locks', 'on') and is_state('input_boolean.office_presence', 'on') %}
+  The
+  {%- for entity_id in states.group.door_locks.attributes.entity_id if states(entity_id) == 'unlocked' -%}
+    {%- if loop.first %} {% elif loop.last %}, and {% else %}, {% endif -%}{{ state_attr(entity_id, 'friendly_name') }}
+  {%- endfor %} may be unlocked and the Garage Door is open.
 
+{% elif is_state('binary_sensor.door_locks', 'on') %}
   The 
   {%- for entity_id in states.group.door_locks.attributes.entity_id if states(entity_id) == 'unlocked' -%}
     {%- if loop.first %} {% elif loop.last %}, and {% else %}, {% endif -%}{{ state_attr(entity_id, 'friendly_name') }}
-  {%- endfor %}
-  may be unlocked.
+  {%- endfor %} may be unlocked.
+  
+{% elif is_state('input_boolean.office_presence', 'on')%}
+  The Garage Door is open.
 
+{% else %}
+  All Secure
 {% endif %}

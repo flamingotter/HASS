@@ -10,11 +10,12 @@
 #                                                               #
 #################################################################
 
-# homeassistant:
-#   customize:
-#     binary_sensor.door_locks:
-#       friendly_name: Door Locks
-#       device_class: lock
+homeassistant:
+  customize:
+    sensor.josh_status:
+      entity_picture: /local/josh.jpg
+    sensor.mj_status:
+      entity_picture: /local/mj.jpg
 
 
 #################################################################
@@ -30,11 +31,6 @@
 #                                                               #
 #################################################################
 
-# alarm_control_panel:
-#   - platform: manual_mqtt
-#     code: !secret alarm_code
-#     state_topic: home/alarm
-#     command_topic: home/alarm/set
 
 #################################################################
 #                                                               #
@@ -42,25 +38,25 @@
 #                                                               #
 #################################################################
 
-sensor:
-  - platform: template
-    sensors:
-      josh_status:
-        friendly_name: "Josh Status"
-        value_template: >-
-          {% if is_state('input_select.josh_status', 'home') %}
-            Home
-          {% elif is_state('input_select.josh_status', 'just arrived') %}
-            Just Arrived
-          {% elif is_state('input_select.josh_status', 'just left') %}
-            Just Left
-          {% elif is_state('input_select.josh_status', 'away') %}
-            Away
-          {% elif is_state('input_select.josh_status', 'extended away') %}
-            Extended Away
-          {% if is_state('input_select.josh_status', 'work') %}
-            Work
-          {% endif %}
+#sensor:
+#  - platform: template
+#    sensors:
+#      josh_status:
+#        friendly_name: "Josh Status"
+#        value_template: >-
+#          {% if is_state('input_select.josh_status', 'home') %}
+#            Home
+#          {% elif is_state('input_select.josh_status', 'just arrived') %}
+#            Just Arrived
+#          {% elif is_state('input_select.josh_status', 'just left') %}
+#            Just Left
+#          {% elif is_state('input_select.josh_status', 'away') %}
+#            Away
+#          {% elif is_state('input_select.josh_status', 'extended away') %}
+#            Extended Away
+#          {% if is_state('input_select.josh_status', 'work') %}
+#            Work
+#          {% endif %}
           
 #################################################################
 #                                                               #
