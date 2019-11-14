@@ -84,7 +84,7 @@ binary_sensor:
 #                                                               #
 #################################################################
 
-automaiton:
+automation:
   - id: 3dprinter_50_percent
     alias: "Send me a notification when the print is above 50%"
     initial_state: True
