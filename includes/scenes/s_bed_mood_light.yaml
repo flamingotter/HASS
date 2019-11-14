@@ -2,16 +2,13 @@
 
 - name: s_bed_mood_light
   entities:
-    light.under_bed:
+    light.wled_bed:
       state: on
-      brightness_pct: 50
-      effect: rainbow
+      brightness: 127
+      effect: '[FX=09] Rainbow'
     light.eugene:
       state: off
       transition: 2
     light.rapunzel:
-      state: off
-      transition: 2
-    light.stair_light:
       state: off
       transition: 2

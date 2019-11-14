@@ -2,21 +2,13 @@
 
 - name: nightlight_bright
   entities:
-    light.under_bed:
+    light.wled_bed:
       state: on
       brightness_pct: 20
       effect: solid
       color_name: red
-    light.stair_light:
-      brightness_pct: 20
-      color_name: red
-      transition: 2
-      state: on
 
 - name: nightlight_dim
   entities:
-    light.under_bed:
-      state: off
-    light.stair_light:
-      transition: 2
+    light.wled_bed:
       state: off

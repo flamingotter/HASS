@@ -23,7 +23,7 @@
       - condition: or
         conditions:
           - condition: state
-            entity_id: 'light.under_bed'
+            entity_id: 'light.wled_bed'
             state: 'off'
   action:
   - service: scene.turn_on
@@ -51,7 +51,7 @@
             entity_id: 'input_boolean.ib_m_status_sleeping'
             state: 'on'
       - condition: numeric_state
-        entity_id: light.under_bed
+        entity_id: light.wled_bed
         value_template: '{{ state.attributes.brightness }}'
         below: 75
   action:

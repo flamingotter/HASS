@@ -18,8 +18,8 @@ sensor.motion_count_his_side:
 sensor.motion_count_her_side:
   friendly_name: Her Dim Level
   icon: mdi:brightness-6
-light.under_bed:
-  friendly_name: Under Bed Light.
+light.wled_bed:
+  friendly_name: Under Bed Light
   icon: mdi:led-strip
 input_number.bed_animation_speed:
   friendly_name: Animation Speed
