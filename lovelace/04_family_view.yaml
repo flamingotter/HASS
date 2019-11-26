@@ -4,7 +4,7 @@ icon: mdi:sofa
 cards:
 
   - type: entities
-    title: Lights
+    title: Family Room
     show_state: false
     entities:
       - type: custom:slider-entity-row
@@ -36,7 +36,7 @@ cards:
       background: var(--paper-card-background-color)
       columns: 4
       gap: 24px
-      title: Lights
+      title: Light Scenes
     global_settings:
       background:
         value: none
