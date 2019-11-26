@@ -37,6 +37,7 @@
 * Unifi G3 Micro
 * Unifi G3 AF
 * Unifi G3 Flex
+* Wyze Cam V2
 
 ## 3D Printers:
 * Ender 3 Pro
