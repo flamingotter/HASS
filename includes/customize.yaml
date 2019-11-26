@@ -3,6 +3,11 @@ input_select.josh_status:
 input_select.mj_status:
   entity_picture: /local/mj.jpg
 
+person.josh:
+  icon: mdi:bee
+person.mj:
+  icon: mdi:cupcake
+
 input_select.home_status:
   icon: mdi:home-heart
 
