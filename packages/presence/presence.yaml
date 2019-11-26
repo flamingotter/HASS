@@ -237,7 +237,7 @@ automation:
             input_select.mj_status
           {% endif %}
         option: Away
-    - service: notify.josh
+    - service: notify.html5_push_pixj
       data_template:
         title: "Away"
         message:  >
