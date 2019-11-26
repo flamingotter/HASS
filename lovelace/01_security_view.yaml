@@ -9,7 +9,7 @@ cards:
     title: Doors
     entities:
       - binary_sensor.door_locks
-      - sensor.garage_door
+      - sensor.sen_shuttle_bay
       - type: divider
       - lock.schlage_front
       - lock.schlage_back

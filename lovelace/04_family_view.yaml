@@ -9,20 +9,27 @@ cards:
     entities:
       - type: custom:slider-entity-row
         entity: light.media_lights
+        toggle: true
       - type: divider
       - type: custom:slider-entity-row
         entity: light.media_one
+        toggle: true
       - type: custom:slider-entity-row
         entity: light.media_two
+        toggle: true
       - type: custom:slider-entity-row
         entity: light.media_three
+        toggle: true
       - type: custom:slider-entity-row
         entity: light.media_four
+        toggle: true
       - type: divider
       - type: custom:slider-entity-row
         entity: light.stair_light
+        toggle: true
       - type: custom:slider-entity-row
         entity: light.spot_light
+        toggle: true
 
   - type: custom:tiles-card
     card_settings:
