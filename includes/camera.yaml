@@ -39,3 +39,8 @@
   platform: generic
   still_image_url: http://10.0.10.204/snap.jpeg
   stream_source: rtsp://10.0.10.223:7447/rgiyMZj26YNxozIS
+
+- name: test
+  platform: ffmpeg
+  # still_image_url: http://10.0.10.196/snap.jpeg
+  input: rtsp://admin:password@10.0.10.196/live

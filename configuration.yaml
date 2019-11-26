@@ -72,18 +72,15 @@ logbook:
        # - sensor.dark_sky_temperature
        # - sensor.dark_sky_humidity
 
-# media_player:
-#   - platform: kodi
-#     host: 10.0.10.199
-#     name: Kodi Living Room
-#     username: kodi
-#     password: !secret kodi_living_room
-#     enable_websocket: true
-#   - platform: samsungtv
-#     name: Samsung Q7
-#     host: 10.0.10.245
-#     port: 8001
-#     #mac: E4:7D:BD:A7:02:0A
+media_player:
+  - platform: samsungtv_custom
+    name: Samsung Q7
+    host: 10.0.10.226
+    port: 8002
+    mac: D8:E0:E1:7E:78:4E
+    applist: "YouTube"
+    protocol: ctl_qled
+
 
   # - platform: alexa
     # email: !secret amazon_username

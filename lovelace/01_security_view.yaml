@@ -43,3 +43,7 @@ cards:
   - type: picture-entity
     entity: camera.inside_garage
     name: Inside Garage
+
+  - type: picture-entity
+    entity: camera.test
+    name: Test
