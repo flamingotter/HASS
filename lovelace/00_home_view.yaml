@@ -13,13 +13,13 @@ cards:
     entities:
       - sensor.sen_home_status
       - binary_sensor.door_locks
-      - sensor.garage_door
+      - sensor.sen_shuttle_bay
       # - binary_sensor.alarm
       - type: divider
       - person.josh
       - person.mj
       # - binary_sensor.windows
-      # - binary_sensor.garage
+      # - binary_sensor.bs_shuttle_bay
       # - type: divider
 
 ##Alert Card

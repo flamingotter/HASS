@@ -17,7 +17,3 @@
 #       data:
 #         url: 'https://ha.flamingotter.com/local/tmp/snapshot.jpg?{{ now().second }}'
 #         image: 'https://ha.flamingotter.com/local/tmp/snapshot.jpg?{{ now().second }}'
-
-
-# entity_id: camera.test
-# filename: www/tmp/snapshot_{{now().strftime('%H:%M-%d%b')}}
