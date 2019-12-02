@@ -9,6 +9,10 @@
     light.hall:
       brightness_pct: 100
       state: on
+    light.wled:
+      brightness_pct: 90
+      rgb_color: [255,255,255]
+      state: on
     ###DOWNSTAIRS
     light.living_room_lamps:
       brightness_pct: 100

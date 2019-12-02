@@ -31,9 +31,11 @@ cards:
       show_empty: false
       entities:
         - binary_sensor.bs_motion_bsmt_stairs_batt_lvl
-        - entity: sensor.trash_day
-          state_filter:
-            - "Put to Curb"
+        - binary_sensor.bs_motion_kitchen_batt_lvl
+        - binary_sensor.bs_motion_parlor_batt_lvl
+        - binary_sensor.bs_lock_back_batt_lvl
+        - binary_sensor.bs_lock_frt_batt_lvl
+        - input_boolean.trash_reminder
       card:
         type: glance
         title: Alerts!
