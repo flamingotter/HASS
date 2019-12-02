@@ -6,13 +6,13 @@
   observations:
       #Owntracks
       - platform: 'state'
-        entity_id: 'device_tracker.josh_pix3j'
+        entity_id: 'device_tracker.josh_ot_pix3j'
         prob_given_true: 0.9
         prob_given_false: 0.4        
         to_state: 'home'
       #Router  
       - platform: 'state'
-        entity_id: 'device_tracker.mobile_pix3_josh'
+        entity_id: 'device_tracker.unifi_pix3_josh'
         prob_given_true: 0.9
         prob_given_false: 0.2
         to_state: 'home'
@@ -54,7 +54,7 @@
 - platform: template
   sensors:
     bs_lock_back_batt_lvl:
-      friendly_name: "Back Door Lock"
+      friendly_name: "Back Door Lock Battery"
       value_template: "{{ states('sensor.schlage_allegion_be469zp_connect_smart_deadbolt_battery_level')|int < 30 }}"  
       icon_template: >-
         {% if is_state("binary_sensor.bs_lock_back_batt_lvl", "on") %}
@@ -64,7 +64,7 @@
         {% endif %}
 
     bs_lock_frt_batt_lvl:
-      friendly_name: "Front Door Lock"
+      friendly_name: "Front Door Lock Battery"
       value_template: "{{ states('sensor.schlage_allegion_be469zp_connect_smart_deadbolt_battery_level_2')|int < 30 }}"  
       icon_template: >-
         {% if is_state("binary_sensor.bs_lock_frt_batt_lvl", "on") %}
@@ -74,7 +74,7 @@
         {% endif %}
 
     bs_motion_bsmt_stairs_batt_lvl:
-      friendly_name: "Motion Basement Stairs"
+      friendly_name: "Motion Basement Stairs Battery"
       value_template: "{{ states('sensor.motion_basement_stairs_battery_level')|int < 30 }}"  
       icon_template: >-
         {% if is_state("binary_sensor.bs_motion_bsmt_stairs_batt_lvl", "on") %}
@@ -84,10 +84,20 @@
         {% endif %}
 
     bs_motion_kitchen_batt_lvl:
-      friendly_name: "Motion Kitchen"
+      friendly_name: "Motion Kitchen Battery"
       value_template: "{{ states('sensor.motion_kitchen_battery_level')|int < 30 }}"  
       icon_template: >-
         {% if is_state("binary_sensor.bs_motion_kitchen_batt_lvl", "on") %}
+          mdi:battery-alert
+        {% else %}
+          mdi:battery
+        {% endif %}
+
+    bs_motion_parlor_batt_lvl:
+      friendly_name: "Motion Parlor Battery"
+      value_template: "{{ states('sensor.motion_parlor_battery_level')|int < 30 }}"  
+      icon_template: >-
+        {% if is_state("binary_sensor.bs_motion_parlor_batt_lvl", "on") %}
           mdi:battery-alert
         {% else %}
           mdi:battery

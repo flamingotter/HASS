@@ -1,0 +1,69 @@
+input_select.josh_status:
+  entity_picture: /local/josh.jpg
+input_select.mj_status:
+  entity_picture: /local/mj.jpg
+
+person.josh:
+  icon: mdi:bee
+person.mj:
+  icon: mdi:cupcake
+
+input_select.home_status:
+  icon: mdi:home-heart
+
+sensor.motion_count_his_side:
+  friendly_name: His Dim Level
+  icon: mdi:brightness-6
+sensor.motion_count_her_side:
+  friendly_name: Her Dim Level
+  icon: mdi:brightness-6
+light.wled_bed:
+  friendly_name: Under Bed Light
+  icon: mdi:led-strip
+input_number.bed_animation_speed:
+  friendly_name: Animation Speed
+  icon: mdi:speedometer
+light.piano_lamp:
+  friendly_name: Piano Lamp
+  icon: mdi:lamp
+light.table_lamp:
+  friendly_name: Table Lamp
+  icon: mdi:lamp
+light.spot_light:
+  friendly_name: Spot Light
+  icon: mdi:spotlight-beam
+switch.desk_light:
+  friendly_name: Desk Light
+  icon: mdi:floor-lamp
+switch.office_light:
+  friendly_name: Office Light
+  icon: mdi:ceiling-light
+light.stair_light:
+  friendly_name: Stair Light
+  icon: mdi:ceiling-light
+switch.bed_fan:
+  friendly_name: Bedroom Fan
+  icon: mdi:fan
+switch.living_room_fan:
+  friendly_name: Living Room Fan
+  icon: mdi:fan
+light.eugene:
+  friendly_name: Eugene
+  icon: mdi:lamp
+light.rapunzel:
+  friendly_name: Rapunzel
+  icon: mdi:lamp
+light.kitchen_light:
+  friendly_name: Kitchen Light
+  icon: mdi:ceiling-light
+scene.sexy_time:
+  friendly_name: Sexy Time
+
+sensor.dark_sky_temperature:
+  friendly_name: Temperature
+sensor.dark_sky_summary:
+  friendly_name: Summary
+sensor.dark_sky_hourly_summary:
+  friendly_name: Hourly Summary
+sensor.dark_sky_daily_summary:
+  friendly_name: Daily Summary
