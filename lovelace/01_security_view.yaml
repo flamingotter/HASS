@@ -8,12 +8,64 @@ cards:
     show_header_toggle: false
     title: Doors
     entities:
-      - binary_sensor.door_locks
-      - sensor.sen_shuttle_bay
+      - entity: binary_sensor.door_locks
+        style: |
+          :host {
+            color:
+              {% if is_state(config.entity, "on") %}
+                red
+              {% elif is_state(config.entity, "off") %}
+                green
+              {% endif %}
+              ;
+          }
+      - entity: sensor.sen_shuttle_bay
+        style: |
+          :host {
+            color:
+              {% if is_state(config.entity, "Closed") %}
+                green
+              {% else %}
+                red
+              {% endif %}
+              ;
+          }
       - type: divider
-      - lock.schlage_front
-      - lock.schlage_back
-      - cover.shuttle_bay
+      - entity: lock.schlage_front
+        style: |
+          :host {
+            color:
+              {% if is_state(config.entity, "unlocked") %}
+                red
+              {% elif is_state(config.entity, "locked") %}
+                green
+              {% endif %}
+              ;
+          }
+      - entity: lock.schlage_back
+        style: |
+          :host {
+            color:
+              {% if is_state(config.entity, "unlocked") %}
+                red
+              {% elif is_state(config.entity, "locked") %}
+                green
+              {% endif %}
+              ;
+          }
+      - entity: cover.shuttle_bay
+        style: |
+          :host {
+            color:
+              {% if is_state(config.entity, "open") %}
+                red
+              {% elif is_state(config.entity, "closed") %}
+                green
+              {% else %}
+                yellow
+              {% endif %}
+              ;
+          }
 
   - type: entities
     show_header_toggle: false

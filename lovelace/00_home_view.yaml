@@ -11,9 +11,39 @@ cards:
     show_header_toggle: false
     title: Status
     entities:
-      - sensor.sen_home_status
-      - binary_sensor.door_locks
-      - sensor.sen_shuttle_bay
+      - entity: sensor.sen_home_status
+        style: |
+          :host {
+            color:
+              {% if is_state(config.entity, "Disarmed") %}
+                green
+              {% elif is_state(config.entity, "Armed") %}
+                red
+              {% endif %}
+              ;
+          }
+      - entity: binary_sensor.door_locks
+        style: |
+          :host {
+            color:
+              {% if is_state(config.entity, "on") %}
+                red
+              {% elif is_state(config.entity, "off") %}
+                green
+              {% endif %}
+              ;
+          }
+      - entity: sensor.sen_shuttle_bay
+        style: |
+          :host {
+            color:
+              {% if is_state(config.entity, "Closed") %}
+                green
+              {% else %}
+                red
+              {% endif %}
+              ;
+          }
       # - binary_sensor.alarm
       - type: divider
       - person.josh
