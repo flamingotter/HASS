@@ -1,6 +1,8 @@
 resources:
   - url: /local/custom-lovelace/card-modder.js
     type: js
+  - url: /community_plugin/lovelace-card-mod/card-mod.js
+    type: js
   - url: /local/custom-lovelace/card-tools.js?
     type: js
   - url: /community_plugin/compact-custom-header/compact-custom-header.js
