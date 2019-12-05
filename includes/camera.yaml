@@ -44,3 +44,19 @@
   platform: ffmpeg
   # still_image_url: http://10.0.10.196/snap.jpeg
   input: rtsp://admin:password@10.0.10.196/live
+
+- name: 435.shoalcreek
+  platform: generic
+  still_image_url: http://www.kcscout.com/mapsubsystem/snapshots/M435SBIPC-25.jpg
+
+- name: 435.woodland
+  platform: generic
+  still_image_url: http://www.kcscout.net/mapsubsystem/snapshots/M435WBIPC-60.jpg
+
+- name: 435.29split
+  platform: generic
+  still_image_url: http://www.kcscout.net/mapsubsystem/snapshots/M029NBIPC-20.jpg
+
+- name: 29.plattemain
+  platform: generic
+  still_image_url: http://www.kcscout.net/mapsubsystem/snapshots/M029SBC-23.jpg

@@ -117,7 +117,7 @@ sensor:
         value_template: >-
           {% if states.input_select.home_status.state == 'Disarmed' %}
             Disarmed
-          {% elif states.input_select.home_status.state == 'Locked Down' %}
+          {% elif states.input_select.home_status.state == 'Armed' %}
             Armed
           {% elif states.input_select.home_status.state == 'Away' %}
             Away
