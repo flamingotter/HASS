@@ -72,14 +72,14 @@ logbook:
        # - sensor.dark_sky_temperature
        # - sensor.dark_sky_humidity
 
-media_player:
-  - platform: samsungtv_custom
-    name: Samsung Q7
-    host: 10.0.10.226
-    port: 8002
-    mac: D8:E0:E1:7E:78:4E
-    applist: "YouTube"
-    protocol: ctl_qled
+# media_player:
+#   - platform: samsungtv_custom
+#     name: Samsung Q7
+#     host: 10.0.10.226
+#     port: 8002
+#     mac: D8:E0:E1:7E:78:4E
+#     applist: "YouTube"
+#     protocol: ctl_qled
 
 alexa_media:
   accounts:
