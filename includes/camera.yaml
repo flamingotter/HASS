@@ -45,6 +45,8 @@
   # still_image_url: http://10.0.10.196/snap.jpeg
   input: rtsp://admin:password@10.0.10.196/live
 
+
+#### SCOUT TRAFFIC CAMS
 - name: 435.shoalcreek
   platform: generic
   still_image_url: http://www.kcscout.com/mapsubsystem/snapshots/M435SBIPC-25.jpg
