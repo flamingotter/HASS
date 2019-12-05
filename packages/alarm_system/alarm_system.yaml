@@ -263,3 +263,101 @@ automation:
     #       {% else %}
     #         All Secure
     #       {% endif %}
+
+# ### GARAGE WARNING
+#   #Garage open for 30 minutes, send warning notification
+#   - alias: Garage Open Warning
+#     trigger:
+#     - platform: state
+#       entity_id: cover.shuttle_bay
+#       to: "open"
+#       for:
+#         minutes: 30 
+#     action:
+#     - service: notify.html5_push
+#       data:
+#         title: Garage Door
+#         message: Garage Door Open
+#         data:
+#           tag: "garage-warning"
+#           actions:
+#           - action: "close_garage"
+#             title: "Close"
+#           - action: "ignore_garage"
+#             title: "Ignore"
+#   #Close garage click, close door and send notification
+#   - alias: Garage Open Warning close clicked
+#     trigger:
+#     - platform: event
+#       event_type: html5_notification.clicked
+#       event_data:
+#         action: "close_garage"
+#         target: pixj
+#     - platform: event
+#       event_type: html5_notification.clicked
+#       event_data:
+#         action: "close_garage"
+#         target: pix3m
+#     action:
+#     - service: cover.close_cover
+#       entity_id: cover.shuttle_bay
+#     - service: notify.html5_push
+#       data_template:
+#         title: Garage Open Warning
+#         message:  >
+#           {% if trigger.event.data.target == 'pixj' %}
+#             Josh Closing Door
+#           {% else %}
+#             MJ Closing Door
+#           {% endif %}
+#         target: >
+#           {% if trigger.event.data.target == 'pixj' %}
+#             pix3m
+#           {% else %}
+#             pixj
+#           {% endif %}
+#         data:
+#           tag: "garage-warning"
+#   #Ignore garage click, send notification and resend original notification after 1 hour
+#   - alias: Garage Open Warning Ignore clicked
+#     trigger:
+#     - platform: event
+#       event_type: html5_notification.clicked
+#       event_data:
+#         action: "ignore_garage"
+#         target: pixj
+#     - platform: event
+#       event_type: html5_notification.clicked
+#       event_data:
+#         action: "ignore_garage"
+#         target: pix3m
+#     action:
+#     - service: notify.html5_push
+#       data_template:
+#         title: Garage Open Warning
+#         message:  >
+#           {% if trigger.event.data.target == 'pixj' %}
+#             Josh Ignored Garage Warning
+#           {% else %}
+#             MJ Ignored Garage Warning
+#           {% endif %}
+#         target: >
+#           {% if trigger.event.data.target == 'pixj' %}
+#             pix3m
+#           {% else %}
+#             pixj
+#           {% endif %}
+#         data:
+#           tag: "garage-warning"
+#     - delay: '01:00'
+#     - service: notify.html5_push
+#       data:
+#         title: Garage Door
+#         message: Garage Door Open
+#         data:
+#           tag: "garage-warning"
+#           actions:
+#           - action: "close_garage"
+#             title: "Close"
+#           - action: "ignore_garage"
+#             title: "Ignore"
