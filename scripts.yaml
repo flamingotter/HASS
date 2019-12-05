@@ -17,7 +17,7 @@ s_lockdown:
       data_template:
         title: Lockdown Report
         message:  >
-          {% if is_state('binary_sensor.door_locks', 'on') and is_state('input_boolean.office_presence', 'on') %}
+          {% if is_state('binary_sensor.door_locks', 'on') and is_state('cover.shuttle_bay', 'open') %}
             The
             {%- for entity_id in states.group.door_locks.attributes.entity_id if states(entity_id) == 'unlocked' -%}
               {%- if loop.first %} {% elif loop.last %}, and {% else %}, {% endif -%}{{ state_attr(entity_id, 'friendly_name') }}
@@ -29,7 +29,7 @@ s_lockdown:
               {%- if loop.first %} {% elif loop.last %}, and {% else %}, {% endif -%}{{ state_attr(entity_id, 'friendly_name') }}
             {%- endfor %} may be unlocked.
             
-          {% elif is_state('input_boolean.office_presence', 'on')%}
+          {% elif is_state('cover.shuttle_bay', 'open')%}
             The Shuttle Bay is open.
 
           {% else %}
@@ -38,7 +38,7 @@ s_lockdown:
     - service: notify.alexa_media
       data_template:
         message:  >
-          {% if is_state('binary_sensor.door_locks', 'on') and is_state('input_boolean.office_presence', 'on') %}
+          {% if is_state('binary_sensor.door_locks', 'on') and is_state('cover.shuttle_bay', 'open') %}
             The
             {%- for entity_id in states.group.door_locks.attributes.entity_id if states(entity_id) == 'unlocked' -%}
               {%- if loop.first %} {% elif loop.last %}, and {% else %}, {% endif -%}{{ state_attr(entity_id, 'friendly_name') }}
@@ -50,7 +50,7 @@ s_lockdown:
               {%- if loop.first %} {% elif loop.last %}, and {% else %}, {% endif -%}{{ state_attr(entity_id, 'friendly_name') }}
             {%- endfor %} may be unlocked.
             
-          {% elif is_state('input_boolean.office_presence', 'on')%}
+          {% elif is_state('cover.shuttle_bay', 'open')%}
             The Shuttle Bay is open.
 
           {% else %}
