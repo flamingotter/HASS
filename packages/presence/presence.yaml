@@ -247,9 +247,34 @@ automation:
             MJ is {{states.input_select.mj_status.state}} {{now().strftime('%H:%M %d-%b')}} via {{states.person.josh.attributes.source_type}}
           {% endif %}
           
+### WORK
+  - alias: Mark Person at Work
+    initial_state: True
+    trigger:
+    - platform: state
+      entity_id: person.josh
+      to: 'Work'
+      for: 
+        minutes: 3
+    - platform: state
+      entity_id: person.mj
+      to: 'Work'
+      for: 
+        minutes: 3
+    action:
+    - service: input_select.select_option
+      data_template:
+        entity_id: >
+          {% if trigger.entity_id == 'person.josh' %}
+            input_select.josh_status
+          {% else %}
+            input_select.mj_status
+          {% endif %}
+        option: Work
+
 ### EXTENDED AWAY          
   #- id: extended_away
-  - alias: Mark person as extended away
+  - alias: Mark person as Extended Away
     initial_state: True
     trigger:
     - platform: state
