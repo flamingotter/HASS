@@ -30,6 +30,7 @@ cards:
               {% endif %}
               ;
           }
+      - entity: sensor.last_motion
       - type: divider
       - entity: lock.schlage_front
         style: |
@@ -66,15 +67,6 @@ cards:
               {% endif %}
               ;
           }
-
-  - type: entities
-    show_header_toggle: false
-    title: Motion
-    entities:
-      - sensor.last_motion
-      - binary_sensor.motion_basement_stairs
-      - binary_sensor.motion_kitchen
-      - binary_sensor.motion_parlor
 ##Cameras
   - type: picture-entity
     entity: camera.outside_porch
