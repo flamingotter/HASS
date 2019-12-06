@@ -8,28 +8,36 @@ cards:
     show_state: false
     entities:
       - type: custom:slider-entity-row
-        entity: light.media_lights
-        toggle: true
-      - type: divider
-      - type: custom:slider-entity-row
-        entity: light.media_one
-        toggle: true
-      - type: custom:slider-entity-row
-        entity: light.media_two
-        toggle: true
-      - type: custom:slider-entity-row
-        entity: light.media_three
-        toggle: true
-      - type: custom:slider-entity-row
-        entity: light.media_four
-        toggle: true
-      - type: divider
-      - type: custom:slider-entity-row
         entity: light.stair_light
         toggle: true
       - type: custom:slider-entity-row
         entity: light.spot_light
         toggle: true
+      - type: custom:slider-entity-row
+        entity: light.media_lights
+        toggle: true
+      - type: divider
+      - type: 'custom:fold-entity-row'
+        padding: 0
+        group_config:
+          toggle: false
+          type: custom:slider-entity-row
+        head:
+          label: Light Settings
+          type: section
+        items:
+          - entity: light.media_one
+            name: Media 1
+            toggle: true
+          - entity: light.media_two
+            name: Media 2
+            toggle: true
+          - entity: light.media_three
+            name: Media 3
+            toggle: true
+          - entity: light.media_four
+            name: Media 4
+            toggle: true
 
   - type: custom:tiles-card
     card_settings:
