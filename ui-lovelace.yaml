@@ -17,6 +17,8 @@ resources:
     type: module
   - url: /community_plugin/weather-card/weather-card.js
     type: module
+  - url: /community_plugin/lovelace-fold-entity-row/fold-entity-row.js
+    type: module
 #
 background: var(--background-image)
 #git test from within docker and via script
