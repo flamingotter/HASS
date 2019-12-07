@@ -1,5 +1,22 @@
 #### BASEMENT STAIRS MOTION
 
+- name: Media Movie
+  entities:
+    light.media_one:
+      state: off
+    light.media_two:
+      state: off
+    light.media_three:
+      state: off
+    light.media_four:
+      brightness_pct: 20
+      rgb_color: [0,69,255]
+      state: on
+    light.spot_light:
+      brightness_pct: 30
+      rgb_color: [0,128,128]
+      state: on
+
 - name: Media Normal
   entities:
     light.media_one:
