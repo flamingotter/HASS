@@ -47,18 +47,18 @@ cards:
           label: Light Scenes
           type: section
         items:
-          - entity: scene.media_normal
-            name: Normal
+          - entity: input_select.basement_scene_select
+            name: Light Scenes
             icon: mdi:track-light
-          - entity: scene.media_dim
-            name: Dim
-            icon: mdi:track-light
-          - entity: scene.media_mid_off
-            name: Middle Off
-            icon: mdi:track-light
-          - entity: scene.media_outer_off
-            name: Outer Off
-            icon: mdi:track-light
+          # - entity: scene.media_dim
+          #   name: Dim
+          #   icon: mdi:track-light
+          # - entity: scene.media_mid_off
+          #   name: Middle Off
+          #   icon: mdi:track-light
+          # - entity: scene.media_outer_off
+          #   name: Outer Off
+          #   icon: mdi:track-light
 
   # - type: custom:tiles-card
   #   card_settings:
