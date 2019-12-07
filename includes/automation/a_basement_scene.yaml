@@ -5,4 +5,4 @@
   action:
     service: scene.turn_on
     data_template:
-      entity_id: scene.{{trigger.to_state.state}}
+      entity_id: scene.{{trigger.to_state.attributes.friendly_name}}

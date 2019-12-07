@@ -27,8 +27,7 @@ basement_scene_select:
   name: Scene Selector
   icon: mdi:track-light
   options:
-    - Media_Normal
-    - Media Movie
+    - Media Normal
     - Media Dim
     - Media Middle Off
     - Media Outer Off
