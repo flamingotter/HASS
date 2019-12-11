@@ -1,0 +1,26 @@
+automation: !include_dir_list ../automations
+binary_sensor: !include includes/binary_sensors.yaml
+camera: !include includes/camera.yaml
+group: !include includes/groups.yaml
+input_boolean: !include includes/input_boolean.yaml
+input_select: !include includes/input_select.yaml
+input_number: !include includes/input_number.yaml
+light: !include includes/lights.yaml
+notify: !include includes/notify.yaml
+recorder: !include includes/recorder.yaml
+scene: !include_dir_merge_list includes/scenes/
+script: !include scripts.yaml
+sensor: !include_dir_merge_list includes/sensors/
+shell_command: !include includes/shell_commands.yaml
+switch: !include includes/switches.yaml
+cover: !include includes/cover.yaml
+####
+map:
+cloud:
+sun:
+frontend:
+  themes: !include includes/themes.yaml
+  javascript_version: auto
+config:
+system_health:
+tplink:
