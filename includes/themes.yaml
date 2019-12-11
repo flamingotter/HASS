@@ -5,7 +5,7 @@ clear:
   ha-card-border-radius: 5px
 
   # CCH Styles
-  cch-background: ‘#363941’
+  cch-background: 'var(--text-color)'
   cch-active-tab-color: 'var(--accent-color)'
 
   # Colors
@@ -79,7 +79,7 @@ dark:
   border-color: '#383C46'                                                         # Grey border
 
   # Header
-  primary-color: ‘var(–text-medium-light-color)’                                  # Background
+  primary-color: '#363941'                                                        # Background
   dark-primary-color: 'var(--accent-color)'                                       # Hyperlinks
   text-primary-color: 'var(--text-color)'                                         # Text
 
