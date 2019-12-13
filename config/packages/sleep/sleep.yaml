@@ -1,0 +1,201 @@
+#################################################################
+#                                                               #
+#                    Packages/sleep                             #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+
+homeassistant:
+  # customize:
+      
+#################################################################
+#                                                               #
+#                           Group                               #
+#                                                               #
+#################################################################
+
+group:
+      
+  Josh Sleep Status:
+    control: hidden
+    entities:
+      - input_boolean.ib_j_status_sleeping
+      - sensor.sen_j_status_sleeping
+
+  MJ Sleep Status:
+      control: hidden
+      entities:
+        - input_boolean.ib_m_status_sleeping
+        - sensor.sen_m_status_sleeping
+      
+#################################################################
+#                                                               #
+#                        User Inputs                            #
+#                                                               #
+#################################################################
+
+# input_select:
+     
+input_boolean:
+#### Josh SLEEP STATUS   
+  ib_j_status_sleeping:
+    name: Sleeping
+    icon: mdi:sleep
+  
+#### MJ SLEEP STATUS
+
+  ib_m_status_sleeping:
+    name: Sleeping
+    icon: mdi:sleep
+    
+#################################################################
+#                                                               #
+#                           Sensors                             #
+#                                                               #
+#################################################################
+
+sensor:
+
+####################################################
+#                                                  #
+#                 Sensor - MQTT                    #
+#                                                  #
+####################################################
+
+####################################################
+#                                                  #
+#                 Sensor - Template                #
+#                                                  #
+####################################################
+          
+  - platform: template
+    sensors:
+      sen_j_status_sleeping:
+        friendly_name: 'Josh Sleep Status'
+        entity_id: input_boolean.ib_j_status_sleeping
+        value_template: >-
+          {% if is_state('input_boolean.ib_j_status_sleeping', 'on') %}
+            Sleeping
+          {% elif is_state('input_boolean.ib_j_status_sleeping', 'off') %}
+            Awake
+          {% endif %}
+        icon_template: >-
+          {% if is_state('input_boolean.ib_j_status_sleeping', 'on') %}
+            mdi:sleep
+          {% elif is_state('input_boolean.ib_j_status_sleeping', 'off') %}
+            mdi:sleep-off
+          {% endif %}
+          
+  - platform: template
+    sensors:
+      sen_m_status_sleeping:
+        friendly_name: 'MJ Sleep Status'
+        entity_id: input_boolean.ib_m_status_sleeping
+        value_template: >-
+          {% if is_state('input_boolean.ib_m_status_sleeping', 'on') %}
+            Sleeping
+          {% elif is_state('input_boolean.ib_m_status_sleeping', 'off') %}
+            Awake
+          {% endif %}
+        icon_template: >-
+          {% if is_state('input_boolean.ib_m_status_sleeping', 'on') %}
+            mdi:sleep
+          {% elif is_state('input_boolean.ib_m_status_sleeping', 'off') %}
+            mdi:sleep-off
+          {% endif %}
+          
+#################################################################
+#                                                               #
+#                       Binary Sensors                          #
+#                                                               #
+#################################################################
+          
+binary_sensor:
+
+####################################################
+#                                                  #
+#             Binary Sensor - Template             #
+#                                                  #
+####################################################
+          
+#### JOSH SLEEP STATUS Display only
+
+  - platform: template
+    sensors:
+      bs_sen_j_sleep_status:
+        friendly_name: "Josh Sleep Status"
+        entity_id: sensor.sen_j_status_sleeping
+        value_template: >-
+          {{ is_state('input_boolean.ib_j_status_sleeping', 'on')
+             or is_state('input_boolean.ib_j_status_sleeping', 'off') }}
+        icon_template: >-
+          {% if is_state('input_boolean.ib_j_status_sleeping', 'on') %}
+             mdi:sleep
+          {% elif is_state('input_boolean.ib_j_status_sleeping', 'off') %}
+             mdi:sleep-off
+           {% endif %}
+
+#### MJ SLEEP STATUS Display only
+
+  - platform: template
+    sensors:
+      bs_sen_m_sleep_status:
+        friendly_name: "MJ Sleep Status"
+        entity_id: sensor.sen_m_status_sleeping
+        value_template: >-
+          {{ is_state('sensor.sen_m_status_sleeping', 'sleeping')
+             or is_state('sensor.sen_m_status_sleeping', 'awake') }}
+        icon_template: >-
+          {% if is_state('sensor.sen_m_status_sleeping', 'sleeping') %}
+             mdi:sleep
+          {% elif is_state('sensor.sen_m_status_sleeping', 'awake') %}
+             mdi:sleep-off
+           {% endif %}
+            
+#################################################################
+#                                                               #
+#                          Automations                          #
+#                                                               #
+#################################################################
+
+## Set person sleep staus "on" if recieve value from bedside sensor
+
+automation:
+          
+  - id: a_set_sleep_status
+    alias: Set person as sleeping
+    initial_state: True
+    trigger:
+    - platform: state
+      entity_id: sensor.duration_his_side
+      to: '1'
+    - platform: state
+      entity_id: sensor.duration_her_side
+      to: '1'
+    action:
+      service_template:  >
+          {% if trigger.entity_id == 'sensor.duration_his_side' %}
+            {% if states('input_boolean.ib_j_status_sleeping') == 'off' %}
+              input_boolean.turn_on
+            {% else %}
+              input_boolean.turn_off
+            {% endif %}
+          {% else %}
+            {% if states('input_boolean.ib_m_status_sleeping') == 'off' %}
+              input_boolean.turn_on
+            {% else %}
+              input_boolean.turn_off
+            {% endif %}
+          {% endif %}
+      data_template:
+        entity_id:  >
+          {% if trigger.entity_id == 'sensor.duration_his_side' %}
+            input_boolean.ib_j_status_sleeping
+          {% else %}
+            input_boolean.ib_m_status_sleeping
+          {% endif %}

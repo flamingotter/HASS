@@ -1,0 +1,28 @@
+title: Settings
+id: 8
+icon: mdi:settings-outline
+cards:
+
+  - type: entities
+    show_header_toggle: false
+    title: Switches
+    entities:
+      - input_boolean.pet_presence_lockout
+      - input_boolean.media_lockout
+      - input_boolean.guests_lockout
+      - input_boolean.cleaning
+      - input_boolean.sexy_time
+      - input_boolean.office_presence
+
+  - type: entities
+    show_header_toggle: false
+    title: Trash Schedule
+    entities:
+      - binary_sensor.trash_day
+      - input_select.trash_pickup_day
+
+  - type: entities
+    show_header_toggle: false
+    title: Status
+    entities:
+      - sensor.last_boot

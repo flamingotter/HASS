@@ -1,0 +1,18 @@
+---
+platform: template
+  sensors:
+    trash_day:
+      friendly_name: 'Trash Day'
+      entity_id: binary_sensor.trash_day
+      value_template: >-
+        {% if is_state('binary_sensor.trash_day', 'on') %}
+          Put to Curb
+        {% elif is_state('binary_sensor.trash_day', 'off') %}
+          Not Today
+        {% endif %}
+      icon_template: >-
+        {% if is_state('binary_sensor.trash_day', 'on') %}
+          mdi:delete
+        {% elif is_state('binary_sensor.trash_day', 'off') %}
+          mdi:delete-empty
+        {% endif %}

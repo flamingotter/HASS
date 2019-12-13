@@ -1,0 +1,123 @@
+####JOSH_HOME BAYESIAN
+- platform: bayesian
+  name: 'josh_home'
+  prior: 0.50
+  probability_threshold: 0.8
+  observations:
+      #Owntracks
+      - platform: 'state'
+        entity_id: 'device_tracker.josh_ot_pix3j'
+        prob_given_true: 0.9
+        prob_given_false: 0.4        
+        to_state: 'home'
+      #Router  
+      - platform: 'state'
+        entity_id: 'device_tracker.unifi_pix3_josh'
+        prob_given_true: 0.9
+        prob_given_false: 0.2
+        to_state: 'home'
+
+####MJ_HOME BAYESIAN
+- platform: bayesian
+  name: 'MJ_home'
+  prior: 0.50
+  probability_threshold: 0.8
+  observations:
+      #Owntracks
+      - platform: 'state'
+        entity_id: 'device_tracker.mj_ot_pix3m'
+        prob_given_true: 0.9
+        prob_given_false: 0.4        
+        to_state: 'home'
+      #Router  
+      - platform: 'state'
+        entity_id: 'device_tracker.unifi_pix3_mj'
+        prob_given_true: 0.9
+        prob_given_false: 0.2
+        to_state: 'home'
+
+# #### JOSH SLEEP STATUS Display only
+
+# - platform: template
+  # sensors:
+    # bs_sen_j_sleep_status:
+      # friendly_name: "Josh Sleep Status"
+      # entity_id: sensor.sen_j_status_sleeping
+      # value_template: >-
+        # {{ is_state('input_boolean.ib_j_status_sleeping', 'on')
+           # or is_state('input_boolean.ib_j_status_sleeping', 'off') }}
+      # icon_template: >-
+        # {% if is_state('input_boolean.ib_j_status_sleeping', 'on') %}
+           # mdi:sleep
+        # {% elif is_state('input_boolean.ib_j_status_sleeping', 'off') %}
+           # mdi:sleep-off
+         # {% endif %}
+
+# #### MJ SLEEP STATUS Display only
+
+# - platform: template
+  # sensors:
+    # bs_sen_m_sleep_status:
+      # friendly_name: "MJ Sleep Status"
+      # entity_id: sensor.sen_m_status_sleeping
+      # value_template: >-
+        # {{ is_state('sensor.sen_m_status_sleeping', 'sleeping')
+           # or is_state('sensor.sen_m_status_sleeping', 'awake') }}
+      # icon_template: >-
+        # {% if is_state('sensor.sen_m_status_sleeping', 'sleeping') %}
+           # mdi:sleep
+        # {% elif is_state('sensor.sen_m_status_sleeping', 'awake') %}
+           # mdi:sleep-off
+         # {% endif %}
+
+- platform: template
+  sensors:
+    bs_lock_back_batt_lvl:
+      friendly_name: "Back Door Lock Battery"
+      value_template: "{{ states('sensor.schlage_back_door_battery_level')|int < 30 }}"  
+      icon_template: >-
+        {% if is_state("binary_sensor.bs_lock_back_batt_lvl", "on") %}
+          mdi:battery-alert
+        {% else %}
+          mdi:battery
+        {% endif %}
+
+    bs_lock_frt_batt_lvl:
+      friendly_name: "Front Door Lock Battery"
+      value_template: "{{ states('sensor.schlage_front_door_battery_level')|int < 30 }}"  
+      icon_template: >-
+        {% if is_state("binary_sensor.bs_lock_frt_batt_lvl", "on") %}
+          mdi:battery-alert
+        {% else %}
+          mdi:battery
+        {% endif %}
+
+    bs_motion_bsmt_stairs_batt_lvl:
+      friendly_name: "Motion Basement Stairs Battery"
+      value_template: "{{ states('sensor.motion_basement_stairs_battery_level')|int < 30 }}"  
+      icon_template: >-
+        {% if is_state("binary_sensor.bs_motion_bsmt_stairs_batt_lvl", "on") %}
+          mdi:battery-alert
+        {% else %}
+          mdi:battery
+        {% endif %}
+
+    bs_motion_kitchen_batt_lvl:
+      friendly_name: "Motion Kitchen Battery"
+      value_template: "{{ states('sensor.motion_kitchen_battery_level')|int < 30 }}"  
+      icon_template: >-
+        {% if is_state("binary_sensor.bs_motion_kitchen_batt_lvl", "on") %}
+          mdi:battery-alert
+        {% else %}
+          mdi:battery
+        {% endif %}
+
+    bs_motion_parlor_batt_lvl:
+      friendly_name: "Motion Parlor Battery"
+      value_template: "{{ states('sensor.motion_parlor_battery_level')|int < 30 }}"  
+      icon_template: >-
+        {% if is_state("binary_sensor.bs_motion_parlor_batt_lvl", "on") %}
+          mdi:battery-alert
+        {% else %}
+          mdi:battery
+        {% endif %}

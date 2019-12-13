@@ -1,0 +1,14 @@
+- id: leave_for work_action
+  alias: his_leave_for work_action
+  initial_state: True
+  trigger:
+  - platform: state
+    entity_id: input_select.josh_status
+    to: 'Away'
+  condition:
+  - condition: state
+    entity_id: input_boolean.ib_m_status_sleeping
+    state: 'on'
+  action:
+  - service: scene.turn_on
+    entity_id: scene.s_leave_for_work_action
