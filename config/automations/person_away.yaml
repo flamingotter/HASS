@@ -1,0 +1,34 @@
+---
+####Tag person as 'Away' after a 3 minute 'Just Left' status
+alias: person_away
+initial_state: True
+trigger:
+  platform: state
+  entity_id: input_select.josh_status
+  to: 'Just Left'
+  for:
+    minutes: 3
+  platform: state
+  entity_id: input_select.mj_status
+  to: 'Just Left'
+  for:
+    minutes: 3
+action:
+- service: input_select.select_option
+  data_template:
+    entity_id: >
+      {% if trigger.entity_id == 'input_select.josh_status' %}
+        input_select.josh_status
+      {% else %}
+        input_select.mj_status
+      {% endif %}
+    option: Away
+- service: notify.html5_push_pixj
+  data_template:
+    title: "Away"
+    message:  >
+      {% if states('input_select.josh_status') == 'Away'%}
+        Josh is {{states.input_select.josh_status.state}} {{now().strftime('%H:%M %d-%b')}} via {{states.person.josh.attributes.source_type}}
+      {% else %}
+        MJ is {{states.input_select.mj_status.state}} {{now().strftime('%H:%M %d-%b')}} via {{states.person.josh.attributes.source_type}}
+      {% endif %}
