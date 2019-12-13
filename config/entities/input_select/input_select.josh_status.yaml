@@ -1,0 +1,10 @@
+---
+josh_status:
+  name: Josh Status
+  options:
+  - "Work"
+  - "Home"
+  - "Just Arrived"
+  - "Just Left"
+  - "Away"
+  - "Extended Away"
