@@ -1,0 +1,10 @@
+---
+mj_status:
+  name: MJ Status
+  options:
+  - "Work"
+  - "Home"
+  - "Just Arrived"
+  - "Just Left"
+  - "Away"
+  - "Extended Away"
