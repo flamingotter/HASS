@@ -1,0 +1,341 @@
+#################################################################
+#                                                               #
+#                    Packages/Alarm System                      #
+#                                                               #
+#################################################################
+
+#################################################################
+#                                                               #
+#                          Customize                            #
+#                                                               #
+#################################################################
+
+homeassistant:
+  customize:
+    # alarm_control_panel.ha_alarm:
+    #   icon: mdi:shield-home
+    binary_sensor.door_locks:
+      friendly_name: Door Locks
+      device_class: lock
+
+
+#################################################################
+#                                                               #
+#                           Group                               #
+#                                                               #
+#################################################################
+
+group:
+  security:
+    name: Security
+    icon: mdi:security-home
+    view: yes
+    entities:
+      # - group.alarms
+      - group.door_locks
+
+  # alarms:
+  #   name: Alarms
+  #   icon: mdi:security
+  #   view: no
+  #   entities:
+  #     - alarm_control_panel.ha_alarm
+
+  door_locks:
+    name: Door Locks
+    icon: mdi:door
+    view: no
+    entities:
+      - lock.schlage_front
+      - lock.schlage_back
+
+#################################################################
+#                                                               #
+#                     MQTT Control Panel                        #
+#                                                               #
+#################################################################
+
+# alarm_control_panel:
+#   - platform: manual_mqtt
+#     code: !secret alarm_code
+#     state_topic: home/alarm
+#     command_topic: home/alarm/set
+
+#################################################################
+#                                                               #
+#                      Template Sensors                         #
+#                                                               #
+#################################################################
+
+sensor:
+  - platform: template
+    sensors:
+      ###LAST MOTION
+      last_motion:
+        friendly_name: 'Last Motion'
+        icon_template: 'mdi:walk'
+        entity_id:
+          - binary_sensor.motion_basement_stairs
+          - binary_sensor.motion_kitchen
+          - binary_sensor.motion_parlor
+        value_template: >
+          {%- set sensors = [states.binary_sensor.motion_basement_stairs, states.binary_sensor.motion_kitchen, states.binary_sensor.motion_parlor] %}
+          {% for sensor in sensors %}
+            {% if as_timestamp(sensor.last_changed) == as_timestamp(sensors | map(attribute='last_changed') | max) %}
+              {{ sensor.name }}
+            {% endif %}
+          {% endfor %}
+      
+      ###SHUTTLE BAY STATE
+      sen_shuttle_bay:
+        friendly_name: "Shuttle Bay"
+        value_template: >-
+          {% if is_state('cover.shuttle_bay', 'open') %}
+            Open
+          {% elif is_state('cover.shuttle_bay', 'closed') %}
+            Closed
+          {% elif is_state('cover.shuttle_bay', 'opening') %}
+            Opening
+          {% elif is_state('cover.shuttle_bay', 'closing') %}
+            Closing
+          {% else %}
+            Obstruction
+          {% endif %}
+        icon_template: >-
+          {% if is_state('cover.shuttle_bay', 'open') %}
+            mdi:garage-open
+          {% elif is_state('cover.shuttle_bay', 'closed') %}
+            mdi:garage
+          {% else %}
+            mdi:garage-alert
+          {% endif %}
+          
+      ###HOME STATUS
+      sen_home_status:
+        friendly_name: 'Home'
+        entity_id: input_select.home_status
+        value_template: >-
+          {% if states.input_select.home_status.state == 'Disarmed' %}
+            Disarmed
+          {% elif states.input_select.home_status.state == 'Armed' %}
+            Armed
+          {% elif states.input_select.home_status.state == 'Away' %}
+            Away
+          {% elif states.input_select.home_status.state == 'Sleeping' %}
+            Sleeping
+          {% endif %}
+        icon_template: >-
+          {% if states.input_select.home_status.state == 'Disarmed' %}
+            mdi:bell-off-outline
+          {% elif states.input_select.home_status.state == 'Armed' %}
+            mdi:bell-outline
+          {% elif states.input_select.home_status.state == 'Away' %}
+            mdi:airplane-takeoff
+          {% elif states.input_select.home_status.state == 'Sleeping' %}
+            mdi:weather-night
+          {% endif %}
+
+#################################################################
+#                                                               #
+#                       Binary Sensors                          #
+#                                                               #
+#################################################################
+
+### For Lovelace UI ###
+
+####################################################
+#                                                  #
+#             Binary Sensor - Template             #
+#                                                  #
+####################################################
+
+binary_sensor:
+  - platform: template
+    sensors:
+      ###DOOR LOCKS ICON
+      door_locks:
+        friendly_name: Door Locks
+        device_class: lock
+        value_template: >-
+          {{ is_state('lock.schlage_front', 'unlocked')
+          or is_state('lock.schlage_back', 'unlocked')}}
+        icon_template: >-
+          {% if is_state('binary_sensor.door_locks', 'off') %}
+            mdi:lock
+          {% elif is_state('binary_sensor.door_locks', 'on') %}
+            mdi:lock-open
+          {% else %}
+            mdi:lock-alert
+          {% endif %}
+      ###SHUTTLE BAY ICON
+      bs_shuttle_bay:
+        friendly_name: Shuttle Bay
+        device_class: door
+        entity_id: cover.shuttle_bay
+        value_template: "{{ is_state('cover.shuttle_bay', 'open') }}"
+        icon_template: >-
+          {% if is_state('cover.shuttle_bay', 'open') %}
+            mdi:garage-open
+          {% elif is_state('cover.shuttle_bay', 'Obstruction') %}
+            mdi:garage-alert
+          {% elif is_state('cover.shuttle_bay', 'closed') %}
+            mdi:garage
+          {% else %}
+            mdi:alert
+          {% endif %}
+     
+     
+      # windows:
+      #   friendly_name: Windows
+      #   device_class: window
+      #   entity_id: group.windows
+      #   value_template: "{{ is_state('group.windows', 'on') }}"
+      #   icon_template: >-
+      #     {% if is_state('group.windows', 'on') %}
+      #       mdi:window-open
+      #     {% elif is_state('group.windows', 'off') %}
+      #       mdi:window-closed
+      #     {% else %}
+      #       mdi:alert
+      #     {% endif %}
+      # alarm:
+      #   friendly_name: Alarm
+      #   entity_id: alarm_control_panel.ha_alarm
+      #   value_template: >-
+      #     {% if is_state('alarm_control_panel.ha_alarm', 'armed_home') %}
+      #       on
+      #     {% elif is_state('alarm_control_panel.ha_alarm', 'armed_away') %}
+      #       on
+      #     {% elif is_state('alarm_control_panel.ha_alarm', 'pending') %}
+      #       on
+      #     {% elif is_state('alarm_control_panel.ha_alarm', 'triggered') %}
+      #       on
+      #     {% else %}
+      #       off
+      #     {% endif %}
+      #   icon_template: >-
+      #     {% if is_state('alarm_control_panel.ha_alarm', 'armed_home') %}
+      #       mdi:shield-home
+      #     {% elif is_state('alarm_control_panel.ha_alarm', 'armed_away') %}
+      #       mdi:shield-lock
+      #     {% elif is_state('alarm_control_panel.ha_alarm', 'pending') %}
+      #       mdi:security
+      #     {% elif is_state('alarm_control_panel.ha_alarm', 'triggered') %}
+      #       mdi:shield-close
+      #     {% elif is_state('alarm_control_panel.ha_alarm', 'disarmed') %}
+      #       mdi:shield-home
+      #     {% else %}
+      #       mdi:alert
+      #     {% endif %}
+
+#################################################################
+#                                                               #
+#                          Automations                          #
+#                                                               #
+#################################################################
+automation:
+  - alias: a_Lockdown
+    trigger:
+    - platform: state
+      entity_id: input_boolean.ib_lockdown
+      to: 'on'
+    action:
+      - service: script.s_lockdown
+
+# ### GARAGE WARNING
+#   #Garage open for 30 minutes, send warning notification
+#   - alias: Garage Open Warning
+#     trigger:
+#     - platform: state
+#       entity_id: cover.shuttle_bay
+#       to: "open"
+#       for:
+#         minutes: 30 
+#     action:
+#     - service: notify.html5_push
+#       data:
+#         title: Garage Door
+#         message: Garage Door Open
+#         data:
+#           tag: "garage-warning"
+#           actions:
+#           - action: "close_garage"
+#             title: "Close"
+#           - action: "ignore_garage"
+#             title: "Ignore"
+#   #Close garage click, close door and send notification
+#   - alias: Garage Open Warning close clicked
+#     trigger:
+#     - platform: event
+#       event_type: html5_notification.clicked
+#       event_data:
+#         action: "close_garage"
+#         target: pixj
+#     - platform: event
+#       event_type: html5_notification.clicked
+#       event_data:
+#         action: "close_garage"
+#         target: pix3m
+#     action:
+#     - service: cover.close_cover
+#       entity_id: cover.shuttle_bay
+#     - service: notify.html5_push
+#       data_template:
+#         title: Garage Open Warning
+#         message:  >
+#           {% if trigger.event.data.target == 'pixj' %}
+#             Josh Closing Door
+#           {% else %}
+#             MJ Closing Door
+#           {% endif %}
+#         target: >
+#           {% if trigger.event.data.target == 'pixj' %}
+#             pix3m
+#           {% else %}
+#             pixj
+#           {% endif %}
+#         data:
+#           tag: "garage-warning"
+#   #Ignore garage click, send notification and resend original notification after 1 hour
+#   - alias: Garage Open Warning Ignore clicked
+#     trigger:
+#     - platform: event
+#       event_type: html5_notification.clicked
+#       event_data:
+#         action: "ignore_garage"
+#         target: pixj
+#     - platform: event
+#       event_type: html5_notification.clicked
+#       event_data:
+#         action: "ignore_garage"
+#         target: pix3m
+#     action:
+#     - service: notify.html5_push
+#       data_template:
+#         title: Garage Open Warning
+#         message:  >
+#           {% if trigger.event.data.target == 'pixj' %}
+#             Josh Ignored Garage Warning
+#           {% else %}
+#             MJ Ignored Garage Warning
+#           {% endif %}
+#         target: >
+#           {% if trigger.event.data.target == 'pixj' %}
+#             pix3m
+#           {% else %}
+#             pixj
+#           {% endif %}
+#         data:
+#           tag: "garage-warning"
+#     - delay: '01:00'
+#     - service: notify.html5_push
+#       data:
+#         title: Garage Door
+#         message: Garage Door Open
+#         data:
+#           tag: "garage-warning"
+#           actions:
+#           - action: "close_garage"
+#             title: "Close"
+#           - action: "ignore_garage"
+#             title: "Ignore"

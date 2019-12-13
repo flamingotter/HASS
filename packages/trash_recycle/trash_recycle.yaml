@@ -16,9 +16,9 @@ homeassistant:
       friendly_name: Trash Pickup Day
       icon: mdi:calendar-today
       hidden: true
-    group.trash_recycle:
-      friendly_name: Trash & Recycle
-      icon: mdi:recycle
+    # group.trash_recycle:
+    #   friendly_name: Trash & Recycle
+    #   icon: mdi:recycle
 
 #################################################################
 #                                                               #
@@ -26,16 +26,16 @@ homeassistant:
 #                                                               #
 #################################################################
 
-group:
-  trash schedule:
-    name: Trash Schedule
-    icon: mdi:delete
-    view: no
-    control: hidden
-    entities:
-#       - input_select.trash_reminders
-      - binary_sensor.trash_day
-      - input_select.trash_pickup_day
+# group:
+#   trash schedule:
+#     name: Trash Schedule
+#     icon: mdi:delete
+#     view: no
+#     control: hidden
+#     entities:
+# #       - input_select.trash_reminders
+#       - binary_sensor.trash_day
+#       - input_select.trash_pickup_day
 
 #################################################################
 #                                                               #
@@ -57,12 +57,12 @@ input_select:
      - Sunday
     icon: mdi:delete-variant
   
-  trash_reminders:
-    name: Trash Reminder
-    options:
-     - Bins Taken Out
-     - Remind Later
-     - Reset Trash Reminders
+  # trash_reminders:
+  #   name: Trash Reminder
+  #   options:
+  #    - Bins Taken Out
+  #    - Remind Later
+  #    - Reset Trash Reminders
 
 ##Input Booleans
 

@@ -1,0 +1,8 @@
+# - name: s_romantic_dine
+#   entities:
+#     light.kitchen:
+#       state: off
+#     light.table_lamp:
+#       brightness_pct: 30
+#       color_temp: 222
+#       transition: 2

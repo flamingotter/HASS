@@ -1,0 +1,54 @@
+#### NIGHTSTAND LAMP DIMMING
+
+- name: his_dim_lev_0
+  entities:
+    light.eugene:
+      state: off
+      transition: 1
+- name: his_dim_lev_1
+  entities:
+    light.eugene:
+      state: on
+      brightness_pct: 25
+      color_temp: 222
+      transition: 1
+- name: his_dim_lev_2
+  entities:
+    light.eugene:
+      state: on
+      brightness_pct: 50
+      color_temp: 222
+      transition: 1
+- name: his_dim_lev_3
+  entities:
+    light.eugene:
+      state: on
+      brightness_pct: 100
+      color_temp: 222
+      transition: 1
+- name: her_dim_lev_0
+  entities:
+    light.rapunzel:
+      state: off
+      transition: 1
+- name: her_dim_lev_1
+  entities:
+    light.rapunzel:
+      state: on
+      brightness_pct: 25
+      color_temp: 222
+      transition: 1
+- name: her_dim_lev_2
+  entities:
+    light.rapunzel:
+      state: on
+      brightness_pct: 50
+      color_temp: 222
+      transition: 1
+- name: her_dim_lev_3
+  entities:
+    light.rapunzel:
+      state: on
+      brightness_pct: 100
+      color_temp: 222
+      transition: 1

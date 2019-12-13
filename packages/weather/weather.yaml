@@ -20,13 +20,13 @@ homeassistant:
 #                                                               #
 #################################################################
 
-group:
-  sun:
-    name: Sun
-    view: no
-    entities:
-      - sun.sun
-      - sensor.moon
+# group:
+#   sun:
+#     name: Sun
+#     view: no
+#     entities:
+#       - sun.sun
+#       - sensor.moon
       
   # weather overview:
     # name: Weather Overview
@@ -172,7 +172,7 @@ sensor:
 #                                                  #
 ####################################################
 
-  - platform: moon
+  # - platform: moon
   
 ####################################################
 #                                                  #
@@ -187,8 +187,8 @@ sensor:
 #                                                  #
 ####################################################
 
-  - platform: season
-    type: astronomical
+  # - platform: season
+  #   type: astronomical
 
 ####################################################
 #                                                  #

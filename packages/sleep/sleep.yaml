@@ -19,19 +19,19 @@ homeassistant:
 #                                                               #
 #################################################################
 
-group:
+# group:
       
-  Josh Sleep Status:
-    control: hidden
-    entities:
-      - input_boolean.ib_j_status_sleeping
-      - sensor.sen_j_status_sleeping
+#   Josh Sleep Status:
+#     control: hidden
+#     entities:
+#       - input_boolean.ib_j_status_sleeping
+#       - sensor.sen_j_status_sleeping
 
-  MJ Sleep Status:
-      control: hidden
-      entities:
-        - input_boolean.ib_m_status_sleeping
-        - sensor.sen_m_status_sleeping
+#   MJ Sleep Status:
+#       control: hidden
+#       entities:
+#         - input_boolean.ib_m_status_sleeping
+#         - sensor.sen_m_status_sleeping
       
 #################################################################
 #                                                               #

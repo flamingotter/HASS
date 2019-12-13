@@ -1,11 +1,11 @@
+---
 ############ROAD REPORT############
-- id: road_report
-  alias: Road Report
-  trigger:
-  - platform: sun
-    event: sunrise
-    offset: "00:15:00"
-  action:
+alias: road_report
+trigger:
+  platform: sun
+  event: sunrise
+  offset: "00:30:00"
+action:
   - service: camera.snapshot
     data:
       entity_id:  camera.435_shoalcreek

@@ -1,0 +1,64 @@
+- name: precip
+  platform: generic
+  still_image_url: https://maps.darksky.net/@radar,39.227,-94.492,9
+  verify_ssl: false
+
+- name: temp
+  platform: generic
+  still_image_url: https://maps.darksky.net/@temperature,39.227,-94.492,9
+  limit_refetch_to_url_change: false
+
+
+#### OCTOPRINT WEBCAM
+- name: OctoPrint
+  platform: mjpeg
+  still_image_url: http://10.0.10.5/webcam/?action=snapshot
+  mjpeg_url: http://10.0.10.5/webcam/?action=stream
+
+- name: inside.backdoor
+  platform: generic
+  still_image_url: http://10.0.10.224/snap.jpeg
+  stream_source: rtsp://10.0.10.223:7447/rBRUPZtglnMXxnjK
+
+- name: outside.driveway
+  platform: generic
+  still_image_url: http://10.0.10.225/snap.jpeg
+  stream_source: rtsp://10.0.10.223:7447/wbHIPz1Wx9dS2xnQ
+
+- name: outside.porch
+  platform: generic
+  still_image_url: http://10.0.10.211/snap.jpeg
+  stream_source: rtsp://10.0.10.223:7447/o9BSMlxT16f2zVEm
+
+- name: inside.garage
+  platform: generic
+  still_image_url: http://10.0.10.203/snap.jpeg
+  stream_source: rtsp://10.0.10.223:7447/01rcVtXtEzXf82vS
+
+- name: inside.parlor
+  platform: generic
+  still_image_url: http://10.0.10.204/snap.jpeg
+  stream_source: rtsp://10.0.10.223:7447/rgiyMZj26YNxozIS
+
+- name: test
+  platform: ffmpeg
+  # still_image_url: http://10.0.10.196/snap.jpeg
+  input: rtsp://admin:password@10.0.10.196/live
+
+
+#### SCOUT TRAFFIC CAMS
+- name: 435.shoalcreek
+  platform: generic
+  still_image_url: http://www.kcscout.com/mapsubsystem/snapshots/M435SBIPC-25.jpg
+
+- name: 435.woodland
+  platform: generic
+  still_image_url: http://www.kcscout.net/mapsubsystem/snapshots/M435WBIPC-60.jpg
+
+- name: 435.29split
+  platform: generic
+  still_image_url: http://www.kcscout.net/mapsubsystem/snapshots/M029NBIPC-20.jpg
+
+- name: 29.plattemain
+  platform: generic
+  still_image_url: http://www.kcscout.net/mapsubsystem/snapshots/M029SBC-23.jpg

@@ -1,0 +1,173 @@
+homeassistant:
+  # name: Dashboard
+  # latitude: !secret home_lat
+  # longitude: !secret home_long
+  # elevation: 876
+  # unit_system: imperial
+  # time_zone: America/Chicago
+  customize: !include includes/customize.yaml
+  packages: !include_dir_named packages
+  auth_providers:
+   - type: homeassistant
+
+lovelace:
+  mode: yaml
+
+zone:
+  - name: Work
+    latitude: !secret work_lat
+    longitude: !secret work_long
+    radius: 2000
+    icon: mdi:worker
+
+  - name: Home
+    latitude: !secret home_lat
+    longitude: !secret home_long
+    radius: 100
+    icon: mdi:home-heart
+
+owntracks:
+  max_gps_accuracy: 200
+
+http:
+  #api_password: !secret http_password
+  base_url: ha.flamingotter.com
+  # ip_ban_enabled: True
+  # login_attempts_threshold: 5
+
+hacs:
+  token: c343dbd72eca2f3db19658992862ec16b50eb907
+  sidepanel_title: Community
+  sidepanel_icon: "mdi:alpha-c-box"
+  theme: true
+
+logger:
+  default: warning
+
+logbook:
+  exclude:
+    domains:
+      - group
+      - sun
+    entities:
+      - sensor.date
+      - sensor.time
+      - sensor.time_date
+      - sensor.date_time
+      - sensor.time_utc
+      - sensor.yr_symbol
+      - sensor.internet_time
+
+# influxdb:
+  # host: 10.0.10.10
+  # database: !secret influx_database
+  # username: !secret influx_username
+  # password: !secret influx_password
+  # default_measurement: state
+  # max_retries: 3
+  # include:
+    # entities:
+       # - sensor.bedroom_heatidx
+       # - sensor.bedroom_temp
+       # - sensor.bedroom_hum
+       # - sensor.test_lux
+       # - sensor.test_temp
+       # - sensor.test_hum
+       # - sensor.dark_sky_temperature
+       # - sensor.dark_sky_humidity
+
+# media_player:
+#   - platform: spotify
+#     client_id: !secret spotify_clientid
+#     client_secret: !secret spotify_clientpass
+
+alexa_media:
+  accounts:
+    - email: !secret amazon_username
+      password: !secret amazon_password
+      url: amazon.com
+      exclude_devices:
+        - "This Device"
+        - "Maryleigh's Alexa Apps"
+        - "Joshua's Alexa Apps"
+
+person:
+
+device_tracker:
+  # - platform: owntracks
+  #   max_gps_accuracy: 100
+  # - platform: unifi
+  #   host: 10.0.10.223
+  #   port: 8443
+  #   detection_time: 180
+  #   username: !secret unifi_username
+  #   password: !secret unifi_password
+  #   verify_ssl: false
+  #   site_id: 3q1vqa71
+  #   new_device_defaults:
+  #     track_new_devices: false
+  #     hide_if_away: false
+
+tts:
+  - platform: google_translate
+    service_name: google_say
+    language: 'en-us'
+
+history:
+  include:
+    domains:
+      - switch
+      - light
+      - media_player
+    entities:
+      - input_select.home_status
+      - input_select.josh_status
+      - input_select.mj_status
+      - sensor.test_temp
+      - sensor.test_hum
+      - sensor.test_lux
+
+nest:
+  client_id: !secret nest_id
+  client_secret: !secret nest_secret
+
+octoprint:
+  host: !secret octo_ip
+  api_key: !secret octo_api_key
+  bed: true
+  number_of_tools: 1
+
+
+################
+####INCLUDES####
+################
+automation: !include_dir_merge_list includes/automation/
+binary_sensor: !include includes/binary_sensors.yaml
+camera: !include includes/camera.yaml
+group: !include includes/groups.yaml
+input_boolean: !include includes/input_boolean.yaml
+input_select: !include includes/input_select.yaml
+input_number: !include includes/input_number.yaml
+light: !include includes/lights.yaml
+notify: !include includes/notify.yaml
+recorder: !include includes/recorder.yaml
+scene: !include_dir_merge_list includes/scenes/
+script: !include scripts.yaml
+sensor: !include_dir_merge_list includes/sensors/
+shell_command: !include includes/shell_commands.yaml
+switch: !include includes/switches.yaml
+cover: !include includes/cover.yaml
+
+
+################
+####ENABLES#####
+################
+map:
+cloud:
+sun:
+frontend:
+  themes: !include_dir_merge_named themes
+  javascript_version: latest
+config:
+system_health:
+tplink:
