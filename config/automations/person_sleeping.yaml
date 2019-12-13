@@ -1,5 +1,5 @@
 ---
-alias: set person as sleeping
+alias: person_sleeping
 trigger:
   platform: state
   entity_id: sensor.duration_his_side
