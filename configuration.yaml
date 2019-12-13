@@ -26,6 +26,9 @@ zone:
     radius: 100
     icon: mdi:home-heart
 
+owntracks:
+  max_gps_accuracy: 200
+
 http:
   #api_password: !secret http_password
   base_url: ha.flamingotter.com
