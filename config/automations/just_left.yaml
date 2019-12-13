@@ -1,0 +1,23 @@
+---
+####Tag person as 'Just Left' after state change to 'not_home'
+alias: just_left
+initial_state: True
+trigger:
+  platform: state
+  entity_id: person.josh
+  from: 'home'
+  to: 'not_home'
+  platform: state
+  entity_id: person.mj
+  from: 'home'
+  to: 'not_home'
+action:
+- service: input_select.select_option
+  data_template:
+    entity_id: >
+      {% if trigger.entity_id == 'person.josh' %}
+        input_select.josh_status
+      {% else %}
+        input_select.mj_status
+      {% endif %}
+    option: Just Left
