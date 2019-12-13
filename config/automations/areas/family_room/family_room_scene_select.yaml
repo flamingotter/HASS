@@ -1,5 +1,5 @@
 ---
-alias: basement scene select
+alias: family_room_scene_select
 trigger:
   platform: state
   entity_id: input_select.basement_scene_select
