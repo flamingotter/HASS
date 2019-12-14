@@ -13,7 +13,7 @@ trigger:
   for:
     minutes: 3
 action:
-- service: input_select.select_option
+  service: input_select.select_option
   data_template:
     entity_id: >
       {% if trigger.entity_id == 'input_select.josh_status' %}
@@ -22,7 +22,7 @@ action:
         input_select.mj_status
       {% endif %}
     option: Away
-- service: notify.html5_push_pixj
+  service: notify.html5_push_pixj
   data_template:
     title: "Away"
     message:  >

@@ -11,7 +11,7 @@ trigger:
   from: not_home
   to: home
 action:
-- service: input_select.select_option
+  service: input_select.select_option
   data_template:
     entity_id: >
       {% if trigger.entity_id == 'person.josh' %}

@@ -1,4 +1,5 @@
-alias: home_sunset
+---
+alias: sunset_parlor_lamps
 hide_entity: False
 trigger:
   platform: sun

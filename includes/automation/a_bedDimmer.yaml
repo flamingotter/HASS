@@ -1,46 +1,44 @@
+---
 ############DIMMER COUNT############
-- id: his_motion_count
-  alias: His Motion Count
-  initial_state: True
-  trigger:
-  - platform: state
-    entity_id: sensor.motion_count_his_side 
-  condition:
-  - condition: template
-    value_template: "{% if states('input_boolean.ib_j_status_sleeping') == 'off' %}true{% else %}false{% endif %}"
-  action:
-  - service: scene.turn_on
-    data_template:
-      entity_id: >
-        {% if trigger.to_state.state == '1' %}
-          scene.his_dim_lev_1
-        {% elif trigger.to_state.state == '2' %}
-          scene.his_dim_lev_2
-        {% elif trigger.to_state.state == '3' %}
-          scene.his_dim_lev_3
-        {% elif trigger.to_state.state == '0' %}
-          scene.his_dim_lev_0
-        {% endif %}
+alias: His Motion Count
+trigger:
+  platform: state
+  entity_id: sensor.motion_count_his_side 
+condition:
+  condition: template
+  value_template: "{% if states('input_boolean.ib_j_status_sleeping') == 'off' %}true{% else %}false{% endif %}"
+action:
+  service: scene.turn_on
+  data_template:
+    entity_id: >
+      {% if trigger.to_state.state == '1' %}
+        scene.his_dim_lev_1
+      {% elif trigger.to_state.state == '2' %}
+        scene.his_dim_lev_2
+      {% elif trigger.to_state.state == '3' %}
+        scene.his_dim_lev_3
+      {% elif trigger.to_state.state == '0' %}
+        scene.his_dim_lev_0
+      {% endif %}
 
-- id: her_motion_count
-  alias: Her Motion Count
-  initial_state: True
-  trigger:
-  - platform: state
-    entity_id: sensor.motion_count_her_side
-  condition:
-  - condition: template
-    value_template: "{% if states('input_boolean.ib_m_status_sleeping') == 'off' %}true{% else %}false{% endif %}"
-  action:
-  - service: scene.turn_on
-    data_template:
-      entity_id: >
-        {% if trigger.to_state.state == '1' %}
-          scene.her_dim_lev_1
-        {% elif trigger.to_state.state == '2' %}
-          scene.her_dim_lev_2
-        {% elif trigger.to_state.state == '3' %}
-          scene.her_dim_lev_3
-        {% elif trigger.to_state.state == '0' %}
-          scene.her_dim_lev_0
-        {% endif %}
+
+alias: Her Motion Count
+trigger:
+  platform: state
+  entity_id: sensor.motion_count_her_side
+condition:
+  condition: template
+  value_template: "{% if states('input_boolean.ib_m_status_sleeping') == 'off' %}true{% else %}false{% endif %}"
+action:
+  service: scene.turn_on
+  data_template:
+    entity_id: >
+      {% if trigger.to_state.state == '1' %}
+        scene.her_dim_lev_1
+      {% elif trigger.to_state.state == '2' %}
+        scene.her_dim_lev_2
+      {% elif trigger.to_state.state == '3' %}
+        scene.her_dim_lev_3
+      {% elif trigger.to_state.state == '0' %}
+        scene.her_dim_lev_0
+      {% endif %}
