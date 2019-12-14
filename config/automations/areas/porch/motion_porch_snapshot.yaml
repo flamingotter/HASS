@@ -1,0 +1,19 @@
+# ---
+# ############MOTION############
+# alias: motion_porch_snapshot
+# trigger:
+#   platform: state
+#   entity_id: binary_sensor.motion_front_porch
+#   to: 'on'
+# action:
+#   service: camera.snapshot
+#   data:
+#     entity_id: camera.outside_porch
+#     filename: www/tmp/snapshot.jpg
+#   service: notify.html5_push
+#   data_template:
+#     message: "Front Porch {{now().strftime('%H:%M-%d%b')}}"      
+#     title: Motion Deteched
+#     data:
+#       url: 'https://ha.flamingotter.com/local/tmp/snapshot.jpg?{{ now().second }}'
+#       image: 'https://ha.flamingotter.com/local/tmp/snapshot.jpg?{{ now().second }}'

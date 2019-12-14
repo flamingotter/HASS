@@ -1,6 +1,6 @@
 ---
 ###########TIME LAPSE############
-alias: time_lapse
+alias: garden_timelapse
 trigger:
   platform: time_pattern
   #hours: '/1'

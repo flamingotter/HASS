@@ -1,5 +1,5 @@
 ---
-alias: low battery notification
+alias: low_battery_notify
 trigger:
   platform: time
   at: '17:30:00'
@@ -10,9 +10,9 @@ condition:
       {%- if loop.index == 1 -%} {{ True }} {%- endif -%}
     {%- endfor -%}
 action:
-  - service: notify.html5_push
-    data_template:
-      message: >
-        {%- for zwave in states.zwave if zwave.attributes.battery_level is defined and zwave.attributes.battery_level | int < 30 -%}
-          The {{zwave.attributes.friendly_name | replace('_', ' ') }} battery is at {{ zwave.attributes.battery_level }}%!{{'\n'}}
-        {%- endfor -%}
+  service: notify.html5_push
+  data_template:
+    message: >
+      {%- for zwave in states.zwave if zwave.attributes.battery_level is defined and zwave.attributes.battery_level | int < 30 -%}
+        The {{zwave.attributes.friendly_name | replace('_', ' ') }} battery is at {{ zwave.attributes.battery_level }}%!{{'\n'}}
+      {%- endfor -%}

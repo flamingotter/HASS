@@ -21,7 +21,7 @@ trigger:
   from: 'Just Left'
   to: 'Just Arrived'
 action:
-- service: input_select.select_option
+  service: input_select.select_option
   data_template:
     entity_id: >
       {% if trigger.entity_id == 'input_select.josh_status' %}

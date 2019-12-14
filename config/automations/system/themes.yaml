@@ -1,20 +1,21 @@
-- id: Theme Set
-  alias: Set HA theme for day and night
-  trigger:
-  - platform: homeassistant
-    event: start
-  - platform: state
-    entity_id: sun.sun
-    to: above_horizon
-  - platform: state
-    entity_id: sun.sun
-    to: below_horizon
-  action:
-  - service_template: frontend.set_theme
-    data_template:
-      name: >
-        {% if states.sun.sun.state == "above_horizon" %}
-          clear
-        {% else %}
-          dark
-        {% endif %}
+---
+####Set theme base on sun state####
+alias: set_theme
+trigger:
+  platform: homeassistant
+  event: start
+  platform: state
+  entity_id: sun.sun
+  to: above_horizon
+  platform: state
+  entity_id: sun.sun
+  to: below_horizon
+action:
+  service_template: frontend.set_theme
+  data_template:
+    name: >
+      {% if states.sun.sun.state == "above_horizon" %}
+        clear
+      {% else %}
+        dark
+      {% endif %}
