@@ -152,7 +152,7 @@ light: !include includes/lights.yaml
 notify: !include includes/notify.yaml
 recorder: !include includes/recorder.yaml
 scene: !include_dir_merge_list includes/scenes/
-script: !include scripts.yaml
+script: !include_dir_merge_list includes/scripts/
 sensor: !include_dir_merge_list includes/sensors/
 shell_command: !include includes/shell_commands.yaml
 switch: !include includes/switches.yaml
