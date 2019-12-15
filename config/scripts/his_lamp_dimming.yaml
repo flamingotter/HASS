@@ -1,0 +1,34 @@
+---
+his_dim_lev_0:
+  sequence: 
+    - service: light.turn_off
+      data: 
+        entity_id: light.eugene
+        transition: 1
+
+his_dim_lev_1:
+  sequence: 
+    - service: light.turn_on
+      data: 
+        entity_id: light.eugene
+        brightness_pct: 25
+        color_temp: 222
+        transition: 1
+
+his_dim_lev_2:
+  sequence: 
+    - service: light.turn_on
+      data: 
+        entity_id: light.eugene
+        brightness_pct: 50
+        color_temp: 222
+        transition: 1
+
+his_dim_lev_3:
+  sequence: 
+    - service: light.turn_on
+      data: 
+        entity_id: light.eugene
+        brightness_pct: 100
+        color_temp: 222
+        transition: 1

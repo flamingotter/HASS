@@ -1,0 +1,12 @@
+---
+disarmed_day:
+  sequence:
+    - service: light.turn_on
+      data:
+        entity_id:
+          - light.kitchen
+          - light.living_room_lamps
+          - light.front_door_light
+        brightness: 255
+        color_temp: 222
+        transition: 2
