@@ -1,0 +1,9 @@
+---
+home_status:
+  name: Home Status
+  #icon: mdi:castle
+  options:
+  - "Disarmed"
+  - "Away"
+  - "Armed"
+  - "Sleeping"

@@ -1,0 +1,4 @@
+---
+light.stair_light:
+  friendly_name: Stair Light
+  icon: mdi:ceiling-light

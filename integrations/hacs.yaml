@@ -1,0 +1,6 @@
+---
+hacs:
+  token: c343dbd72eca2f3db19658992862ec16b50eb907
+  sidepanel_title: Community
+  sidepanel_icon: "mdi:alpha-c-box"
+  theme: true

@@ -1,0 +1,5 @@
+---
+name: inside_parlor
+platform: generic
+still_image_url: http://10.0.10.204/snap.jpeg
+stream_source: rtsp://10.0.10.223:7447/rgiyMZj26YNxozIS

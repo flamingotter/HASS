@@ -1,6 +1,0 @@
-exclude:
-  domains:
-    - sun
-    - group
-  entities:
-    - sensor.last_boot

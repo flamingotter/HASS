@@ -1,0 +1,5 @@
+---
+name: precip
+platform: generic
+still_image_url: https://maps.darksky.net/@radar,39.227,-94.492,9
+verify_ssl: false

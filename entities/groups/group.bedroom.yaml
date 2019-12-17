@@ -1,0 +1,7 @@
+---
+bedroom:
+  name: Bedroom
+  entities:
+    - light.eugene
+    - light.rapunzel
+    - light.wled_bed

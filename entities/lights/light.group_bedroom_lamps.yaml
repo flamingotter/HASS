@@ -1,0 +1,6 @@
+---
+platform: group
+name: Bedroom Lamps
+entities:
+  - light.eugene
+  - light.rapunzel

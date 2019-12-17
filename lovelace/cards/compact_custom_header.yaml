@@ -1,0 +1,18 @@
+swipe: true
+swipe_amount: 30
+swipe_prevent_default: true
+active_tab_color: '#00a1ff'
+menu: show
+options: clock
+voice: hide
+clock_format: '12'
+clock_date: true
+exceptions:
+  - conditions:
+      user: mj
+    config:
+      hide_tabs: '7,8'
+  - conditions:
+      user_agent: Mobile
+    config:
+      hide_tabs: '7'

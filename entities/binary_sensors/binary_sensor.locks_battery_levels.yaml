@@ -1,0 +1,22 @@
+---
+platform: template
+sensors:
+  lock_back_batt_lvl:
+    friendly_name: "Back Door Lock Battery"
+    value_template: "{{ states('sensor.schlage_back_door_battery_level')|int < 40 }}"  
+    icon_template: >-
+      {% if is_state("binary_sensor.lock_back_batt_lvl", "on") %}
+        mdi:battery-alert
+      {% else %}
+        mdi:battery
+      {% endif %}
+
+  lock_frt_batt_lvl:
+    friendly_name: "Front Door Lock Battery"
+    value_template: "{{ states('sensor.schlage_front_door_battery_level')|int < 40 }}"  
+    icon_template: >-
+      {% if is_state("binary_sensor.lock_frt_batt_lvl", "on") %}
+        mdi:battery-alert
+      {% else %}
+        mdi:battery
+      {% endif %}

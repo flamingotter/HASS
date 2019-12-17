@@ -1,0 +1,8 @@
+---
+alias: Lockdown
+trigger:
+  - platform: state
+    entity_id: input_boolean.lockdown
+    to: 'on'
+action:
+  - service: script.lockdown

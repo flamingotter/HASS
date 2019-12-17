@@ -1,0 +1,20 @@
+---
+############ROAD REPORT############
+alias: road_report
+trigger:
+  - platform: sun
+    event: sunrise
+    offset: "00:30:00"
+action:
+  - service: camera.snapshot
+    data:
+      entity_id:  camera.435_shoalcreek
+      filename: www/tmp/roadreport/435_shoalcreek.jpg
+  - service: notify.html5_push_pixj
+    data_template:
+      message: "I435/Shoal Creek Conditions"      
+      title: Road Report
+      data:
+        tag: "road-report"
+        url: 'https://ha.flamingotter.com/local/tmp/roadreport/435_shoalcreek.jpg?{{ now().second }}'
+        image: 'https://ha.flamingotter.com/local/tmp/roadreport/435_shoalcreek.jpg?{{ now().second }}'

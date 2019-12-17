@@ -1,0 +1,5 @@
+---
+name: outside_porch
+platform: generic
+still_image_url: http://10.0.10.211/snap.jpeg
+stream_source: rtsp://10.0.10.223:7447/o9BSMlxT16f2zVEm

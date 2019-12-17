@@ -1,0 +1,8 @@
+---
+basement:
+  name: Basement
+  entities:
+    - light.stair_light
+    - light.media_lights
+    - light.office_lamp
+    - light.spot_light

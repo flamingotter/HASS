@@ -1,0 +1,18 @@
+---
+platform: bayesian
+name: 'MJ_home'
+prior: 0.50
+probability_threshold: 0.8
+observations:
+    #Owntracks
+    - platform: 'state'
+      entity_id: 'device_tracker.mj_ot_pix3m'
+      prob_given_true: 0.9
+      prob_given_false: 0.4        
+      to_state: 'home'
+    #Router  
+    - platform: 'state'
+      entity_id: 'device_tracker.unifi_pix3_mj'
+      prob_given_true: 0.9
+      prob_given_false: 0.2
+      to_state: 'home'

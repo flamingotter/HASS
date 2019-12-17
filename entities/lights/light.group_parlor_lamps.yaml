@@ -1,0 +1,6 @@
+---
+platform: group
+name: Parlor Lamps
+entities:
+  - light.piano_lamp
+  - light.table_lamp

@@ -1,0 +1,32 @@
+---
+platform: template
+sensors:
+  motion_bsmt_stairs_batt_lvl:
+    friendly_name: "Motion Basement Stairs Battery"
+    value_template: "{{ states('sensor.motion_basement_stairs_battery_level')|int < 30 }}"  
+    icon_template: >-
+      {% if is_state("binary_sensor.motion_bsmt_stairs_batt_lvl", "on") %}
+        mdi:battery-alert
+      {% else %}
+        mdi:battery
+      {% endif %}
+
+  motion_kitchen_batt_lvl:
+    friendly_name: "Motion Kitchen Battery"
+    value_template: "{{ states('sensor.motion_kitchen_battery_level')|int < 30 }}"  
+    icon_template: >-
+      {% if is_state("binary_sensor.motion_kitchen_batt_lvl", "on") %}
+        mdi:battery-alert
+      {% else %}
+        mdi:battery
+      {% endif %}
+
+  motion_parlor_batt_lvl:
+    friendly_name: "Motion Parlor Battery"
+    value_template: "{{ states('sensor.motion_parlor_battery_level')|int < 30 }}"  
+    icon_template: >-
+      {% if is_state("binary_sensor.motion_parlor_batt_lvl", "on") %}
+        mdi:battery-alert
+      {% else %}
+        mdi:battery
+      {% endif %}

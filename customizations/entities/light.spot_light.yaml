@@ -1,0 +1,4 @@
+---
+light.spot_light:
+  friendly_name: Spot Light
+  icon: mdi:spotlight-beam

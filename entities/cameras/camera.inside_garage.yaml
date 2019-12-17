@@ -1,0 +1,5 @@
+---
+name: inside_garage
+platform: generic
+still_image_url: http://10.0.10.203/snap.jpeg
+stream_source: rtsp://10.0.10.223:7447/01rcVtXtEzXf82vS
