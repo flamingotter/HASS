@@ -1,0 +1,9 @@
+---
+parlor:
+  name: Parlor
+  entities:
+    - light.piano_lamp
+    - light.table_lamp
+    - light.front_door_light
+    - lock.schlage_front
+    - lock.schlage_back

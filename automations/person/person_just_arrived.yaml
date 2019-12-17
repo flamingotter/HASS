@@ -1,0 +1,35 @@
+---
+####Tag person as 'Just Arrived'
+alias: just_arrived
+trigger:
+  - platform: state
+    entity_id: person.josh
+    from: not_home
+    to: home
+  - platform: state
+    entity_id: person.mj
+    from: not_home
+    to: home
+action:
+  - service: input_select.select_option
+    data_template:
+      entity_id: >
+        {% if trigger.entity_id == 'person.josh' %}
+          input_select.josh_status
+        {% else %}
+          input_select.mj_status
+        {% endif %}
+      option: >
+        {% if trigger.entity_id == 'person.josh' %}
+          {% if states.input_select.josh_status.state == 'Just Left' %}
+            Home
+          {% else %}
+            Just Arrived
+          {% endif %}
+        {% else %}
+          {% if states.input_select.mj_status.state == 'Just Left' %}
+          Home
+          {% else %}
+          Just Arrived
+          {% endif %}
+        {% endif %}

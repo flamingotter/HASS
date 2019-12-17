@@ -1,0 +1,16 @@
+---
+his_lamp_status:
+  name: His Lamp
+  options:
+  - "1"
+  - "2"
+  - "3"
+  - "0"
+
+her_lamp_status:
+  name: Her Lamp
+  options:
+  - "1"
+  - "2"
+  - "3"
+  - "0"

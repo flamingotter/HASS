@@ -1,0 +1,13 @@
+---
+sensor.octoprint_actual_bed_temp:
+  friendly_name: Actual Bed Temp
+sensor.octoprint_target_bed_temp:
+  friendly_name: Target Bed Temp
+sensor.octoprint_target_tool0_temp:
+  friendly_name: Target Hot End Temp
+sensor.octoprint_actual_tool0_temp:
+  friendly_name: Actual Hot End Temp
+sensor.octoprint_current_state:
+  friendly_name: Current State
+sensor.octoprint_job_percentage:
+  friendly_name: Percentage Complete

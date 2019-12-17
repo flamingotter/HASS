@@ -1,0 +1,13 @@
+---
+platform: template
+sensors:
+  trash_day:
+    friendly_name: Trash Day
+    value_template: >-
+      {{ states('sensor.dayoftheweek') == states('input_select.trash_pickup_day') }}
+    icon_template: >-
+      {% if is_state('binary_sensor.trash_day', 'on') %}
+        mdi:delete
+      {% else %}
+        mdi:delete-empty
+      {% endif %}

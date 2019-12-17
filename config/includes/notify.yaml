@@ -1,7 +1,0 @@
-#### HTML5 CHROME PUSH
-
-platform: html5
-name: html5_push
-vapid_pub_key: BAUjzIFFMY5A1BfgvCytEDQ6uO4q8-KWG66zVrCT5W1kIzH9HSs0vEY2QXv1HfaqODkEv00WgN8FyYOpznFeulg
-vapid_prv_key: n2snyBY8qfsw6lwQAqdM9wJ4nzX0EuIvtoTUhDnIQk0
-vapid_email: flamingotter@gmail.com

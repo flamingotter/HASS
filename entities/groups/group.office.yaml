@@ -1,0 +1,5 @@
+---
+office:
+  name: Office
+  entities:
+    - light.office_lamp

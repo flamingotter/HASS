@@ -1,0 +1,4 @@
+---
+binary_sensor.door_locks:
+      friendly_name: Door Locks
+      device_class: lock

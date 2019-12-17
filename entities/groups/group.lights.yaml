@@ -1,0 +1,12 @@
+---
+lights:
+  name: Lights
+  entities:
+    - light.living_room_lamps
+    - light.front_door_light
+    - light.spot_light
+    - light.media_lights
+    - light.stair_light
+    - light.hall
+    - light.office_lamp
+    - light.kitchen

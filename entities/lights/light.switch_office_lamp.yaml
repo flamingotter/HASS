@@ -1,0 +1,4 @@
+---
+platform: switch
+name: Office Lamp
+entity_id: switch.office_lamp

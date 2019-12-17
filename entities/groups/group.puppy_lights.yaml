@@ -1,0 +1,6 @@
+---
+puppy_lights:
+  name: Puppy Lights
+  entities:
+    - light.piano_lamp
+    - light.front_door_light

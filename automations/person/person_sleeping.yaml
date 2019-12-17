@@ -1,0 +1,31 @@
+---
+alias: person_sleeping
+trigger:
+  - platform: state
+    entity_id: sensor.duration_his_side
+    to: '1'
+  - platform: state
+    entity_id: sensor.duration_her_side
+    to: '1'
+action:
+  - service_template:  >
+      {% if trigger.entity_id == 'sensor.duration_his_side' %}
+        {% if states('input_boolean.ib_j_status_sleeping') == 'off' %}
+          input_boolean.turn_on
+        {% else %}
+          input_boolean.turn_off
+        {% endif %}
+      {% else %}
+        {% if states('input_boolean.ib_m_status_sleeping') == 'off' %}
+          input_boolean.turn_on
+        {% else %}
+          input_boolean.turn_off
+        {% endif %}
+      {% endif %}
+    data_template:
+      entity_id:  >
+        {% if trigger.entity_id == 'sensor.duration_his_side' %}
+          input_boolean.ib_j_status_sleeping
+        {% else %}
+          input_boolean.ib_m_status_sleeping
+        {% endif %}

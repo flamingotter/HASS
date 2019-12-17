@@ -1,0 +1,4 @@
+---
+light.wled_bed:
+  friendly_name: Under Bed Light
+  icon: mdi:led-strip

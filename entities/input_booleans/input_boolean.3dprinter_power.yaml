@@ -1,0 +1,4 @@
+---
+3dprinter_power:
+  name: 3D Printer Power
+  icon: mdi:printer-3d

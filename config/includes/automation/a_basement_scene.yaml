@@ -1,8 +1,0 @@
-- alias: 'Basement Scene Select'
-  trigger:
-    platform: state
-    entity_id: input_select.basement_scene_select
-  action:
-    service: scene.turn_on
-    data_template:
-      entity_id: scene.{{trigger.to_state.state}}

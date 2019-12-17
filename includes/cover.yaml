@@ -1,4 +1,0 @@
-- platform: myq
-  username: !secret myq_id
-  password: !secret myq_secret
-  #type: chamberlain

@@ -1,7 +1,0 @@
-- name: s_media_playing_night
-  entities:
-    light.media_one:
-      brightness_pct: 20
-      color_temp: 285
-      transition: 5
-      state: on
