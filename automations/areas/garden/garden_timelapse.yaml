@@ -12,5 +12,5 @@ condition:
 action:
   - service: camera.snapshot
     data:
-      entity_id: camera.test
+      entity_id: camera.outside_garden
       filename: www/tmp/timelapse/snapshot_{{now().strftime('%H:%M-%d%b')}}.jpg

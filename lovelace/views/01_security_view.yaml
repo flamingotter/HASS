@@ -89,5 +89,5 @@ cards:
     name: Inside Garage
 
   - type: picture-entity
-    entity: camera.test
-    name: Test
+    entity: camera.outside_garden
+    name: Outside Garden
