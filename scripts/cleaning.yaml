@@ -8,7 +8,7 @@ cleaning:
           - light.hall
           - light.bedroom_lamps
           ###DOWNSTAIRS
-          - light.living_room_lamps
+          - light.parlor_lamps
           - light.kitchen
           - light.front_door_light
           ###BASEMENT

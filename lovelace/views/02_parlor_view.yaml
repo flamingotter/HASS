@@ -8,7 +8,7 @@ cards:
     show_state: false
     entities:
       - type: custom:slider-entity-row
-        entity: light.living_room_lamps
+        entity: light.parlor_lamps
         toggle: true
         icon: mdi:lamp
       - type: custom:slider-entity-row
