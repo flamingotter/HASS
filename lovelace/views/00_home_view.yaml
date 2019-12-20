@@ -84,7 +84,7 @@ cards:
         value: none
     entities:
       # Living Room
-      - entity: light.living_room_lamps
+      - entity: light.parlor_lamps
         icon:
           value: mdi:lamp
           color:
