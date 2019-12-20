@@ -5,7 +5,7 @@ disarmed_day:
       data:
         entity_id:
           - light.kitchen
-          - light.living_room_lamps
+          - light.parlor_lamps
           - light.front_door_light
         brightness: 255
         color_temp: 222

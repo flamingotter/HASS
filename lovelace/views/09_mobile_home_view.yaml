@@ -34,7 +34,7 @@ cards:
       #   color: var('--paper-item-icon-color')
       #   size: 2.3em
     entities:
-      - entity: light.living_room_lamps #(Entity specific settings. Overwrite the global settings)
+      - entity: light.parlor_lamps #(Entity specific settings. Overwrite the global settings)
         icon:
           value: mdi:lamp
           color:  #(optional)
