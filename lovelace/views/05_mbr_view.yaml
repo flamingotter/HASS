@@ -17,6 +17,9 @@ cards:
         entity: light.wled_bed
         toggle: true
       - type: divider
+      - entity: switch.bedroom_fan
+        icon: mdi:fan
+      - type: divider
       - type: custom:slider-entity-row
         entity: light.eugene
         toggle: true
