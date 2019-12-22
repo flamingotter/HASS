@@ -1,3 +1,4 @@
+---
 - url: /local/custom-lovelace/card-modder.js
   type: js
 - url: /community_plugin/lovelace-card-mod/card-mod.js
@@ -17,4 +18,6 @@
 - url: /community_plugin/weather-card/weather-card.js
   type: module
 - url: /community_plugin/lovelace-fold-entity-row/fold-entity-row.js
+  type: module
+- url: /community_plugin/lovelace-state-switch/state-switch.js
   type: module

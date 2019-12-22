@@ -7,50 +7,65 @@ cards:
 ###### HOME TAB
 
 ##Status Card
-  - type: entities
-    show_header_toggle: false
-    title: Status
-    entities:
-      - entity: sensor.home_status
-        style: |
-          :host {
-            color:
-              {% if is_state(config.entity, "Disarmed") %}
-                green
-              {% elif is_state(config.entity, "Armed") %}
-                red
-              {% endif %}
-              ;
-          }
-      - entity: binary_sensor.door_locks
-        style: |
-          :host {
-            color:
-              {% if is_state(config.entity, "on") %}
-                red
-              {% elif is_state(config.entity, "off") %}
-                green
-              {% endif %}
-              ;
-          }
-      - entity: sensor.shuttle_bay
-        style: |
-          :host {
-            color:
-              {% if is_state(config.entity, "Closed") %}
-                green
-              {% else %}
-                red
-              {% endif %}
-              ;
-          }
-      # - binary_sensor.alarm
-      - type: divider
-      - person.josh
-      - person.mj
-      # - binary_sensor.windows
-      # - binary_sensor.bs_shuttle_bay
-      # - type: divider
+  - type: vertical-stack
+    cards:
+    - type: entities
+      show_header_toggle: false
+      title: Status
+      entities:
+        - entity: sensor.home_status
+          style: |
+            :host {
+              color:
+                {% if is_state(config.entity, "Disarmed") %}
+                  green
+                {% elif is_state(config.entity, "Armed") %}
+                  red
+                {% endif %}
+                ;
+            }
+        - entity: binary_sensor.door_locks
+          style: |
+            :host {
+              color:
+                {% if is_state(config.entity, "on") %}
+                  red
+                {% elif is_state(config.entity, "off") %}
+                  green
+                {% endif %}
+                ;
+            }
+        - entity: sensor.shuttle_bay
+          style: |
+            :host {
+              color:
+                {% if is_state(config.entity, "Closed") %}
+                  green
+                {% else %}
+                  red
+                {% endif %}
+                ;
+            }
+        # - binary_sensor.alarm
+        - type: divider
+        - person.josh
+        - person.mj
+        # - binary_sensor.windows
+        # - binary_sensor.bs_shuttle_bay
+        # - type: divider
+    
+    - type: custom:state-switch
+      entity: input_select.home_status
+      states:
+        Armed:
+          type: alarm-panel
+          entity: alarm_control_panel.home_alarm
+        Away:
+          type: alarm-panel
+          entity: alarm_control_panel.home_alarm
+        Disarmed:
+          type: alarm-panel
+          entity: alarm_control_panel.home_alarm
 
 ##Alert Card
   - type: custom:card-modder
