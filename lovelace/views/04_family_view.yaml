@@ -104,7 +104,7 @@ cards:
   #       label_sec: Outer Off
 
   - type: custom:mini-media-player
-    entity: media_player.family_room
+    entity: media_player.echo_dot_family_room
     icon: mdi:spotify
     artwork: cover
     hide:

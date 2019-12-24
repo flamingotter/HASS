@@ -28,7 +28,7 @@ cards:
         toggle: true
 
   - type: custom:mini-media-player
-    entity: media_player.bedroom
+    entity: media_player.echo_dot_mbr
     icon: mdi:spotify
     artwork: cover
     hide:

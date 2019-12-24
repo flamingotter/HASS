@@ -63,9 +63,9 @@ cards:
         Away:
           type: alarm-panel
           entity: alarm_control_panel.home_alarm
-        Disarmed:
-          type: alarm-panel
-          entity: alarm_control_panel.home_alarm
+        # Disarmed:
+        #   type: alarm-panel
+        #   entity: alarm_control_panel.home_alarm
 
 ##Alert Card
   - type: custom:card-modder

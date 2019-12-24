@@ -26,7 +26,7 @@ cards:
         icon: mdi:ceiling-light
 
   - type: custom:mini-media-player
-    entity: media_player.parlor
+    entity: media_player.echo_dot_parlor
     icon: mdi:spotify
     artwork: cover
     hide:
