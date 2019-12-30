@@ -31,42 +31,70 @@ cards:
               ;
           }
       - entity: sensor.last_motion
-      - type: divider
-      - entity: lock.schlage_front
-        style: |
-          :host {
-            color:
-              {% if is_state(config.entity, "unlocked") %}
-                red
-              {% elif is_state(config.entity, "locked") %}
-                green
-              {% endif %}
-              ;
-          }
-      - entity: lock.schlage_back
-        style: |
-          :host {
-            color:
-              {% if is_state(config.entity, "unlocked") %}
-                red
-              {% elif is_state(config.entity, "locked") %}
-                green
-              {% endif %}
-              ;
-          }
-      - entity: cover.shuttle_bay
-        style: |
-          :host {
-            color:
-              {% if is_state(config.entity, "open") %}
-                red
-              {% elif is_state(config.entity, "closed") %}
-                green
-              {% else %}
-                yellow
-              {% endif %}
-              ;
-          }
+
+      - type: 'custom:fold-entity-row'
+        padding: 0
+        group_config:
+          toggle: false
+          type: entities
+        head:
+          label: Door Actions
+          type: section
+        items:      
+          - entity: lock.schlage_front
+            style: |
+              :host {
+                color:
+                  {% if is_state(config.entity, "unlocked") %}
+                    red
+                  {% elif is_state(config.entity, "locked") %}
+                    green
+                  {% endif %}
+                  ;
+              }
+      
+          - entity: lock.schlage_back
+            style: |
+              :host {
+                color:
+                  {% if is_state(config.entity, "unlocked") %}
+                    red
+                  {% elif is_state(config.entity, "locked") %}
+                    green
+                  {% endif %}
+                  ;
+              }
+      
+          - entity: cover.shuttle_bay
+            style: |
+              :host {
+                color:
+                  {% if is_state(config.entity, "open") %}
+                    red
+                  {% elif is_state(config.entity, "closed") %}
+                    green
+                  {% else %}
+                    yellow
+                  {% endif %}
+                  ;
+              }
+
+      - type: 'custom:fold-entity-row'
+        padding: 0
+        group_config:
+          toggle: false
+          type: entities
+        head:
+          label: Door Lock Status
+          type: section
+        items:
+          - entity: sensor.front_door_status
+            name: Front Door
+            icon: mdi:door
+          - entity: sensor.back_door_status
+            name: Back Door
+            icon: mdi:door
+            
 ##Cameras
   - type: picture-entity
     entity: camera.outside_porch
