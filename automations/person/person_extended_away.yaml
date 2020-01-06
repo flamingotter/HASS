@@ -1,0 +1,24 @@
+---
+####Tag person as 'Extended Away'
+alias: extended_away
+trigger:
+  - platform: state
+    entity_id: input_select.josh_status
+    to: 'Away'
+    for:
+      hours: 24
+  - platform: state
+    entity_id: input_select.mj_status
+    to: 'Away'
+    for:
+      hours: 24
+action:
+  - service: input_select.select_option
+    data_template:
+      entity_id: >
+        {% if trigger.entity_id == 'input_select.josh_status' %}
+          input_select.josh_status
+        {% else %}
+          input_select.mj_status
+        {% endif %}
+      option: Extended Away
