@@ -81,6 +81,7 @@ cards:
         - binary_sensor.bs_lock_back_batt_lvl
         - binary_sensor.bs_lock_frt_batt_lvl
         - input_boolean.trash_reminder
+        - input_boolean.feed_pets
       card:
         type: glance
         title: Alerts!
