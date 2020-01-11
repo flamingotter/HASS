@@ -1,7 +1,7 @@
 ---
 platform: template
 sensors:
-  last_motion:
+  last_motion_outdoors:
     friendly_name: 'Last Motion Outdoors'
     icon_template: 'mdi:walk'
     entity_id:
