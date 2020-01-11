@@ -1,0 +1,5 @@
+---
+unifiprotect:
+  host: !secret unifi_protect_ip
+  username: !secret unifi_protect_user
+  password: !secret unifi_protect_password

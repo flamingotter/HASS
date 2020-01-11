@@ -97,24 +97,24 @@ cards:
             
 ##Cameras
   - type: picture-entity
-    entity: camera.outside_porch
-    name: Outside Porch
+    entity: camera.porch_outside
+    name: Porch
 
   - type: picture-entity
-    entity: camera.inside_parlor
-    name: Inside Parlor
+    entity: camera.parlor_inside
+    name: Parlor
 
   - type: picture-entity
-    entity: camera.inside_backdoor
-    name: Inside Backdoor
+    entity: camera.kitchen_inside
+    name: Kitchen
 
   - type: picture-entity
-    entity: camera.outside_driveway
-    name: Outside Driveway
+    entity: camera.driveway_outside
+    name: Driveway
 
   - type: picture-entity
-    entity: camera.inside_garage
-    name: Inside Garage
+    entity: camera.garage_inside
+    name: Garage
 
   - type: picture-entity
     entity: camera.outside_garden

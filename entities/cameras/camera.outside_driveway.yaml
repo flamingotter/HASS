@@ -1,5 +1,0 @@
----
-name: outside_driveway
-platform: generic
-still_image_url: http://10.0.10.225/snap.jpeg
-stream_source: rtsp://10.0.10.223:7447/wbHIPz1Wx9dS2xnQ
