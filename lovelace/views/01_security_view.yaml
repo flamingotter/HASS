@@ -30,7 +30,8 @@ cards:
               {% endif %}
               ;
           }
-      - entity: sensor.last_motion
+      - entity: sensor.last_motion_indoors
+      - entity: sensor.last_motion_outdoors
 
       - type: 'custom:fold-entity-row'
         padding: 0
