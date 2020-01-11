@@ -2,7 +2,7 @@
 platform: template
 sensors:
   last_motion:
-    friendly_name: 'Last Motion'
+    friendly_name: 'Last Motion Indoors'
     icon_template: 'mdi:walk'
     entity_id:
       - binary_sensor.motion_basement_stairs
