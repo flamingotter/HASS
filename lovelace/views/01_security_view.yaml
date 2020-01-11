@@ -99,24 +99,30 @@ cards:
 ##Cameras
   - type: picture-entity
     entity: camera.porch_outside
+    camera_view: live
     name: Porch
 
   - type: picture-entity
     entity: camera.parlor_inside
+    camera_view: live
     name: Parlor
 
   - type: picture-entity
     entity: camera.kitchen_inside
+    camera_view: live
     name: Kitchen
 
   - type: picture-entity
     entity: camera.driveway_outside
+    camera_view: live
     name: Driveway
 
   - type: picture-entity
     entity: camera.garage_inside
+    camera_view: live
     name: Garage
 
   - type: picture-entity
     entity: camera.outside_garden
+    camera_view: live
     name: Outside Garden
