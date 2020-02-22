@@ -1,5 +1,5 @@
 title: Settings
-id: 8
+id: 9
 icon: mdi:settings-outline
 cards:
 
@@ -12,6 +12,12 @@ cards:
       - input_boolean.house_guests
       - input_boolean.cleaning
       - input_boolean.sexy_time
+
+  - type: entities
+    show_header_toggle: false
+    title: Garage
+    entities:
+      - light.garage_overhead_light
 
   - type: entities
     show_header_toggle: false
