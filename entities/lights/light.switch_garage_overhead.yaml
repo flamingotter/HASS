@@ -1,0 +1,4 @@
+---
+platform: switch
+name: Garage Overhead Light
+entity_id: switch.garage_overhead_light

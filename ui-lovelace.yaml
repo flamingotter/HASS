@@ -10,7 +10,8 @@ views:
   - !include lovelace/views/04_family_view.yaml
   - !include lovelace/views/05_mbr_view.yaml
   - !include lovelace/views/06_office_view.yaml
-  - !include lovelace/views/07_weather_view.yaml
-  - !include lovelace/views/08_settings_view.yaml
-  # - !include lovelace/views/09_mobile_home_view.yaml
+  - !include lovelace/views/07_garage_view.yaml
+  - !include lovelace/views/08_weather_view.yaml
+  - !include lovelace/views/09_settings_view.yaml
   #
+  

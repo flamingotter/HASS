@@ -10,3 +10,4 @@ lights:
     - light.hall
     - light.office_lamp
     - light.kitchen
+    - light.garage_overhead_light
