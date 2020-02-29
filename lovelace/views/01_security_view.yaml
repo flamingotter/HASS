@@ -37,11 +37,10 @@ cards:
         padding: 0
         group_config:
           toggle: false
-          type: entities
         head:
           label: Door Actions
           type: section
-        items:      
+        entities:
           - entity: lock.schlage_front
             style: |
               :host {
@@ -53,7 +52,6 @@ cards:
                   {% endif %}
                   ;
               }
-      
           - entity: lock.schlage_back
             style: |
               :host {
@@ -65,7 +63,6 @@ cards:
                   {% endif %}
                   ;
               }
-      
           - entity: cover.shuttle_bay
             style: |
               :host {
@@ -84,11 +81,10 @@ cards:
         padding: 0
         group_config:
           toggle: false
-          type: entities
         head:
           label: Door Lock Status
           type: section
-        items:
+        entities:
           - entity: sensor.front_door_status
             name: Front Door
             icon: mdi:door

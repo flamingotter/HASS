@@ -15,12 +15,6 @@ cards:
 
   - type: entities
     show_header_toggle: false
-    title: Garage
-    entities:
-      - light.garage_overhead_light
-
-  - type: entities
-    show_header_toggle: false
     title: Trash Schedule
     entities:
       - binary_sensor.trash_day

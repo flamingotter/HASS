@@ -89,68 +89,84 @@ cards:
       "--paper-item-icon-color": "green"
 
 ##Lights
-  - type: custom:tiles-card
-    card_settings:
-      background: var(--paper-card-background-color)
-      columns: 4
-      gap: 24px
-      title: Lights
-    global_settings:
-      background:
-        value: none
+  - type: entities
+    title: Lights
+    show_header_toggle: false
     entities:
-      # Living Room
       - entity: light.parlor_lamps
-        icon:
-          value: mdi:lamp
-          color:
-            value_on: var(--accent-color)
-            value_off: var(--text-color)
-          size: 2.3em
-        label_sec: Parlor Lamps
-      # Kitchen
+        icon: mdi:lamp
       - entity: light.kitchen
-        icon:
-          value: mdi:ceiling-light
-          color:
-            value_on: var(--accent-color)
-            value_off: var(--text-color)
-          size: 2.3em
-        label_sec: Kitchen Lights
-      # MBR
+        icon: mdi:ceiling-light
       - entity: light.bedroom_lamps
-        icon:
-          value: mdi:lamp
-          color:  #(optional)
-            value_on: var(--accent-color) #(optional)
-            value_off: var(--text-color) #(optional)
-          size: 2.3em #(optional)
-        label_sec: MBR Lamps
-      # Family / office
+        icon: mdi:lamp
       - entity: light.media_lights
-        icon:
-          value: mdi:track-light
-          color:  #(optional)
-            value_on: var(--accent-color) #(optional)
-            value_off: var(--text-color) #(optional)
-          size: 2.3em #(optional)
-        label_sec: Media Lights
+        icon: mdi:track-light
       - entity: light.spot_light
-        icon:
-          value: mdi:spotlight-beam
-          color:  #(optional)
-            value_on: var(--accent-color) #(optional)
-            value_off: var(--text-color) #(optional)
-          size: 2.3em #(optional)
-        label_sec: Spot Light
+        icon: mdi:spotlight-beam
       - entity: light.office_lamp
-        icon:
-          value: mdi:lamp
-          color:  #(optional)
-            value_on: var(--accent-color) #(optional)
-            value_off: var(--text-color) #(optional)
-          size: 2.3em #(optional)
-        label_sec: Office Lamp
+        icon: mdi:lamp
+  # - type: custom:tiles-card
+  #   card_settings:
+  #     background: var(--paper-card-background-color)
+  #     columns: 4
+  #     gap: 24px
+  #     title: Lights
+  #   global_settings:
+  #     background:
+  #       value: none
+  #   entities:
+  #     # Living Room
+  #     - entity: light.parlor_lamps
+  #       icon:
+  #         value: mdi:lamp
+  #         color:
+  #           value_on: var(--accent-color)
+  #           value_off: var(--text-color)
+  #         size: 2.3em
+  #       label_sec: Parlor Lamps
+  #     # Kitchen
+  #     - entity: light.kitchen
+  #       icon:
+  #         value: mdi:ceiling-light
+  #         color:
+  #           value_on: var(--accent-color)
+  #           value_off: var(--text-color)
+  #         size: 2.3em
+  #       label_sec: Kitchen Lights
+  #     # MBR
+  #     - entity: light.bedroom_lamps
+  #       icon:
+  #         value: mdi:lamp
+  #         color:  #(optional)
+  #           value_on: var(--accent-color) #(optional)
+  #           value_off: var(--text-color) #(optional)
+  #         size: 2.3em #(optional)
+  #       label_sec: MBR Lamps
+  #     # Family / office
+  #     - entity: light.media_lights
+  #       icon:
+  #         value: mdi:track-light
+  #         color:  #(optional)
+  #           value_on: var(--accent-color) #(optional)
+  #           value_off: var(--text-color) #(optional)
+  #         size: 2.3em #(optional)
+  #       label_sec: Media Lights
+  #     - entity: light.spot_light
+  #       icon:
+  #         value: mdi:spotlight-beam
+  #         color:  #(optional)
+  #           value_on: var(--accent-color) #(optional)
+  #           value_off: var(--text-color) #(optional)
+  #         size: 2.3em #(optional)
+  #       label_sec: Spot Light
+  #     - entity: light.office_lamp
+  #       icon:
+  #         value: mdi:lamp
+  #         color:  #(optional)
+  #           value_on: var(--accent-color) #(optional)
+  #           value_off: var(--text-color) #(optional)
+  #         size: 2.3em #(optional)
+  #       label_sec: Office Lamp
 
 ##Climate
   - type: custom:simple-thermostat
