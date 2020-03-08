@@ -21,3 +21,7 @@
   type: module
 - url: /community_plugin/lovelace-state-switch/state-switch.js
   type: module
+- url: /community_plugin/lovelace-battery-entity/battery-entity.js
+  type: module
+- url: /community_plugin/lovelace-auto-entities/auto-entities.js
+  type: module
