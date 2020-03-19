@@ -1,8 +1,8 @@
 title: TEST Dashboard
 # resources: !include lovelace/resources/resources.yaml
 # dashboards: !include lovelace/dashboards/dashboards.yaml
-# background: var(--background-image)
-# custom_header: !include lovelace/cards/custom_header.yaml
+background: var(--background-image)
+custom_header: !include lovelace/cards/custom_header.yaml
 views:
   - !include lovelace/views/00_home_view.yaml
   - !include lovelace/views/01_security_view.yaml

@@ -1,6 +1,6 @@
 ---
 lovelace-test:
   mode: yaml
-  title: test
+  title: Test
   show_in_sidebar: true
-  filename: test-lovelace.yaml
+  filename: ../test-lovelace.yaml

@@ -1,3 +1,4 @@
 ---
 lovelace:
-  mode: yaml
+  mode: yaml  
+  dashboards: !include ../lovelace/dashboards/dashboards.yaml
