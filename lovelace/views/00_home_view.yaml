@@ -68,24 +68,42 @@ cards:
         #   entity: alarm_control_panel.home_alarm
 
 ##Alert Card
-  - type: custom:card-modder
+  # - type: custom:card-modder
+  #   card:
+  #     type: entity-filter
+  #     state_filter:
+  #     - "on"
+  #     show_empty: false
+  #     entities:
+  #       - binary_sensor.bs_motion_bsmt_stairs_batt_lvl
+  #       - binary_sensor.bs_motion_kitchen_batt_lvl
+  #       - binary_sensor.bs_motion_parlor_batt_lvl
+  #       - binary_sensor.bs_lock_back_batt_lvl
+  #       - binary_sensor.bs_lock_frt_batt_lvl
+  #       - input_boolean.trash_reminder
+  #       - input_boolean.feed_pets
+  #     card:
+  #       type: glance
+  #       title: Alerts!
+  #   style:
+  #     "--paper-item-icon-color": "green"
+  
+  - type: entity-filter
+    state_filter:
+    - "on"
+    show_empty: false
+    entities:
+      - binary_sensor.bs_motion_bsmt_stairs_batt_lvl
+      - binary_sensor.bs_motion_kitchen_batt_lvl
+      - binary_sensor.bs_motion_parlor_batt_lvl
+      - binary_sensor.bs_lock_back_batt_lvl
+      - binary_sensor.bs_lock_frt_batt_lvl
+      - input_boolean.trash_reminder
+      - input_boolean.feed_pets
     card:
-      type: entity-filter
-      state_filter:
-      - "on"
-      show_empty: false
-      entities:
-        - binary_sensor.bs_motion_bsmt_stairs_batt_lvl
-        - binary_sensor.bs_motion_kitchen_batt_lvl
-        - binary_sensor.bs_motion_parlor_batt_lvl
-        - binary_sensor.bs_lock_back_batt_lvl
-        - binary_sensor.bs_lock_frt_batt_lvl
-        - input_boolean.trash_reminder
-        - input_boolean.feed_pets
-      card:
-        type: glance
-        title: Alerts!
-    style:
+      type: glance
+      title: Alerts!
+    style: |
       "--paper-item-icon-color": "green"
 
 ##Lights
