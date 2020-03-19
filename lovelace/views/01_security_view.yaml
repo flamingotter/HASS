@@ -35,11 +35,11 @@ cards:
 
       - type: 'custom:fold-entity-row'
         padding: 0
+        head:
+          type: section
+          label: Door Actions
         group_config:
           toggle: false
-        head:
-          label: Door Actions
-          type: section
         entities:
           - entity: lock.schlage_front
             style: |

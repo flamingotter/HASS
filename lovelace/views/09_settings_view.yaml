@@ -34,6 +34,9 @@ cards:
     title: Status
     entities:
       - sensor.last_boot
+      - sensor.hacs
+      - sensor.current_version
+      - binary_sensor.updater
       - type: custom:battery-entity
         entity: sensor.motion_basement_stairs_battery_level
       - type: custom:battery-entity
