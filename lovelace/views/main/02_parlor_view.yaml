@@ -1,0 +1,35 @@
+##Parlor Tab#############################################################################################
+title: Parlor
+id: 2
+icon: mdi:piano
+cards:
+  - type: entities
+    title: Parlor
+    show_state: false
+    entities:
+      - type: custom:slider-entity-row
+        entity: light.parlor_lamps
+        toggle: true
+        icon: mdi:lamp
+      - type: custom:slider-entity-row
+        entity: light.piano_lamp
+        toggle: true
+      - type: custom:slider-entity-row
+        entity: light.table_lamp
+        toggle: true
+      - type: divider
+      - entity: light.front_door_light
+        icon: mdi:ceiling-light
+      - type: custom:slider-entity-row
+        entity: light.hall
+        toggle: true
+        icon: mdi:ceiling-light
+
+  - type: custom:mini-media-player
+    entity: media_player.echo_dot_parlor
+    icon: mdi:spotify
+    artwork: cover
+    hide:
+      volume: true
+      source: true
+      power_state: false

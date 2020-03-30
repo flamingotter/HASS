@@ -1,6 +1,6 @@
 ---
-lovelace-test:
+lovelace-alt1:
   mode: yaml
   title: Test
   show_in_sidebar: true
-  filename: ../test-lovelace.yaml
+  filename: ../alt1-lovelace.yaml
