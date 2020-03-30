@@ -1,0 +1,18 @@
+title: TEST Dashboard
+resources: !include lovelace/resources/resources.yaml
+dashboards: !include lovelace/dashboards/dashboards.yaml
+background: var(--background-image)
+custom_header: !include lovelace/cards/custom_header.yaml
+views:
+  - !include lovelace/views/alt1/00_home_view.yaml
+  - !include lovelace/views/alt1/01_security_view.yaml
+  - !include lovelace/views/alt1/02_parlor_view.yaml
+  - !include lovelace/views/alt1/03_kitchen_view.yaml
+  - !include lovelace/views/alt1/04_family_view.yaml
+  - !include lovelace/views/alt1/05_mbr_view.yaml
+  - !include lovelace/views/alt1/06_office_view.yaml
+  - !include lovelace/views/alt1/07_garage_view.yaml
+  - !include lovelace/views/alt1/08_weather_view.yaml
+  - !include lovelace/views/alt1/09_settings_view.yaml
+  #
+  

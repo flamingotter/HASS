@@ -1,0 +1,112 @@
+title: Family Room
+id: 4
+icon: mdi:sofa
+cards:
+
+  - type: entities
+    title: Family Room
+    show_state: false
+    entities:
+      - type: custom:slider-entity-row
+        entity: light.stair_light
+        toggle: true
+      - type: custom:slider-entity-row
+        entity: light.spot_light
+        toggle: true
+      - type: custom:slider-entity-row
+        entity: light.media_lights
+        toggle: true
+      - type: 'custom:fold-entity-row'
+        padding: 0
+        group_config:
+          toggle: false
+          type: custom:slider-entity-row
+        head:
+          label: Media Light Settings
+          type: section
+        items:
+          - entity: light.media_one
+            name: Media 1
+            toggle: true
+          - entity: light.media_two
+            name: Media 2
+            toggle: true
+          - entity: light.media_three
+            name: Media 3
+            toggle: true
+          - entity: light.media_four
+            name: Media 4
+            toggle: true
+      
+      - type: 'custom:fold-entity-row'
+        padding: 0
+        group_config:
+          toggle: false
+        head:
+          label: Light Scenes
+          type: section
+        entities:
+          - entity: input_select.basement_scene_select
+            name: Light Scenes
+            icon: mdi:track-light
+          # - entity: scene.media_dim
+          #   name: Dim
+          #   icon: mdi:track-light
+          # - entity: scene.media_mid_off
+          #   name: Middle Off
+          #   icon: mdi:track-light
+          # - entity: scene.media_outer_off
+          #   name: Outer Off
+          #   icon: mdi:track-light
+
+  # - type: custom:tiles-card
+  #   card_settings:
+  #     background: var(--paper-card-background-color)
+  #     columns: 4
+  #     gap: 24px
+  #     title: Light Scenes
+  #   global_settings:
+  #     background:
+  #       value: none
+  #   entities:
+  #     - entity: scene.media_normal
+  #       icon:
+  #         value: mdi:track-light
+  #         color:
+  #           value_on: var(--accent-color)
+  #           value_off: var(--text-color)
+  #         size: 2.3em
+  #       label_sec: Bright White
+  #     - entity: scene.media_dim
+  #       icon:
+  #         value: mdi:track-light
+  #         color:
+  #           value_on: var(--accent-color)
+  #           value_off: var(--text-color)
+  #         size: 2.3em
+  #       label_sec: Dim White
+  #     - entity: scene.media_mid_off
+  #       icon:
+  #         value: mdi:track-light
+  #         color:
+  #           value_on: var(--accent-color)
+  #           value_off: var(--text-color)
+  #         size: 2.3em
+  #       label_sec: Middle Off
+  #     - entity: scene.media_outer_off
+  #       icon:
+  #         value: mdi:track-light
+  #         color:
+  #           value_on: var(--accent-color)
+  #           value_off: var(--text-color)
+  #         size: 2.3em
+  #       label_sec: Outer Off
+
+  - type: custom:mini-media-player
+    entity: media_player.echo_dot_family_room
+    icon: mdi:spotify
+    artwork: cover
+    hide:
+      volume: true
+      source: true
+      power_state: false

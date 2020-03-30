@@ -1,0 +1,10 @@
+title: Garage
+id: 7
+icon: mdi:garage-variant
+cards:
+  - type: entities
+    title: Garage
+    show_state: false
+    entities:
+      - cover.shuttle_bay
+      - light.garage_overhead_light
