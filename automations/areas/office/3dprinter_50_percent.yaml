@@ -18,4 +18,4 @@ action:
       - media_player.kitchen_echo
       - media_player.office
       - media_player.parlor
-    message: '3D print is half way finished'
+    message: '3D print is fifty percent complete'
