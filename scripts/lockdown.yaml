@@ -38,7 +38,10 @@ lockdown:
         data:
           type: announce
         target:
-          - media_player.everywhere
+          - media_player.bedroom
+          - media_player.kitchen_echo
+          - media_player.office
+          - media_player.parlor
         message:  >
           {% if is_state('binary_sensor.door_locks', 'on') and is_state('cover.shuttle_bay', 'open') %}
             The
