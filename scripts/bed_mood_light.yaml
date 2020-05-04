@@ -3,7 +3,7 @@ bed_mood_light:
   sequence: 
     - service: light.turn_on
       data: 
-        entity_id: light.wled_bed_2
+        entity_id: light.wled_bed
         brightness: 127
         effect: '[FX=09] Rainbow'
     - service: light.turn_off
