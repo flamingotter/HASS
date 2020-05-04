@@ -19,7 +19,7 @@ condition:
             entity_id: 'input_boolean.m_status_sleeping'
             state: 'on'
       - condition: numeric_state
-        entity_id: light.wled_bed_2
+        entity_id: light.wled_bed
         value_template: '{{ state.attributes.brightness }}'
         below: 75
 action:

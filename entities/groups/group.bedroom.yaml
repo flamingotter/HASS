@@ -4,4 +4,4 @@ bedroom:
   entities:
     - light.eugene
     - light.rapunzel
-    - light.wled_bed_2
+    - light.wled_bed
