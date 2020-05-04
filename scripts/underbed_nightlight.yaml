@@ -3,7 +3,7 @@ nightlight_bright:
   sequence:
     - service: light.turn_on
       data:
-        entity_id: light.wled_bed
+        entity_id: light.wled_bed_2
         brightness_pct: 20
         effect: '[FX=00] Solid'
         color_name: red
@@ -13,5 +13,5 @@ nightlight_dim:
   sequence:
     - service: light.turn_off
       data:
-        entity_id: light.wled_bed
+        entity_id: light.wled_bed_2
         transition: 1

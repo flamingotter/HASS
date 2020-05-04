@@ -22,7 +22,7 @@ condition:
       - condition: or
         conditions:
             - condition: state
-              entity_id: 'light.wled_bed'
+              entity_id: 'light.wled_bed_2'
               state: 'off'
 action:
   - service: scene.turn_on
