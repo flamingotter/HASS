@@ -1,5 +1,5 @@
 title: Dashboard
-resources: !include lovelace/resources/resources.yaml
+# resources: !include lovelace/resources/resources.yaml
 background: var(--background-image)
 custom_header: !include lovelace/cards/custom_header.yaml
 views:
