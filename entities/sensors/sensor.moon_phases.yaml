@@ -1,0 +1,8 @@
+---
+platform: template
+sensors:
+  moon_phases:
+    entity_id: sensor.moon
+    friendly_name: 'Moon'
+    value_template: '{{ states.sensor.moon.state }}'
+    entity_picture_template: /local/moon_phases/{{ states.sensor.moon.state }}.png
