@@ -9,6 +9,9 @@ cards:
     title: Master Suite
     show_state: false
     entities:
+      - entity: sensor.mbr_temp
+      - entity: sensor.mbr_hum
+      - type: divider
       - type: custom:slider-entity-row
         entity: light.bedroom_lamps
         toggle: true
@@ -30,6 +33,21 @@ cards:
         entity: light.rapunzel
         toggle: true
 
+  - type: horizontal-stack
+    cards:
+    - type: custom:mini-graph-card
+      entities:
+      - sensor.mbr_temp
+      line_color: var(--accent-color)
+      line_width: 8
+      font_size: 75
+    - type: custom:mini-graph-card
+      entities:
+      - sensor.mbr_hum
+      line_color: blue
+      line_width: 8
+      font_size: 75
+  
   - type: custom:mini-media-player
     entity: media_player.echo_dot_mbr
     icon: mdi:spotify
