@@ -67,27 +67,23 @@ cards:
         #   type: alarm-panel
         #   entity: alarm_control_panel.home_alarm
 
-##Alert Card
-  # - type: custom:card-modder
-  #   card:
-  #     type: entity-filter
-  #     state_filter:
-  #     - "on"
-  #     show_empty: false
-  #     entities:
-  #       - binary_sensor.bs_motion_bsmt_stairs_batt_lvl
-  #       - binary_sensor.bs_motion_kitchen_batt_lvl
-  #       - binary_sensor.bs_motion_parlor_batt_lvl
-  #       - binary_sensor.bs_lock_back_batt_lvl
-  #       - binary_sensor.bs_lock_frt_batt_lvl
-  #       - input_boolean.trash_reminder
-  #       - input_boolean.feed_pets
-  #     card:
-  #       type: glance
-  #       title: Alerts!
-  #   style:
-  #     "--paper-item-icon-color": "green"
-  
+    - type: horizontal-stack
+      cards:
+      - type: custom:mini-graph-card
+        entities:
+        - sensor.kitchen_thermostat_temperature
+        line_color: var(--accent-color)
+        line_width: 8
+        font_size: 75
+      - type: custom:mini-graph-card
+        entities:
+        - sensor.kitchen_thermostat_humidity
+        line_color: blue
+        line_width: 8
+        font_size: 75
+
+
+##Alert Card  
   - type: entity-filter
     state_filter:
     - "on"
