@@ -14,4 +14,4 @@ views:
   - !include lovelace/views/main/08_weather_view.yaml
   - !include lovelace/views/main/09_settings_view.yaml
   #
-  #
+  
