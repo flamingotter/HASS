@@ -5,7 +5,10 @@ bed_mood_light:
       data: 
         entity_id: light.wled_bed
         brightness: 128
-        effect: Rainbow
+    - service: mqtt.publish
+      data_template:
+        topic: wled/mbr/mood/bed/api  # your topic here
+        payload: SX=50 FX=09
     - service: light.turn_off
       data: 
         entity_id: 
