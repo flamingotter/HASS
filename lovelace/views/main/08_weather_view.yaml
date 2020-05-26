@@ -13,11 +13,6 @@ cards:
     entities:
       - sensor.moon_phases
 
-  - type: iframe
-    title: Radars
-    url: https://maps.darksky.net/@temperature,39.182,-94.676,9
-    aspect_ratio: 75%
-
   - type: picture-entity
     entity: camera.435_shoalcreek
     name: I-435 SB Shoal Creek
