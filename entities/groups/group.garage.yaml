@@ -1,0 +1,5 @@
+---
+office:
+  name: Garage
+  entities:
+    - light.garage_overhead_light

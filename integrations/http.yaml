@@ -1,6 +1,6 @@
 ---
 http:
   #api_password: !secret http_password
-  base_url: ha.flamingotter.com
+  # base_url: ha.flamingotter.com
   # ip_ban_enabled: True
   # login_attempts_threshold: 5
