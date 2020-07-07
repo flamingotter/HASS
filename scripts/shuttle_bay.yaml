@@ -1,0 +1,14 @@
+---
+shuttle_bay_open:
+  sequence:
+    - service: cover.open_cover
+      data: 
+        entity_id:
+          - cover.shuttle_bay
+
+shuttle_bay_close:
+  sequence:
+    - service: cover.close_cover
+      data: 
+        entity_id:
+          - cover.shuttle_bay

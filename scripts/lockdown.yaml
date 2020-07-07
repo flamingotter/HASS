@@ -2,15 +2,15 @@
 lockdown:
   sequence:
     - service: lock.lock
-      entity_id: lock.schlage_front
-    - service: lock.lock
       entity_id: lock.schlage_back
+    - service: lock.lock
+      entity_id: lock.schlage_front
     - service: light.turn_off
       entity_id: group.lights
     - service: cover.close_cover
       entity_id: cover.shuttle_bay
     - delay:
-        seconds: 10
+        seconds: 20
     - service: input_boolean.turn_off
       entity_id: input_boolean.lockdown
     - service: notify.html5_push

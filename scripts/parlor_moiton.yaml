@@ -17,4 +17,5 @@ parlor_off:
         entity_id: 
           - light.piano_lamp
           - light.table_lamp
+          - light.front_door_light
         transition: 5
