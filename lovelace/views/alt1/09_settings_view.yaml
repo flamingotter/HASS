@@ -47,3 +47,17 @@ cards:
         entity: sensor.schlage_front_door_battery_level
       - type: custom:battery-entity
         entity: sensor.schlage_back_door_battery_level
+
+  - type: entities
+    entities:
+      # - type: custom:text-input-row
+      #   entity: input_text.new_broadcast
+      #   name: Enter Text
+      - entity: input_text.broadcast_text
+      - entity: input_select.msg_target
+        name: Select Alexa Device
+      - action_name: Execute...
+        icon: 'mdi:voice'
+        name: 'Announce'
+        service: script.broadcast_msg
+        type: call-service

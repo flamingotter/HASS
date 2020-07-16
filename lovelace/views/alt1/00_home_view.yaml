@@ -247,19 +247,18 @@ cards:
   #       label_sec: Office Lamp
 
 ##Climate
+  - type: custom:simple-weather-card
+    entity: weather.dark_sky
+    name: " "
+
   - type: custom:simple-thermostat
     entity: climate.kitchen
     step_size: 1
+    name: false
     sensors:
-      - entity: sensor.family_room_thermostat_hvac_state
-        name: Current Mode
-      - entity: sensor.family_room_thermostat_humidity
+      - entity: sensor.kitchen_thermostat_humidity
         name: Humidity
       - attribute: away_mode
         name: Away mode
-    hide:
-      mode: true
-
-  - type: custom:weather-card
-    entity: weather.dark_sky
-    icons: "/community_plugin/weather-card/icons/"
+    # hide:
+    #   mode: true
