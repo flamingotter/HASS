@@ -1,4 +1,4 @@
-title: TEST Dashboard
+title: Tablet Dashboard
 # resources: !include lovelace/resources/resources.yaml
 dashboards: !include lovelace/dashboards/dashboards.yaml
 background: var(--background-image)

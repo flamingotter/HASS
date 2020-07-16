@@ -1,6 +1,6 @@
 ---
 lovelace-alt1:
   mode: yaml
-  title: Test
+  title: Tablet
   show_in_sidebar: true
   filename: ../alt1-lovelace.yaml

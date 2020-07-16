@@ -1,5 +1,5 @@
 ---
-bed_mood_light:
+bed_mood_light: #aka sexytime
   sequence: 
     - service: light.turn_on
       data: 
