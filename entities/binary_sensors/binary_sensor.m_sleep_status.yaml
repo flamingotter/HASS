@@ -3,7 +3,7 @@ platform: template
 sensors:
   m_sleep_status:
     friendly_name: "MJ Sleep Status"
-    entity_id: sensor.m_status_sleeping
+    #entity_id: sensor.m_status_sleeping
     value_template: >-
       {{ is_state('sensor.m_status_sleeping', 'sleeping')
           or is_state('sensor.m_status_sleeping', 'awake') }}

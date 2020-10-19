@@ -4,11 +4,12 @@ sensors:
   last_motion_outdoors:
     friendly_name: 'Last Motion Outdoors'
     icon_template: 'mdi:walk'
-    entity_id:
-      - binary_sensor.motion_driveway_outside
-      - binary_sensor.motion_porch_outside
+    # entity_id:
+    #   - binary_sensor.motion_driveway_outside
+    #   - binary_sensor.motion_porch_outside
+    #   - binary_sensor.motion_doorbell_outside
     value_template: >
-      {%- set sensors = [states.binary_sensor.motion_driveway_outside, states.binary_sensor.motion_porch_outside] %}
+      {%- set sensors = [states.binary_sensor.motion_driveway_outside, states.binary_sensor.motion_porch_outside, states.binary_sensor.motion_doorbell_outside] %}
       {% for sensor in sensors %}
         {% if as_timestamp(sensor.last_changed) == as_timestamp(sensors | map(attribute='last_changed') | max) %}
           {{ sensor.name }}

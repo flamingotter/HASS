@@ -1,0 +1,154 @@
+title: Main
+id: 0
+icon: mdi:home-heart
+cards:
+
+
+###### HOME TAB
+
+- type: vertical-stack
+  cards:
+    - type: custom:simple-weather-card
+      entity: weather.dark_sky
+      name: " "
+
+    - type: horizontal-stack
+      cards:
+      - type: "custom:button-card"
+        template: entity
+        entity: input_select.josh_status
+        show_state: true
+        show_name: false
+        
+      - type: custom:button-card
+        template: entity
+        entity: input_select.mj_status
+        show_state: true
+        show_name: false
+
+      - type: custom:button-card
+        template: home_state
+        entity: sensor.home_status
+        show_state: true
+        show_name: false
+
+      - type: custom:button-card
+        template: locks_state
+        entity: binary_sensor.door_locks
+        show_state: true
+        show_name: false
+####
+    - type: horizontal-stack
+      cards:
+        - type: "custom:button-card"
+          color_type: blank-card
+          styles:
+            card: 
+              - height: 8px
+####
+    - type: horizontal-stack
+      cards:
+      - type: "custom:button-card"
+        template: lock
+        entity: lock.schlage_front
+        show_state: false
+        show_name: true
+      - type: "custom:button-card"
+        template: lock
+        entity: lock.schlage_back
+        show_state: false
+        show_name: true
+      - type: "custom:button-card"
+        template: cover
+        entity: cover.shuttle_bay
+        show_state: false
+        show_name: true        
+####
+    - type: horizontal-stack
+      cards:
+        - type: "custom:button-card"
+          color_type: blank-card
+          styles:
+            card: 
+              - height: 8px
+####   
+    - type: horizontal-stack
+      cards:
+      - type: "custom:button-card"
+        template: light
+        entity: light.kitchen
+        show_state: false
+        show_name: true
+
+      - type: "custom:button-card"
+        template: light
+        entity: light.parlor_lamps
+        name: Parlor
+        show_state: false
+        show_name: true      
+
+      - type: "custom:button-card"
+        template: light
+        entity: light.media_lights
+        name: Family Room
+        show_state: false
+        show_name: true
+
+      - type: "custom:button-card"
+        template: light
+        entity: light.bedroom_lamps
+        name: MBR
+        show_state: false
+        show_name: true
+
+    - type: horizontal-stack
+      cards:
+      - type: "custom:button-card"
+        template: light
+        entity: light.garage_overhead_light
+        name: Garage
+        show_state: false
+        show_name: true
+####
+    - type: horizontal-stack
+      cards:
+        - type: "custom:button-card"
+          color_type: blank-card
+          styles:
+            card: 
+              - height: 8px
+####
+- type: vertical-stack
+  cards:
+    - type: horizontal-stack
+      cards:
+      - type: "custom:button-card"
+        template: boolean
+        entity: input_boolean.lockdown
+        name: Lockdown
+        icon: mdi:home-lock
+        show_state: false
+        show_name: true
+      - type: "custom:button-card"
+        template: boolean
+        entity: input_boolean.alarm_arm_night
+        name: Night Arm
+        icon: mdi:weather-night
+        show_state: false
+        show_name: true
+      - type: "custom:button-card"
+        template: boolean
+        entity: input_boolean.cleaning
+        icon: mdi:spray-bottle
+        show_state: false
+        show_name: true
+
+    - type: horizontal-stack
+      cards:
+      - type: "custom:button-card"
+        template: boolean
+        entity: script.dinner_msg
+        name: Dinnertime
+        icon: mdi:instrument-triangle
+        show_state: false
+        show_name: true

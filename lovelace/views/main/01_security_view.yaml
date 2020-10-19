@@ -104,6 +104,11 @@ cards:
     name: Porch
 
   - type: picture-entity
+    entity: camera.doorbell_outside
+    camera_view: live
+    name: Door
+
+  - type: picture-entity
     entity: camera.parlor_inside
     camera_view: live
     name: Parlor

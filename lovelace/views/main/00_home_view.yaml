@@ -89,11 +89,11 @@ cards:
     - "on"
     show_empty: false
     entities:
-      - binary_sensor.bs_motion_bsmt_stairs_batt_lvl
-      - binary_sensor.bs_motion_kitchen_batt_lvl
-      - binary_sensor.bs_motion_parlor_batt_lvl
-      - binary_sensor.bs_lock_back_batt_lvl
-      - binary_sensor.bs_lock_frt_batt_lvl
+      - binary_sensor.motion_bsmt_stairs_batt_lvl
+      - binary_sensor.motion_kitchen_batt_lvl
+      - binary_sensor.motion_parlor_batt_lvl
+      - binary_sensor.lock_back_batt_lvl
+      - binary_sensor.lock_frt_batt_lvl
       - input_boolean.trash_reminder
       - input_boolean.feed_pets
     card:

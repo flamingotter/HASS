@@ -3,7 +3,7 @@ platform: template
 sensors:
   home_status:
     friendly_name: 'Home'
-    entity_id: input_select.home_status
+    #entity_id: input_select.home_status
     value_template: >-
       {% if states.input_select.home_status.state == 'Disarmed' %}
         Disarmed

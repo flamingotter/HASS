@@ -1,6 +1,6 @@
 title: Master Bedroom
 id: 5
-icon: mdi:hotel
+icon: mdi:bed
 cards:
 ##Compact Header Config
   # - type: custom:compact-custom-header
