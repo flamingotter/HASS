@@ -3,7 +3,7 @@ platform: template
 sensors:
   m_status_sleeping:
     friendly_name: 'MJ Sleep Status'
-    entity_id: input_boolean.m_status_sleeping
+    # entity_id: input_boolean.m_status_sleeping
     value_template: >-
       {% if is_state('input_boolean.m_status_sleeping', 'on') %}
         Sleeping

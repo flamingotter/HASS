@@ -1,6 +1,7 @@
 ---
 mj_status:
   name: MJ Status
+  icon: mdi:cupcake
   options:
   - "Work"
   - "Home"

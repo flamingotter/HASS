@@ -2,11 +2,11 @@
 ####Tag person as 'Away' after a 3 minute 'Just Left' status
 alias: person_away
 trigger:
-  - platform: state
-    entity_id: input_select.josh_status
-    to: 'Just Left'
-    for:
-      minutes: 3
+  # - platform: state
+  #   entity_id: input_select.josh_status
+  #   to: 'Just Left'
+  #   for:
+  #     minutes: 3
   - platform: state
     entity_id: input_select.mj_status
     to: 'Just Left'

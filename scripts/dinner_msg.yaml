@@ -1,0 +1,9 @@
+---
+dinner_msg:
+  sequence:
+  - service: notify.alexa_media
+    data_template:
+       target: "media_player.everywhere"
+       data:
+         type: announce
+       message: "It's time to eat, please make your way to the kitchen"

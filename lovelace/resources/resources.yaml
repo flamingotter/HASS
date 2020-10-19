@@ -19,7 +19,7 @@
   type: module
 - url: /hacsfiles/lovelace-state-switch/state-switch.js
   type: module
-- url: /hacsfiles/lovelace-battery-entity/battery-entity.js
+- url: /hacsfiles/battery-state-card/battery-state-card.js
   type: module
 - url: /hacsfiles/mini-graph-card/mini-graph-card-bundle.js
   type: module
@@ -28,4 +28,6 @@
 - url: /hacsfiles/simple-weather-card/simple-weather-card-bundle.js
   type: module
 - url: /hacsfiles/lovelace-text-input-row/lovelace-text-input-row.js
+  type: module
+- url: /hacsfiles/button-card/button-card.js
   type: module

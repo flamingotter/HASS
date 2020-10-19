@@ -1,5 +1,5 @@
 ---
-his_lamp_status:
+his_lamp_state:
   name: His Lamp
   options:
   - "1"
@@ -7,7 +7,7 @@ his_lamp_status:
   - "3"
   - "0"
 
-her_lamp_status:
+her_lamp_state:
   name: Her Lamp
   options:
   - "1"

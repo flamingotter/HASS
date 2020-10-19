@@ -183,68 +183,27 @@ cards:
         icon: mdi:spotlight-beam
       - entity: light.office_lamp
         icon: mdi:lamp
-  # - type: custom:tiles-card
-  #   card_settings:
-  #     background: var(--paper-card-background-color)
-  #     columns: 4
-  #     gap: 24px
-  #     title: Lights
-  #   global_settings:
-  #     background:
-  #       value: none
-  #   entities:
-  #     # Living Room
-  #     - entity: light.parlor_lamps
-  #       icon:
-  #         value: mdi:lamp
-  #         color:
-  #           value_on: var(--accent-color)
-  #           value_off: var(--text-color)
-  #         size: 2.3em
-  #       label_sec: Parlor Lamps
-  #     # Kitchen
-  #     - entity: light.kitchen
-  #       icon:
-  #         value: mdi:ceiling-light
-  #         color:
-  #           value_on: var(--accent-color)
-  #           value_off: var(--text-color)
-  #         size: 2.3em
-  #       label_sec: Kitchen Lights
-  #     # MBR
-  #     - entity: light.bedroom_lamps
-  #       icon:
-  #         value: mdi:lamp
-  #         color:  #(optional)
-  #           value_on: var(--accent-color) #(optional)
-  #           value_off: var(--text-color) #(optional)
-  #         size: 2.3em #(optional)
-  #       label_sec: MBR Lamps
-  #     # Family / office
-  #     - entity: light.media_lights
-  #       icon:
-  #         value: mdi:track-light
-  #         color:  #(optional)
-  #           value_on: var(--accent-color) #(optional)
-  #           value_off: var(--text-color) #(optional)
-  #         size: 2.3em #(optional)
-  #       label_sec: Media Lights
-  #     - entity: light.spot_light
-  #       icon:
-  #         value: mdi:spotlight-beam
-  #         color:  #(optional)
-  #           value_on: var(--accent-color) #(optional)
-  #           value_off: var(--text-color) #(optional)
-  #         size: 2.3em #(optional)
-  #       label_sec: Spot Light
-  #     - entity: light.office_lamp
-  #       icon:
-  #         value: mdi:lamp
-  #         color:  #(optional)
-  #           value_on: var(--accent-color) #(optional)
-  #           value_off: var(--text-color) #(optional)
-  #         size: 2.3em #(optional)
-  #       label_sec: Office Lamp
+  
+  - type: custom:button-card
+    entity: input_boolean.house_guests #input_boolean.lockdown
+    name: Lockdown
+    icon: mdi:home-lock
+    show_state: false
+    styles:
+      card:
+        - width: 100px
+        - height: 100px
+    tap_action:
+      action: none
+    hold_action:
+      action: toggle
+    state:
+      - value: 'off'
+        styles:
+          card:
+            - filter: opacity(50%)
+          icon:
+            - filter: grayscale(100%)
 
 ##Climate
   - type: custom:simple-weather-card

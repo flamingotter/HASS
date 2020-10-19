@@ -1,4 +1,5 @@
 ---
+all_tabs_css: 'padding: 0px 20px;'
 header_text: '{{ time }}'
 compact_mode: true
 footer_mode: false
