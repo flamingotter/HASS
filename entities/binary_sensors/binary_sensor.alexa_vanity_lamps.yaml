@@ -1,0 +1,7 @@
+---
+platform: template
+sensors:
+  alexa_vanity_lamps:
+    friendly_name: "HA Vanity Lamps"
+    device_class: garage_door
+    value_template: "{{ is_state('input_boolean.vanity_lamps', 'on') }}"

@@ -7,8 +7,8 @@ views:
   - !include lovelace/views/main/01_security_view.yaml
   - !include lovelace/views/main/02_parlor_view.yaml
   - !include lovelace/views/main/03_kitchen_view.yaml
-  - !include lovelace/views/main/04_family_view.yaml
-  - !include lovelace/views/main/05_mbr_view.yaml
+  - !include lovelace/views/main/04_mbr_view.yaml
+  - !include lovelace/views/main/05_family_view.yaml
   - !include lovelace/views/main/06_office_view.yaml
   - !include lovelace/views/main/07_garage_view.yaml
   - !include lovelace/views/main/08_weather_view.yaml
