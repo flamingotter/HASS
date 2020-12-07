@@ -7,7 +7,7 @@ trigger:
 condition:
   - condition: state
     entity_id: input_select.home_status
-    state: "Disarmed"
+    state: "Armed"
 action:
   - service: light.lifx_set_state
     data:
