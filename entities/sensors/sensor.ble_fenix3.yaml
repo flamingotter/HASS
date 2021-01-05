@@ -1,0 +1,8 @@
+---
+platform: mqtt_room
+device_id: "ESP32-mqtt-room
+" # Note that major version must match, but any minor version will be ignored
+name: 'ble_fenix3'
+state_topic: 'room_presence'
+timeout: 60
+away_timeout: 120

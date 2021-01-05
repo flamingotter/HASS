@@ -8,3 +8,5 @@ downstairs:
     - light.piano_lamp
     - light.table_lamp
     - light.front_door_light
+    - light.fireplace_light
+    - input_boolean.garage_cabinet_lights

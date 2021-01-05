@@ -48,6 +48,8 @@ cards:
             }
         # - binary_sensor.alarm
         - type: divider
+        - sensor.ble_josh_pix3
+        - type: divider
         - person.josh
         - person.mj
         # - binary_sensor.windows
@@ -108,11 +110,11 @@ cards:
     show_header_toggle: false
     entities:
       - entity: light.parlor_lamps
-        icon: mdi:lamp
+        icon: mdi:lamps
       - entity: light.kitchen
-        icon: mdi:ceiling-light
+        icon: mdi:dome-light
       - entity: light.bedroom_lamps
-        icon: mdi:lamp
+        icon: mdi:lamps
       - entity: light.media_lights
         icon: mdi:track-light
       - entity: light.spot_light
@@ -196,5 +198,3 @@ cards:
         name: Humidity
       - attribute: away_mode
         name: Away mode
-    # hide:
-    #   mode: true

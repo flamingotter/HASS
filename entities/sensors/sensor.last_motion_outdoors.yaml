@@ -4,10 +4,6 @@ sensors:
   last_motion_outdoors:
     friendly_name: 'Last Motion Outdoors'
     icon_template: 'mdi:walk'
-    # entity_id:
-    #   - binary_sensor.motion_driveway_outside
-    #   - binary_sensor.motion_porch_outside
-    #   - binary_sensor.motion_doorbell_outside
     value_template: >
       {%- set sensors = [states.binary_sensor.motion_driveway_outside, states.binary_sensor.motion_porch_outside, states.binary_sensor.motion_doorbell_outside] %}
       {% for sensor in sensors %}

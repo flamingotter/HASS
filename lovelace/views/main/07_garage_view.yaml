@@ -8,3 +8,4 @@ cards:
     entities:
       - cover.shuttle_bay
       - light.garage_overhead_light
+      - input_boolean.garage_cabinet_lights

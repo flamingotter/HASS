@@ -10,7 +10,7 @@ cards:
       - type: custom:slider-entity-row
         entity: light.parlor_lamps
         toggle: true
-        icon: mdi:lamp
+        icon: mdi:lamps
       - type: custom:slider-entity-row
         entity: light.piano_lamp
         toggle: true

@@ -2,9 +2,6 @@ title: Master Bedroom
 id: 5
 icon: mdi:bed
 cards:
-##Compact Header Config
-  # - type: custom:compact-custom-header
-
   - type: entities
     title: Master Suite
     show_state: false
@@ -16,7 +13,7 @@ cards:
       - type: custom:slider-entity-row
         entity: light.bedroom_lamps
         toggle: true
-        icon: mdi:lamp
+        icon: mdi:lamps
       - type: custom:slider-entity-row
         entity: light.wled_bed
         toggle: true
@@ -34,26 +31,17 @@ cards:
         entity: light.rapunzel
         toggle: true
 
-  - type: horizontal-stack
-    cards:
-    - type: custom:mini-graph-card
-      entities:
-      - sensor.mbr_temp
-      line_color: var(--accent-color)
-      line_width: 8
-      font_size: 75
-    - type: custom:mini-graph-card
-      entities:
-      - sensor.mbr_hum
-      line_color: blue
-      line_width: 8
-      font_size: 75
-  
-  - type: custom:mini-media-player
-    entity: media_player.echo_dot_mbr
-    icon: mdi:spotify
-    artwork: cover
-    hide:
-      volume: true
-      source: true
-      power_state: false
+  # - type: horizontal-stack
+  #   cards:
+  #   - type: custom:mini-graph-card
+  #     entities:
+  #     - sensor.mbr_temp
+  #     line_color: var(--accent-color)
+  #     line_width: 8
+  #     font_size: 75
+  #   - type: custom:mini-graph-card
+  #     entities:
+  #     - sensor.mbr_hum
+  #     line_color: blue
+  #     line_width: 8
+  #     font_size: 75

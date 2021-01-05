@@ -4,3 +4,4 @@ kitchen:
   entities:
     - light.kitchen_light
     - light.dining_room_light
+    - light.fireplace_light

@@ -1,0 +1,17 @@
+---
+family_room_on:
+  sequence:
+    - service: light.turn_on
+      data:
+        entity_id: light.media_three
+        brightness_pct: 50
+        color_temp: 222
+
+family_room_off:
+  sequence:
+    - service: light.turn_off
+      data:
+        entity_id: 
+          - light.media_lights
+          - light.spot_light
+        transition: 3

@@ -11,3 +11,6 @@ lights:
     - light.office_lamp
     - light.kitchen
     - light.garage_overhead_light
+    - light.fireplace_light
+    - input_boolean.garage_cabinet_lights
+    - input_boolean.vanity_lamps
