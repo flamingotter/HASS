@@ -1,0 +1,8 @@
+---
+platform: mqtt
+name: Office Presence Node
+state_topic: "presence_nodes/office"
+json_attributes_topic: "presence_nodes/office_room_presence/tele"
+payload_on: "CONNECTED"
+payload_off: "DISCONNECTED"
+device_class: connectivity

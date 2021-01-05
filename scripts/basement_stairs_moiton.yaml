@@ -12,4 +12,4 @@ basement_stairs_off:
     - service: light.turn_off
       data:
         entity_id: light.stair_light
-        transition: 5
+        transition: 3

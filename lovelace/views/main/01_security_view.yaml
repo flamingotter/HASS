@@ -123,7 +123,7 @@ cards:
     camera_view: live
     name: Garage
 
-  - type: picture-entity
-    entity: camera.outside_garden
-    camera_view: live
-    name: Outside Garden
+  # - type: picture-entity
+  #   entity: camera.outside_garden
+  #   camera_view: live
+  #   name: Outside Garden

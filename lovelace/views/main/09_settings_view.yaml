@@ -13,6 +13,16 @@ cards:
       - input_boolean.cleaning
       - input_boolean.sexy_time
       - input_boolean.alarm_arm_night
+      - input_boolean.lockdown
+
+  - type: entities
+    show_header_toggle: false
+    title: TEST
+    entities:
+      - input_boolean.test1
+      - input_boolean.test2
+      - input_boolean.test3
+      - input_boolean.test4
 
   - type: entities
     show_header_toggle: false

@@ -1,0 +1,7 @@
+---
+platform: template
+sensors:
+  alexa_garage_cabinet_lights:
+    friendly_name: "HA Garage Cabinet Lights"
+    device_class: garage_door
+    value_template: "{{ is_state('input_boolean.garage_cabinet_lights', 'on') }}"

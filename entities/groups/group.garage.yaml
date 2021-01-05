@@ -3,3 +3,4 @@ garage:
   name: Garage
   entities:
     - light.garage_overhead_light
+    - input_boolean.garage_cabinet_lights

@@ -1,0 +1,12 @@
+---
+echos:
+  name: All Echos
+  entities:
+    - media_player.kitchen_echo
+    - media_player.bedroom
+    - media_player.parlor
+    - media_player.garage
+    - media_player.office
+    - media_player.babe_cave
+    - media_player.family_room
+    - media_player.echo_show

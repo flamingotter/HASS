@@ -5,8 +5,6 @@ lockdown:
       entity_id: lock.schlage_back
     - service: lock.lock
       entity_id: lock.schlage_front
-    # - service: light.turn_off
-    #   entity_id: group.lights
     - service: cover.close_cover
       entity_id: cover.shuttle_bay
     - delay:
