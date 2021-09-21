@@ -1,0 +1,7 @@
+---
+platform: template
+sensors:
+  test1:
+    friendly_name: "test 1 door"
+    device_class: door
+    value_template: "{{ is_state('input_boolean.test1', 'on') }}"

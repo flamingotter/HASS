@@ -17,5 +17,5 @@ action:
         {% if states.sun.sun.state == "above_horizon" %}
           clear
         {% else %}
-          clear-dark
+          clear-dark-vibrant
         {% endif %}

@@ -31,3 +31,5 @@
   type: module
 - url: /hacsfiles/button-card/button-card.js
   type: module
+- url: /hacsfiles/rgb-light-card/card.js
+  type: module

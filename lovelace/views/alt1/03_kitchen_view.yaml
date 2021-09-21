@@ -14,7 +14,7 @@ cards:
         icon: mdi:ceiling-light
 
   - type: custom:mini-media-player
-    entity: media_player.kitchen
+    entity: media_player.kitchen_echo
     icon: mdi:spotify
     artwork: cover
     hide:

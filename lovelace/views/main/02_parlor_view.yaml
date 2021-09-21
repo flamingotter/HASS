@@ -24,12 +24,5 @@ cards:
         entity: light.hall
         toggle: true
         icon: mdi:ceiling-light
-
-  - type: custom:mini-media-player
-    entity: media_player.echo_dot_parlor
-    icon: mdi:spotify
-    artwork: cover
-    hide:
-      volume: true
-      source: true
-      power_state: false
+      - type: divider
+      - entity: cover.parlor_blinds

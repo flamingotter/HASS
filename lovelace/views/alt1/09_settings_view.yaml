@@ -19,14 +19,6 @@ cards:
     entities:
       - binary_sensor.trash_day
       - input_select.trash_pickup_day
-
-  # - type: custom:auto-entities
-  #   card:
-  #     type: entities
-  #   filter:
-  #     include:
-  #     - attributes:
-  #           battery_level: "<=100"
   
 
   - type: entities

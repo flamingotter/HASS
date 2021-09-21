@@ -1,0 +1,9 @@
+---
+hendrix:
+  sequence: 
+    - service: media_player.play_media
+      data:
+        entity_id: media_player.spotify
+        media_content_id: 'https://open.spotify.com/playlist/37i9dQZF1DWTNV753no4ic'
+        media_content_type: playlist
+        source: "Office"

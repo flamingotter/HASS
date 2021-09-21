@@ -1,0 +1,15 @@
+---
+platform: mqtt
+name: Fireplace Blinds
+device_class: shutter
+unique_id: 807d3a3e0135
+command_topic: "home/fireplace/blinds/blindsCommand"
+set_position_topic: "home/fireplace/blinds/positionCommand"
+position_topic: "home/fireplace/blinds/positionState"
+state_topic: "home/fireplace/blinds/positionState"
+retain: true
+payload_open: "OPEN"
+payload_close: "CLOSE"
+payload_stop: "STOP"
+position_open: 0
+position_closed: 12

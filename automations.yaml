@@ -1,0 +1,52 @@
+- id: '1611531276722'
+  alias: Tag bedtime is scanned
+  description: ''
+  trigger:
+  - platform: tag
+    tag_id: bedtime_01
+  condition: []
+  action:
+  - type: toggle
+    device_id: 951146bc13f111eb8551d59a56ab8001
+    entity_id: light.piano_lamp
+    domain: light
+  mode: single
+- id: '1611531411700'
+  alias: Tag bedtime is scanned
+  description: ''
+  trigger:
+  - platform: tag
+    tag_id: bedtime_01
+  condition: []
+  action:
+  - type: toggle
+    device_id: 951146bc13f111eb8551d59a56ab8001
+    entity_id: light.piano_lamp
+    domain: light
+  mode: single
+- id: '1611531527291'
+  alias: bedtime tag
+  description: ''
+  trigger:
+  - platform: tag
+    tag_id: bedtime_01
+  condition: []
+  action:
+  - type: toggle
+    device_id: 951146bc13f111eb8551d59a56ab8001
+    entity_id: light.piano_lamp
+    domain: light
+  mode: single
+- id: '1611538250849'
+  alias: Bedtime
+  description: ''
+  trigger:
+  - platform: tag
+    tag_id: bedtime_01
+  condition: []
+  action:
+  - type: toggle
+    device_id: 951146bc13f111eb8551d59a56ab8001
+    entity_id: light.piano_lamp
+    domain: light
+  mode: single

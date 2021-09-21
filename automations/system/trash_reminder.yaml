@@ -1,0 +1,13 @@
+---
+alias: trash_reminder
+trigger:
+  - platform: time
+    at: '17:00'
+condition:
+  - condition: state
+    entity_id: binary_sensor.trash_day
+    state:  'on'
+action:
+  - service: input_boolean.turn_on
+    data:
+      entity_id: input_boolean.trash_reminder

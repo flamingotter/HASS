@@ -14,12 +14,6 @@ cards:
         icon: mdi:dome-light
       - entity: light.fireplace_light
         icon: mdi:wall-sconce-round
-
-  - type: custom:mini-media-player
-    entity: media_player.kitchen
-    icon: mdi:spotify
-    artwork: cover
-    hide:
-      volume: true
-      source: true
-      power_state: false
+      - type: divider
+      - entity: cover.fireplace_blinds
+      - entity: cover.dining_room_blinds

@@ -1,0 +1,6 @@
+---
+platform: group
+name: Deck Lights
+entities:
+  - light.n_deck
+  - light.s_deck

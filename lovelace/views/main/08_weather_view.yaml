@@ -8,10 +8,11 @@ cards:
     icons: "/community_plugin/weather-card/icons/"
 
   - type: entities
-    title: Moon
+    title: Environmentals
     show_state: false
     entities:
       - sensor.moon_phases
+      - sensor.szpffqlkc_solar_rad
 
   - type: picture-entity
     entity: camera.435_shoalcreek

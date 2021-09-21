@@ -1,0 +1,15 @@
+---
+platform: mqtt
+name: Parlor Blinds
+device_class: shutter
+unique_id: 807d3a3e0133
+command_topic: "home/parlor/blinds/blindsCommand"
+set_position_topic: "home/parlor/blinds/positionCommand"
+position_topic: "home/parlor/blinds/positionState"
+state_topic: "home/parlor/blinds/positionState"
+retain: true
+payload_open: "OPEN"
+payload_close: "CLOSE"
+payload_stop: "STOP"
+position_open: 0
+position_closed: 8

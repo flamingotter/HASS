@@ -3,7 +3,7 @@ platform: template
 sensors:
   shuttle_bay:
     friendly_name: Shuttle Bay
-    device_class: door
+    device_class: garage_door
     #entity_id: cover.shuttle_bay
     value_template: "{{ is_state('cover.shuttle_bay', 'open') }}"
     icon_template: >-

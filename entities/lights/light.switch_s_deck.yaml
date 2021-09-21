@@ -1,0 +1,4 @@
+---
+platform: switch
+name: South Deck Light
+entity_id: switch.s_deck

@@ -4,6 +4,6 @@ home_status:
   #icon: mdi:castle
   options:
   - "Disarmed"
-  - "Away"
-  - "Armed"
-  - "Sleeping"
+  - "Away" #Arm Away
+  - "Armed" #Arm Home
+  - "Sleeping" #Arm Night

@@ -4,12 +4,12 @@ icon: mdi:sofa
 cards:
 
   - type: entities
-    title: Family Room
+    title: Media Room
     show_state: false
     entities:
-      - entity: sensor.basement_sensor_temperature
-      - entity: sensor.basement_sensor_relative_humidity
-      - entity: binary_sensor.motion_basement
+      - entity: sensor.meida_room_temperature
+      - entity: sensor.meida_room_relative_humidity
+      - entity: binary_sensor.meida_room_motion
       - type: divider
       - entity: media_player.samsung_65
       - type: divider
@@ -17,9 +17,34 @@ cards:
         entity: light.stair_light
         toggle: true
         icon: mdi:dome-light
+
       - type: custom:slider-entity-row
         entity: light.spot_light
-        toggle: true
+      - type: custom:rgb-light-card
+        entity: light.spot_light
+        colors:
+          - rgb_color:
+            - 121
+            - 0
+            - 255
+          - rgb_color:
+            - 0
+            - 255
+            - 249
+          - rgb_color:
+            - 0
+            - 69
+            - 255
+          - rgb_color:
+            - 1
+            - 255
+            - 0
+          - rgb_color:
+            - 255
+            - 0
+            - 0
+      
+
       - type: custom:slider-entity-row
         entity: light.media_lights
         toggle: true

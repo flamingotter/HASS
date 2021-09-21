@@ -10,6 +10,7 @@ cards:
     entities:
       - entity: light.office_lamp
         icon: mdi:lamp
+      - entity: input_boolean.onair
 
   - type: entities
     title: 3D Printer

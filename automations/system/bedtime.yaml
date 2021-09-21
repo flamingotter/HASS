@@ -1,0 +1,15 @@
+---
+alias: Bedtime
+trigger:
+  - platform: tag
+    tag_id: bedtime_01
+action:
+  - service: light.turn_off
+    data: 
+      entity_id: group.lights
+  - service: input_boolean.turn_on
+    data:
+      entity_id: input_boolean.alarm_arm_night
+  - service: lock.lock
+    data: 
+      entity_id: group.door_locks

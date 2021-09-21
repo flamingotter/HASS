@@ -1,0 +1,4 @@
+---
+light.deck_lights:
+  friendly_name: Deck Lights
+  icon: mdi:coach-lamp

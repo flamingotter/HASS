@@ -13,5 +13,4 @@ family_room_off:
       data:
         entity_id: 
           - light.media_lights
-          - light.spot_light
         transition: 3
