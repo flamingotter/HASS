@@ -1,6 +1,6 @@
 ---
 platform: mqtt_room
-device_id: "2f234454cf6d4a0fadf2f4911ba9ffa6-5-0" # Note that major version must match, but any minor version will be ignored
+device_id: "1d417edd48c14037bf6c7bb13862f439-5-0" # Note that major version must match, but any minor version will be ignored
 name: 'ble_josh_pix3'
 state_topic: 'room_presence'
 timeout: 60
