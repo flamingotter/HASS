@@ -16,6 +16,7 @@ custom_components/
 *.mp3
 *.pickle
 *.sqlite
+*.yaml.old
 !*.yaml
 !.gitignore
 secrets.yaml
