@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 his_lamp_state:
   name: His Lamp
@@ -13,4 +14,21 @@ her_lamp_state:
   - "1"
   - "2"
   - "3"
+=======
+---
+his_lamp_state:
+  name: His Lamp
+  options:
+  - "1"
+  - "2"
+  - "3"
+  - "0"
+
+her_lamp_state:
+  name: Her Lamp
+  options:
+  - "1"
+  - "2"
+  - "3"
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
   - "0"

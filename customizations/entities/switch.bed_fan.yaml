@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 ---
 switch.bed_fan:
   friendly_name: Bedroom Fan
+=======
+---
+switch.bed_fan:
+  friendly_name: Bedroom Fan
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
   icon: mdi:fan

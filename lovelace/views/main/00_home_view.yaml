@@ -48,7 +48,11 @@ cards:
             }
         # - binary_sensor.alarm
         - type: divider
+<<<<<<< HEAD
         - sensor.ble_josh_pix6
+=======
+        - sensor.ble_josh_pix3
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
         - type: divider
         - person.josh
         - person.mj

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 platform: template
 sensors:
@@ -5,4 +6,13 @@ sensors:
     # entity_id: sensor.moon
     friendly_name: 'Moon'
     value_template: '{{ states.sensor.moon.state }}'
+=======
+---
+platform: template
+sensors:
+  moon_phases:
+    # entity_id: sensor.moon
+    friendly_name: 'Moon'
+    value_template: '{{ states.sensor.moon.state }}'
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
     entity_picture_template: /local/moon_phases/{{ states.sensor.moon.state }}.png

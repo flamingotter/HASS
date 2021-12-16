@@ -1,5 +1,12 @@
+<<<<<<< HEAD
 ---
 lovelace:
   mode: yaml
   resources: !include ../lovelace/resources/resources.yaml
+=======
+---
+lovelace:
+  mode: yaml
+  resources: !include ../lovelace/resources/resources.yaml
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
   dashboards: !include ../lovelace/dashboards/dashboards.yaml

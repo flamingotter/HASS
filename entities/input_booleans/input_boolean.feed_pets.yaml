@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 ---
 feed_pets:
   name: Feed Pets
+=======
+---
+feed_pets:
+  name: Feed Pets
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
   icon: mdi:paw

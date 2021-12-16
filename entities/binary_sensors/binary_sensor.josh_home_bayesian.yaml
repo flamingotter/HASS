@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 platform: bayesian
 name: 'josh_home'
@@ -15,4 +16,23 @@ observations:
       entity_id: 'device_tracker.unifi_pix3_josh'
       prob_given_true: 0.9
       prob_given_false: 0.2
+=======
+---
+platform: bayesian
+name: 'josh_home'
+prior: 0.50
+probability_threshold: 0.8
+observations:
+    #Owntracks
+    - platform: 'state'
+      entity_id: 'device_tracker.josh_ot_pix3j'
+      prob_given_true: 0.9
+      prob_given_false: 0.4        
+      to_state: 'home'
+    #Router  
+    - platform: 'state'
+      entity_id: 'device_tracker.unifi_pix3_josh'
+      prob_given_true: 0.9
+      prob_given_false: 0.2
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
       to_state: 'home'

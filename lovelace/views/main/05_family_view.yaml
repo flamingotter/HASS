@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 title: Family Room
 id: 4
 icon: mdi:sofa
@@ -81,3 +82,72 @@ cards:
           - entity: input_select.media_scene_select
             name: Light Scenes
             icon: mdi:track-light
+=======
+title: Family Room
+id: 4
+icon: mdi:sofa
+cards:
+
+  - type: entities
+    title: Family Room
+    show_state: false
+    entities:
+      - entity: sensor.basement_sensor_temperature
+      - entity: sensor.basement_sensor_relative_humidity
+      - entity: binary_sensor.motion_basement
+      - type: divider
+      - entity: media_player.samsung_65
+      - type: divider
+      - type: custom:slider-entity-row
+        entity: light.stair_light
+        toggle: true
+        icon: mdi:dome-light
+      - type: custom:slider-entity-row
+        entity: light.spot_light
+        toggle: true
+      - type: custom:slider-entity-row
+        entity: light.media_lights
+        toggle: true
+      - type: 'custom:fold-entity-row'
+        padding: 0
+        group_config:
+          toggle: false
+          type: custom:slider-entity-row
+        head:
+          label: Media Light Settings
+          type: section
+        items:
+          - entity: light.media_one
+            name: Media 1
+            toggle: true
+          - entity: light.media_two
+            name: Media 2
+            toggle: true
+          - entity: light.media_three
+            name: Media 3
+            toggle: true
+          - entity: light.media_four
+            name: Media 4
+            toggle: true
+      
+      - type: 'custom:fold-entity-row'
+        padding: 0
+        group_config:
+          toggle: false
+        head:
+          label: Light Scenes
+          type: section
+        entities:
+          - entity: input_select.basement_scene_select
+            name: Light Scenes
+            icon: mdi:track-light
+
+  - type: custom:mini-media-player
+    entity: media_player.echo_dot_family_room
+    icon: mdi:spotify
+    artwork: cover
+    hide:
+      volume: true
+      source: true
+      power_state: false
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3

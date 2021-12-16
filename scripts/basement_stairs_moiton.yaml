@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 basement_stairs_on:
   sequence:
@@ -12,4 +13,20 @@ basement_stairs_off:
     - service: light.turn_off
       data:
         entity_id: light.stair_light
+=======
+---
+basement_stairs_on:
+  sequence:
+    - service: light.turn_on
+      data:
+        entity_id: light.stair_light
+        brightness_pct: 100
+        color_temp: 222
+
+basement_stairs_off:
+  sequence:
+    - service: light.turn_off
+      data:
+        entity_id: light.stair_light
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
         transition: 3

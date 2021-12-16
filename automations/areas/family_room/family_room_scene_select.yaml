@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 alias: family_room_scene_select
 trigger:
@@ -7,3 +8,14 @@ action:
   - service: script.turn_on
     data_template:
       entity_id: script.{{trigger.to_state.state}}
+=======
+---
+alias: family_room_scene_select
+trigger:
+  - platform: state
+    entity_id: input_select.basement_scene_select
+action:
+  - service: script.turn_on
+    data_template:
+      entity_id: script.{{trigger.to_state.state}}
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 basement:
   name: Basement
@@ -11,3 +12,13 @@ basement:
     - light.office_three
     - input_boolean.office_occupied
     - input_boolean.onair
+=======
+---
+basement:
+  name: Basement
+  entities:
+    - light.stair_light
+    - light.media_lights
+    - light.office_lamp
+    - light.spot_light
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3

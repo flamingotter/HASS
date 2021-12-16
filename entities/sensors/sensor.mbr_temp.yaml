@@ -1,7 +1,16 @@
+<<<<<<< HEAD
 ---
 platform: mqtt
 state_topic: "home/mbr/mbrNode"
 unique_id: mbr_temp
 name: "MBR Temp"
 unit_of_measurement: "°F"
+=======
+---
+platform: mqtt
+state_topic: "home/mbr/mbrNode"
+unique_id: mbr_temp
+name: "MBR Temp"
+unit_of_measurement: "°F"
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
 value_template: '{{ value_json.t | round(1) }}'

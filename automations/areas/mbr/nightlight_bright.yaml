@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 ############NIGHTLIGHT FUNCTION############
 alias: nightlight_bright
@@ -27,3 +28,34 @@ condition:
 action:
   - service: scene.turn_on
     entity_id: scene.nightlight_bright
+=======
+---
+############NIGHTLIGHT FUNCTION############
+alias: nightlight_bright
+trigger:
+  - platform: state
+    entity_id: sensor.motion_his_side
+    to: 'detected'
+  - platform: state
+    entity_id: sensor.motion_her_side
+    to: 'detected'
+condition:
+  condition: and
+  conditions:
+      - condition: or
+        conditions:
+          - condition: state
+            entity_id: 'input_boolean.j_status_sleeping'
+            state: 'on'
+          - condition: state
+            entity_id: 'input_boolean.m_status_sleeping'
+            state: 'on'
+      - condition: or
+        conditions:
+            - condition: state
+              entity_id: 'light.wled_bed'
+              state: 'off'
+action:
+  - service: scene.turn_on
+    entity_id: scene.nightlight_bright
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3

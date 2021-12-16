@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 title: Settings
 id: 9
 icon: mdi:cog-outline
@@ -79,3 +80,66 @@ cards:
       - sensor.sensor_office_battery_level
       - sensor.backdoor_battery_level
       
+=======
+title: Settings
+id: 9
+icon: mdi:cog-outline
+cards:
+
+  - type: entities
+    show_header_toggle: false
+    title: Switches
+    entities:
+      - input_boolean.pet_presence
+      - input_boolean.media_automations
+      - input_boolean.house_guests
+      - input_boolean.cleaning
+      - input_boolean.sexy_time
+      - input_boolean.alarm_arm_night
+      - input_boolean.lockdown
+
+  - type: entities
+    show_header_toggle: false
+    title: TEST
+    entities:
+      - input_boolean.test1
+      - input_boolean.test2
+      - input_boolean.test3
+      - input_boolean.test4
+
+  - type: entities
+    show_header_toggle: false
+    title: Trash Schedule
+    entities:
+      - binary_sensor.trash_day
+      - input_select.trash_pickup_day
+
+  # - type: custom:auto-entities
+  #   card:
+  #     type: entities
+  #   filter:
+  #     include:
+  #     - attributes:
+  #           battery_level: "<=100"
+  
+
+  - type: entities
+    show_header_toggle: false
+    title: Status
+    entities:
+      - sensor.last_boot
+      - sensor.hacs
+      - sensor.current_version
+      - binary_sensor.updater
+      
+  - type: custom:battery-state-card
+    title: Battery Status
+    sort_by_level: "asc"
+    entities:
+      - sensor.motion_basement_stairs_battery_level
+      - sensor.motion_kitchen_battery_level
+      - sensor.motion_parlor_battery_level
+      - sensor.schlage_front_door_battery_level
+      - sensor.schlage_back_door_battery_level
+      
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3

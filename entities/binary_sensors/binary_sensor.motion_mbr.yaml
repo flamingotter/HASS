@@ -1,7 +1,16 @@
+<<<<<<< HEAD
 ---
 platform: template
 sensors:
   motion_mbr:
     friendly_name: Motion MBR
     device_class: motion
+=======
+---
+platform: template
+sensors:
+  motion_mbr:
+    friendly_name: Motion MBR
+    device_class: motion
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
     value_template: "{{ is_state('sensor.mbr_motion', 'detected') }}"

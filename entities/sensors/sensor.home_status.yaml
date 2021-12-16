@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 platform: template
 sensors:
@@ -23,4 +24,31 @@ sensors:
         mdi:airplane-takeoff
       {% elif states.input_select.home_status.state == 'Sleeping' %}
         mdi:weather-night
+=======
+---
+platform: template
+sensors:
+  home_status:
+    friendly_name: 'Home'
+    #entity_id: input_select.home_status
+    value_template: >-
+      {% if states.input_select.home_status.state == 'Disarmed' %}
+        Disarmed
+      {% elif states.input_select.home_status.state == 'Armed' %}
+        Armed
+      {% elif states.input_select.home_status.state == 'Away' %}
+        Away
+      {% elif states.input_select.home_status.state == 'Sleeping' %}
+        Sleeping
+      {% endif %}
+    icon_template: >-
+      {% if states.input_select.home_status.state == 'Disarmed' %}
+        mdi:bell-off-outline
+      {% elif states.input_select.home_status.state == 'Armed' %}
+        mdi:bell-outline
+      {% elif states.input_select.home_status.state == 'Away' %}
+        mdi:airplane-takeoff
+      {% elif states.input_select.home_status.state == 'Sleeping' %}
+        mdi:weather-night
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
       {% endif %}

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 platform: template
 sensors:
@@ -29,4 +30,37 @@ sensors:
     #     mdi:airplane-takeoff
     #   {% elif states.sensor.schlage_front_door_alarm_type.state == 'Sleeping' %}
     #     mdi:weather-night
+=======
+---
+platform: template
+sensors:
+  front_door_status:
+    friendly_name: 'Front Door Status'
+    #entity_id: sensor.schlage_front_door_alarm_type
+    value_template: >-
+      {% if states.sensor.schlage_front_door_alarm_type.state == '21' %}
+        Manual Lock
+      {% elif states.sensor.schlage_front_door_alarm_type.state == '22' %}
+        Manual Unlock
+      {% elif states.sensor.schlage_front_door_alarm_type.state == '18' %}
+        Keypad Lock
+      {% elif states.sensor.schlage_front_door_alarm_type.state == '19' %}
+        Keypad Unlock
+      {% elif states.sensor.schlage_front_door_alarm_type.state == '27' %}
+        Auto Re-lock
+      {% elif states.sensor.schlage_front_door_alarm_type.state == '9' %}
+        Deadbolt Jammed
+      {% else %}
+        Unknown
+      {% endif %}
+    # icon_template: >-
+    #   {% if states.sensor.schlage_front_door_alarm_type.state == 'Disarmed' %}
+    #     mdi:bell-off-outline
+    #   {% elif states.sensor.schlage_front_door_alarm_type.state == 'Armed' %}
+    #     mdi:bell-outline
+    #   {% elif states.sensor.schlage_front_door_alarm_type.state == 'Away' %}
+    #     mdi:airplane-takeoff
+    #   {% elif states.sensor.schlage_front_door_alarm_type.state == 'Sleeping' %}
+    #     mdi:weather-night
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
     #   {% endif %}

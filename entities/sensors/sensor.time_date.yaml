@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 platform: time_date
 display_options:
@@ -6,4 +7,14 @@ display_options:
   - date_time
   - time_date
   - time_utc
+=======
+---
+platform: time_date
+display_options:
+  - time
+  - date
+  - date_time
+  - time_date
+  - time_utc
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
   - beat

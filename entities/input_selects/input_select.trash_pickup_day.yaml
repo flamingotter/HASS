@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 trash_pickup_day:
   name: Current Trash Pickup Day (Evey Week)
@@ -9,4 +10,17 @@ trash_pickup_day:
     - Friday
     - Saturday
     - Sunday
+=======
+---
+trash_pickup_day:
+  name: Current Trash Pickup Day (Evey Week)
+  options:
+    - Monday
+    - Tuesday
+    - Wednesday
+    - Thursday
+    - Friday
+    - Saturday
+    - Sunday
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
   icon: mdi:delete-variant

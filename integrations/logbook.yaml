@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 logbook:
   exclude:
@@ -11,4 +12,19 @@ logbook:
       - sensor.date_time
       - sensor.time_utc
       - sensor.yr_symbol
+=======
+---
+logbook:
+  exclude:
+    domains:
+      - group
+      - sun
+    entities:
+      - sensor.date
+      - sensor.time
+      - sensor.time_date
+      - sensor.date_time
+      - sensor.time_utc
+      - sensor.yr_symbol
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
       - sensor.internet_time

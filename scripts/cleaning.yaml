@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 cleaning:
   sequence: 
@@ -23,4 +24,31 @@ cleaning:
       data: 
         entity_id: light.wled
         brightness: 185
+=======
+---
+cleaning:
+  sequence: 
+    - service: light.turn_on
+      data: 
+        entity_id: 
+          ###UPSTAIRS
+          - light.hall
+          - light.bedroom_lamps
+          ###DOWNSTAIRS
+          - light.parlor_lamps
+          - light.kitchen
+          - light.front_door_light
+          ###BASEMENT
+          - light.media_lights
+          - light.stair_light
+          - light.spot_light
+          - light.office_lamp
+        brightness: 255
+        color_temp: 222
+        transition: 2 
+    - service: light.turn_on
+      data: 
+        entity_id: light.wled
+        brightness: 185
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
         rgb_color: [255,255,255]

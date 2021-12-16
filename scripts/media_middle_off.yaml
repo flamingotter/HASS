@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 media_middle_off:
   sequence:
@@ -5,4 +6,13 @@ media_middle_off:
       data: 
         entity_id:
           - light.media_two
+=======
+---
+media_middle_off:
+  sequence:
+    - service: light.turn_off
+      data: 
+        entity_id:
+          - light.media_two
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
           - light.media_three

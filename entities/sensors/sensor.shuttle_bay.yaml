@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 platform: template
 sensors:
@@ -22,4 +23,30 @@ sensors:
         mdi:garage
       {% else %}
         mdi:garage-alert
+=======
+---
+platform: template
+sensors:
+  shuttle_bay:
+    friendly_name: "Shuttle Bay"
+    value_template: >-
+      {% if is_state('cover.shuttle_bay', 'open') %}
+        Open
+      {% elif is_state('cover.shuttle_bay', 'closed') %}
+        Closed
+      {% elif is_state('cover.shuttle_bay', 'opening') %}
+        Opening
+      {% elif is_state('cover.shuttle_bay', 'closing') %}
+        Closing
+      {% else %}
+        Obstruction
+      {% endif %}
+    icon_template: >-
+      {% if is_state('cover.shuttle_bay', 'open') %}
+        mdi:garage-open
+      {% elif is_state('cover.shuttle_bay', 'closed') %}
+        mdi:garage
+      {% else %}
+        mdi:garage-alert
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
       {% endif %}

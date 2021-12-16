@@ -1,3 +1,8 @@
+<<<<<<< HEAD
 ---
 homeassistant:
+=======
+---
+homeassistant:
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
   customize: !include_dir_merge_named ../customizations/entities

@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 ---
 j_status_sleeping:
   name: Sleeping
+=======
+---
+j_status_sleeping:
+  name: Sleeping
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
   icon: mdi:sleep

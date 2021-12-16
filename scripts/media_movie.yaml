@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 media_movie:
   sequence:
@@ -18,4 +19,26 @@ media_movie:
         entity_id:
           - light.spot_light
         brightness_pct: 30
+=======
+---
+media_movie:
+  sequence:
+    - service: light.turn_off
+      data: 
+        entity_id:
+          - light.media_one
+          - light.media_two
+          - light.media_three
+    - service: light.turn_on
+      data: 
+        entity_id:
+          - light.media_four
+        brightness_pct: 20
+        rgb_color: [0,69,255]
+    - service: light.turn_on
+      data: 
+        entity_id:
+          - light.spot_light
+        brightness_pct: 30
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
         rgb_color: [0,128,128]

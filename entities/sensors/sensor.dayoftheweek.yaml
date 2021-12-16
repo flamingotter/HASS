@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 ---
 platform: template
 sensors:
   dayoftheweek:
     value_template: "{{ ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'][now().weekday()] }}"
+=======
+---
+platform: template
+sensors:
+  dayoftheweek:
+    value_template: "{{ ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'][now().weekday()] }}"
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
     # entity_id: sensor.time

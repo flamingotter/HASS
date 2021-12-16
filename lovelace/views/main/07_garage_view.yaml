@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 title: Garage
 id: 7
 icon: mdi:garage-variant
@@ -8,4 +9,16 @@ cards:
     entities:
       - cover.shuttle_bay
       - light.garage_overhead_light
+=======
+title: Garage
+id: 7
+icon: mdi:garage-variant
+cards:
+  - type: entities
+    title: Garage
+    show_state: false
+    entities:
+      - cover.shuttle_bay
+      - light.garage_overhead_light
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
       - input_boolean.garage_cabinet_lights

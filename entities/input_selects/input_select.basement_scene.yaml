@@ -1,0 +1,12 @@
+---
+basement_scene_select:
+  name: Scene Selector
+  initial: None
+  icon: mdi:track-light
+  options:
+    - None
+    - Media_Normal
+    - Media_Movie
+    - Media_Dim
+    - Media_Middle_Off
+    - Media_Outer_Off

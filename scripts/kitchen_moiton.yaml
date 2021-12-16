@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 kitchen_on:
   sequence:
@@ -9,4 +10,17 @@ kitchen_off:
   sequence:
     - service: light.turn_off
       data:
+=======
+---
+kitchen_on:
+  sequence:
+    - service: light.turn_on
+      data:
+        entity_id: light.kitchen
+
+kitchen_off:
+  sequence:
+    - service: light.turn_off
+      data:
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
         entity_id: light.kitchen

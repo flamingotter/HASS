@@ -1,0 +1,9 @@
+---
+platform: wundergroundpws
+api_key: bff06f2a3a9949e5b06f2a3a99e9e5e4
+pws_id: !secret pws_id
+monitored_conditions:
+  - stationID
+  - temp
+  - humidity
+  - weather_1d

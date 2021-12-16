@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 upstairs:
   name: Upstairs
@@ -7,4 +8,15 @@ upstairs:
     - light.wled_bed
     - light.wled_node_mbr
     - input_boolean.vanity_lamps
+=======
+---
+upstairs:
+  name: Upstairs
+  entities:
+    - light.eugene
+    - light.rapunzel
+    - light.wled_bed
+    - light.wled_node_mbr
+    - input_boolean.vanity_lamps
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
     - light.hall

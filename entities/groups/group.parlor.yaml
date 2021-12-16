@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 parlor:
   name: Parlor
@@ -6,4 +7,14 @@ parlor:
     - light.table_lamp
     - light.front_door_light
     - lock.schlage_front
+=======
+---
+parlor:
+  name: Parlor
+  entities:
+    - light.piano_lamp
+    - light.table_lamp
+    - light.front_door_light
+    - lock.schlage_front
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
     - lock.schlage_back

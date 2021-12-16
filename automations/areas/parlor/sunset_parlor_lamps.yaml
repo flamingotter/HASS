@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 alias: sunset_parlor_lamps
 trigger:
@@ -18,3 +19,25 @@ action:
       transition: 60
       brightness_pct: 100
       kelvin: 4500
+=======
+---
+alias: sunset_parlor_lamps
+trigger:
+  - platform: sun
+    event: sunset
+    offset: "-1:30:00"
+condition:
+  - condition: state
+    entity_id: input_select.home_status
+    state: "Armed"
+action:
+  - service: light.lifx_set_state
+    data:
+      entity_id:
+        - light.piano_lamp
+        - light.table_lamp
+      power: true
+      transition: 60
+      brightness_pct: 100
+      kelvin: 4500
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3

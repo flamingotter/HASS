@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 platform: mqtt_room
 device_id: "iBeacon:1d417edd-48c1-4037-bf6c-7bb13862f439-5-0" # Note that major version must match, but any minor version will be ignored
@@ -7,3 +8,12 @@ timeout: 60
 away_timeout: 120
 #
 #
+=======
+---
+platform: mqtt_room
+device_id: "1d417edd48c14037bf6c7bb13862f439-5-0" # Note that major version must match, but any minor version will be ignored
+name: 'ble_josh_pix3'
+state_topic: 'room_presence'
+timeout: 60
+away_timeout: 120
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3

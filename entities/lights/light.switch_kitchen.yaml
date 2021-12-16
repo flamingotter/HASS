@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 ---
 platform: switch
 name: Kitchen Light
+=======
+---
+platform: switch
+name: Kitchen Light
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
 entity_id: switch.kitchen_light

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 dinner_msg:
   sequence:
@@ -6,4 +7,14 @@ dinner_msg:
        target: "media_player.everywhere"
        data:
          type: announce
+=======
+---
+dinner_msg:
+  sequence:
+  - service: notify.alexa_media
+    data_template:
+       target: "media_player.everywhere"
+       data:
+         type: announce
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
        message: "It's time to eat, please make your way to the kitchen"

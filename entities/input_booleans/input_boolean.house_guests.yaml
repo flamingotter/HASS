@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 ---
 house_guests:
   name: House Guests
+=======
+---
+house_guests:
+  name: House Guests
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
   icon: mdi:account-multiple-plus

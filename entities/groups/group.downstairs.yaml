@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 downstairs:
   name: Downstairs
@@ -9,4 +10,17 @@ downstairs:
     - light.table_lamp
     - light.front_door_light
     - light.fireplace_light
+=======
+---
+downstairs:
+  name: Downstairs
+  entities:
+    - light.garage_overhead_light
+    - light.kitchen_light
+    - light.dining_room_light
+    - light.piano_lamp
+    - light.table_lamp
+    - light.front_door_light
+    - light.fireplace_light
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
     - input_boolean.garage_cabinet_lights

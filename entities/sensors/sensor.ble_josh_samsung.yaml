@@ -1,0 +1,7 @@
+---
+platform: mqtt_room
+device_id: "2f234454cf6d4a0fadf2f4911ba9ffa7-1-0" # Note that major version must match, but any minor version will be ignored
+name: 'ble_josh_samsung'
+state_topic: 'room_presence'
+timeout: 60
+away_timeout: 120

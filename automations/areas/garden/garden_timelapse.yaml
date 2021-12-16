@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 ###########TIME LAPSE############
 alias: garden_timelapse
@@ -14,3 +15,21 @@ action:
     data:
       entity_id: camera.outside_garden
       filename: www/tmp/timelapse/snapshot_{{now().strftime('%H:%M-%d%b')}}.jpg
+=======
+---
+###########TIME LAPSE############
+alias: garden_timelapse
+trigger:
+  - platform: time_pattern
+    #hours: '/1'
+    minutes: '/30'
+condition:
+  - condition: state
+    entity_id: sun.sun
+    state: 'above_horizon'
+action:
+  - service: camera.snapshot
+    data:
+      entity_id: camera.outside_garden
+      filename: www/tmp/timelapse/snapshot_{{now().strftime('%H:%M-%d%b')}}.jpg
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3

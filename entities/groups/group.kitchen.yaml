@@ -1,7 +1,16 @@
+<<<<<<< HEAD
 ---
 kitchen:
   name: Kitchen
   entities:
     - light.kitchen_light
     - light.dining_room_light
+=======
+---
+kitchen:
+  name: Kitchen
+  entities:
+    - light.kitchen_light
+    - light.dining_room_light
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
     - light.fireplace_light

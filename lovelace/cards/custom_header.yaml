@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 all_tabs_css: 'padding: 0px 20px;'
 header_text: '{{ time }}'
@@ -11,4 +12,19 @@ exceptions:
   - conditions:
       user: mj
     config:
+=======
+---
+all_tabs_css: 'padding: 0px 20px;'
+header_text: '{{ time }}'
+compact_mode: true
+footer_mode: false
+options_hide: true
+active_tab_color: '#00a1ff'
+chevrons: false
+####
+exceptions:
+  - conditions:
+      user: mj
+    config:
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
       hide_tabs: '8'

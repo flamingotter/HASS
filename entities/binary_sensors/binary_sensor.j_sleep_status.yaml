@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ---
 platform: template
 sensors:
@@ -12,4 +13,20 @@ sensors:
           mdi:sleep
       {% elif is_state('sensor.j_status_sleeping', 'awake') %}
           mdi:sleep-off
+=======
+---
+platform: template
+sensors:
+  j_sleep_status:
+    friendly_name: "Josh Sleep Status"
+    #entity_id: sensor.j_status_sleeping
+    value_template: >-
+      {{ is_state('sensor.j_status_sleeping', 'sleeping')
+          or is_state('sensor.j_status_sleeping', 'awake') }}
+    icon_template: >-
+      {% if is_state('sensor.j_status_sleeping', 'sleeping') %}
+          mdi:sleep
+      {% elif is_state('sensor.j_status_sleeping', 'awake') %}
+          mdi:sleep-off
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
         {% endif %}

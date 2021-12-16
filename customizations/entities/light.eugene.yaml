@@ -1,4 +1,10 @@
+<<<<<<< HEAD
 ---
 light.eugene:
   friendly_name: Eugene
+=======
+---
+light.eugene:
+  friendly_name: Eugene
+>>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
   icon: mdi:lamp
