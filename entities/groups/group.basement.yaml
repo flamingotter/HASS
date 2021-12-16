@@ -6,3 +6,8 @@ basement:
     - light.media_lights
     - light.office_lamp
     - light.spot_light
+    - light.office_one
+    - light.office_two
+    - light.office_three
+    - input_boolean.office_occupied
+    - input_boolean.onair

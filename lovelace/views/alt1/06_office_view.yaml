@@ -21,14 +21,14 @@ cards:
       - type: divider
       - camera.octoprint
       - type: divider
-      - sensor.octoprint_actual_bed_temp
-      - sensor.octoprint_target_bed_temp
-      - sensor.octoprint_actual_tool0_temp
-      - sensor.octoprint_target_tool0_temp
-      - sensor.octoprint_current_state
-      - sensor.octoprint_job_percentage
-      - sensor.octoprint_time_remaining
-      - sensor.octoprint_time_elapsed
+      # - sensor.octoprint_actual_bed_temp
+      # - sensor.octoprint_target_bed_temp
+      # - sensor.octoprint_actual_tool0_temp
+      # - sensor.octoprint_target_tool0_temp
+      # - sensor.octoprint_current_state
+      # - sensor.octoprint_job_percentage
+      # - sensor.octoprint_time_remaining
+      # - sensor.octoprint_time_elapsed
 
   - type: custom:mini-media-player
     entity: media_player.echo_office

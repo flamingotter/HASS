@@ -19,15 +19,17 @@ cards:
     show_header_toggle: false
     title: TEST
     entities:
-      - input_boolean.test1
-      - binary_sensor.test1
+      - binary_sensor.door_status      
+      - binary_sensor.contact_door_back
       - input_boolean.test2
-      - binary_sensor.test2
+      - binary_sensor.contact_door_test2
+      - type: divider
+      - binary_sensor.window_status
       - input_boolean.test3
-      - binary_sensor.test3
+      - binary_sensor.contact_window_test3
       - input_boolean.test4
-      - binary_sensor.test4
-      - binary_sensor.contact_back_door
+      - binary_sensor.contact_window_test4
+      - type: divider
       - input_select.josh_status
       - input_select.mj_status
 
@@ -73,5 +75,7 @@ cards:
       - sensor.motion_parlor_battery_level
       - sensor.schlage_front_door_battery_level
       - sensor.schlage_back_door_battery_level
-      - sensor.basement_sensor_battery_level
+      - sensor.sensor_media_battery_level
+      - sensor.sensor_office_battery_level
+      - sensor.backdoor_battery_level
       

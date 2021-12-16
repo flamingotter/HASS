@@ -9,8 +9,12 @@ lights:
     - light.stair_light
     - light.hall
     - light.office_lamp
+    - light.office_one
+    - light.office_two
+    - light.office_three
     - light.kitchen
     - light.garage_overhead_light
     - light.fireplace_light
     # - input_boolean.garage_cabinet_lights
     - input_boolean.vanity_lamps
+    - switch.christmas_tree

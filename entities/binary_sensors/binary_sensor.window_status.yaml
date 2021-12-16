@@ -1,0 +1,8 @@
+---
+platform: group
+name: Window Status
+unique_id: windowcontactstatus
+device_class: window
+entities:
+  - binary_sensor.contact_window_test3
+  - binary_sensor.contact_window_test4

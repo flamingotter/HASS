@@ -6,7 +6,6 @@ unique_id: 807d3a3e0134
 command_topic: "home/dining/blinds/blindsCommand"
 set_position_topic: "home/dining/blinds/positionCommand"
 position_topic: "home/dining/blinds/positionState"
-state_topic: "home/dining/blinds/positionState"
 retain: true
 payload_open: "OPEN"
 payload_close: "CLOSE"

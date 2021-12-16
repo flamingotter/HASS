@@ -15,5 +15,4 @@ cards:
       - entity: light.fireplace_light
         icon: mdi:wall-sconce-round
       - type: divider
-      - entity: cover.fireplace_blinds
       - entity: cover.dining_room_blinds

@@ -3,3 +3,6 @@ office:
   name: Office
   entities:
     - light.office_lamp
+    - light.office_one
+    - light.office_two
+    - light.office_three

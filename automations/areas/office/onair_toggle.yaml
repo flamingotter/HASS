@@ -1,0 +1,9 @@
+---
+alias: On Air
+trigger:
+  - platform: tag
+    tag_id: on_air_tag
+action:
+  - service: input_boolean.toggle
+    data: 
+      entity_id: input_boolean.onair

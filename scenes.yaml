@@ -1,0 +1,284 @@
+- id: '1639241840315'
+  name: Office Normal
+  entities:
+    light.office_two:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 255
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Office Two
+      supported_features: 55
+      state: 'on'
+    switch.office_lamp:
+      friendly_name: Office Lamp
+      state: 'on'
+    light.office_one:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 255
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Office One
+      supported_features: 55
+      state: 'on'
+    light.office_three:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 255
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Office Three
+      supported_features: 55
+      state: 'on'
+- id: '1639243585404'
+  name: Office Dim
+  entities:
+    light.office_two:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 128
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Office Two
+      supported_features: 55
+      state: 'on'
+    switch.office_lamp:
+      friendly_name: Office Lamp
+      state: 'off'
+    light.office_one:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 128
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Office One
+      supported_features: 55
+      state: 'on'
+    light.office_three:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 128
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Office Three
+      supported_features: 55
+      state: 'on'
+- id: '1639243737311'
+  name: Office 1 2 Off
+  entities:
+    light.office_two:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      friendly_name: Office Two
+      supported_features: 55
+      state: 'off'
+    switch.office_lamp:
+      friendly_name: Office Lamp
+      state: 'on'
+    light.office_one:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      friendly_name: Office One
+      supported_features: 55
+      state: 'off'
+    light.office_three:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 255
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Office Three
+      supported_features: 55
+      state: 'on'
+- id: '1639243776055'
+  name: Office 2 3 Off
+  entities:
+    light.office_two:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      friendly_name: Office Two
+      supported_features: 55
+      state: 'off'
+    switch.office_lamp:
+      friendly_name: Office Lamp
+      state: 'on'
+    light.office_one:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 255
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Office One
+      supported_features: 55
+      state: 'on'
+    light.office_three:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      friendly_name: Office Three
+      supported_features: 55
+      state: 'off'

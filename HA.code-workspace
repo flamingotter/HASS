@@ -6,10 +6,10 @@
 	],
 	"settings": {
 		"files.associations": {
-			"*.yaml": "home-assistant"
+			"*.yaml": "yaml"
 		},
 		"vscode-home-assistant.hostUrl": "https://ha.flamingotter.com",
-		"vscode-home-assistant.longLivedAccessToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiIwZTAzODllZmZmN2Q0MDljOTE5NzljZjliZmYxN2ZhNCIsImlhdCI6MTU2NzQ2OTIyNywiZXhwIjoxODgyODI5MjI3fQ.862l2fFvPHcqEs4sr9bvgEX0Tx3bXR95oXcM5Ibv3qI",
+		"vscode-home-assistant.longLivedAccessToken": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJiYzZlY2RiMTY0Yzk0M2Q3OTZlZWQ3ZDczYjQ0OWJjYSIsImlhdCI6MTYzOTQyMjE2MCwiZXhwIjoxOTU0NzgyMTYwfQ.0-1rEo2uttf99pUQLcIKbddgS8g--fk5jXjYOCf6Kfo",
 		"html.autoClosingTags": false
 	}
 }

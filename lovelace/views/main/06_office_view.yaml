@@ -8,9 +8,48 @@ cards:
     title: Office
     show_state: false
     entities:
+      - entity: sensor.sensor_office_temp
+      - entity: sensor.sensor_office_humidity
+      - entity: binary_sensor.sensor_office_motion
+      - type: divider
       - entity: light.office_lamp
         icon: mdi:lamp
+      - type: custom:slider-entity-row
+        entity: light.office_lights
+        toggle: true
+      - type: divider
       - entity: input_boolean.onair
+      - entity: input_boolean.occupied_office
+      - type: 'custom:fold-entity-row'
+        padding: 0
+        group_config:
+          toggle: false
+          type: custom:slider-entity-row
+        head:
+          label: Office Light Settings
+          type: section
+        items:
+          - entity: light.office_one
+            name: Office 1
+            toggle: true
+          - entity: light.office_two
+            name: Office 2
+            toggle: true
+          - entity: light.office_three
+            name: Office 3
+            toggle: true
+      
+      - type: 'custom:fold-entity-row'
+        padding: 0
+        group_config:
+          toggle: false
+        head:
+          label: Light Scenes
+          type: section
+        entities:
+          - entity: input_select.office_scene_select
+            name: Light Scenes
+            icon: mdi:track-light
 
   - type: entities
     title: 3D Printer
@@ -22,20 +61,11 @@ cards:
       - type: divider
       - camera.octoprint
       - type: divider
-      - sensor.octoprint_actual_bed_temp
-      - sensor.octoprint_target_bed_temp
-      - sensor.octoprint_actual_tool0_temp
-      - sensor.octoprint_target_tool0_temp
+      # - sensor.octoprint_actual_bed_temp
+      # - sensor.octoprint_target_bed_temp
+      # - sensor.octoprint_actual_tool0_temp
+      # - sensor.octoprint_target_tool0_temp
       - sensor.octoprint_current_state
       - sensor.octoprint_job_percentage
-      - sensor.octoprint_time_remaining
-      - sensor.octoprint_time_elapsed
-
-  - type: custom:mini-media-player
-    entity: media_player.echo_office
-    icon: mdi:spotify
-    artwork: cover
-    hide:
-      volume: true
-      source: true
-      power_state: false
+      # - sensor.octoprint_time_remaining
+      # - sensor.octoprint_time_elapsed

@@ -13,19 +13,3 @@ cards:
     entities:
       - sensor.moon_phases
       - sensor.szpffqlkc_solar_rad
-
-  - type: picture-entity
-    entity: camera.435_shoalcreek
-    name: I-435 SB Shoal Creek
-
-  - type: picture-entity
-    entity: camera.435_woodland
-    name: I-435 Woodland
-
-  - type: picture-entity
-    entity: camera.435_29split
-    name: I-435 I-29 Split
-
-  - type: picture-entity
-    entity: camera.29_plattemain
-    name: I-435 Platte Main St.

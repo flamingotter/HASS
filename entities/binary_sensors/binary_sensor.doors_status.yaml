@@ -1,0 +1,8 @@
+---
+platform: group
+name: Door Status
+unique_id: doorcontactstatus
+device_class: door
+entities:
+  - binary_sensor.contact_door_back
+  - binary_sensor.contact_door_test2

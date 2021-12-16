@@ -1,0 +1,9 @@
+---
+platform: mqtt_room
+device_id: "md:0087:4" # Note that major version must match, but any minor version will be ignored
+name: 'ble_josh_fenix3'
+state_topic: 'espresense/rooms'
+timeout: 60
+away_timeout: 120
+#
+#

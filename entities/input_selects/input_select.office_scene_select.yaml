@@ -1,0 +1,10 @@
+---
+office_scene_select:
+  name: Scene Selector
+  initial: Office_Normal
+  icon: mdi:track-light
+  options:
+    - Office_Normal
+    - Office_Dim
+    - Office_1_2_Off
+    - Office_2_3_Off

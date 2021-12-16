@@ -1,0 +1,13 @@
+---
+media_scene_select:
+  name: Scene Selector
+  initial: Media_Normal
+  icon: mdi:track-light
+  options:
+    - None
+    - Media_Normal
+    - Media_Dim
+    - Media_Movie
+    - Media_Middle_Off
+    - Media_Outer_Off
+    

@@ -78,15 +78,6 @@ cards:
           label: Light Scenes
           type: section
         entities:
-          - entity: input_select.basement_scene_select
+          - entity: input_select.media_scene_select
             name: Light Scenes
             icon: mdi:track-light
-
-  - type: custom:mini-media-player
-    entity: media_player.echo_dot_family_room
-    icon: mdi:spotify
-    artwork: cover
-    hide:
-      volume: true
-      source: true
-      power_state: false

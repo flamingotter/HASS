@@ -76,21 +76,6 @@ cards:
                   {% endif %}
                   ;
               }
-
-      - type: 'custom:fold-entity-row'
-        padding: 0
-        group_config:
-          toggle: false
-        head:
-          label: Door Lock Status
-          type: section
-        entities:
-          - entity: sensor.front_door_status
-            name: Front Door
-            icon: mdi:door
-          - entity: sensor.back_door_status
-            name: Back Door
-            icon: mdi:door
             
 ##Cameras
   - type: picture-entity
