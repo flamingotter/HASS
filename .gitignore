@@ -21,7 +21,7 @@ custom_components/
 !.gitignore
 secrets.yaml
 known_devices.yaml
-home-assistant_v2.db
+*.db
 home-assistant.log
 gitupdate.sh
 OZW_Log.txt
