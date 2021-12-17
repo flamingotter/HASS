@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 title: Weather
 id: 8
 icon: mdi:weather-lightning-rainy
@@ -14,35 +13,3 @@ cards:
     entities:
       - sensor.moon_phases
       - sensor.szpffqlkc_solar_rad
-=======
-title: Weather
-id: 8
-icon: mdi:weather-lightning-rainy
-cards:
-
-  - type: custom:weather-card
-    entity: weather.dark_sky
-    icons: "/community_plugin/weather-card/icons/"
-
-  - type: entities
-    title: Moon
-    show_state: false
-    entities:
-      - sensor.moon_phases
-
-  - type: picture-entity
-    entity: camera.435_shoalcreek
-    name: I-435 SB Shoal Creek
-
-  - type: picture-entity
-    entity: camera.435_woodland
-    name: I-435 Woodland
-
-  - type: picture-entity
-    entity: camera.435_29split
-    name: I-435 I-29 Split
-
-  - type: picture-entity
-    entity: camera.29_plattemain
-    name: I-435 Platte Main St.
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3

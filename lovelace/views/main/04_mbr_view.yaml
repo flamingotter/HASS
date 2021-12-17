@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 title: Master Bedroom
 id: 5
 icon: mdi:bed
@@ -46,52 +45,3 @@ cards:
   #     line_color: blue
   #     line_width: 8
   #     font_size: 75
-=======
-title: Master Bedroom
-id: 5
-icon: mdi:bed
-cards:
-  - type: entities
-    title: Master Suite
-    show_state: false
-    entities:
-      - entity: sensor.mbr_temp
-      - entity: sensor.mbr_hum
-      - entity: sensor.mbr_motion
-      - type: divider
-      - type: custom:slider-entity-row
-        entity: light.bedroom_lamps
-        toggle: true
-        icon: mdi:lamps
-      - type: custom:slider-entity-row
-        entity: light.wled_bed
-        toggle: true
-      - type: custom:slider-entity-row
-        entity: light.wled_node_mbr
-        toggle: true
-      - type: divider
-      - entity: switch.bedroom_fan
-        icon: mdi:fan
-      - type: divider
-      - type: custom:slider-entity-row
-        entity: light.eugene
-        toggle: true
-      - type: custom:slider-entity-row
-        entity: light.rapunzel
-        toggle: true
-
-  # - type: horizontal-stack
-  #   cards:
-  #   - type: custom:mini-graph-card
-  #     entities:
-  #     - sensor.mbr_temp
-  #     line_color: var(--accent-color)
-  #     line_width: 8
-  #     font_size: 75
-  #   - type: custom:mini-graph-card
-  #     entities:
-  #     - sensor.mbr_hum
-  #     line_color: blue
-  #     line_width: 8
-  #     font_size: 75
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
