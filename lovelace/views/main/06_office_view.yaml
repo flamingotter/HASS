@@ -38,6 +38,9 @@ cards:
           - entity: light.office_three
             name: Office 3
             toggle: true
+          - entity: light.office_four
+            name: Office 4
+            toggle: true
       
       - type: 'custom:fold-entity-row'
         padding: 0
