@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 notify:
   platform: html5
@@ -7,13 +6,3 @@ notify:
   vapid_prv_key: ha-I0kqyhkb9jPBr9hSVnpW_6iB_yxkK8b_fDAuRUI0
   vapid_email: firebase-adminsdk-f4sn5@moonlit-botany-293421.iam.gserviceaccount.com
 
-=======
----
-notify:
-  platform: html5
-  name: html5_push
-  vapid_pub_key: BKnLWTMqRcOsEjtgE_GYj3sev3ZRQmpeRAHr4QN-h84KpTpchiGDLRW6yy7w0GQ67XhtnlsYwsrmOIJYgMrOGhU
-  vapid_prv_key: ha-I0kqyhkb9jPBr9hSVnpW_6iB_yxkK8b_fDAuRUI0
-  vapid_email: firebase-adminsdk-f4sn5@moonlit-botany-293421.iam.gserviceaccount.com
-
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
