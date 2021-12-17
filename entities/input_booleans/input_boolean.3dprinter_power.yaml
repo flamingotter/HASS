@@ -1,10 +1,4 @@
-<<<<<<< HEAD
 ---
 3dprinter_power:
   name: 3D Printer Power
-=======
----
-3dprinter_power:
-  name: 3D Printer Power
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
   icon: mdi:printer-3d
