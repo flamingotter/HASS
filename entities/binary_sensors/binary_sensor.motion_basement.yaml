@@ -1,16 +1,7 @@
-<<<<<<< HEAD
 ---
 platform: template
 sensors:
   motion_basement:
     friendly_name: Motion Media room
     device_class: motion
-=======
----
-platform: template
-sensors:
-  motion_basement:
-    friendly_name: Motion Family Room
-    device_class: motion
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
     value_template: "{{ is_state('sensor.basement_sensor_burglar', '8')}}"

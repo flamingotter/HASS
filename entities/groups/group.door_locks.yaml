@@ -1,16 +1,7 @@
-<<<<<<< HEAD
 ---
 door_locks:
   name: Door Locks
   icon: mdi:door
   entities:
     - lock.schlage_front
-=======
----
-door_locks:
-  name: Door Locks
-  icon: mdi:door
-  entities:
-    - lock.schlage_front
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
     - lock.schlage_back

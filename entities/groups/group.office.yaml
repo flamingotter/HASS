@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 office:
   name: Office
@@ -7,10 +6,3 @@ office:
     - light.office_one
     - light.office_two
     - light.office_three
-=======
----
-office:
-  name: Office
-  entities:
-    - light.office_lamp
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3

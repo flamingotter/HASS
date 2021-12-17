@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 echos:
   name: All Echos
@@ -10,17 +9,4 @@ echos:
     - media_player.office
     - media_player.babe_cave
     - media_player.family_room
-=======
----
-echos:
-  name: All Echos
-  entities:
-    - media_player.kitchen_echo
-    - media_player.bedroom
-    - media_player.parlor
-    - media_player.garage
-    - media_player.office
-    - media_player.babe_cave
-    - media_player.family_room
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
     - media_player.echo_show

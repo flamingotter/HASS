@@ -1,12 +1,5 @@
-<<<<<<< HEAD
 ---
 name: OctoPrint
 platform: mjpeg
 still_image_url: http://10.0.10.5/webcam/?action=snapshot
-=======
----
-name: OctoPrint
-platform: mjpeg
-still_image_url: http://10.0.10.5/webcam/?action=snapshot
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
 mjpeg_url: http://10.0.10.5/webcam/?action=stream

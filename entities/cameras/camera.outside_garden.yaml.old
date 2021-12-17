@@ -1,13 +1,5 @@
-<<<<<<< HEAD
 ---
 name: outside_garden
 platform: ffmpeg
 # still_image_url: http://10.0.10.99/snap.jpeg
 input: rtsp://admin:password@10.0.10.99/live
-=======
----
-name: outside_garden
-platform: ffmpeg
-# still_image_url: http://10.0.10.99/snap.jpeg
-input: rtsp://admin:password@10.0.10.99/live
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3

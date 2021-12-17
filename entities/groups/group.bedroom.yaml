@@ -1,16 +1,7 @@
-<<<<<<< HEAD
 ---
 bedroom:
   name: Bedroom
   entities:
     - light.eugene
     - light.rapunzel
-=======
----
-bedroom:
-  name: Bedroom
-  entities:
-    - light.eugene
-    - light.rapunzel
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
     - light.wled_bed

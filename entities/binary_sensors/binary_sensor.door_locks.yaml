@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 platform: template
 sensors:
@@ -15,22 +14,4 @@ sensors:
         mdi:lock-open
       {% else %}
         mdi:lock-alert
-=======
----
-platform: template
-sensors:
-  door_locks:
-    friendly_name: Door Locks
-    device_class: lock
-    value_template: >-
-      {{ is_state('lock.schlage_front', 'unlocked')
-      or is_state('lock.schlage_back', 'unlocked')}}
-    icon_template: >-
-      {% if is_state('binary_sensor.door_locks', 'off') %}
-        mdi:lock
-      {% elif is_state('binary_sensor.door_locks', 'on') %}
-        mdi:lock-open
-      {% else %}
-        mdi:lock-alert
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
       {% endif %}

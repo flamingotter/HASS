@@ -1,14 +1,6 @@
-<<<<<<< HEAD
 ---
 puppy_lights:
   name: Puppy Lights
   entities:
     - light.piano_lamp
-=======
----
-puppy_lights:
-  name: Puppy Lights
-  entities:
-    - light.piano_lamp
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
     - light.front_door_light
