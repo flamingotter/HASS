@@ -27,9 +27,6 @@
       friendly_name: Office Two
       supported_features: 55
       state: 'on'
-    switch.office_lamp:
-      friendly_name: Office Lamp
-      state: 'on'
     light.office_one:
       min_mireds: 111
       max_mireds: 666
@@ -80,6 +77,35 @@
       - 0.394
       - 0.357
       friendly_name: Office Three
+      supported_features: 55
+      state: 'on'
+    switch.office_lamp:
+      friendly_name: Office Lamp
+      state: 'on'
+    light.office_four:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 255
+      color_temp: 221
+      hs_color:
+      - 26.732
+      - 26.125
+      rgb_color:
+      - 255
+      - 218
+      - 188
+      xy_color:
+      - 0.392
+      - 0.357
+      friendly_name: Office Four
       supported_features: 55
       state: 'on'
 - id: '1639243585404'
@@ -166,8 +192,34 @@
       friendly_name: Office Three
       supported_features: 55
       state: 'on'
+    light.office_four:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 128
+      color_temp: 221
+      hs_color:
+      - 26.732
+      - 26.125
+      rgb_color:
+      - 255
+      - 218
+      - 188
+      xy_color:
+      - 0.392
+      - 0.357
+      friendly_name: Office Four
+      supported_features: 55
+      state: 'on'
 - id: '1639243737311'
-  name: Office 1 2 Off
+  name: Office 1 2 4 Off
   entities:
     light.office_two:
       min_mireds: 111
@@ -224,6 +276,19 @@
       friendly_name: Office Three
       supported_features: 55
       state: 'on'
+    light.office_four:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      friendly_name: Office Four
+      supported_features: 55
+      state: 'off'
 - id: '1639243776055'
   name: Office 2 3 Off
   entities:

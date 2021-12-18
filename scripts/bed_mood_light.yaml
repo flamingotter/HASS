@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 bed_mood_light: #aka sexytime
   sequence: 
@@ -15,22 +14,4 @@ bed_mood_light: #aka sexytime
         entity_id: 
           - light.eugene
           - light.rapunzel
-=======
----
-bed_mood_light: #aka sexytime
-  sequence: 
-    - service: light.turn_on
-      data: 
-        entity_id: light.wled_bed
-        brightness: 128
-    - service: mqtt.publish
-      data_template:
-        topic: wled/mbr/mood/bed/api  # your topic here
-        payload: SX=50 FX=09
-    - service: light.turn_off
-      data: 
-        entity_id: 
-          - light.eugene
-          - light.rapunzel
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
         transition: 2

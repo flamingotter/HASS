@@ -1,10 +1,4 @@
-<<<<<<< HEAD
 ---
 platform: darksky
 api_key: !secret darksky_api
-=======
----
-platform: darksky
-api_key: !secret darksky_api
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
 mode: daily

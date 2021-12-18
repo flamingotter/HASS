@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 platform: group
 name: Media lights
@@ -6,13 +5,4 @@ entities:
   - light.media_one
   - light.media_two
   - light.media_three
-=======
----
-platform: group
-name: Media lights
-entities:
-  - light.media_one
-  - light.media_two
-  - light.media_three
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
   - light.media_four

@@ -1,10 +1,4 @@
-<<<<<<< HEAD
 ---
 switch.fun_tree:
   friendly_name: Fun Tree
-=======
----
-switch.fun_tree:
-  friendly_name: Fun Tree
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
   icon: mdi:pine-tree

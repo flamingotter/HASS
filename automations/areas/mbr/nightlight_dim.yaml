@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 alias: nightlight_dim
 trigger:
@@ -26,32 +25,3 @@ condition:
 action:
   - service: scene.turn_on
     entity_id: scene.nightlight_dim
-=======
----
-alias: nightlight_dim
-trigger:
-  - platform: state
-    entity_id: sensor.motion_his_side
-    to: 'detected'
-  - platform: state
-    entity_id: sensor.motion_her_side
-    to: 'detected'
-condition:
-  condition: and
-  conditions:
-      - condition: or
-        conditions:
-          - condition: state
-            entity_id: 'input_boolean.j_status_sleeping'
-            state: 'on'
-          - condition: state
-            entity_id: 'input_boolean.m_status_sleeping'
-            state: 'on'
-      - condition: numeric_state
-        entity_id: light.wled_bed
-        value_template: '{{ state.attributes.brightness }}'
-        below: 75
-action:
-  - service: scene.turn_on
-    entity_id: scene.nightlight_dim
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3

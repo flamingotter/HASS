@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 disarmed_day:
   sequence:
@@ -7,20 +6,6 @@ disarmed_day:
         entity_id:
           - light.kitchen
           - light.parlor_lamps
-          - light.front_door_light
         brightness: 255
         color_temp: 222
-=======
----
-disarmed_day:
-  sequence:
-    - service: light.turn_on
-      data:
-        entity_id:
-          - light.kitchen
-          - light.parlor_lamps
-          - light.front_door_light
-        brightness: 255
-        color_temp: 222
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
         transition: 2

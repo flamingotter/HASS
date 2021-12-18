@@ -1,12 +1,5 @@
-<<<<<<< HEAD
 platform: template
 sensors:
   last_alexa:
     value_template: >
-=======
-platform: template
-sensors:
-  last_alexa:
-    value_template: >
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
       {{ expand(states.group.echos) | selectattr('attributes.last_called','eq',True) | map(attribute='entity_id') | first }}

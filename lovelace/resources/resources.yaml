@@ -30,9 +30,6 @@
 - url: /hacsfiles/lovelace-text-input-row/lovelace-text-input-row.js
   type: module
 - url: /hacsfiles/button-card/button-card.js
-<<<<<<< HEAD
   type: module
 - url: /hacsfiles/rgb-light-card/card.js
-=======
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
   type: module

@@ -109,15 +109,12 @@ cards:
         name: Garage
         show_state: false
         show_name: true
-<<<<<<< HEAD
       - type: "custom:button-card"
         template: light
         entity: light.deck_lights
         name: Deck
         show_state: false
         show_name: true
-=======
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
 ####
     - type: horizontal-stack
       cards:

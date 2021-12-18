@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ##Kitchen Tab#############################################################################################
 title: Kitchen
 id: 3
@@ -22,28 +21,3 @@ cards:
       volume: true
       source: true
       power_state: false
-=======
-##Kitchen Tab#############################################################################################
-title: Kitchen
-id: 3
-icon: mdi:silverware
-cards:
-  - type: entities
-    title: Kitchen
-    show_state: false
-    entities:
-      - entity: light.kitchen_light
-        icon: mdi:ceiling-light
-      - type: divider
-      - entity: light.dining_room_light
-        icon: mdi:ceiling-light
-
-  - type: custom:mini-media-player
-    entity: media_player.kitchen
-    icon: mdi:spotify
-    artwork: cover
-    hide:
-      volume: true
-      source: true
-      power_state: false
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3

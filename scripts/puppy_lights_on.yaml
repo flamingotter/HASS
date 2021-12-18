@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 puppy_lights_on:
   sequence:
@@ -9,16 +8,4 @@ puppy_lights_on:
           - light.front_door_light
         brightness_pct: 100
         color_temp: 222
-=======
----
-puppy_lights_on:
-  sequence:
-    - service: light.turn_on
-      data:
-        entity_id: 
-          - light.table_lamp
-          - light.front_door_light
-        brightness_pct: 100
-        color_temp: 222
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
         transition: 5

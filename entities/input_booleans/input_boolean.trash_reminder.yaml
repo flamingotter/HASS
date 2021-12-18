@@ -1,12 +1,5 @@
-<<<<<<< HEAD
 ---
 trash_reminder:
   name: Trash Reminder
   initial: off
-=======
----
-trash_reminder:
-  name: Trash Reminder
-  initial: off
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
   icon: mdi:delete-alert

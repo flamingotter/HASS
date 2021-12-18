@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 platform: template
 sensors:
@@ -11,18 +10,4 @@ sensors:
         {% if as_timestamp(sensor.last_changed) == as_timestamp(sensors | map(attribute='last_changed') | max) %}
           {{ sensor.name }}
         {% endif %}
-=======
----
-platform: template
-sensors:
-  last_motion_outdoors:
-    friendly_name: 'Last Motion Outdoors'
-    icon_template: 'mdi:walk'
-    value_template: >
-      {%- set sensors = [states.binary_sensor.motion_driveway_outside, states.binary_sensor.motion_porch_outside, states.binary_sensor.motion_doorbell_outside] %}
-      {% for sensor in sensors %}
-        {% if as_timestamp(sensor.last_changed) == as_timestamp(sensors | map(attribute='last_changed') | max) %}
-          {{ sensor.name }}
-        {% endif %}
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
       {% endfor %}

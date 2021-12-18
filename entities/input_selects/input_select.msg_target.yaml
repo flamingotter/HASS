@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 msg_target:
   name: 'My broadcast message'
@@ -11,18 +10,4 @@ msg_target:
     - "media_player.office"
     - "media_player.everywhere"  #echo device group
   initial: "media_player.everywhere"
-=======
----
-msg_target:
-  name: 'My broadcast message'
-  options:
-    - "media_player.kitchen_echo" #single echo device
-    - "media_player.babe_cave"
-    - "media_player.bedroom"
-    - "media_player.family_room"
-    - "media_player.garage"
-    - "media_player.office"
-    - "media_player.everywhere"  #echo device group
-  initial: "media_player.everywhere"
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
   icon: mdi:speaker-wireless

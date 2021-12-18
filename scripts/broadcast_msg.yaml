@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 broadcast_msg:
   sequence:
@@ -7,14 +6,4 @@ broadcast_msg:
        target: "{{ states('input_select.msg_target') }}"
        data:
          type: announce
-=======
----
-broadcast_msg:
-  sequence:
-  - service: notify.alexa_media
-    data_template:
-       target: "{{ states('input_select.msg_target') }}"
-       data:
-         type: announce
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
        message: "{{ states('input_text.broadcast_text') }}"

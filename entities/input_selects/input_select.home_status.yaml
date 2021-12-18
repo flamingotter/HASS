@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 home_status:
   name: Home Status
@@ -8,14 +7,3 @@ home_status:
   - "Away" #Arm Away
   - "Armed" #Arm Home
   - "Sleeping" #Arm Night
-=======
----
-home_status:
-  name: Home Status
-  #icon: mdi:castle
-  options:
-  - "Disarmed"
-  - "Away"
-  - "Armed"
-  - "Sleeping"
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3

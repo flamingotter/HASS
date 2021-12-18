@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 shuttle_bay_open:
   sequence:
@@ -12,19 +11,4 @@ shuttle_bay_close:
     - service: cover.close_cover
       data: 
         entity_id:
-=======
----
-shuttle_bay_open:
-  sequence:
-    - service: cover.open_cover
-      data: 
-        entity_id:
-          - cover.shuttle_bay
-
-shuttle_bay_close:
-  sequence:
-    - service: cover.close_cover
-      data: 
-        entity_id:
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
           - cover.shuttle_bay

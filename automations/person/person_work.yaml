@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 ####Tag person as 'Work'
 alias: person_work
@@ -23,29 +22,3 @@ action:
           input_select.mj_status
         {% endif %}
       option: Work
-=======
----
-####Tag person as 'Work'
-alias: person_work
-trigger:
-  - platform: state
-    entity_id: person.josh
-    to: 'Work'
-    for: 
-      minutes: 3
-  - platform: state
-    entity_id: person.mj
-    to: 'Work'
-    for: 
-      minutes: 3
-action:
-  - service: input_select.select_option
-    data_template:
-      entity_id: >
-        {% if trigger.entity_id == 'person.josh' %}
-          input_select.josh_status
-        {% else %}
-          input_select.mj_status
-        {% endif %}
-      option: Work
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3

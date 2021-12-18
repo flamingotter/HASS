@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 mj_status:
   name: MJ Status
@@ -10,16 +9,3 @@ mj_status:
   - "Just Left"
   - "Away"
   - "Extended Away"
-=======
----
-mj_status:
-  name: MJ Status
-  icon: mdi:cupcake
-  options:
-  - "Work"
-  - "Home"
-  - "Just Arrived"
-  - "Just Left"
-  - "Away"
-  - "Extended Away"
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3

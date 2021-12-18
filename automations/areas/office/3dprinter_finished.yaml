@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 alias: 3dprinter_finished
 initial_state: True
@@ -21,28 +20,4 @@ action:
       - media_player.kitchen_echo
       - media_player.office
       - media_player.parlor
-=======
----
-alias: 3dprinter_finished
-initial_state: True
-trigger:
-  platform: state
-  entity_id: sensor.octoprint_current_state
-  from: 'Printing'
-  to: 'Operational'
-action:
-- service: notify.html5_push_pixj
-  data:
-    title: '3D Print Complete'
-    message: 'Print has been finished'
-- service: notify.alexa_media
-  data:
-    data:
-      type: announce
-    target:
-      - media_player.bedroom
-      - media_player.kitchen_echo
-      - media_player.office
-      - media_player.parlor
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
     message: 'Pardon the interuption, your 3D print has finished'

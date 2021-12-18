@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 ---
 platform: mqtt
 name: "Bedroom Fan"
@@ -7,14 +6,4 @@ state_topic: "stat/sonoff7/POWER"
 qos: 1
 payload_on: "ON"
 payload_off: "OFF"
-=======
----
-platform: mqtt
-name: "Bedroom Fan"
-command_topic: "cmnd/sonoff7/power"
-state_topic: "stat/sonoff7/POWER"
-qos: 1
-payload_on: "ON"
-payload_off: "OFF"
->>>>>>> 3c1f39570d35d0834fc0ca489b4ebbc4ad0c85b3
 retain: true
