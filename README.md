@@ -21,15 +21,16 @@
 * Lifx Mini
 * Sonoff Basic
 * Aeotec Z-Stick Gen5
-* GE Z-wave Smart Switch
-* GE Z-wave Smart Dimmer
-* Schlage Connect Z-Wave Lock
-* Custom Sensors (D1 Minis)
+* GE Z-wave Smart Switches
+* GE Z-wave Smart Dimmers
+* Schlage Connect Z-Wave Locks
+* Custom Sensors (D1 Minis, ESP32)
+* Zooz Z-wave devices
 * WLED
+* Elgado Stream Deck
 
 ## Network:
-* UniFi Cloud Key Gen2 Plus
-* Unifi Security Gateway
+* UniFi Dream Machine Pro
 * Unifi 16-Port POE Switch
 * Unifi AP-AC-LC
 
@@ -37,6 +38,8 @@
 * Unifi G3 Micro
 * Unifi G3 AF
 * Unifi G3 Flex
+* Unifi G4 Doorbell
+* Unifi G4 Dome
 * Wyze Cam V2
 
 ## 3D Printers:
