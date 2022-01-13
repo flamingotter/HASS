@@ -1,0 +1,6 @@
+---
+pratts:
+  name: Pratts
+  entities:
+    - person.josh
+    - person.mj

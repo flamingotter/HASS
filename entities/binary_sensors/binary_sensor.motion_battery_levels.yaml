@@ -30,3 +30,15 @@ sensors:
       {% else %}
         mdi:battery
       {% endif %}
+
+      sensor.motion_dining_battery_level
+
+  motion_dining_batt_lvl:
+    friendly_name: "Motion dining Battery"
+    value_template: "{{ states('sensor.motion_dining_battery_level')|int < 30 }}"  
+    icon_template: >-
+      {% if is_state("binary_sensor.motion_dining_batt_lvl", "on") %}
+        mdi:battery-alert
+      {% else %}
+        mdi:battery
+      {% endif %}

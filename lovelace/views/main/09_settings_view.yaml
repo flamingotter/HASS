@@ -15,6 +15,25 @@ cards:
       - input_boolean.alarm_arm_night
       - input_boolean.lockdown
 
+  - type: horizontal-stack
+    cards:
+    - type: custom:mini-graph-card
+      name: Freezer Watts
+      icon: mdi:flash
+      entities:
+      - sensor.basement_freezer_electric_consumption_w
+      line_color: var(--accent-color)
+      line_width: 8
+      font_size: 75
+    - type: custom:mini-graph-card
+      name: Freezer Amps
+      icon: mdi:flash
+      entities:
+      - sensor.basement_freezer_electric_consumption_a
+      line_color: blue
+      line_width: 8
+      font_size: 75
+
   - type: entities
     show_header_toggle: false
     title: TEST
@@ -32,6 +51,7 @@ cards:
       - type: divider
       - input_select.josh_status
       - input_select.mj_status
+      - input_select.home_status
 
   - type: entities
     show_header_toggle: false
@@ -78,4 +98,5 @@ cards:
       - sensor.sensor_media_battery_level
       - sensor.sensor_office_battery_level
       - sensor.backdoor_battery_level
+      - sensor.motion_dining_battery_level
       

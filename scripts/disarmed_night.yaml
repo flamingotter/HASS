@@ -1,5 +1,5 @@
 ---
-disarmed_day:
+disarmed_night:
   sequence:
     - service: light.turn_on
       data:

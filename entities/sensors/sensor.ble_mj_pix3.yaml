@@ -1,0 +1,9 @@
+---
+platform: mqtt_room
+device_id: "iBeacon:33b002fc-9048-4783-8c36-754ec9a83fcc-100-1" # Note that major version must match, but any minor version will be ignored
+name: 'ble_mj_pix3'
+state_topic: 'espresense/rooms'
+timeout: 60
+away_timeout: 120
+#
+#

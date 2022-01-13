@@ -347,3 +347,608 @@
       friendly_name: Office Three
       supported_features: 55
       state: 'off'
+- id: '1639934177716'
+  name: Open Blinds
+  entities:
+    cover.dining_room_blinds:
+      current_position: 100
+      device_class: shutter
+      friendly_name: Dining Room Blinds
+      supported_features: 15
+      state: open
+    cover.parlor_blinds:
+      current_position: 100
+      device_class: shutter
+      friendly_name: Parlor Blinds
+      supported_features: 15
+      state: open
+  icon: mdi:window-shutter-open
+- id: '1639934270221'
+  name: Close Blinds
+  entities:
+    cover.dining_room_blinds:
+      current_position: 0
+      device_class: shutter
+      friendly_name: Dining Room Blinds
+      supported_features: 15
+      state: closed
+    cover.parlor_blinds:
+      current_position: 0
+      device_class: shutter
+      friendly_name: Parlor Blinds
+      supported_features: 15
+      state: closed
+  icon: mdi:window-shutter
+- id: '1640037755761'
+  name: Media Normal
+  entities:
+    light.media_one:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 255
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Media One
+      supported_features: 55
+      state: 'on'
+    light.media_two:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 255
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Media Two
+      supported_features: 55
+      state: 'on'
+    light.media_three:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 255
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Media Three
+      supported_features: 55
+      state: 'on'
+    light.media_four:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 255
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Media Four
+      supported_features: 55
+      state: 'on'
+    light.spot_light:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 76
+      hs_color:
+      - 177.19
+      - 100
+      rgb_color:
+      - 0
+      - 255
+      - 243
+      xy_color:
+      - 0.152
+      - 0.362
+      friendly_name: Spot Light
+      supported_features: 55
+      icon: mdi:spotlight-beam
+      state: 'on'
+- id: '1640037835441'
+  name: Media Dim
+  entities:
+    light.media_one:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 76
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Media One
+      supported_features: 55
+      state: 'on'
+    light.media_two:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 76
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Media Two
+      supported_features: 55
+      state: 'on'
+    light.media_three:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 76
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Media Three
+      supported_features: 55
+      state: 'on'
+    light.media_four:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 76
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Media Four
+      supported_features: 55
+      state: 'on'
+    light.spot_light:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 76
+      hs_color:
+      - 178.596
+      - 100
+      rgb_color:
+      - 0
+      - 255
+      - 249
+      xy_color:
+      - 0.152
+      - 0.352
+      friendly_name: Spot Light
+      supported_features: 55
+      icon: mdi:spotlight-beam
+      state: 'on'
+- id: '1640037963367'
+  name: Media Movie
+  entities:
+    light.media_one:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      friendly_name: Media One
+      supported_features: 55
+      state: 'off'
+    light.media_two:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      friendly_name: Media Two
+      supported_features: 55
+      state: 'off'
+    light.media_three:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      friendly_name: Media Three
+      supported_features: 55
+      state: 'off'
+    light.media_four:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 51
+      hs_color:
+      - 223.597
+      - 100
+      rgb_color:
+      - 0
+      - 69
+      - 255
+      xy_color:
+      - 0.137
+      - 0.07
+      friendly_name: Media Four
+      supported_features: 55
+      state: 'on'
+    light.spot_light:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 76
+      hs_color:
+      - 178.596
+      - 100
+      rgb_color:
+      - 0
+      - 255
+      - 249
+      xy_color:
+      - 0.152
+      - 0.352
+      friendly_name: Spot Light
+      supported_features: 55
+      icon: mdi:spotlight-beam
+      state: 'on'
+- id: '1640038136246'
+  name: Media Middle Off
+  entities:
+    light.media_one:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 255
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Media One
+      supported_features: 55
+      state: 'on'
+    light.media_two:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      friendly_name: Media Two
+      supported_features: 55
+      state: 'off'
+    light.media_three:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      friendly_name: Media Three
+      supported_features: 55
+      state: 'off'
+    light.media_four:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 255
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Media Four
+      supported_features: 55
+      state: 'on'
+    light.spot_light:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 76
+      hs_color:
+      - 175.784
+      - 100
+      rgb_color:
+      - 0
+      - 255
+      - 237
+      xy_color:
+      - 0.153
+      - 0.372
+      friendly_name: Spot Light
+      supported_features: 55
+      icon: mdi:spotlight-beam
+      state: 'on'
+- id: '1640038165747'
+  name: Media Outer Off
+  entities:
+    light.media_one:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      friendly_name: Media One
+      supported_features: 55
+      state: 'off'
+    light.media_two:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 255
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Media Two
+      supported_features: 55
+      state: 'on'
+    light.media_three:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: color_temp
+      brightness: 255
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      friendly_name: Media Three
+      supported_features: 55
+      state: 'on'
+    light.media_four:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      friendly_name: Media Four
+      supported_features: 55
+      state: 'off'
+    light.spot_light:
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      color_mode: hs
+      brightness: 76
+      hs_color:
+      - 175.784
+      - 100
+      rgb_color:
+      - 0
+      - 255
+      - 237
+      xy_color:
+      - 0.153
+      - 0.372
+      friendly_name: Spot Light
+      supported_features: 55
+      icon: mdi:spotlight-beam
+      state: 'on'

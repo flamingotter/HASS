@@ -1,6 +1,6 @@
 ---
 platform: mqtt_room
-device_id: "iBeacon:iBeacon:95bdbdfa-ef1c-4c9c-8e63-41db2d820e8c-100-1" # Note that major version must match, but any minor version will be ignored
+device_id: "iBeacon:95bdbdfa-ef1c-4c9c-8e63-41db2d820e8c-100-1" # Note that major version must match, but any minor version will be ignored
 name: 'ble_josh_pix6'
 state_topic: 'espresense/rooms'
 timeout: 60

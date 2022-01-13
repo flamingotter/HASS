@@ -1,9 +1,9 @@
 ---
-lovelace-alt1:
-  mode: yaml
-  title: Tablet
-  show_in_sidebar: true
-  filename: alt1-lovelace.yaml
+# lovelace-alt1:
+#   mode: yaml
+#   title: Tablet
+#   show_in_sidebar: true
+#   filename: alt1-lovelace.yaml
 
 lovelace-kit:
   mode: yaml

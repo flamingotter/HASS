@@ -17,6 +17,8 @@ cards:
       - type: custom:slider-entity-row
         entity: light.wled_bed
         toggle: true
+      - entity: select.wled_node_bed_preset
+        name: Under Bed Presets
       - type: custom:slider-entity-row
         entity: light.wled_node_mbr
         toggle: true

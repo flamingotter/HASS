@@ -38,7 +38,8 @@ cards:
       - sensor.motion_kitchen_battery_level
       - sensor.motion_parlor_battery_level
       - sensor.schlage_front_door_battery_level
-      - sensor.schlage_back_door_battery_level    
+      - sensor.schlage_back_door_battery_level
+      - sensor.motion_dining_battery_level
 
   - type: entities
     entities:

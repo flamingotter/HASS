@@ -17,9 +17,33 @@ cards:
       - type: custom:slider-entity-row
         entity: light.office_lights
         toggle: true
+      - type: custom:rgb-light-card
+        entity: light.office_lights
+        colors:
+          - rgb_color:
+            - 121
+            - 0
+            - 255
+          - rgb_color:
+            - 0
+            - 255
+            - 249
+          - rgb_color:
+            - 0
+            - 69
+            - 255
+          - rgb_color:
+            - 1
+            - 255
+            - 0
+          - rgb_color:
+            - 255
+            - 0
+            - 0  
       - type: divider
       - entity: input_boolean.onair
       - entity: input_boolean.occupied_office
+      - entity: input_boolean.dual_occupied_office
       - type: 'custom:fold-entity-row'
         padding: 0
         group_config:

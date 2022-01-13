@@ -9,5 +9,6 @@ basement:
     - light.office_one
     - light.office_two
     - light.office_three
-    - input_boolean.office_occupied
+    - light.office_four
+    - input_boolean.occupied_office
     - input_boolean.onair

@@ -11,6 +11,5 @@ family_room_off:
   sequence:
     - service: light.turn_off
       data:
-        entity_id: 
-          - light.media_lights
-        transition: 3
+        entity_id: light.media_three
+        transition: 1
