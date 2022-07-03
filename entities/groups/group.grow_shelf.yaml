@@ -1,0 +1,7 @@
+---
+grow_shelf:
+  name: Grow Shelf
+  entities:
+    - switch.grow_light_1
+    - switch.grow_light_2
+    - switch.grow_fan_1

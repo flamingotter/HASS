@@ -1,0 +1,6 @@
+---
+state_topic: "home/office/tentNode"
+unique_id: tent_hum
+name: "Tent Hum"
+unit_of_measurement: "%"
+value_template: '{{ value_json.h | round(1) }}'

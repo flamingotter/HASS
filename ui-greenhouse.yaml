@@ -1,0 +1,18 @@
+title: Greenhouse
+# resources: !include lovelace/resources/resources.yaml
+dashboards: !include lovelace/dashboards/dashboards.yaml
+background: var(--background-image)
+custom_header: !include lovelace/cards/custom_header.yaml
+views:
+  - !include lovelace/views/greenhouse/00_gh_view.yaml
+  - !include lovelace/views/greenhouse/01_gs_view.yaml
+  # - !include lovelace/views/greenhouse/02_parlor_view.yaml
+  # - !include lovelace/views/greenhouse/03_kitchen_view.yaml
+  # - !include lovelace/views/greenhouse/04_family_view.yaml
+  # - !include lovelace/views/greenhouse/05_mbr_view.yaml
+  # - !include lovelace/views/greenhouse/06_office_view.yaml
+  # - !include lovelace/views/greenhouse/07_garage_view.yaml
+  # - !include lovelace/views/greenhouse/08_weather_view.yaml
+  # - !include lovelace/views/greenhouse/09_settings_view.yaml
+  
+  #

@@ -1,8 +1,0 @@
----
-platform: mqtt
-name: Office Presence Node
-state_topic: "espresense/rooms/office/status"
-json_attributes_topic: "espresense/rooms/office/telemetry"
-payload_on: "online"
-payload_off: "offline"
-device_class: connectivity

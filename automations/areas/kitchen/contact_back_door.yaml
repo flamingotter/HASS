@@ -4,9 +4,9 @@ trigger:
   - platform: state
     entity_id: binary_sensor.contact_back_door
     to: "on"
-    for: "00:01:00"
+    for: "00:03:00"
 action:
-  - service: notify.html5_push
+  - service: notify.all_devices
     data:
       message: "Back Door is Open!"
       title: "Door Open"

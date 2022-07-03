@@ -3,8 +3,8 @@
 alias: garden_timelapse
 trigger:
   - platform: time_pattern
-    #hours: '/1'
-    minutes: '/30'
+    hours: '/1'
+    #minutes: '/30'
 condition:
   - condition: state
     entity_id: sun.sun
@@ -12,5 +12,5 @@ condition:
 action:
   - service: camera.snapshot
     data:
-      entity_id: camera.outside_garden
+      entity_id: camera.backyard_n_outside
       filename: www/tmp/timelapse/snapshot_{{now().strftime('%H:%M-%d%b')}}.jpg

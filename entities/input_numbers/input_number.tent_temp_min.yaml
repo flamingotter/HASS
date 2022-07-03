@@ -1,0 +1,7 @@
+---
+tent_temp_min:
+  name: Tent Temp Min
+  icon: mdi:thermometer-minus
+  min: 60
+  max: 90
+  step: 1

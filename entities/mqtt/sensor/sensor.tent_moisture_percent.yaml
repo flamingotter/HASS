@@ -1,0 +1,6 @@
+---
+state_topic: "home/office/tentNode"
+unique_id: tent_moisture_percent
+name: "Tent Moisture Percent"
+unit_of_measurement: "%"
+value_template: '{{ value_json.cmspercent | round(1) }}'

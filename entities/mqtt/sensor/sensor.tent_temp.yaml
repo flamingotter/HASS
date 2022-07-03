@@ -1,0 +1,6 @@
+---
+state_topic: "home/office/tentNode"
+unique_id: tent_temp
+name: "Tent Temp"
+unit_of_measurement: "°F"
+value_template: '{{ value_json.t | round(1) }}'

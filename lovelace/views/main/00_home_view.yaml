@@ -48,8 +48,6 @@ cards:
             }
         # - binary_sensor.alarm
         - type: divider
-        - sensor.ble_josh_pix6
-        - type: divider
         - person.josh
         - person.mj
         # - binary_sensor.windows
@@ -72,14 +70,22 @@ cards:
     - type: horizontal-stack
       cards:
       - type: custom:mini-graph-card
+        name: Temperature
         entities:
-        - sensor.kitchen_thermostat_temperature
-        line_color: var(--accent-color)
-        line_width: 8
-        font_size: 75
+        - entity: sensor.kitchen_temperature
+          name: Inside
+          line_color: red
+          line_width: 8
+          font_size: 75
+        - entity: sensor.szpffqlkc_temp
+          name: Outside
+          line_color: purple
+          line_width: 8
+          font_size: 75
+        
       - type: custom:mini-graph-card
         entities:
-        - sensor.kitchen_thermostat_humidity
+        - sensor.kitchen_humidity
         line_color: blue
         line_width: 8
         font_size: 75
@@ -94,7 +100,7 @@ cards:
       - binary_sensor.motion_bsmt_stairs_batt_lvl
       - binary_sensor.motion_kitchen_batt_lvl
       - binary_sensor.motion_parlor_batt_lvl
-      - binary_sensor.lock_back_batt_lvl
+      # - binary_sensor.lock_back_batt_lvl
       - binary_sensor.lock_frt_batt_lvl
       - input_boolean.trash_reminder
       - input_boolean.feed_pets

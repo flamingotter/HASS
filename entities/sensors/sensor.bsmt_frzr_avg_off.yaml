@@ -1,0 +1,8 @@
+---
+platform: history_stats
+name: Freezer Average Off time
+entity_id: sensor.freezer_running
+state: "Off"
+type: time
+start: "{{ 0 }}"
+end: "{{ now() }}"

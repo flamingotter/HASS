@@ -1,0 +1,6 @@
+---
+mqtt:
+  binary_sensor: !include_dir_merge_list ../entities/mqtt/binary_sensor/
+  sensor: !include_dir_merge_list ../entities/mqtt/sensor/
+  cover: !include_dir_merge_list ../entities/mqtt/cover/
+  switch: !include_dir_merge_list ../entities/mqtt/switch/

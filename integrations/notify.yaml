@@ -1,8 +1,13 @@
 ---
 notify:
-  platform: html5
-  name: html5_push
-  vapid_pub_key: BKnLWTMqRcOsEjtgE_GYj3sev3ZRQmpeRAHr4QN-h84KpTpchiGDLRW6yy7w0GQ67XhtnlsYwsrmOIJYgMrOGhU
-  vapid_prv_key: ha-I0kqyhkb9jPBr9hSVnpW_6iB_yxkK8b_fDAuRUI0
-  vapid_email: firebase-adminsdk-f4sn5@moonlit-botany-293421.iam.gserviceaccount.com
+  # platform: html5
+  # name: html5_push
+  # vapid_pub_key: BKnLWTMqRcOsEjtgE_GYj3sev3ZRQmpeRAHr4QN-h84KpTpchiGDLRW6yy7w0GQ67XhtnlsYwsrmOIJYgMrOGhU
+  # vapid_prv_key: ha-I0kqyhkb9jPBr9hSVnpW_6iB_yxkK8b_fDAuRUI0
+  # vapid_email: firebase-adminsdk-f4sn5@moonlit-botany-293421.iam.gserviceaccount.com
+  name: ALL_DEVICES
+  platform: group
+  services: 
+    - service: mobile_app_mobile_j
+    - service: mobile_app_mobile_m
 

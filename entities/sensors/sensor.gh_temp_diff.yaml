@@ -1,0 +1,11 @@
+---
+platform: template
+sensors:
+  gh_temp_diff:
+    friendly_name: 'Greenhouse Temp Difference'
+    unique_id: gh001
+    unit_of_measurement: "°F"
+    value_template: >
+      {% set gh = states.sensor.szpffqlkc_temp_1.state|float %}
+          {% set st = states.sensor.szpffqlkc_temp.state| float %}
+          {{ (gh - st)|round(1) }}

@@ -5,7 +5,7 @@ sensors:
     friendly_name: 'Last Motion Outdoors'
     icon_template: 'mdi:walk'
     value_template: >
-      {%- set sensors = [states.binary_sensor.motion_driveway_outside, states.binary_sensor.motion_porch_outside, states.binary_sensor.motion_doorbell_outside] %}
+      {%- set sensors = [states.binary_sensor.driveway_outside_motion, states.binary_sensor.porch_outside_motion, states.binary_sensor.doorbell_outside_motion] %}
       {% for sensor in sensors %}
         {% if as_timestamp(sensor.last_changed) == as_timestamp(sensors | map(attribute='last_changed') | max) %}
           {{ sensor.name }}

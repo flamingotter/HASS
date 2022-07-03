@@ -1,0 +1,56 @@
+title: Settings
+id: 9
+icon: mdi:cog-outline
+cards:
+
+  - type: entities
+    show_header_toggle: false
+    title: Switches
+    entities:
+      - input_boolean.pet_presence
+      - input_boolean.media_automations
+      - input_boolean.house_guests
+      - input_boolean.cleaning
+      - input_boolean.sexy_time
+
+  - type: entities
+    show_header_toggle: false
+    title: Trash Schedule
+    entities:
+      - binary_sensor.trash_day
+      - input_select.trash_pickup_day
+  
+
+  - type: entities
+    show_header_toggle: false
+    title: Status
+    entities:
+      - sensor.last_boot
+      - sensor.hacs
+      - sensor.current_version
+      - binary_sensor.home_assistant_website_update_available
+      
+  - type: custom:battery-state-card
+    title: Battery Status
+    sort_by_level: "asc"
+    entities:
+      - sensor.motion_basement_stairs_battery_level
+      - sensor.motion_kitchen_battery_level
+      - sensor.motion_parlor_battery_level
+      - sensor.schlage_front_door_battery_level
+      - sensor.schlage_back_door_battery_level
+      - sensor.motion_dining_battery_level
+
+  - type: entities
+    entities:
+      # - type: custom:text-input-row
+      #   entity: input_text.new_broadcast
+      #   name: Enter Text
+      - entity: input_text.broadcast_text
+      - entity: input_select.msg_target
+        name: Select Alexa Device
+      - action_name: Execute...
+        icon: 'mdi:voice'
+        name: 'Announce'
+        service: script.broadcast_msg
+        type: call-service

@@ -2,3 +2,5 @@
 nest:
   client_id: !secret nest_id
   client_secret: !secret nest_secret
+  project_id: !secret nest_project_id
+  # subscriber_id: projects/moonlit-botany-293421/subscriptions/HA_Nest

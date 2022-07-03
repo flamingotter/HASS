@@ -52,17 +52,17 @@ cards:
                   {% endif %}
                   ;
               }
-          - entity: lock.schlage_back
-            style: |
-              :host {
-                color:
-                  {% if is_state(config.entity, "unlocked") %}
-                    red
-                  {% elif is_state(config.entity, "locked") %}
-                    green
-                  {% endif %}
-                  ;
-              }
+          # - entity: lock.schlage_back
+          #   style: |
+          #     :host {
+          #       color:
+          #         {% if is_state(config.entity, "unlocked") %}
+          #           red
+          #         {% elif is_state(config.entity, "locked") %}
+          #           green
+          #         {% endif %}
+          #         ;
+          #     }
           - entity: cover.shuttle_bay
             style: |
               :host {

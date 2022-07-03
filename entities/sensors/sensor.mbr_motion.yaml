@@ -1,6 +1,0 @@
----
-platform: mqtt
-state_topic: "home/mbr/mbrNode"
-unique_id: mbr_motion
-name: "MBR Motion"
-value_template: '{{ value_json.mo }}'

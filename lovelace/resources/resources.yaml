@@ -33,3 +33,5 @@
   type: module
 - url: /hacsfiles/rgb-light-card/card.js
   type: module
+- url: /hacsfiles/scheduler-card/scheduler-card.js
+  type: module

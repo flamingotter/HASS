@@ -1,0 +1,5 @@
+---
+state_topic: "home/office/tentNode"
+unique_id: tent_moisture
+name: "Tent Moisture Value"
+value_template: '{{ value_json.cms | round(1) }}'

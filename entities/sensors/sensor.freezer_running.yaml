@@ -1,0 +1,12 @@
+---
+platform: template
+sensors:
+  freezer_running:
+    friendly_name: 'Freezer Running'
+    unique_id: frz001
+    value_template: >
+      {% if states.sensor.bsmt_freezer_electric_consumption_w.state > '10' %}
+        On
+      {% else%}
+        Off
+      {% endif %}

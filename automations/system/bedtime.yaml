@@ -9,7 +9,9 @@ action:
       entity_id: group.lights
   - service: input_boolean.turn_on
     data:
-      entity_id: input_boolean.alarm_arm_night
+      entity_id: 
+        - input_boolean.alarm_arm_night
+        - input_boolean.camera_alerts
   - service: lock.lock
     data: 
       entity_id: group.door_locks

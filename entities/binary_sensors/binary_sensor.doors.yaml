@@ -2,7 +2,6 @@
 platform: template
 sensors:
   doors:
-    friendly_name: Doors
     device_class: door
     value_template: >-
       {{ is_state('binary_sensor.contact_beer_fridge', 'on')}}

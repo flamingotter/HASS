@@ -1,12 +1,13 @@
 ---
-# lovelace-alt1:
-#   mode: yaml
-#   title: Tablet
-#   show_in_sidebar: true
-#   filename: alt1-lovelace.yaml
-
-lovelace-kit:
+lovelace-greenhoue:
   mode: yaml
-  title: Kitchen
+  title: Greenhouse
+  icon: mdi:sprout
   show_in_sidebar: true
-  filename: kit-lovelace.yaml
+  filename: ui-greenhouse.yaml
+
+# lovelace-kit:
+#   mode: yaml
+#   title: Kitchen
+#   show_in_sidebar: true
+#   filename: kit-lovelace.yaml

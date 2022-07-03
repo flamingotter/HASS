@@ -1,0 +1,9 @@
+---
+platform: mqtt
+name: "Christmas Tree"
+command_topic: "cmnd/sonoff5/power"
+state_topic: "stat/sonoff5/POWER"
+qos: 1
+payload_on: "ON"
+payload_off: "OFF"
+retain: true

@@ -1,0 +1,7 @@
+---
+tent_fan_mode:
+  name: Tent Fan Mode
+  icon: mdi:fan
+  options:
+  - "Normal"
+  - "Germination"

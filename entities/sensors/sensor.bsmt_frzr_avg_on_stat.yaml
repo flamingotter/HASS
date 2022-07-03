@@ -1,0 +1,5 @@
+---
+platform: statistics
+name: bsmt_frzr_avg_on_stat
+entity_id: binary_sensor.freezer_running
+state_characteristic: average_step

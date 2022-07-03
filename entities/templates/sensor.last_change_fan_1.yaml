@@ -1,0 +1,10 @@
+---
+trigger:
+  - platform: state
+    entity_id: 
+      - switch.grow_fan_1
+    to: "off"
+sensor:
+  - name: "Fan 1 Last Ran"
+    icon: mdi:timer-outline
+    state: '{{ (( as_timestamp(now()) - as_timestamp(states.switch.grow_fan_1.last_changed)) / 60 ) | int }}'
