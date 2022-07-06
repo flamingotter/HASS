@@ -1,5 +1,5 @@
 ---
-platform: mqtt
+# platform: mqtt
 name: "Bedroom Fan"
 command_topic: "cmnd/sonoff7/power"
 state_topic: "stat/sonoff7/POWER"

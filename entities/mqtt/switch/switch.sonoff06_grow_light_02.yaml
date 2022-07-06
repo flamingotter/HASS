@@ -1,5 +1,5 @@
 ---
-platform: mqtt
+# platform: mqtt
 name: "Grow Light 2"
 command_topic: "cmnd/sonoff6/power"
 state_topic: "stat/sonoff6/POWER"

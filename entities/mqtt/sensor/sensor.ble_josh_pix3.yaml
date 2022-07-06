@@ -1,6 +1,0 @@
----
-device_id: "iBeacon:1d417edd-48c1-4037-bf6c-7bb13862f439-5-0" # Note that major version must match, but any minor version will be ignored
-name: 'ble_josh_pix3'
-state_topic: 'espresense/rooms'
-timeout: 60
-away_timeout: 120

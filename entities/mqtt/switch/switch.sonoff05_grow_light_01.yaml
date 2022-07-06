@@ -1,8 +1,8 @@
 ---
-platform: mqtt
-name: "Grow Light 1"
+# platform: mqtt
 command_topic: "cmnd/sonoff4/power"
 state_topic: "stat/sonoff4/POWER"
+name: "Grow Light 1"
 qos: 1
 payload_on: "ON"
 payload_off: "OFF"
