@@ -11,11 +11,7 @@
 # Connected Devices:
 
 ## Enabling Components:
-* Amazon Echo (Gen. 1)
-* Amazon Echo (Gen. 2)
-* Amazon Echo Dot (Gen. 2)
-* Amazon Echo Dot (Gen. 3)
-* Amazon Fire 7 (Gen. 7)
+* Amazon Echo Devices
 * Google Home Mini
 * Lifx A19
 * Lifx Mini
