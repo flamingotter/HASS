@@ -3,7 +3,13 @@ dinner_msg:
   sequence:
   - service: notify.alexa_media
     data_template:
-       target: "media_player.everywhere"
        data:
+         method: all
          type: announce
-       message: "It's time to eat, please make your way to the kitchen"
+       message: "It's time to eat, please make your way to the kitchen"       
+       target: 
+        - media_player.bedroom
+        - media_player.garage
+        - media_player.office
+        - media_player.babe_cave
+        - media_player.media_room

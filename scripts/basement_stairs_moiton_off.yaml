@@ -1,0 +1,9 @@
+---
+basement_stairs_off:
+  sequence:
+    - service: lifx.effect_colorloop
+      data:
+        entity_id: light.stair_light
+        brightness: 50
+        period: 5
+      

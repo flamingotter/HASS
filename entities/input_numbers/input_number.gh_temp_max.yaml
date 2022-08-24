@@ -1,0 +1,7 @@
+---
+gh_temp_max:
+  name: Greenhouse Temp Max
+  icon: mdi:thermometer-plus
+  min: 80
+  max: 120
+  step: 1

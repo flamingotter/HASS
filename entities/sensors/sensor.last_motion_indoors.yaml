@@ -5,7 +5,7 @@ sensors:
     friendly_name: 'Last Motion Indoors'
     icon_template: 'mdi:walk'
     value_template: >
-      {%- set sensors = [states.binary_sensor.meida_room_motion, states.binary_sensor.motion_dining, states.binary_sensor.motion_basement_stairs, states.binary_sensor.motion_kitchen, states.binary_sensor.motion_parlor, states.binary_sensor.motion_mbr, states.binary_sensor.sensor_office_motion, states.binary_sensor.motion_garage] %}
+      {%- set sensors = [states.binary_sensor.media_room_motion, states.binary_sensor.motion_dining, states.binary_sensor.motion_basement_stairs, states.binary_sensor.motion_kitchen, states.binary_sensor.motion_parlor, states.binary_sensor.motion_mbr, states.binary_sensor.sensor_office_motion, states.binary_sensor.motion_garage, states.binary_sensor.storage_room_motion] %}
       {% for sensor in sensors %}
         {% if as_timestamp(sensor.last_changed) == as_timestamp(sensors | map(attribute='last_changed') | max) %}
           {{ sensor.name }}

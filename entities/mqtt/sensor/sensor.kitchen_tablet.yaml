@@ -1,0 +1,5 @@
+---
+unique_id: kitchen_tablet
+name: "Kitchen Tablet"
+state_topic: "fully/event/onMotion/ffadc938-8588c61c"
+json_attributes_topic: fully/deviceInfo/ffadc938-8588c61c

@@ -1,0 +1,19 @@
+title: Security
+id: 1
+icon: mdi:weather-lightning-rainy
+cards:
+  - type: entities
+    title: Daily forcaset
+    show_state: false
+    entities:
+      - sensor.wupws_weather_1d
+      - type: divider
+      - sensor.wupws_weather_1n
+      - type: divider
+      - sensor.wupws_weather_2d
+      - type: divider
+      - sensor.wupws_weather_2n
+      - type: divider
+      - sensor.wupws_weather_3d
+      - type: divider
+      - sensor.wupws_weather_4d

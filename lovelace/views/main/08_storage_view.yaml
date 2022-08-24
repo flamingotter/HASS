@@ -1,0 +1,13 @@
+title: Storage Room
+id: 8
+icon: mdi:warehouse
+cards:
+
+  - type: entities
+    title: Storage Room
+    show_state: false
+    entities:
+      - entity: sensor.storage_room_temperature
+      - entity: sensor.storage_room_relative_humidity
+      - entity: binary_sensor.storage_room_motion
+      - type: divider

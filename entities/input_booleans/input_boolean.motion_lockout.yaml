@@ -1,0 +1,4 @@
+---
+motion_lockout:
+  name: Motion Lockout
+  icon: mdi:motion-sensor-off

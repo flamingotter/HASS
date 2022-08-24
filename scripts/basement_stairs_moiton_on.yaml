@@ -6,10 +6,4 @@ basement_stairs_on:
         entity_id: light.stair_light
         brightness_pct: 100
         color_temp: 222
-
-basement_stairs_off:
-  sequence:
-    - service: light.turn_off
-      data:
-        entity_id: light.stair_light
-        transition: 3
+      

@@ -1,6 +1,7 @@
 www/googlef62d7edb89f95f8b.html
 www/
 deps/
+image/
 custom_components/
 *.pid
 *.xml
@@ -17,6 +18,7 @@ custom_components/
 *.pickle
 *.sqlite
 *.old
+*.log
 !*.yaml
 !.gitignore
 secrets.yaml

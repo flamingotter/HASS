@@ -1,0 +1,6 @@
+---
+unique_id: kitchen_tablet_batt
+name: "Kitchen Tablet Battery"
+state_topic: "fully/event/onBatteryLevelChanged/ffadc938-8588c61c"
+device_class: battery
+value_template: "{{ value_json.level }}"

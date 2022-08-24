@@ -1,9 +1,0 @@
----
-grocy_add_26:
-  sequence:
-    - service: shell_command.grocy_add_item
-      data:
-        server_ip: 10.0.10.10
-        grocy_key: 9nVbzr15EeAttRvafuKzS2TSoMnb35tFhgvMaTUdSk90YBzE8F
-        product_id: 26 #tazo
-        amount: 1

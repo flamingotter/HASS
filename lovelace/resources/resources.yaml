@@ -35,3 +35,7 @@
   type: module
 - url: /hacsfiles/scheduler-card/scheduler-card.js
   type: module
+- url: /hacsfiles/lovelace-home-feed-card/lovelace-home-feed-card.js
+  type: module
+- url: /hacsfiles/lovelace-layout-card/layout-card.js
+  type: module

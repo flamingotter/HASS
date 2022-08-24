@@ -1,0 +1,13 @@
+- id: '1658161846939'
+  alias: Reading Mode
+  description: ''
+  trigger:
+  - platform: tag
+    tag_id: reading_mode
+  condition: []
+  action:
+  - service: input_boolean.toggle
+    data: {}
+    target:
+      entity_id: input_boolean.reading_mode
+  mode: single

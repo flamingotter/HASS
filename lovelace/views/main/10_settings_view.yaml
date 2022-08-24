@@ -1,0 +1,109 @@
+title: Settings
+id: 10
+icon: mdi:cog-outline
+cards:
+
+  - type: entities
+    show_header_toggle: false
+    title: Switches
+    entities:
+      - input_boolean.pet_presence
+      - input_boolean.camera_alerts
+      - input_boolean.house_guests
+      - input_boolean.cleaning
+      - input_boolean.sexy_time
+      - input_boolean.alarm_arm_night
+      - input_boolean.lockdown
+
+  - type: entities
+    show_header_toggle: false
+    title: Sumps
+    entities:
+      - switch.sump_01
+      - input_boolean.sump01_overload      
+      - type: divider
+      - switch.sump_02
+      - input_boolean.sump02_overload
+
+  - type: entities
+    show_header_toggle: false
+    title: Wet Sensors
+    entities:
+      - binary_sensor.water_leak_sensor_01_water_alarm_water_leak_detected
+
+  - type: entities
+    show_header_toggle: false
+    title: TEST
+    entities:
+      - binary_sensor.door_status      
+      - binary_sensor.contact_back_door
+      # - input_boolean.test2
+      # - binary_sensor.contact_door_test2
+      # - type: divider
+      # - binary_sensor.window_status
+      # - input_boolean.test3
+      # - binary_sensor.contact_window_test3
+      # - input_boolean.test4
+      # - binary_sensor.contact_window_test4
+      - type: divider
+      - input_select.josh_status
+      - input_select.mj_status
+      - input_select.home_status
+
+  - type: entities
+    show_header_toggle: false
+    title: Freezer Status
+    entities:
+      - sensor.freezer_running
+      - sensor.freezer_running_duration
+      - sensor.bsmt_freezer_electric_consumption_w
+      - sensor.bsmt_freezer_electric_consumption_a
+
+  - type: entities
+    show_header_toggle: false
+    title: Deck Lights
+    entities:
+      - light.deck_lights
+      - light.n_deck
+      - light.s_deck
+
+  - type: entities
+    show_header_toggle: false
+    title: Trash Schedule
+    entities:
+      - binary_sensor.trash_day
+      - input_select.trash_pickup_day
+
+  # - type: custom:auto-entities
+  #   card:
+  #     type: entities
+  #   filter:
+  #     include:
+  #     - attributes:
+  #           battery_level: "<=100"
+  
+
+  - type: entities
+    show_header_toggle: false
+    title: Status
+    entities:
+      - sensor.last_boot
+      - sensor.hacs
+      - sensor.current_version
+      - sensor.home_assistant_website
+      - binary_sensor.home_assistant_website_update_available
+      
+  - type: custom:battery-state-card
+    title: Battery Status
+    sort_by_level: "asc"
+    entities:
+      - sensor.motion_basement_stairs_battery_level
+      - sensor.motion_kitchen_battery_level
+      - sensor.motion_parlor_battery_level
+      - sensor.schlage_front_door_battery_level
+      # - sensor.schlage_back_door_battery_level
+      - sensor.sensor_media_battery_level
+      - sensor.sensor_office_battery_level
+      - sensor.backdoor_battery_level
+      - sensor.motion_dining_battery_level
+      

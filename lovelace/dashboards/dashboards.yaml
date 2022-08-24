@@ -6,8 +6,9 @@ lovelace-greenhoue:
   show_in_sidebar: true
   filename: ui-greenhouse.yaml
 
-# lovelace-kit:
-#   mode: yaml
-#   title: Kitchen
-#   show_in_sidebar: true
-#   filename: kit-lovelace.yaml
+lovelace-kit:
+  mode: yaml
+  title: Kitchen
+  icon: mdi:silverware
+  show_in_sidebar: true
+  filename: kit-lovelace.yaml

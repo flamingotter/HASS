@@ -8,5 +8,5 @@ echos:
     - media_player.garage
     - media_player.office
     - media_player.babe_cave
-    - media_player.family_room
+    - media_player.media_room
     - media_player.echo_show

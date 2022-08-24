@@ -1,5 +1,5 @@
 title: Weather
-id: 8
+id: 9
 icon: mdi:sprout
 cards:
 
@@ -13,6 +13,7 @@ cards:
     entities:
       - sensor.moon_phases
       - sensor.szpffqlkc_solar_rad
+      - sensor.szpffqlkc_event_rain
 
   - type: entities
     title: Grow Shelf

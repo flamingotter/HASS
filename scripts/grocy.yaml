@@ -1,0 +1,63 @@
+---
+##############
+#### TAZO ####
+##############
+grocy_add_26:
+  sequence:
+    - service: shell_command.grocy_add_item
+      data:
+        server_ip: !secret grocy_ip
+        grocy_key: !secret grocy_key
+        product_id: 26 #tazo
+        amount: 1
+        
+grocy_consume_26:
+  sequence:
+    - service: shell_command.grocy_consume_item
+      data:
+        server_ip: !secret grocy_ip
+        grocy_key: !secret grocy_key
+        product_id: 26 #tazo
+        amount: 1
+
+################
+#### COFFEE ####
+################
+grocy_add_23:
+  sequence:
+    - service: shell_command.grocy_add_item
+      data:
+        server_ip: !secret grocy_ip
+        grocy_key: !secret grocy_key
+        product_id: 23 #Coffee
+        amount: 1
+        
+grocy_consume_23:
+  sequence:
+    - service: shell_command.grocy_consume_item
+      data:
+        server_ip: !secret grocy_ip
+        grocy_key: !secret grocy_key
+        product_id: 23 #Coffee
+        amount: 1
+
+##############
+#### MILK ####
+##############
+grocy_add_53:
+  sequence:
+    - service: shell_command.grocy_add_item
+      data:
+        server_ip: !secret grocy_ip
+        grocy_key: !secret grocy_key
+        product_id: 53 #Milk
+        amount: 1
+        
+grocy_consume_53:
+  sequence:
+    - service: shell_command.grocy_consume_item
+      data:
+        server_ip: !secret grocy_ip
+        grocy_key: !secret grocy_key
+        product_id: 53 #Milk
+        amount: 1

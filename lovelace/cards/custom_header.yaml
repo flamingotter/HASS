@@ -7,8 +7,3 @@ options_hide: true
 active_tab_color: '#00a1ff'
 chevrons: false
 ####
-exceptions:
-  - conditions:
-      user: mj
-    config:
-      hide_tabs: '8'

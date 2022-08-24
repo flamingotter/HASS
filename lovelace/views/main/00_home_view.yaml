@@ -104,6 +104,10 @@ cards:
       - binary_sensor.lock_frt_batt_lvl
       - input_boolean.trash_reminder
       - input_boolean.feed_pets
+      - entity: sensor.szpffqlkc_event_rain
+        state_filter:
+        - operator: ">"
+          value: 0
     card:
       type: glance
       title: Alerts!

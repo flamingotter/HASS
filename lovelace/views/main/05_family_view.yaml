@@ -1,5 +1,5 @@
 title: Family Room
-id: 4
+id: 5
 icon: mdi:sofa
 cards:
 
@@ -7,12 +7,12 @@ cards:
     title: Media Room
     show_state: false
     entities:
-      - entity: sensor.meida_room_temperature
-      - entity: sensor.meida_room_relative_humidity
-      - entity: binary_sensor.meida_room_motion
+      - entity: sensor.media_room_temperature
+      - entity: sensor.media_room_relative_humidity
+      - entity: binary_sensor.media_room_motion
       - type: divider
-      - entity: media_player.samsung_65
-      - type: divider
+      # - entity: media_player.tv_samsung_bsmt
+      # - type: divider
       - type: custom:slider-entity-row
         entity: light.stair_light
         toggle: true
