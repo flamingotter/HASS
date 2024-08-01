@@ -23,7 +23,7 @@
 * Custom Sensors (D1 Minis, ESP32)
 * Zooz Z-wave devices
 * WLED
-* <a href="[https://amzn.to/4dpzn0G](https://amzn.to/4cbHVal)" target="_blank">Elgado Stream Deck
+* <a href="https://amzn.to/4cbHVal" target="_blank">Elgado Stream Deck
 * <a href="https://amzn.to/4dpzn0G" target="_blank">Ambient Weather WS-2902 WiFi Smart Weather Station
 
 ## Network:
