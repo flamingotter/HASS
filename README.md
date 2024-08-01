@@ -3,7 +3,7 @@
 </h1>
 <h4>
 <a href="https://travis-ci.org/flamingotter/HASS"><img src="https://travis-ci.org/flamingotter/HASS.svg?branch=master"/></a>  <a href="https://github.com/flamingotter/HASS/commits/master"><img src="https://img.shields.io/github/last-commit/flamingotter/HASS.svg?style=plasticr"/></a> 
-![healthchecks.io](https://healthchecks.io/badge/10cd044e-c60d-4bb5-a577-99e234/R7GM_M15-2.svg)
+<a href="https://healthchecks.io/badge/10cd044e-c60d-4bb5-a577-99e234/R7GM_M15-2.svg"</a>
 </h4>
 
 # Hardware:
