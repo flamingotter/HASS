@@ -7,5 +7,27 @@ cards:
     show_state: false
     entities:
       - cover.shuttle_bay
+      - type: divider
+      - sensor.szpffqlkc_temp_2
+      - sensor.szpffqlkc_humidity_2
+      - type: divider
       - light.garage_overhead_light
-      - input_boolean.garage_cabinet_lights
+      - switch.garage_cabinet_lights
+      
+      - type: divider
+      - sensor.poop_robot_waste_drawer  
+      - sensor.poop_robot_litter_level
+      # - sensor.poop_robot_pet_weight
+      
+      - type: divider
+      - switch.garage_heater
+      - type: 'custom:fold-entity-row'
+        padding: 0
+        head:
+          type: section
+          label: Settings
+        group_config:
+          toggle: false
+        entities:
+          - input_number.garage_temp_max
+          - input_number.garage_temp_min

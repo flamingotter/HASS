@@ -1,0 +1,4 @@
+---
+platform: switch
+name: Patio Lights
+entity_id: switch.kasa_smart_plug_4_patio_lights

@@ -8,6 +8,6 @@ notify:
   name: ALL_DEVICES
   platform: group
   services: 
-    - service: mobile_app_mobile_j
-    - service: mobile_app_mobile_m
+    - service: mobile_app_josh_pixel_8_pro
+    - service: mobile_app_mj_pixel_8_pro
 

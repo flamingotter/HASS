@@ -1,0 +1,4 @@
+---
+platform: switch
+name: Fun Tree
+entity_id: switch.fun_tree

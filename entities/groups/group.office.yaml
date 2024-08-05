@@ -3,7 +3,9 @@ office:
   name: Office
   entities:
     - light.office_lamp
+    - light.desk_light
     - light.office_one
     - light.office_two
     - light.office_three
     - light.office_four
+    - light.wled_cloud_main

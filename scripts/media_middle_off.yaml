@@ -1,8 +1,0 @@
----
-media_middle_off:
-  sequence:
-    - service: light.turn_off
-      data: 
-        entity_id:
-          - light.media_two
-          - light.media_three

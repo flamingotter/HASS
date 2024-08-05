@@ -19,9 +19,9 @@ cards:
     style: "ha-card { height: 50%; }"
     card:
       type: calendar
-      initial_view: list
+      initial_view: listWeek
       entities:
-        - calendar.flamingotter_gmail_com
+        - calendar.josh_pratt_fo
         - calendar.mljpratt_gmail_com
         - calendar.family
 
@@ -43,12 +43,23 @@ cards:
       - entity: sensor.szpffqlkc_event_rain
         state_filter:
         - operator: ">"
-          value: 0
+          value: 0.125
+          
+      - entity: sensor.poop_robot_waste_drawer
+        state_filter:
+        - operator: ">"
+          value: 90
+        
+      - entity: sensor.poop_robot_litter_level
+        state_filter:
+        - operator: "<"
+          value: 50
+        
     card:
       type: glance
       title: Alerts!
-    style: |
-      "--paper-item-icon-color": "green"
+    
+  
   - type: horizontal-stack
     view_layout:
       column: 2
@@ -83,15 +94,13 @@ cards:
   - type: weather-forecast
     view_layout:
       column: 2
-    entity: weather.dark_sky
+    entity: weather.pirateweather
 
   - type: custom:mini-graph-card
     view_layout:
       column: 2
     name: Station Temperature
-    line_width: 2
-    font_aize: 75
-    hours_to_show: 24
+    hours_to_show: 48
     points_per_hour: 1
     entities:
     - entity: sensor.szpffqlkc_temp
@@ -100,4 +109,42 @@ cards:
       
     - entity: sensor.szpffqlkc_humidity
       name: Humidity
+      color: blue
       show_state: true
+
+    - entity: sensor.night_day
+      color: gray
+      name: Night
+      show_line: false
+      show_points: false
+      show_legend: false
+      y_axis: secondary
+      aggregate_func: max        
+      smoothing: false
+
+  - type: custom:mini-graph-card
+    view_layout:
+      column: 2
+    name: Network Speed
+    hours_to_show: 48
+    points_per_hour: 1
+    font_size: 75
+    entities:
+    - entity: sensor.speedtest_download
+      name: Download
+      color: green
+      
+    - entity: sensor.speedtest_upload
+      name: Upload
+      color: blue
+      show_state: true
+
+    - entity: sensor.night_day
+      color: gray
+      name: Night
+      show_line: false
+      show_points: false
+      show_legend: false
+      y_axis: secondary
+      aggregate_func: max        
+      smoothing: false

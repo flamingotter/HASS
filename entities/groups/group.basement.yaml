@@ -11,4 +11,5 @@ basement:
     - light.office_three
     - light.office_four
     - input_boolean.occupied_office
-    - input_boolean.onair
+    - light.led_tree
+    - light.wled_cloud_main

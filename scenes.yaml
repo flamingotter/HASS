@@ -2,6 +2,8 @@
   name: Office Normal
   entities:
     light.office_two:
+      min_color_temp_kelvin: 1500
+      max_color_temp_kelvin: 9000
       min_mireds: 111
       max_mireds: 666
       effect_list:
@@ -11,23 +13,27 @@
       supported_color_modes:
       - color_temp
       - hs
+      effect:
       color_mode: color_temp
       brightness: 255
-      color_temp: 222
+      color_temp_kelvin: 5464
+      color_temp: 183
       hs_color:
-      - 26.728
-      - 26.434
+      - 27.827
+      - 13.281
       rgb_color:
       - 255
-      - 217
-      - 187
+      - 236
+      - 221
       xy_color:
-      - 0.394
-      - 0.357
+      - 0.355
+      - 0.343
       friendly_name: Office Two
-      supported_features: 55
+      supported_features: 36
       state: 'on'
     light.office_one:
+      min_color_temp_kelvin: 1500
+      max_color_temp_kelvin: 9000
       min_mireds: 111
       max_mireds: 666
       effect_list:
@@ -37,23 +43,27 @@
       supported_color_modes:
       - color_temp
       - hs
+      effect:
       color_mode: color_temp
       brightness: 255
-      color_temp: 222
+      color_temp_kelvin: 5464
+      color_temp: 183
       hs_color:
-      - 26.728
-      - 26.434
+      - 27.827
+      - 13.281
       rgb_color:
       - 255
-      - 217
-      - 187
+      - 236
+      - 221
       xy_color:
-      - 0.394
-      - 0.357
+      - 0.355
+      - 0.343
       friendly_name: Office One
-      supported_features: 55
+      supported_features: 36
       state: 'on'
     light.office_three:
+      min_color_temp_kelvin: 1500
+      max_color_temp_kelvin: 9000
       min_mireds: 111
       max_mireds: 666
       effect_list:
@@ -63,26 +73,30 @@
       supported_color_modes:
       - color_temp
       - hs
+      effect:
       color_mode: color_temp
       brightness: 255
-      color_temp: 222
+      color_temp_kelvin: 5464
+      color_temp: 183
       hs_color:
-      - 26.728
-      - 26.434
+      - 27.827
+      - 13.281
       rgb_color:
       - 255
-      - 217
-      - 187
+      - 236
+      - 221
       xy_color:
-      - 0.394
-      - 0.357
+      - 0.355
+      - 0.343
       friendly_name: Office Three
-      supported_features: 55
+      supported_features: 36
       state: 'on'
     switch.office_lamp:
       friendly_name: Office Lamp
-      state: 'on'
+      state: 'off'
     light.office_four:
+      min_color_temp_kelvin: 1500
+      max_color_temp_kelvin: 9000
       min_mireds: 111
       max_mireds: 666
       effect_list:
@@ -92,22 +106,35 @@
       supported_color_modes:
       - color_temp
       - hs
+      effect:
       color_mode: color_temp
       brightness: 255
-      color_temp: 221
+      color_temp_kelvin: 5464
+      color_temp: 183
       hs_color:
-      - 26.732
-      - 26.125
+      - 27.827
+      - 13.281
       rgb_color:
       - 255
-      - 218
-      - 188
+      - 236
+      - 221
       xy_color:
-      - 0.392
-      - 0.357
+      - 0.355
+      - 0.343
       friendly_name: Office Four
-      supported_features: 55
+      supported_features: 36
       state: 'on'
+    light.wled_cloud_main:
+      supported_color_modes:
+      - brightness
+      friendly_name: WLED Cloud Main
+      supported_features: 32
+      color_mode: brightness
+      brightness: 13
+      state: 'on'
+  metadata:
+    light.wled_cloud_main:
+      entity_only: true
 - id: '1639243585404'
   name: Office Dim
   entities:
@@ -222,6 +249,8 @@
   name: Office 1 2 4 Off
   entities:
     light.office_two:
+      min_color_temp_kelvin: 1500
+      max_color_temp_kelvin: 9000
       min_mireds: 111
       max_mireds: 666
       effect_list:
@@ -232,12 +261,14 @@
       - color_temp
       - hs
       friendly_name: Office Two
-      supported_features: 55
+      supported_features: 36
       state: 'off'
     switch.office_lamp:
       friendly_name: Office Lamp
       state: 'on'
     light.office_one:
+      min_color_temp_kelvin: 1500
+      max_color_temp_kelvin: 9000
       min_mireds: 111
       max_mireds: 666
       effect_list:
@@ -248,9 +279,11 @@
       - color_temp
       - hs
       friendly_name: Office One
-      supported_features: 55
+      supported_features: 36
       state: 'off'
     light.office_three:
+      min_color_temp_kelvin: 1500
+      max_color_temp_kelvin: 9000
       min_mireds: 111
       max_mireds: 666
       effect_list:
@@ -262,6 +295,7 @@
       - hs
       color_mode: color_temp
       brightness: 255
+      color_temp_kelvin: 4504
       color_temp: 222
       hs_color:
       - 26.728
@@ -274,21 +308,32 @@
       - 0.394
       - 0.357
       friendly_name: Office Three
-      supported_features: 55
+      supported_features: 36
       state: 'on'
     light.office_four:
-      min_mireds: 111
-      max_mireds: 666
+      min_color_temp_kelvin: 2700
+      max_color_temp_kelvin: 6500
+      min_mireds: 153
+      max_mireds: 370
       effect_list:
-      - effect_colorloop
       - effect_pulse
       - effect_stop
       supported_color_modes:
       - color_temp
-      - hs
       friendly_name: Office Four
-      supported_features: 55
+      supported_features: 36
       state: 'off'
+    light.desk_light:
+      supported_color_modes:
+      - onoff
+      color_mode: onoff
+      friendly_name: Desk Light
+      supported_features: 0
+      state: 'on'
+  metadata:
+    light.desk_light:
+      entity_only: true
+  icon: mdi:monitor-account
 - id: '1639243776055'
   name: Office 2 3 Off
   entities:
@@ -952,3 +997,392 @@
       supported_features: 55
       icon: mdi:spotlight-beam
       state: 'on'
+- id: '1708125266092'
+  name: Office Red
+  entities:
+    light.office_lamp:
+      supported_color_modes:
+      - onoff
+      color_mode:
+      friendly_name: Office Lamp
+      supported_features: 0
+      state: 'off'
+    light.wled_cloud:
+      effect_list:
+      - Akemi
+      - Android
+      - Aurora
+      - Black Hole
+      - Blends
+      - Blink
+      - Blink Rainbow
+      - Blobs
+      - Blurz
+      - Bouncing Balls
+      - Bpm
+      - Breathe
+      - Candle
+      - Candle Multi
+      - Chase
+      - Chase 2
+      - Chase 3
+      - Chase Flash
+      - Chase Flash Rnd
+      - Chase Rainbow
+      - Chase Random
+      - Chunchun
+      - Colored Bursts
+      - Colorful
+      - Colorloop
+      - Colortwinkles
+      - Colorwaves
+      - Crazy Bees
+      - DJ Light
+      - DNA
+      - DNA Spiral
+      - Dancing Shadows
+      - Dissolve
+      - Dissolve Rnd
+      - Drift
+      - Drift Rose
+      - Drip
+      - Dynamic
+      - Dynamic Smooth
+      - Fade
+      - Fairy
+      - Fairytwinkle
+      - Fill Noise
+      - Fire 2012
+      - Fire Flicker
+      - Firenoise
+      - Fireworks
+      - Fireworks 1D
+      - Fireworks Starburst
+      - Flow
+      - Flow Stripe
+      - Freqmap
+      - Freqmatrix
+      - Freqpixels
+      - Freqwave
+      - Frizzles
+      - Funky Plank
+      - GEQ
+      - Game Of Life
+      - Ghost Rider
+      - Glitter
+      - Gradient
+      - Gravcenter
+      - Gravcentric
+      - Gravfreq
+      - Gravimeter
+      - Halloween Eyes
+      - Heartbeat
+      - Hiphotic
+      - ICU
+      - Juggle
+      - Juggles
+      - Julia
+      - Lake
+      - Lighthouse
+      - Lightning
+      - Lissajous
+      - Loading
+      - Matripix
+      - Matrix
+      - Metaballs
+      - Meteor
+      - Meteor Smooth
+      - Midnoise
+      - Multi Comet
+      - Noise 1
+      - Noise 2
+      - Noise 3
+      - Noise 4
+      - Noise Pal
+      - Noise2D
+      - Noisefire
+      - Noisemeter
+      - Noisemove
+      - Oscillate
+      - Pacifica
+      - Palette
+      - Percent
+      - Perlin Move
+      - Phased
+      - Phased Noise
+      - Pixels
+      - Pixelwave
+      - Plasma
+      - Plasma Ball
+      - Plasmoid
+      - Polar Lights
+      - Popcorn
+      - Pride 2015
+      - Puddlepeak
+      - Puddles
+      - Pulser
+      - RSVD
+      - RSVD
+      - RSVD
+      - RSVD
+      - RSVD
+      - RSVD
+      - RSVD
+      - RSVD
+      - RSVD
+      - RSVD
+      - RSVD
+      - RSVD
+      - RSVD
+      - Railway
+      - Rain
+      - Rainbow
+      - Rainbow Runner
+      - Random Colors
+      - Ripple
+      - Ripple Peak
+      - Ripple Rainbow
+      - Rocktaves
+      - Running
+      - Running Dual
+      - Saw
+      - Scan
+      - Scan Dual
+      - Scanner
+      - Scanner Dual
+      - Scrolling Text
+      - Sindots
+      - Sine
+      - Sinelon
+      - Sinelon Dual
+      - Sinelon Rainbow
+      - Solid
+      - Solid Glitter
+      - Solid Pattern
+      - Solid Pattern Tri
+      - Spaceships
+      - Sparkle
+      - Sparkle Dark
+      - Sparkle+
+      - Spots
+      - Spots Fade
+      - Squared Swirl
+      - Stream
+      - Stream 2
+      - Strobe
+      - Strobe Mega
+      - Strobe Rainbow
+      - Sun Radiation
+      - Sunrise
+      - Sweep
+      - Sweep Random
+      - Swirl
+      - TV Simulator
+      - Tartan
+      - Tetrix
+      - Theater
+      - Theater Rainbow
+      - Traffic Light
+      - Tri Fade
+      - Tri Wipe
+      - Twinkle
+      - Twinklecat
+      - Twinklefox
+      - Twinkleup
+      - Two Dots
+      - Washing Machine
+      - Waterfall
+      - Waverly
+      - Wavesins
+      - Wipe
+      - Wipe Random
+      supported_color_modes:
+      - rgb
+      effect: Breathe
+      color_mode: rgb
+      brightness: 255
+      hs_color:
+      - 0
+      - 100
+      rgb_color:
+      - 255
+      - 0
+      - 0
+      xy_color:
+      - 0.701
+      - 0.299
+      friendly_name: WLED Cloud
+      supported_features: 36
+      state: 'on'
+    light.office_four:
+      min_color_temp_kelvin: 2700
+      max_color_temp_kelvin: 6500
+      min_mireds: 153
+      max_mireds: 370
+      effect_list:
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      effect:
+      color_mode:
+      brightness:
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      rgb_color:
+      xy_color:
+      friendly_name: Office Four
+      supported_features: 36
+      state: 'off'
+    light.office_one:
+      min_color_temp_kelvin: 1500
+      max_color_temp_kelvin: 9000
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      effect:
+      color_mode: hs
+      brightness: 255
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      - 0
+      - 100
+      rgb_color:
+      - 255
+      - 0
+      - 0
+      xy_color:
+      - 0.701
+      - 0.299
+      friendly_name: Office One
+      supported_features: 36
+      state: 'on'
+    light.office_two:
+      min_color_temp_kelvin: 1500
+      max_color_temp_kelvin: 9000
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      effect:
+      color_mode: hs
+      brightness: 255
+      color_temp_kelvin:
+      color_temp:
+      hs_color:
+      - 0
+      - 100
+      rgb_color:
+      - 255
+      - 0
+      - 0
+      xy_color:
+      - 0.701
+      - 0.299
+      friendly_name: Office Two
+      supported_features: 36
+      state: 'on'
+    light.office_three:
+      min_color_temp_kelvin: 1500
+      max_color_temp_kelvin: 9000
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      friendly_name: Office Three
+      supported_features: 36
+      color_mode: hs
+      brightness: 255
+      hs_color:
+      - 0
+      - 100
+      rgb_color:
+      - 255
+      - 0
+      - 0
+      xy_color:
+      - 0.701
+      - 0.299
+      state: 'on'
+    light.desk_light:
+      supported_color_modes:
+      - onoff
+      color_mode:
+      friendly_name: Desk Light
+      supported_features: 0
+      state: 'off'
+  icon: mdi:alert
+  metadata:
+    light.office_lamp:
+      entity_only: true
+    light.wled_cloud:
+      entity_only: true
+    light.office_four:
+      entity_only: true
+    light.office_one:
+      entity_only: true
+    light.office_two:
+      entity_only: true
+    light.office_three:
+      entity_only: true
+    light.desk_light:
+      entity_only: true
+- id: '1720735932623'
+  name: Bedroom Bright
+  entities:
+    light.bedroom_lamps:
+      min_color_temp_kelvin: 1500
+      max_color_temp_kelvin: 9000
+      min_mireds: 111
+      max_mireds: 666
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      effect:
+      color_mode: color_temp
+      brightness: 255
+      color_temp_kelvin: 4504
+      color_temp: 222
+      hs_color:
+      - 26.728
+      - 26.434
+      rgb_color:
+      - 255
+      - 217
+      - 187
+      xy_color:
+      - 0.394
+      - 0.357
+      entity_id:
+      - light.eugene
+      - light.rapunzel
+      icon: mdi:lightbulb-group
+      friendly_name: Bedroom Lamps
+      supported_features: 36
+      state: 'on'
+  icon: mdi:lamps
+  metadata:
+    light.bedroom_lamps:
+      entity_only: true

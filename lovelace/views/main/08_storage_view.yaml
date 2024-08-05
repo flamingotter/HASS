@@ -9,5 +9,31 @@ cards:
     entities:
       - entity: sensor.storage_room_temperature
       - entity: sensor.storage_room_relative_humidity
-      - entity: binary_sensor.storage_room_motion
+      - entity: binary_sensor.motion_storage_room
       - type: divider
+      - entity: light.storage_lights
+
+  - type: entities
+    show_header_toggle: false
+    title: Freezer Status
+    entities:
+      - sensor.freezer_running
+      - sensor.freezer_running_duration
+      - sensor.bsmt_freezer_electric_consumption_w
+      - sensor.bsmt_freezer_electric_consumption_a
+
+  - type: entities
+    show_header_toggle: false
+    title: Sumps
+    entities:
+      - switch.sump_01
+      - input_boolean.sump01_overload      
+      - type: divider
+      - switch.sump_02
+      - input_boolean.sump02_overload
+
+  - type: entities
+    show_header_toggle: false
+    title: Wet Sensors
+    entities:
+      - binary_sensor.water_leak_sensor_01_water_alarm_water_leak_detected

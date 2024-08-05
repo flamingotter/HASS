@@ -1,0 +1,5 @@
+---
+state_topic: "home/parlor/blinds/blindsCommand"
+unique_id: parlor_blinds
+name: "Parlor Blinds State"
+# value_template: '{{ value_json.mo }}'

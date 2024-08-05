@@ -2,7 +2,7 @@
 platform: template
 sensors:
   door_locks:
-    # friendly_name: Door Locks
+    friendly_name: Doors
     device_class: lock
     value_template: >-
       {{ is_state('lock.schlage_front', 'unlocked')

@@ -1,0 +1,192 @@
+title: Robots
+id: 10
+icon: mdi:robot
+type: custom:vertical-layout
+layout:
+  max_cols: 2
+cards:
+  - type: custom:xiaomi-vacuum-map-card
+    view_layout:
+      column: 1
+    title: Señor Bale
+    preset_name: Live map
+    entity: vacuum.roborock_vacuum_a65
+    card_mod:
+      style: |
+        .tile-wrapper.clickable.ripple.tile-wrapper {
+          background-color: #eeeeee;
+          border-radius: 10px;
+          color: #616161
+        }
+        :host
+          div.controls-wrapper>div.vacuum-controls>div {
+            background-color: #eeeeee;
+            color: #616161
+          }
+          div.controls-wrapper>div.map-controls-wrapper>div>div {
+            background-color: c;
+            color: #4D6173
+          }
+          div.controls-wrapper>div.map-controls-wrapper>div>div>paper-button.map-actions-item.main.clickable.ripple {
+            background-color: #BBCFE1;
+            color: #4D6173
+          }
+          div.controls-wrapper>div.map-controls-wrapper>div>ha-button-menu>div>paper-button {
+            background-color: #2196F3;
+            color: #D7EBFD
+          }
+
+          div.map-zoom-icons {
+            background-color: #D7EBFD;
+            color: #2196F3
+          }
+          div.map-zoom-icons>div {
+            background-color: #2196F3;
+            color: #D7EBFD
+          }
+          div.controls-wrapper>xvmc-icons-wrapper>div>div {
+            background-color: #D7EBFD;
+            color: #4D6173
+          }
+          div.controls-wrapper>div>div>xvmc-dropdown-menu>ha-button-menu>div>paper-button {
+            background-color: #D7EBFD;
+            color: #4D6173
+          }
+          #map-zoomer-overlay>div:nth-child(1)>ha-icon {
+            background-color: #A9A9A9;
+            color: #E5E5E5
+          }
+    map_source:
+      camera: camera.xiaomi_cloud_map_extractor
+      crop:
+        top: '50'
+        bottom: 50
+        left: 50
+        right: 100
+    
+    calibration_source:
+      camera: true
+    map_modes:
+      - template: vacuum_goto
+      - template: vacuum_clean_zone
+      - template: vacuum_clean_segment
+        predefined_selections:
+          - id: 18
+            outline:
+              - - 19400
+                - 18900
+              - - 19400
+                - 26400
+              - - 26000
+                - 26400
+              - - 26000
+                - 18900
+            label:
+              text: Room 18
+              x: 22700
+              y: 22650
+              offset_y: 35
+            icon:
+              name: "mdi:broom"
+              x: 22700
+              y: 22650
+          - id: 16
+            outline:
+              - - 14500
+                - 22900
+              - - 14500
+                - 26450
+              - - 19350
+                - 26450
+              - - 19350
+                - 22900
+            label:
+              text: Room 16
+              x: 16925
+              y: 24675
+              offset_y: 35
+            icon:
+              name: "mdi:broom"
+              x: 16925
+              y: 24675
+          - id: 17
+            outline:
+              - - 10750
+                - 26500
+              - - 10750
+                - 31150
+              - - 19700
+                - 31150
+              - - 19700
+                - 26500
+            label:
+              text: Room 17
+              x: 15225
+              y: 28825
+              offset_y: 35
+            icon:
+              name: "mdi:broom"
+              x: 15225
+              y: 28825
+
+  - type: entities
+    view_layout:
+      column: 2
+    title: Poop Robot
+    entities:
+      - vacuum.poop_robot_litter_box
+      - sensor.poop_robot_waste_drawer
+      - sensor.poop_robot_litter_level
+      - entity: sensor.poop_robot_pet_weight
+        name: Pet weight
+  - type: button
+    view_layout:
+      column: 2
+    name: Manual Cycle
+    show_state: false
+    icon: mdi:emoticon-poop
+    tap_action:
+      action: call-service
+      service: vacuum.start
+      data: 
+        entity_id: vacuum.poop_robot_litter_box
+
+  - type: horizontal-stack
+    view_layout:
+      column: 2
+    cards:
+    - type: button
+      tap_action: 
+        confirmation: 
+          text: Find Josh's Phone?
+        action: call-service
+        service: notify.mobile_app_mobile_j
+        service_data:
+          title: Finding Phone
+          message: Ringing phone
+          data:
+            ttl: 0
+            importance: high
+            priority: high
+            tag: Find
+            channel: alarm_stream
+      name: Find Josh's Phone
+      icon: 'mdi:cellphone-sound'
+  
+    - type: button
+      tap_action: 
+        confirmation: 
+          text: Find MJ's Phone?
+        action: call-service
+        service: notify.mobile_app_mobile_m
+        service_data:
+          title: Finding Phone
+          message: Ringing phone
+          data:
+            ttl: 0
+            importance: high
+            priority: high
+            tag: Find
+            channel: alarm_stream
+      name: Find MJ's Phone
+      icon: 'mdi:cellphone-sound'

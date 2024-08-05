@@ -1,21 +1,21 @@
 ---
 ###what gets displayed
 history:
-  include:
-    domains:
-      - switch
-      - light
-      - media_player
-    entities:
-      - input_select.home_status
-      - input_select.josh_status
-      - input_select.mj_status
-  exclude:
-      entities:
-        - sensor.date
-        - sensor.time
-        - sensor.time_date
-        - sensor.date_time
-        - sensor.time_utc
-        - sensor.yr_symbol
-        - sensor.internet_time
+  # include:
+  #   domains:
+  #     - switch
+  #     - light
+  #     - media_player
+  #   entities:
+  #     - input_select.home_status
+  #     - input_select.josh_status
+  #     - input_select.mj_status
+  # exclude:
+  #     entities:
+  #       - sensor.date
+  #       - sensor.time
+  #       - sensor.time_date
+  #       - sensor.date_time
+  #       - sensor.time_utc
+  #       - sensor.yr_symbol
+  #       - sensor.internet_time

@@ -4,4 +4,3 @@ blinds:
   entities:
     - cover.parlor_blinds
     - cover.dining_room_blinds
-    # - cover.fireplace_blinds

@@ -1,7 +1,0 @@
----
-gh_fan_mode:
-  name: Greenhouse Fan Mode
-  icon: mdi:fan
-  options:
-  - "Normal"
-  - "Germination"

@@ -1,0 +1,8 @@
+---
+platform: template
+sensors:
+  kitchen_thermostat:
+    friendly_name: 'Kitchen Thermostat Set'
+    unique_id: thermo001
+    value_template: >
+      {{ state_attr('climate.kitchen', 'temperature') }}

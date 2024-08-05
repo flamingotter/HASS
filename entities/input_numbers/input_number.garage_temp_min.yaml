@@ -1,0 +1,7 @@
+---
+garage_temp_min:
+  name: Garage Temp Min
+  icon: mdi:thermometer-minus
+  min: 30
+  max: 70
+  step: 1

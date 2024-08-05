@@ -1,7 +1,7 @@
 ---
 lovelace-greenhoue:
   mode: yaml
-  title: Greenhouse
+  title: Grow
   icon: mdi:sprout
   show_in_sidebar: true
   filename: ui-greenhouse.yaml

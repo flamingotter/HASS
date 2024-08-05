@@ -1,5 +1,0 @@
----
-name: outside_garden
-platform: ffmpeg
-# still_image_url: http://10.0.10.99/snap.jpeg
-input: rtsp://admin:password@10.0.10.99/live

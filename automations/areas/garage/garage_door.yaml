@@ -1,9 +1,0 @@
----
-alias: Garage Door
-trigger:
-  - platform: tag
-    tag_id: garage
-action:
-  - service: cover.toggle
-    data: 
-      entity_id: cover.shuttle_bay

@@ -1,0 +1,22 @@
+---
+influxdb:
+  api_version: 2
+  ssl: false
+  host: 10.0.10.11
+  port: 8086
+  token: hatoken
+  organization: 26624f695a43e927
+  bucket: homeassistant
+  tags:
+    source: HomeAssistant
+  tags_attributes:
+    - friendly_name
+  default_measurement: units
+  ignore_attributes:
+    - icon
+  # exclude:    # Customise to fit your needs
+  #   entities:
+  #     - zone.home
+  #   domains:
+  #     - persistent_notification
+  #     - person

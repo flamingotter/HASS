@@ -1,0 +1,9 @@
+---
+platform: template
+sensors:
+  gh_heater_running:
+    friendly_name: "GH Heater Running"
+    unique_id: ghhrt001
+    device_class: running
+    value_template: "{{ states('sensor.kasa_smart_plug_9650_1_current_consumption')|int > 50 }}"
+    

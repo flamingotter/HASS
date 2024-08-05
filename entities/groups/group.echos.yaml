@@ -2,11 +2,11 @@
 echos:
   name: All Echos
   entities:
-    - media_player.kitchen_echo
+    - media_player.counter
     - media_player.bedroom
     - media_player.parlor
     - media_player.garage
-    - media_player.office
+    - media_player.office_dot
     - media_player.babe_cave
     - media_player.media_room
     - media_player.echo_show

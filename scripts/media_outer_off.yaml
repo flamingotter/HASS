@@ -1,8 +1,0 @@
----
-media_outer_off:
-  sequence:
-    - service: light.turn_off
-      data: 
-        entity_id: 
-          - light.media_one
-          - light.media_four

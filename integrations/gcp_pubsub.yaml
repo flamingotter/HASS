@@ -1,8 +1,0 @@
----
-google_pubsub:
-  project_id: tidy-tine-347915
-  topic_name: ha-weather-pubsub
-  credentials_json: tidy-tine-347915-cbbc1a919c24.json
-  filter:
-    include_entity_globs:
-      - sensor.szpffqlkc*

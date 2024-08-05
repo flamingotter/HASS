@@ -19,7 +19,14 @@ cards:
         icon: mdi:dome-light
 
       - type: custom:slider-entity-row
+        toggle: true
         entity: light.spot_light
+
+      # - type: custom:slider-entity-row
+      #   toggle: true
+      #   entity: light.led_tree
+        
+
       - type: custom:rgb-light-card
         entity: light.spot_light
         colors:

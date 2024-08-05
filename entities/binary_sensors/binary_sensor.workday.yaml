@@ -1,4 +1,0 @@
----
-platform: workday
-country: US
-workdays: [mon, tue, wed, thu, fri]

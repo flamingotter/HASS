@@ -7,13 +7,18 @@ lights:
     - light.spot_light
     - light.media_lights
     - light.stair_light
-    - light.hall
+    - light.hall_light
     - light.office_lamp
     - light.office_lights
     - light.kitchen
     - light.garage_overhead_light
     - light.fireplace_light
     - light.deck_lights
-    # - input_boolean.garage_cabinet_lights
-    - input_boolean.vanity_lamps
-    - switch.christmas_tree
+    - light.patio_lights
+    - switch.fun_tree
+    - light.led_tree
+    - light.christmas_tree
+    - light.wled_cloud_main
+    - light.wled_cloud
+    - light.storage_01
+    - light.storage_02

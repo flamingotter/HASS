@@ -12,7 +12,8 @@ views:
   - !include lovelace/views/main/06_office_view.yaml
   - !include lovelace/views/main/07_garage_view.yaml
   - !include lovelace/views/main/08_storage_view.yaml
-  - !include lovelace/views/main/09_grow_view.yaml
-  - !include lovelace/views/main/10_settings_view.yaml
+  # - !include lovelace/views/main/09_grow_view.yaml
+  - !include lovelace/views/main/10_vacuum_view.yaml
+  - !include lovelace/views/main/11_settings_view.yaml
   #
-  #
+  #####################################

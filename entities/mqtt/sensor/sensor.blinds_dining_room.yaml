@@ -1,0 +1,5 @@
+---
+state_topic: "home/dining/blinds/blindsCommand"
+unique_id: dining_blinds
+name: "Dining Room Blinds State"
+# value_template: '{{ value_json.mo }}'

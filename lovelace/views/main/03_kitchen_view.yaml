@@ -16,3 +16,11 @@ cards:
         icon: mdi:wall-sconce-round
       - type: divider
       - entity: cover.dining_room_blinds
+
+  - type: entities
+    show_header_toggle: false
+    title: Deck Lights
+    entities:
+      - light.deck_lights
+      - light.n_deck
+      - light.s_deck

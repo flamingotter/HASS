@@ -1,0 +1,7 @@
+---
+platform: group
+name: Outdoor Lights
+entities:
+  - light.n_deck
+  - light.s_deck
+  - light.patio_lights

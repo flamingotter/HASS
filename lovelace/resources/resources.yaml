@@ -39,3 +39,7 @@
   type: module
 - url: /hacsfiles/lovelace-layout-card/layout-card.js
   type: module
+- url: /hacsfiles/lovelace-xiaomi-vacuum-map-card/xiaomi-vacuum-map-card.js
+  type: module
+- url: /hacsfiles/slider-button-card/slider-button-card.js
+  type: module

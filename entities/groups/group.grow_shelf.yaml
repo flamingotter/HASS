@@ -2,6 +2,8 @@
 grow_shelf:
   name: Grow Shelf
   entities:
-    - switch.grow_light_1
-    - switch.grow_light_2
-    - switch.grow_fan_1
+    - switch.grow_light_01
+    - switch.grow_light_02
+    - switch.grow_light_03
+    - switch.grow_fan_01
+    - switch.plug_6

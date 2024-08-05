@@ -1,0 +1,134 @@
+title: 3D Printer
+id: 4
+icon: mdi:printer-3d
+type: custom:vertical-layout
+layout:
+  max_cols: 2
+cards:
+  ##Column 1
+  - type: picture-entity
+    view_layout:
+      column: 1
+    entity: image.bambu_p1s_camera
+    camera_view: live
+    name: 3D Printer
+    
+  - type: entities
+    title: 3D Printer
+    show_state: false
+    show_header_toggle: false
+    entities:
+      - input_boolean.3dprinter_saftey
+      - input_boolean.3dprinter_power
+      - select.bambu_p1s_printing_speed
+      - light.bambu_p1s_chamber_light
+      - light.office_four
+      - type: divider
+      - sensor.bambu_p1s_current_stage
+      - sensor.bambu_p1s_print_progress
+      - sensor.bambu_p1s_remaining_time
+
+      # - sensor.bambu_p1s_target_bed_temperature
+      # - sensor.bambu_p1s_bed_temperature
+
+      # - sensor.bambu_p1s_nozzle_target_temperature
+      # - sensor.bambu_p1s_nozzle_temperature
+
+  ##Column 2
+  - type: custom:mini-graph-card
+    view_layout:
+      column: 2
+    name: Bed Temp
+    hours_to_show: .5
+    points_per_hour: 120
+    height: 50
+    entities:
+    - entity: sensor.bambu_p1s_target_bed_temperature
+      name: Target
+      color: green
+      
+    - entity: sensor.bambu_p1s_bed_temperature
+      name: Actual
+      color: blue
+      show_state: true
+  
+  - type: custom:mini-graph-card
+    view_layout:
+      column: 2
+    name: Nozzle Temp
+    hours_to_show: .5
+    points_per_hour: 120
+    height: 50
+    entities:
+    - entity: sensor.bambu_p1s_nozzle_target_temperature
+      name: Target
+      color: green
+      
+    - entity: sensor.bambu_p1s_nozzle_temperature
+      name: Actual
+      color: blue
+      show_state: true
+
+  - type: custom:mini-graph-card
+    view_layout:
+      column: 2
+    name: Chamber Temp
+    hours_to_show: .5
+    points_per_hour: 120
+    height: 50
+    entities:
+    - entity: sensor.bambu_p1s_chamber_air_temperature
+      name: Target
+      color: green
+
+  - type: horizontal-stack
+    view_layout:
+      column: 2
+    cards:
+    - type: custom:slider-button-card
+      entity: fan.bambu_p1s_chamber_fan
+      slider:
+        direction: left-right
+        background: gradient
+        use_state_color: true
+        show_track: true
+      icon:
+        tap_action:
+          action: more-info
+      action_button:
+        tap_action:
+          action: toggle
+        mode: custom
+      name: Chamber Fan
+
+    - type: custom:slider-button-card
+      entity: fan.bambu_p1s_cooling_fan
+      slider:
+        direction: left-right
+        background: gradient
+        use_state_color: true
+        show_track: true
+      icon:
+        tap_action:
+          action: more-info
+      action_button:
+        tap_action:
+          action: toggle
+        mode: custom
+      name: Tool Fan
+
+    - type: custom:slider-button-card
+      entity: fan.bambu_p1s_aux_fan
+      slider:
+        direction: left-right
+        background: gradient
+        use_state_color: true
+        show_track: true
+      icon:
+        tap_action:
+          action: more-info
+      action_button:
+        tap_action:
+          action: toggle
+        mode: custom
+      name: Aux Fan

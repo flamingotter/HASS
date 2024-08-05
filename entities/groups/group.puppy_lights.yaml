@@ -1,6 +1,0 @@
----
-puppy_lights:
-  name: Puppy Lights
-  entities:
-    - light.table_lamp
-    - light.fireplace_light

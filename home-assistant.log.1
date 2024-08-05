@@ -1,0 +1,105 @@
+2024-08-01 09:53:36.344 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration hacs which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-01 09:53:36.345 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration wundergroundpws which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-01 09:53:36.345 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration scheduler which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-01 09:53:36.346 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration bambu_lab which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-01 09:53:36.346 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration breaking_changes which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-01 09:53:36.346 ERROR (SyncWorker_0) [homeassistant.loader] The custom integration 'breaking_changes' does not have a version key in the manifest file and was blocked from loading. See https://developers.home-assistant.io/blog/2021/01/29/custom-integration-changes#versions for more details
+2024-08-01 09:53:36.347 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration xiaomi_cloud_map_extractor which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-01 09:53:36.347 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration alexa_media which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-01 09:53:36.347 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration healthchecksio which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-01 09:53:36.348 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration adaptive_lighting which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-01 09:53:36.348 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration pirateweather which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-01 09:53:36.349 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration nodered which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-01 09:53:37.849 WARNING (MainThread) [homeassistant.config] Package homeassistant contains invalid customize
+2024-08-01 09:53:38.108 WARNING (MainThread) [homeassistant.helpers.config_validation] The 'entity_id' option near /config/integrations/../entities/sensors/sensor.kitchen_thermostat_preset_mode.yaml:5 is deprecated, please remove it from your configuration
+2024-08-01 09:53:38.279 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'adaptive_lighting' calls async_forward_entry_setup for integration, adaptive_lighting with title: Office and entry_id: bcc31ca966a109bbbf00abe497488860, which is deprecated and will stop working in Home Assistant 2025.6, await async_forward_entry_setups instead at custom_components/adaptive_lighting/__init__.py, line 69: hass.async_create_task(, please create a bug report at https://github.com/basnijholt/adaptive-lighting/issues
+2024-08-01 09:53:39.970 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'hacs' calls hass.http.register_static_path which is deprecated because it does blocking I/O in the event loop, instead call `await hass.http.async_register_static_paths([StaticPathConfig("/hacsfiles/themes", "/config/themes", True)])`; This function will be removed in 2025.7 at custom_components/hacs/base.py, line 1182: self.hass.http.register_static_path(f"{URL_BASE}/themes", self.hass.config.path("themes")), please create a bug report at https://github.com/hacs/integration/issues
+2024-08-01 09:53:39.985 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'hacs' calls hass.http.register_static_path which is deprecated because it does blocking I/O in the event loop, instead call `await hass.http.async_register_static_paths([StaticPathConfig("/hacsfiles/frontend", "/config/custom_components/hacs/hacs_frontend", False)])`; This function will be removed in 2025.7 at custom_components/hacs/frontend.py, line 54: hass.http.register_static_path(f"{URL_BASE}/frontend", locate_dir(), cache_headers=False), please create a bug report at https://github.com/hacs/integration/issues
+2024-08-01 09:53:40.010 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'hacs' calls hass.http.register_static_path which is deprecated because it does blocking I/O in the event loop, instead call `await hass.http.async_register_static_paths([StaticPathConfig("/hacsfiles/iconset.js", "/config/custom_components/hacs/iconset.js", True)])`; This function will be removed in 2025.7 at custom_components/hacs/frontend.py, line 57: hass.http.register_static_path(, please create a bug report at https://github.com/hacs/integration/issues
+2024-08-01 09:53:40.019 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'hacs' accesses hass.components.frontend. This is deprecated and will stop working in Home Assistant 2024.9, it should be updated to import functions used from frontend directly at custom_components/hacs/frontend.py, line 68: hass.components.frontend.async_register_built_in_panel(, please create a bug report at https://github.com/hacs/integration/issues
+2024-08-01 09:53:40.022 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'hacs' calls hass.http.register_static_path which is deprecated because it does blocking I/O in the event loop, instead call `await hass.http.async_register_static_paths([StaticPathConfig("/hacsfiles", "/config/www/community", False)])`; This function will be removed in 2025.7 at custom_components/hacs/base.py, line 1162: self.hass.http.register_static_path(, please create a bug report at https://github.com/hacs/integration/issues
+2024-08-01 09:53:40.237 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'healthchecksio' calls `async_add_job`, which is deprecated and will be removed in Home Assistant 2025.4; Please review https://developers.home-assistant.io/blog/2024/03/13/deprecate_add_run_job for replacement options at custom_components/healthchecksio/__init__.py, line 76: hass.async_add_job(, please create a bug report at https://github.com/custom-components/healthchecksio/issues
+2024-08-01 09:53:40.417 WARNING (MainThread) [homeassistant.helpers.frame] Detected code that calls async_forward_entry_setup for integration, healthchecksio with title: 2a933a6f-14de-420e-8d5d-353eb08561e9 and entry_id: 01J476RKDXBZ8XD65DCZV9019S, which is deprecated and will stop working in Home Assistant 2025.6, await async_forward_entry_setups instead. Please report this issue.
+Stack (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/usr/src/homeassistant/homeassistant/__main__.py", line 223, in <module>
+    sys.exit(main())
+  File "/usr/src/homeassistant/homeassistant/__main__.py", line 209, in main
+    exit_code = runner.run(runtime_conf)
+  File "/usr/src/homeassistant/homeassistant/runner.py", line 190, in run
+    return loop.run_until_complete(setup_and_run_hass(runtime_config))
+  File "/usr/local/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/local/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/local/lib/python3.12/asyncio/base_events.py", line 1990, in _run_once
+    handle._run()
+  File "/usr/local/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/src/homeassistant/homeassistant/config_entries.py", line 2099, in async_forward_entry_setup
+    report(
+  File "/usr/src/homeassistant/homeassistant/helpers/frame.py", line 151, in report
+    _LOGGER.warning(msg, stack_info=True)
+2024-08-01 09:53:41.067 WARNING (MainThread) [homeassistant.helpers.template] Template variable warning: 'None' has no attribute 'state' when rendering '/local/moon_phases/{{ states.sensor.moon.state }}.png'
+2024-08-01 09:53:42.057 ERROR (MainThread) [homeassistant.components.camera] Error requesting stream: Camera not found
+2024-08-01 09:53:42.110 ERROR (MainThread) [homeassistant.components.number] Error while setting up unifiprotect platform for number
+Traceback (most recent call last):
+  File "/usr/src/homeassistant/homeassistant/helpers/entity_platform.py", line 364, in _async_setup_platform
+    await asyncio.shield(awaitable)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/number.py", line 243, in async_setup_entry
+    async_all_device_entities(
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/entity.py", line 148, in async_all_device_entities
+    _async_device_entities(data, klass, model_type, descs, unadopted_descs)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/entity.py", line 93, in _async_device_entities
+    klass(
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/number.py", line 265, in __init__
+    super().__init__(data, device, description)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/entity.py", line 192, in __init__
+    self._async_update_device_from_protect(device)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/number.py", line 273, in _async_update_device_from_protect
+    self._attr_native_value = self.entity_description.get_ufp_value(self.device)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/uiprotect/utils.py", line 651, in get_top_level_attr
+    value = getattr(obj, attr)
+            ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/uiprotect/data/devices.py", line 1130, in icr_lux_display
+    return LUX_MAPPING_VALUES[10 - self.isp_settings.icr_custom_value]
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: list index out of range
+2024-08-01 09:53:42.411 WARNING (MainThread) [homeassistant.components.sensor] Entity sensor.greenhouse_min_temp (<class 'custom_components.nodered.sensor.NodeRedSensor'>) is using native unit of measurement ''°F'' which is not a valid unit for the device class ('temperature') it is using; expected one of ['°F', 'K', '°C']; Please update your configuration if your entity is manually configured, otherwise create a bug report at https://github.com/zachowj/hass-node-red/issues
+2024-08-01 09:53:42.476 WARNING (MainThread) [homeassistant.components.sensor] Entity sensor.greenhouse_max_temp (<class 'custom_components.nodered.sensor.NodeRedSensor'>) is using native unit of measurement ''°F'' which is not a valid unit for the device class ('temperature') it is using; expected one of ['°F', 'K', '°C']; Please update your configuration if your entity is manually configured, otherwise create a bug report at https://github.com/zachowj/hass-node-red/issues
+2024-08-01 09:53:43.727 WARNING (MainThread) [homeassistant.components.sensor] Entity sensor.konnected_5f0e98_wifi_signal (<class 'homeassistant.components.esphome.sensor.EsphomeSensor'>) is using native unit of measurement '%' which is not a valid unit for the device class ('signal_strength') it is using; expected one of ['dB', 'dBm']; Please update your configuration if your entity is manually configured, otherwise create a bug report at https://github.com/home-assistant/core/issues?q=is%3Aopen+is%3Aissue+label%3A%22integration%3A+esphome%22
+2024-08-01 09:54:19.432 ERROR (MainThread) [homeassistant.helpers.event] Error while processing template: Template<template=({{ states('sensor.kasa_smart_plug_9650_1_current_consumption')|int > 50 }}) renders=2>
+Traceback (most recent call last):
+  File "/usr/src/homeassistant/homeassistant/helpers/template.py", line 604, in async_render
+    render_result = _render_with_context(self.template, compiled, **kwargs)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/helpers/template.py", line 2639, in _render_with_context
+    return template.render(**kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/jinja2/environment.py", line 1304, in render
+    self.environment.handle_exception()
+  File "/usr/local/lib/python3.12/site-packages/jinja2/environment.py", line 939, in handle_exception
+    raise rewrite_traceback_stack(source=source)
+  File "<template>", line 1, in top-level template code
+  File "/usr/src/homeassistant/homeassistant/helpers/template.py", line 2277, in forgiving_int_filter
+    raise_no_default("int", value)
+  File "/usr/src/homeassistant/homeassistant/helpers/template.py", line 1872, in raise_no_default
+    raise ValueError(
+ValueError: Template error: int got invalid input 'unavailable' when rendering template '{{ states('sensor.kasa_smart_plug_9650_1_current_consumption')|int > 50 }}' but no default was specified
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/usr/src/homeassistant/homeassistant/helpers/template.py", line 716, in async_render_to_info
+    render_info._result = self.async_render(  # noqa: SLF001
+                          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/helpers/template.py", line 606, in async_render
+    raise TemplateError(err) from err
+homeassistant.exceptions.TemplateError: ValueError: Template error: int got invalid input 'unavailable' when rendering template '{{ states('sensor.kasa_smart_plug_9650_1_current_consumption')|int > 50 }}' but no default was specified
+2024-08-01 09:54:19.440 ERROR (MainThread) [homeassistant.components.template.template_entity] TemplateError('ValueError: Template error: int got invalid input 'unavailable' when rendering template '{{ states('sensor.kasa_smart_plug_9650_1_current_consumption')|int > 50 }}' but no default was specified') while processing template 'Template<template=({{ states('sensor.kasa_smart_plug_9650_1_current_consumption')|int > 50 }}) renders=4>' for attribute '_state' in entity 'binary_sensor.gh_heater_running'
+2024-08-01 09:54:19.485 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'hacs' accesses hass.helpers.event. This is deprecated and will stop working in Home Assistant 2024.11, it should be updated to import functions used from event directly at custom_components/hacs/base.py, line 630: self.hass.helpers.event.async_track_time_interval(, please create a bug report at https://github.com/hacs/integration/issues
+2024-08-01 09:54:38.656 ERROR (SyncWorker_8) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-01 09:54:38.658 ERROR (SyncWorker_2) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-01 09:55:08.102 WARNING (MainThread) [homeassistant.components.homeassistant] The 'entity_id' option near /config/integrations/../entities/sensors/sensor.kitchen_thermostat_preset_mode.yaml:5 is deprecated, please remove it from your configuration

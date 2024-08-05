@@ -30,6 +30,17 @@ cards:
               {% endif %}
               ;
           }
+      - entity: binary_sensor.backdoor_contact
+        style: |
+          :host {
+            color:
+              {% if is_state(config.entity, "on") %}
+                red
+              {% elif is_state(config.entity, "off") %}
+                green
+              {% endif %}
+              ;
+          }
       - entity: sensor.last_motion_indoors
       - entity: sensor.last_motion_outdoors
 

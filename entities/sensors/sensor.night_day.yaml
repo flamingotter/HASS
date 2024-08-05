@@ -1,0 +1,11 @@
+---
+platform: template
+sensors:
+  night_day:
+    friendly_name: Night
+    value_template: >-
+      {% if is_state('sun.sun', 'above_horizon') %}
+        0
+      {% elif is_state('sun.sun', 'below_horizon') %}
+        1
+      {% endif %}

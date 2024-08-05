@@ -1,5 +1,0 @@
----
-sensor.trash_pickup_day:
-  friendly_name: Trash Pickup Day
-  icon: mdi:calendar-today
-  hidden: true

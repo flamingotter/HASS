@@ -9,6 +9,7 @@ cards:
       - entity: sensor.mbr_temp
       - entity: sensor.mbr_hum
       - entity: sensor.mbr_motion
+      - entity: binary_sensor.withings_in_bed_mj
       - type: divider
       - type: custom:slider-entity-row
         entity: light.bedroom_lamps

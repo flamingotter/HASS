@@ -10,11 +10,17 @@ cards:
     entities:
       - entity: sensor.sensor_office_temp
       - entity: sensor.sensor_office_humidity
-      - entity: binary_sensor.sensor_office_motion
-      - entity: sensor.ble_josh_pix6
+      - entity: binary_sensor.motion_office
+      # - entity: sensor.ble_josh_pix6
       - type: divider
       - entity: light.office_lamp
         icon: mdi:lamp
+      - entity: light.desk_light
+        icon: mdi:desk-lamp
+      - entity: light.wled_cloud_main
+        icon: mdi:cloud
+      - entity: light.wled_cloud
+        icon: mdi:cloud
       - type: custom:slider-entity-row
         entity: light.office_lights
         toggle: true
@@ -86,14 +92,11 @@ cards:
     entities:
       - input_boolean.3dprinter_saftey
       - input_boolean.3dprinter_power
+      - select.bambu_p1s_printing_speed
       - type: divider
-      - camera.octoprint
+      - image.bambu_p1s_camera
       - type: divider
-      # - sensor.octoprint_actual_bed_temp
-      # - sensor.octoprint_target_bed_temp
-      # - sensor.octoprint_actual_tool0_temp
-      # - sensor.octoprint_target_tool0_temp
-      - sensor.octoprint_current_state
-      - sensor.octoprint_job_percentage
-      # - sensor.octoprint_time_remaining
-      # - sensor.octoprint_time_elapsed
+      - sensor.bambu_p1s_current_stage
+      - sensor.bambu_p1s_print_progress
+      - sensor.bambu_p1s_bed_temperature
+      - sensor.bambu_p1s_nozzle_temperature

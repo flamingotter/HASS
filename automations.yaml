@@ -1,4 +1,4 @@
-- id: '1658161846939'
+- id: '1717273577381'
   alias: Reading Mode
   description: ''
   trigger:
@@ -7,7 +7,863 @@
   condition: []
   action:
   - service: input_boolean.toggle
+    metadata: {}
     data: {}
     target:
       entity_id: input_boolean.reading_mode
+  mode: single
+- id: '1717272526539'
+  alias: Media Room Scene
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.media_scene_select
+  condition: []
+  action:
+  - service: script.turn_on
+    data_template:
+      entity_id: script.{{trigger.to_state.state}}
+  mode: single
+- id: '1717271327275'
+  alias: Backdoor Open
+  description: Is the backdoor open?
+  trigger:
+  - platform: state
+    entity_id: binary_sensor.contact_back_door
+    to: 'on'
+    for: 00:03:00
+  condition: []
+  action:
+  - service: notify.all_devices
+    data:
+      message: Back Door is Open!
+      title: Door Open
+  - service: notify.alexa_media
+    data:
+      message: The Back Door is Open!
+      data:
+        type: announce
+      target:
+      - media_player.echo_show
+      - media_player.kitchen_echo
+      - media_player.parlor
+      - maeia_player.bedroom
+      - media_player.babe_cave
+      - media_player.family_room
+      - media_player.garage
+  mode: single
+- id: '1717271382609'
+  alias: Garden Timelapse
+  description: ''
+  trigger:
+  - platform: time_pattern
+    hours: /1
+  condition:
+  - condition: state
+    entity_id: sun.sun
+    state: above_horizon
+  action:
+  - service: camera.snapshot
+    data:
+      entity_id: camera.backyard_n_outside
+      filename: www/tmp/timelapse/snapshot_{{now().strftime('%H:%M-%d%b')}}.jpg
+  mode: single
+- id: '1717271470147'
+  alias: Garage Door
+  description: Open/Close the garage door
+  trigger:
+  - platform: tag
+    tag_id: garage
+  condition: []
+  action:
+  - service: cover.toggle
+    data:
+      entity_id: cover.shuttle_bay
+  mode: single
+- id: '1717274816399'
+  alias: On Air
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.onair
+  condition: []
+  action:
+  - if:
+    - condition: state
+      entity_id: input_boolean.onair
+      state: 'on'
+    then:
+    - service: frontend.set_theme
+      metadata: {}
+      data:
+        name: red
+    else:
+    - service: frontend.set_theme
+      metadata: {}
+      data:
+        name: clear
+  mode: single
+- id: '1717275334743'
+  alias: Trash Reminder
+  description: ''
+  trigger:
+  - platform: time
+    at: '17:00:00'
+  condition:
+  - condition: state
+    entity_id: binary_sensor.trash_day
+    state: 'on'
+  action:
+  - service: input_boolean.turn_on
+    metadata: {}
+    data: {}
+    target:
+      entity_id: input_boolean.trash_reminder
+  mode: single
+- id: '1717275482675'
+  alias: 'Office Scene '
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.office_scene_select
+  condition: []
+  action:
+  - service: scene.turn_on
+    data_template:
+      entity_id: scene.{{trigger.to_state.state}}
+      transition: 2
+  mode: single
+- id: '1717276452552'
+  alias: Bedtime
+  description: ''
+  trigger:
+  - platform: tag
+    tag_id: bedtime_01
+  - platform: state
+    entity_id:
+    - input_boolean.bedtime
+    to: 'on'
+  condition: []
+  action:
+  - if:
+    - condition: state
+      entity_id: input_boolean.alarm_arm_night
+      state: 'off'
+    then:
+    - service: input_boolean.turn_on
+      metadata: {}
+      data: {}
+      target:
+        entity_id:
+        - input_boolean.alarm_arm_night
+        - input_boolean.camera_alerts
+    - service: input_boolean.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id:
+        - input_boolean.reading_mode
+        - input_boolean.motion_lockout
+    - service: lock.lock
+      metadata: {}
+      data: {}
+      target:
+        entity_id: lock.schlage_front
+    - service: light.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id:
+        - light.parlor_lamps
+        - light.front_door_light
+        - light.spot_light
+        - light.media_lights
+        - light.stair_light
+        - light.hall_light
+        - light.office_lamp
+        - light.office_lights
+        - light.kitchen
+        - light.garage_overhead_light
+        - light.fireplace_light
+        - light.deck_lights
+        - light.patio_lights
+        - light.christmas_tree
+        - light.wled_cloud_main
+        - light.wled_cloud
+        - light.storage
+    - service: switch.turn_on
+      metadata: {}
+      data: {}
+      target:
+        entity_id: switch.adaptive_lighting_sleep_mode_mbr
+    - service: input_boolean.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id: input_boolean.bedtime
+    else:
+    - service: media_player.turn_off
+      metadata: {}
+      data: {}
+      target:
+        device_id: 8781654d992a7a4701cbec887fab30d9
+    - service: light.turn_off
+      metadata: {}
+      data:
+        transition: 2
+      target:
+        entity_id:
+        - light.eugene
+        - light.rapunzel
+        - light.wled_bed
+        - light.wled_node_mbr
+    - service: media_player.play_media
+      metadata: {}
+      data:
+        media_content_id: bedtime
+        media_content_type: routine
+      target:
+        entity_id: media_player.bedroom
+    - service: input_boolean.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id: input_boolean.bedtime
+  mode: single
+- id: '1720447716098'
+  alias: Set Theme
+  description: Set theme base on sun.sun state
+  trigger:
+  - platform: homeassistant
+    event: start
+  - platform: state
+    entity_id:
+    - sun.sun
+    to: above_horizon
+  - platform: state
+    entity_id:
+    - sun.sun
+    to: below_horizon
+  condition: []
+  action:
+  - if:
+    - condition: state
+      entity_id: sun.sun
+      state: above_horizon
+    then:
+    - service: frontend.set_theme
+      metadata: {}
+      data:
+        name: clear
+    else:
+    - service: frontend.set_theme
+      metadata: {}
+      data:
+        name: clear-dark-vibrant
+  mode: single
+- id: '1720737172368'
+  alias: MBR Wakeup
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.wake_up
+    to: 'on'
+  condition: []
+  action:
+  - service: switch.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.adaptive_lighting_sleep_mode_mbr
+  - service: light.turn_on
+    metadata: {}
+    data:
+      transition: 300
+      brightness_pct: 100
+    target:
+      entity_id: light.bedroom_lamps
+  - service: input_boolean.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: input_boolean.wake_up
+  mode: single
+- id: '1721330692346'
+  alias: office AL test
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.test
+  condition: []
+  action:
+  - service: switch.turn_off
+    metadata: {}
+    data: {}
+    target:
+      entity_id: switch.adaptive_lighting_sleep_mode_office
+  - service: light.turn_on
+    metadata: {}
+    data:
+      transition: 300
+      brightness_pct: 80
+    target:
+      entity_id: light.office_lights
+  mode: single
+- id: '1722616326485'
+  alias: Garden Timelapse
+  description: ''
+  trigger:
+  - platform: time_pattern
+    hours: '1'
+  condition:
+  - condition: state
+    entity_id: sun.sun
+    state: above_horizon
+  action:
+  - service: camera.snapshot
+    metadata: {}
+    data:
+      filename: www/tmp/timelapse/snapshot_{{now().strftime('%H:%M-%d%b')}}.jpg
+    target:
+      entity_id: camera.backyard_n_outside
+  mode: single
+- id: '1722617998122'
+  alias: Low Battery Notifications & Actions
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: input_button.check_batteries
+    id: t0
+  - platform: time
+    at: '17:00:00'
+    id: t1
+  condition:
+  - condition: or
+    conditions:
+    - condition: and
+      conditions:
+      - condition: trigger
+        id: t0
+      - condition: template
+        value_template: '{{ include_button == ''enable_button_trigger'' }}'
+    - condition: and
+      conditions:
+      - condition: trigger
+        id: t1
+      - condition: template
+        value_template: '{{ include_time == ''time_enabled'' }}'
+  - condition: or
+    conditions:
+    - condition: template
+      value_template: '{{ include_time == ''time_disabled'' }}'
+    - condition: and
+      conditions:
+      - condition: time
+        weekday:
+        - mon
+        - tue
+        - wed
+        - thu
+        - fri
+        - sat
+        - sun
+      - condition: template
+        value_template: '{{ include_time == ''time_enabled'' }}'
+    - condition: trigger
+      id: t0
+  - condition: and
+    conditions: []
+  action:
+  - choose:
+    - alias: Perform the custom actions
+      conditions:
+      - condition: template
+        value_template: '{{ include_custom_actions == ''enable_custom_actions'' }}'
+      sequence: []
+  - choose:
+    - alias: Use the easy notify options
+      conditions:
+      - condition: template
+        value_template: '{{ (include_easy_notify == ''enable_easy_notify'') or (include_easy_notify
+          == ''enable_easy_okay_notify'') }}'
+      - condition: template
+        value_template: '{{ notify_device | length > 0 }}'
+      sequence:
+      - alias: Send a notification to each device
+        repeat:
+          for_each:
+          - de59f44bd04cf3c8c7ba5ab30d27f57f
+          sequence:
+          - choose:
+            - alias: Sensors have been found
+              conditions:
+              - condition: template
+                value_template: '{{ easy_notify_message != '''' }}'
+              sequence:
+              - choose:
+                - alias: Easy notify with no action button
+                  conditions:
+                  - condition: template
+                    value_template: '{{ notify_action_buttons == ''disabled_notify_action_buttons''
+                      }}'
+                  sequence:
+                  - service: notify.mobile_app_{{ device_attr(repeat.item, 'name')
+                      | slugify }}
+                    data:
+                      title: Low Battery Notification
+                      message: '{{easy_notify_message}}'
+                      data: '{{ device_message_data }}'
+                - alias: Easy notify with action button
+                  conditions:
+                  - condition: template
+                    value_template: '{{ notify_action_buttons != ''disabled_notify_action_buttons''
+                      }}'
+                  sequence:
+                  - service: notify.mobile_app_{{ device_attr(repeat.item, 'name')
+                      | slugify }}
+                    data:
+                      title: Low Battery Notification
+                      message: '{{easy_notify_message}}'
+                      data: '{{ device_message_data_action_button }}'
+            - alias: No sensors have been found
+              conditions:
+              - condition: template
+                value_template: '{{ easy_notify_message == '''' }}'
+              - condition: template
+                value_template: '{{ include_easy_notify == ''enable_easy_okay_notify''
+                  }}'
+              sequence:
+              - service: notify.mobile_app_{{ device_attr(repeat.item, 'name') | slugify
+                  }}
+                data:
+                  title: Low Battery Notification
+                  message: YES! All batteries are okay :)
+                  data: '{{ device_message_data }}'
+  - choose:
+    - alias: Use the easy notify persistent notification options
+      conditions:
+      - condition: template
+        value_template: '{{ (include_persistent_notification == ''enable_persistent_notification'')
+          or (include_persistent_notification == ''enable_persistent_okay_notification'')
+          }}'
+      sequence:
+      - choose:
+        - alias: Sensors have been found
+          conditions:
+          - condition: template
+            value_template: '{{ easy_notify_message != '''' }}'
+          sequence:
+          - service: persistent_notification.create
+            data:
+              title: "\U0001FAAB {{notify_title}}"
+              message: '{{easy_notify_message}}'
+        - alias: No sensors have been found
+          conditions:
+          - condition: template
+            value_template: '{{ easy_notify_message == '''' }}'
+          - condition: template
+            value_template: '{{ include_persistent_notification == ''enable_persistent_okay_notification''
+              }}'
+          sequence:
+          - service: persistent_notification.create
+            data:
+              title: "\U0001FAAB {{notify_title}}"
+              message: YES! All batteries are okay :)
+  - choose:
+    - alias: Check if the To-Do action button is enabled
+      conditions:
+      - condition: template
+        value_template: '{{ (include_easy_notify == ''enable_easy_notify'') or (include_easy_notify
+          == ''enable_easy_okay_notify'') }}'
+      - condition: template
+        value_template: '{{(notify_action_buttons == ''enable_to_do_list_button'')
+          or (notify_action_buttons == ''enable_to_do_list_button_and_confirmation'')}}'
+      - condition: template
+        value_template: '{{ notify_device | length > 0 }}'
+      sequence:
+      - alias: Wait for a response from the action buttons
+        wait_for_trigger:
+        - platform: event
+          event_type: mobile_app_notification_action
+          event_data:
+            action: '{{ action_button_to_do }}'
+        - platform: event
+          event_type: mobile_app_notification_action
+          event_data:
+            action: '{{ action_button_cancel }}'
+      - choose:
+        - alias: Check if confirmation message is disabled
+          conditions:
+          - condition: template
+            value_template: '{{ notify_action_buttons == ''enable_to_do_list_button''
+              }}'
+          sequence:
+          - if:
+            - alias: Confirmation from the action buttons
+              condition: template
+              value_template: '{{ wait.trigger.idx is defined }}'
+            then:
+            - alias: Perform the chosen actions
+              choose:
+              - conditions:
+                - condition: template
+                  value_template: '{{ wait.trigger.event.data.action == action_button_to_do
+                    }}'
+                sequence:
+                - alias: Add task to To-Do list
+                  service: todo.add_item
+                  metadata: {}
+                  data:
+                    item: Batteries To Be Replaced
+                    description: '{{easy_notify_message}}'
+                  target:
+                    entity_id: []
+              - conditions:
+                - condition: template
+                  value_template: '{{ wait.trigger.event.data.action == action_button_cancel
+                    }}'
+                sequence:
+                - stop: Stop the automation
+        - alias: Check if confirmation message is enabled
+          conditions:
+          - condition: template
+            value_template: '{{ notify_action_buttons == ''enable_to_do_list_button_and_confirmation''
+              }}'
+          sequence:
+          - if:
+            - alias: Confirmation from the action buttons
+              condition: template
+              value_template: '{{ wait.trigger.idx is defined }}'
+            then:
+            - alias: Perform the chosen actions
+              choose:
+              - conditions:
+                - condition: template
+                  value_template: '{{ wait.trigger.event.data.action == action_button_to_do
+                    }}'
+                sequence:
+                - alias: Add task to To-Do list
+                  service: todo.add_item
+                  metadata: {}
+                  data:
+                    item: Batteries To Be Replaced
+                    description: '{{easy_notify_message}}'
+                  target:
+                    entity_id: []
+                - alias: Send a notification to each device
+                  repeat:
+                    for_each:
+                    - de59f44bd04cf3c8c7ba5ab30d27f57f
+                    sequence:
+                    - service: notify.mobile_app_{{ device_attr(repeat.item, 'name')
+                        | slugify }}
+                      data:
+                        title: Low Battery Confirmation
+                        message: Your low batteries have been added to your To-Do
+                          list
+                        data: '{{ device_confirmation_message_data }}'
+              - conditions:
+                - condition: template
+                  value_template: '{{ wait.trigger.event.data.action == action_button_cancel
+                    }}'
+                sequence:
+                - alias: Send a notification to each device
+                  repeat:
+                    for_each:
+                    - de59f44bd04cf3c8c7ba5ab30d27f57f
+                    sequence:
+                    - service: notify.mobile_app_{{ device_attr(repeat.item, 'name')
+                        | slugify }}
+                      data:
+                        title: Low Battery Confirmation
+                        message: Cancelled - Nothing was added to your To-Do list
+                        data: '{{ device_message_data }}'
+  mode: restart
+  max_exceeded: silent
+  variables:
+    include_button: enable_button_trigger
+    button_entity: input_button.check_batteries
+    include_time: time_enabled
+    time: '17:00:00'
+    weekday_options:
+    - mon
+    - tue
+    - wed
+    - thu
+    - fri
+    - sat
+    - sun
+    battery_level: 20
+    exclude_sensors:
+      entity_id: []
+    custom_group:
+      entity_id: []
+    custom_group_battery_level: 20
+    include_easy_notify: enable_easy_notify
+    include_persistent_notification: enable_persistent_notification
+    sensor_selection: enable_all_sensors
+    notify_device:
+    - de59f44bd04cf3c8c7ba5ab30d27f57f
+    notify_title: Low Battery Notification
+    notify_message: all_sensors
+    notify_okay_message: YES! All batteries are okay :)
+    notify_interruption_level: active
+    notify_data: []
+    notify_channel: []
+    notify_action_buttons: disabled_notify_action_buttons
+    to_do_list: []
+    to_do_task_title: Batteries To Be Replaced
+    action_button_to_do: Add To To-Do List!
+    action_button_cancel: Cancel
+    action_button_confirmation_title: Low Battery Confirmation
+    action_button_confirmation_message: Your low batteries have been added to your
+      To-Do list
+    cancel_action_button_confirmation_message: Cancelled - Nothing was added to your
+      To-Do list
+    include_custom_actions: disabled_custom_actions
+    global_conditions: []
+    device_message_data: "{% set message = namespace(data={}) %} {% if notify_interruption_level
+      in ['active', 'critical', 'time-sensitive', 'passive'] %}\n  {% set message.data
+      = dict(message.data, **{ 'push': {'interruption-level': notify_interruption_level
+      }}) %}\n{% endif %} {% if 'high_priority' in notify_data %}\n  {% set message.data
+      = dict(message.data, **{ 'ttl': 0, 'priority': 'high' }) %}\n{% endif %} {%
+      if 'channel' in notify_data %}\n  {% set message.data = dict(message.data, **{
+      'channel': notify_channel }) %}\n{% endif %} {% if 'sticky' in notify_data %}\n
+      \ {% set message.data = dict(message.data, **{ 'sticky': \"true\" }) %}\n{%
+      endif %} {{ message.data }}"
+    device_message_data_action_button: "{% set message = namespace(data={}) %} {%
+      if notify_interruption_level in ['active', 'critical', 'time-sensitive', 'passive']
+      %}\n  {% set message.data = dict(message.data, **{ 'push': {'interruption-level':
+      notify_interruption_level }}) %}\n{% endif %} {% if 'high_priority' in notify_data
+      %}\n  {% set message.data = dict(message.data, **{ 'ttl': 0, 'priority': 'high'
+      }) %}\n{% endif %} {% if 'channel' in notify_data %}\n  {% set message.data
+      = dict(message.data, **{ 'channel': notify_channel }) %}\n{% endif %} {% if
+      'sticky' in notify_data %}\n  {% set message.data = dict(message.data, **{ 'sticky':
+      \"true\" }) %}\n{% endif %} {% set actions = [\n  {'action': action_button_to_do,
+      'title': action_button_to_do},\n  {'action': action_button_cancel, 'title':
+      action_button_cancel}\n] %}\n  {% set message.data = dict(message.data, **{
+      'actions': actions }) %}\n{{ message.data }}"
+    device_confirmation_message_data: "{% set message = namespace(data={}) %} {% if
+      notify_interruption_level in ['active', 'critical', 'time-sensitive', 'passive']
+      %}\n  {% set message.data = dict(message.data, **{ 'push': {'interruption-level':
+      notify_interruption_level }}) %}\n{% endif %} {% if 'high_priority' in notify_data
+      %}\n  {% set message.data = dict(message.data, **{ 'ttl': 0, 'priority': 'high'
+      }) %}\n{% endif %} {% if 'channel' in notify_data %}\n  {% set message.data
+      = dict(message.data, **{ 'channel': notify_channel }) %}\n{% endif %} {% if
+      'sticky' in notify_data %}\n  {% set message.data = dict(message.data, **{ 'sticky':
+      \"true\" }) %}\n{% endif %}\n  {% set message.data = dict(message.data, **{
+      'url': \"/todo?entity_id=\" ~ to_do_list, 'clickAction': \"/todo?entity_id=\"
+      ~ to_do_list }) %}\n{{ message.data }}"
+    all_sensors: "{% set low_battery = namespace(sensors=[]) %} {% for state in states.sensor
+      | rejectattr('attributes.device_class', 'undefined') | selectattr('attributes.device_class',
+      '==', 'battery') %}\n  {% if 0 <= state.state | int(-1) <= battery_level | int
+      and not state.entity_id in exclude_sensors.entity_id %}\n    {% set low_battery.sensors
+      = low_battery.sensors + [state.name ~ ' @ ' ~ state.state ~ '%'] %}\n  {% endif
+      %}\n{% endfor %} {% for state in states.binary_sensor | rejectattr('attributes.device_class',
+      'undefined') | selectattr('attributes.device_class', '==', 'battery') | selectattr('state',
+      'in', ['on', 'low']) %}\n  {% if not state.entity_id in exclude_sensors.entity_id
+      %}\n    {% set low_battery.sensors = low_battery.sensors + [state.name ~ ' is
+      low' ~ '!'] %}\n  {% endif %}\n{% endfor %} {% for state in states.sensor |
+      rejectattr('attributes.device_class', 'undefined') | selectattr('attributes.device_class',
+      '==', 'battery') %}\n  {% if \"unavailable\" in state | string and not state.entity_id
+      in exclude_sensors.entity_id %}\n    {% set low_battery.sensors = low_battery.sensors
+      + [state.name ~ ' is ' ~ state.state ~ '!'] %}\n  {% endif %}\n{% endfor %}
+      {% for state in states.binary_sensor | rejectattr('attributes.device_class',
+      'undefined') | selectattr('attributes.device_class', '==', 'battery') | selectattr('state',
+      'in', 'unavailable') %}\n  {% if not state.entity_id in exclude_sensors.entity_id
+      %}\n    {% set low_battery.sensors = low_battery.sensors + [state.name ~ ' is
+      ' ~ state.state ~ '!'] %}\n  {% endif %}\n{% endfor %} {{low_battery.sensors
+      | sort(attribute='battery_level') | join(', ')}}"
+    sensors: "{% set low_battery = namespace(sensors=[]) %} {% for state in states.sensor
+      | rejectattr('attributes.device_class', 'undefined') | selectattr('attributes.device_class',
+      '==', 'battery') %}\n  {% if 0 <= state.state | int(-1) <= battery_level | int
+      and not state.entity_id in exclude_sensors.entity_id %}\n    {% set low_battery.sensors
+      = low_battery.sensors + [state.name ~ ' @ ' ~ state.state ~ '%'] %}\n  {% endif
+      %}\n{% endfor %} {% for state in states.binary_sensor | rejectattr('attributes.device_class',
+      'undefined') | selectattr('attributes.device_class', '==', 'battery') | selectattr('state',
+      'in', ['on', 'low']) %}\n  {% if not state.entity_id in exclude_sensors.entity_id
+      %}\n    {% set low_battery.sensors = low_battery.sensors + [state.name ~ ' is
+      low' ~ '!'] %}\n  {% endif %}\n{% endfor %} {{low_battery.sensors |sort(attribute='battery_level')
+      | join(', ')}}"
+    unavailable_sensors: "{% set low_battery = namespace(sensors=[]) %} {% for state
+      in states.sensor | rejectattr('attributes.device_class', 'undefined') | selectattr('attributes.device_class',
+      '==', 'battery') %}\n  {% if \"unavailable\" in state | string and not state.entity_id
+      in exclude_sensors.entity_id %}\n    {% set low_battery.sensors = low_battery.sensors
+      + [state.name ~ ' is ' ~ state.state ~ '!'] %}\n  {% endif %}\n{% endfor %}
+      {% for state in states.binary_sensor | rejectattr('attributes.device_class',
+      'undefined') | selectattr('attributes.device_class', '==', 'battery') | selectattr('state',
+      'in', 'unavailable') %}\n  {% if not state.entity_id in exclude_sensors.entity_id
+      %}\n    {% set low_battery.sensors = low_battery.sensors + [state.name ~ ' is
+      ' ~ state.state ~ '!'] %}\n  {% endif %}\n{% endfor %} {{low_battery.sensors
+      |sort(attribute='battery_level') | join(', ')}}"
+    sensors_names: "{% set low_battery = namespace(sensors=[]) %} {% for state in
+      states.sensor | rejectattr('attributes.device_class', 'undefined') | selectattr('attributes.device_class',
+      '==', 'battery') %}\n  {% if 0 <= state.state | int(-1) <= battery_level | int
+      and not state.entity_id in exclude_sensors.entity_id %}\n    {% set low_battery.sensors
+      = low_battery.sensors + [state.name] %}\n  {% endif %}\n{% endfor %} {% for
+      state in states.binary_sensor | rejectattr('attributes.device_class', 'undefined')
+      | selectattr('attributes.device_class', '==', 'battery') | selectattr('state',
+      'in', ['on', 'low']) %}\n  {% if not state.entity_id in exclude_sensors.entity_id
+      %}\n    {% set low_battery.sensors = low_battery.sensors + [state.name] %}\n
+      \ {% endif %}\n{% endfor %} {{low_battery.sensors | sort(attribute='battery_level')
+      | join(', ')}}"
+    unavailable_sensors_names: "{% set low_battery = namespace(sensors=[]) %} {% for
+      state in states.sensor | rejectattr('attributes.device_class', 'undefined')
+      | selectattr('attributes.device_class', '==', 'battery') %}\n  {% if \"unavailable\"
+      in state | string and not state.entity_id in exclude_sensors.entity_id %}\n
+      \   {% set low_battery.sensors = low_battery.sensors + [state.name] %}\n  {%
+      endif %}\n{% endfor %} {% for state in states.binary_sensor | rejectattr('attributes.device_class',
+      'undefined') | selectattr('attributes.device_class', '==', 'battery') | selectattr('state',
+      'in', 'unavailable') %}\n  {% if not state.entity_id in exclude_sensors.entity_id
+      %}\n    {% set low_battery.sensors = low_battery.sensors + [state.name] %}\n
+      \ {% endif %}\n{% endfor %} {{low_battery.sensors |sort(attribute='battery_level')
+      | join(', ')}}"
+    all_sensors_custom_group: "{% set low_battery = namespace(sensors=[]) %} {% for
+      state in states.sensor | rejectattr('attributes.device_class', 'undefined')
+      | selectattr('attributes.device_class', '==', 'battery') %}\n  {% if 0 <= state.state
+      | int(-1) <= custom_group_battery_level | int and state.entity_id in custom_group.entity_id
+      %}\n    {% set low_battery.sensors = low_battery.sensors + [state.name ~ ' @
+      ' ~ state.state ~ '%'] %}\n  {% endif %}\n{% endfor %} {% for state in states.binary_sensor
+      | rejectattr('attributes.device_class', 'undefined') | selectattr('attributes.device_class',
+      '==', 'battery') | selectattr('state', 'in', ['on', 'low']) %}\n  {% if state.entity_id
+      in custom_group.entity_id %}\n    {% set low_battery.sensors = low_battery.sensors
+      + [state.name ~ ' is low' ~ '!'] %}\n  {% endif %}\n{% endfor %} {% for state
+      in states.sensor | rejectattr('attributes.device_class', 'undefined') | selectattr('attributes.device_class',
+      '==', 'battery') %}\n  {% if \"unavailable\" in state | string and state.entity_id
+      in custom_group.entity_id %}\n    {% set low_battery.sensors = low_battery.sensors
+      + [state.name ~ ' is ' ~ state.state ~ '!'] %}\n  {% endif %}\n{% endfor %}
+      {% for state in states.binary_sensor | rejectattr('attributes.device_class',
+      'undefined') | selectattr('attributes.device_class', '==', 'battery') | selectattr('state',
+      'in', 'unavailable') %}\n  {% if state.entity_id in custom_group.entity_id %}\n
+      \   {% set low_battery.sensors = low_battery.sensors + [state.name ~ ' is '
+      ~ state.state ~ '!'] %}\n  {% endif %}\n{% endfor %} {{low_battery.sensors |
+      sort(attribute='custom_group_battery_level') | join(', ')}}"
+    sensors_custom_group: "{% set low_battery = namespace(sensors=[]) %} {% for state
+      in states.sensor | rejectattr('attributes.device_class', 'undefined') | selectattr('attributes.device_class',
+      '==', 'battery') %}\n  {% if 0 <= state.state | int(-1) <= custom_group_battery_level
+      | int and state.entity_id in custom_group.entity_id %}\n    {% set low_battery.sensors
+      = low_battery.sensors + [state.name ~ ' @ ' ~ state.state ~ '%'] %}\n  {% endif
+      %}\n{% endfor %} {% for state in states.binary_sensor | rejectattr('attributes.device_class',
+      'undefined') | selectattr('attributes.device_class', '==', 'battery') | selectattr('state',
+      'in', ['on', 'low']) %}\n  {% if state.entity_id in custom_group.entity_id %}\n
+      \   {% set low_battery.sensors = low_battery.sensors + [state.name ~ ' is low'
+      ~ '!'] %}\n  {% endif %}\n{% endfor %} {{low_battery.sensors |sort(attribute='custom_group_battery_level')
+      | join(', ')}}"
+    unavailable_sensors_custom_group: "{% set low_battery = namespace(sensors=[])
+      %} {% for state in states.sensor | rejectattr('attributes.device_class', 'undefined')
+      | selectattr('attributes.device_class', '==', 'battery') %}\n  {% if \"unavailable\"
+      in state | string and state.entity_id in custom_group.entity_id %}\n    {% set
+      low_battery.sensors = low_battery.sensors + [state.name ~ ' is ' ~ state.state
+      ~ '!'] %}\n  {% endif %}\n{% endfor %} {% for state in states.binary_sensor
+      | rejectattr('attributes.device_class', 'undefined') | selectattr('attributes.device_class',
+      '==', 'battery') | selectattr('state', 'in', 'unavailable') %}\n  {% if state.entity_id
+      in custom_group.entity_id %}\n    {% set low_battery.sensors = low_battery.sensors
+      + [state.name ~ ' is ' ~ state.state ~ '!'] %}\n  {% endif %}\n{% endfor %}
+      {{low_battery.sensors |sort(attribute='custom_group_battery_level') | join(',
+      ')}}"
+    sensors_names_custom_group: "{% set low_battery = namespace(sensors=[]) %} {%
+      for state in states.sensor | rejectattr('attributes.device_class', 'undefined')
+      | selectattr('attributes.device_class', '==', 'battery') %}\n  {% if 0 <= state.state
+      | int(-1) <= custom_group_battery_level | int and state.entity_id in custom_group.entity_id
+      %}\n    {% set low_battery.sensors = low_battery.sensors + [state.name] %}\n
+      \ {% endif %}\n{% endfor %} {% for state in states.binary_sensor | rejectattr('attributes.device_class',
+      'undefined') | selectattr('attributes.device_class', '==', 'battery') | selectattr('state',
+      'in', ['on', 'low']) %}\n  {% if state.entity_id in custom_group.entity_id %}\n
+      \   {% set low_battery.sensors = low_battery.sensors + [state.name] %}\n  {%
+      endif %}\n{% endfor %} {{low_battery.sensors | sort(attribute='custom_group_battery_level')
+      | join(', ')}}"
+    unavailable_sensors_names_custom_group: "{% set low_battery = namespace(sensors=[])
+      %} {% for state in states.sensor | rejectattr('attributes.device_class', 'undefined')
+      | selectattr('attributes.device_class', '==', 'battery') %}\n  {% if \"unavailable\"
+      in state | string and state.entity_id in custom_group.entity_id %}\n    {% set
+      low_battery.sensors = low_battery.sensors + [state.name] %}\n  {% endif %}\n{%
+      endfor %} {% for state in states.binary_sensor | rejectattr('attributes.device_class',
+      'undefined') | selectattr('attributes.device_class', '==', 'battery') | selectattr('state',
+      'in', 'unavailable') %}\n  {% if state.entity_id in custom_group.entity_id %}\n
+      \   {% set low_battery.sensors = low_battery.sensors + [state.name] %}\n  {%
+      endif %}\n{% endfor %} {{low_battery.sensors |sort(attribute='custom_group_battery_level')
+      | join(', ')}}"
+    easy_notify_message: "{% set low_battery = namespace(sensors=[]) %} {% if sensor_selection
+      == 'enable_battery_sensors_custom_group' and notify_message == 'all_sensors'
+      %}\n  {{all_sensors_custom_group|replace(', ', '\\n')}}\n{% elif sensor_selection
+      == 'enable_battery_sensors_custom_group' and notify_message == 'sensors'%}\n
+      \ {{sensors_custom_group|replace(', ', '\\n')}}\n{% elif sensor_selection ==
+      'enable_battery_sensors_custom_group' and notify_message == 'unavailable_sensors'%}\n
+      \ {{unavailable_sensors_custom_group|replace(', ', '\\n')}}\n{% elif sensor_selection
+      == 'enable_all_sensors' and notify_message == 'all_sensors' %}\n  {{all_sensors|replace(',
+      ', '\\n')}}\n{% elif sensor_selection == 'enable_all_sensors' and notify_message
+      == 'sensors'%}\n  {{sensors|replace(', ', '\\n')}}\n{% elif sensor_selection
+      == 'enable_all_sensors' and notify_message == 'unavailable_sensors'%}\n  {{unavailable_sensors|replace(',
+      ', '\\n')}}\n{% elif sensor_selection == 'enable_all_and_custom_group_sensors'
+      and notify_message == 'all_sensors' %}\n  {{all_sensors|replace(', ', '\\n')}}{{'\\n'}}{{all_sensors_custom_group|replace(',
+      ', '\\n')}}\n{% elif sensor_selection == 'enable_all_and_custom_group_sensors'
+      and notify_message == 'sensors'%}\n  {{sensors|replace(', ', '\\n')}}{{'\\n'}}{{sensors_custom_group|replace(',
+      ', '\\n')}}\n{% elif sensor_selection == 'enable_all_and_custom_group_sensors'
+      and notify_message == 'unavailable_sensors'%}\n  {{unavailable_sensors|replace(',
+      ', '\\n')}}{{'\\n'}}{{unavailable_sensors_custom_group|replace(', ', '\\n')}}\n{%
+      else %}\n  []\n{% endif %}"
+- id: '1722628663642'
+  alias: Motion Parlor
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - binary_sensor.motion_parlor
+    to: 'on'
+  condition:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: input_select.home_status
+      state: Disarmed
+    - condition: state
+      entity_id: input_boolean.motion_lockout
+      state: 'off'
+    - condition: state
+      entity_id: light.parlor_lamps
+      state: 'off'
+    - condition: state
+      entity_id: input_boolean.reading_mode
+      state: 'off'
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: media_player.tv_samsung_bsmt
+      state: 'on'
+    - condition: state
+      entity_id: media_player.tv_samsung_bsmt
+      state: 'off'
+    - condition: state
+      entity_id: media_player.tv_samsung_bsmt
+      state: idle
+    - condition: state
+      entity_id: media_player.tv_samsung_bsmt
+      state: playing
+    - condition: state
+      entity_id: media_player.tv_samsung_bsmt
+      state: paused
+    - condition: state
+      entity_id: media_player.tv_samsung_bsmt
+      state: standby
+    - condition: state
+      entity_id: media_player.tv_samsung_bsmt
+      state: buffering
+    - condition: state
+      entity_id: media_player.tv_samsung_bsmt
+      state: unknown
+    enabled: false
+  action:
+  - parallel:
+    - service: script.parlor_on
+      metadata: {}
+      data: {}
+    - service: timer.start
+      metadata: {}
+      data:
+        duration: 00:15:00
   mode: single

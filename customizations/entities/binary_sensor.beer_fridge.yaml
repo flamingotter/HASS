@@ -1,3 +1,0 @@
----
-binary_sensor.beer_fridge_sensor:
-  device_class: door

@@ -6,5 +6,4 @@ upstairs:
     - light.rapunzel
     - light.wled_bed
     - light.wled_node_mbr
-    - input_boolean.vanity_lamps
     - light.hall

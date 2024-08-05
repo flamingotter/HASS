@@ -1,0 +1,7 @@
+---
+garage_temp_max:
+  name: Garage Temp Max
+  icon: mdi:thermometer-plus
+  min: 40
+  max: 90
+  step: 1

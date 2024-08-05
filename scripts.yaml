@@ -1,0 +1,279 @@
+basement_stairs_on:
+  alias: basement_stairs_on
+  sequence:
+  - service: light.turn_on
+    data:
+      color_temp: 222
+      brightness_pct: 100
+    target:
+      entity_id: light.stair_light
+  mode: single
+  icon: mdi:stairs
+basement_stairs_off:
+  alias: basement_stairs_off
+  sequence:
+  - service: lifx.effect_colorloop
+    data:
+      saturation_min: 80
+      saturation_max: 100
+      period: 5
+      change: 20
+      spread: 30
+      power_on: true
+      brightness_pct: 50
+    target:
+      entity_id: light.stair_light
+  mode: single
+  icon: mdi:stairs
+dinner_msg:
+  alias: Dinner Msg
+  sequence:
+  - service: notify.alexa_media
+    data:
+      message: It's time to eat, please make your way to the kitchen
+      target:
+      - media_player.bedroom
+      - media_player.garage
+      - media_player.office
+      - media_player.babe_cave
+      - media_player.media_room
+      data:
+        method: all
+        type: announce
+  mode: single
+  icon: mdi:food-turkey
+disarmed_night:
+  alias: Disarmed Night
+  sequence:
+  - service: light.turn_on
+    data:
+      transition: 2
+      color_temp: 222
+      brightness_pct: 100
+    target:
+      entity_id:
+      - light.kitchen
+      - light.parlor_lamps
+  mode: single
+  icon: mdi:shield-moon
+media_room_on:
+  alias: Media Room On
+  sequence:
+  - service: light.turn_on
+    data:
+      brightness_pct: 50
+      color_temp: 222
+    target:
+      entity_id: light.media_three
+  mode: single
+  icon: mdi:sofa
+media_room_off:
+  alias: Media Room Off
+  sequence:
+  - service: light.turn_off
+    data:
+      transition: 1
+    target:
+      entity_id: light.media_three
+  mode: single
+  icon: mdi:sofa
+kitchen_on:
+  alias: Kitchen On
+  sequence:
+  - service: light.turn_on
+    data:
+      brightness_pct: 50
+      color_temp: 222
+    target:
+      entity_id: light.kitchen
+  mode: single
+  icon: mdi:silverware
+kitchen_off:
+  alias: Kitchen Off
+  sequence:
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.kitchen
+  mode: single
+  icon: mdi:silverware
+parlor_on:
+  alias: Parlor On
+  sequence:
+  - service: light.turn_on
+    data:
+      color_temp: 222
+      brightness_pct: 100
+      transition: 1
+    target:
+      entity_id:
+      - light.parlor_lamps
+  mode: single
+  icon: mdi:piano
+parlor_off:
+  alias: Parlor Off
+  sequence:
+  - service: light.turn_off
+    data:
+      transition: 5
+    target:
+      entity_id:
+      - light.parlor_lamps
+      - light.front_door_light
+  mode: single
+  icon: mdi:piano-off
+media_dim:
+  alias: Media Dim
+  sequence:
+  - service: light.turn_on
+    data:
+      brightness_pct: 30
+      color_temp: 222
+    target:
+      entity_id: light.media_lights
+  - service: light.turn_on
+    data:
+      brightness_pct: 30
+      rgb_color:
+      - 0
+      - 128
+      - 128
+    target:
+      entity_id: light.spot_light
+  mode: single
+  icon: mdi:sofa
+media_movie:
+  alias: Media Movie
+  sequence:
+  - service: light.turn_off
+    data:
+      transition: 1
+    target:
+      entity_id:
+      - light.media_one
+      - light.media_two
+      - light.media_three
+  - service: light.turn_on
+    data:
+      rgb_color:
+      - 0
+      - 69
+      - 255
+      brightness_pct: 20
+      transition: 1
+    target:
+      entity_id: light.media_four
+  - service: light.turn_on
+    data:
+      transition: 1
+      rgb_color:
+      - 0
+      - 128
+      - 128
+      brightness_pct: 30
+    target:
+      entity_id: light.spot_light
+  mode: single
+  icon: mdi:sofa
+media_normal:
+  alias: Media Normal
+  sequence:
+  - service: light.turn_on
+    data:
+      color_temp: 222
+      brightness_pct: 100
+    target:
+      entity_id: light.media_lights
+  - service: light.turn_on
+    data:
+      rgb_color:
+      - 0
+      - 128
+      - 128
+      brightness_pct: 30
+    target:
+      entity_id: light.spot_light
+  mode: single
+  icon: mdi:sofa
+media_middle_off:
+  alias: Media Middle Off
+  sequence:
+  - service: light.turn_off
+    data:
+      transition: 1
+    target:
+      entity_id:
+      - light.media_two
+      - light.media_three
+  - service: light.turn_on
+    data:
+      transition: 1
+      color_temp: 222
+      brightness_pct: 99
+    target:
+      entity_id:
+      - light.media_one
+      - light.media_four
+  mode: single
+  icon: mdi:sofa
+media_outer_off:
+  alias: Media Outer Off
+  sequence:
+  - service: light.turn_off
+    data:
+      transition: 1
+    target:
+      entity_id:
+      - light.media_one
+      - light.media_four
+  - service: light.turn_on
+    data:
+      transition: 1
+      color_temp: 222
+      brightness_pct: 99
+    target:
+      entity_id:
+      - light.media_two
+      - light.media_three
+  mode: single
+  icon: mdi:sofa
+bed_mood_light:
+  alias: Bed Mood Light
+  sequence:
+  - service: light.turn_on
+    metadata: {}
+    data:
+      transition: 1
+      brightness: 128
+    target:
+      entity_id: light.wled_bed
+  - service: mqtt.publish
+    metadata: {}
+    data:
+      qos: '1'
+      retain: false
+      topic: wled/mbr/mood/bed/api
+      payload: SX=50 FX=09
+  mode: single
+  icon: mdi:bed
+storage_on:
+  alias: Storage On
+  sequence:
+  - service: light.turn_on
+    data:
+      brightness_pct: 100
+      color_temp: 222
+    target:
+      entity_id: light.storage
+  mode: single
+  icon: mdi:package-variant
+storage_off:
+  alias: Storage Off
+  sequence:
+  - service: light.turn_off
+    target:
+      entity_id:
+      - light.storage
+    data: {}
+  mode: single
+  icon: mdi:package-variant

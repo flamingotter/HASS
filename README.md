@@ -2,7 +2,8 @@
   Home Assistant Production Repo
 </h1>
 <h4>
-<a href="https://travis-ci.org/flamingotter/HASS"><img src="https://travis-ci.org/flamingotter/HASS.svg?branch=master"/></a>  <a href="https://github.com/flamingotter/HASS/commits/master"><img src="https://img.shields.io/github/last-commit/flamingotter/HASS.svg?style=plasticr"/></a>
+<a href="https://github.com/flamingotter/HASS/commits/master"><img src="https://img.shields.io/github/last-commit/flamingotter/HASS.svg?style=plasticr"/></a> 
+<a href="https://healthchecks.io/badge/10cd044e-c60d-4bb5-a577-99e234/R7GM_M15-2.svg"><img src="https://healthchecks.io/badge/10cd044e-c60d-4bb5-a577-99e234/R7GM_M15-2.svg" alt="healthchecks.io"/></a>
 </h4>
 
 # Hardware:
@@ -23,7 +24,8 @@
 * Custom Sensors (D1 Minis, ESP32)
 * Zooz Z-wave devices
 * WLED
-* Elgado Stream Deck
+* <a href="https://amzn.to/4cbHVal" target="_blank">Elgado Stream Deck
+* <a href="https://amzn.to/4dpzn0G" target="_blank">Ambient Weather WS-2902 WiFi Smart Weather Station
 
 ## Network:
 * UniFi Dream Machine Pro
