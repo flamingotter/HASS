@@ -7,6 +7,7 @@ cards:
     title: Kitchen
     show_state: false
     entities:
+      - entity: light.kitchen
       - entity: light.kitchen_light
         icon: mdi:dome-light
       - type: divider

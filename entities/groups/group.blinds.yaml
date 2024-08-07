@@ -1,6 +1,0 @@
----
-blinds:
-  name: Blinds
-  entities:
-    - cover.parlor_blinds
-    - cover.dining_room_blinds

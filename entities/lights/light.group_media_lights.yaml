@@ -1,8 +1,0 @@
----
-platform: group
-name: Media lights
-entities:
-  - light.media_one
-  - light.media_two
-  - light.media_three
-  - light.media_four

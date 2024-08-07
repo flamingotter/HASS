@@ -1,25 +1,34 @@
-2024-08-01 09:53:36.344 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration hacs which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
-2024-08-01 09:53:36.345 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration wundergroundpws which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
-2024-08-01 09:53:36.345 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration scheduler which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
-2024-08-01 09:53:36.346 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration bambu_lab which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
-2024-08-01 09:53:36.346 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration breaking_changes which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
-2024-08-01 09:53:36.346 ERROR (SyncWorker_0) [homeassistant.loader] The custom integration 'breaking_changes' does not have a version key in the manifest file and was blocked from loading. See https://developers.home-assistant.io/blog/2021/01/29/custom-integration-changes#versions for more details
-2024-08-01 09:53:36.347 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration xiaomi_cloud_map_extractor which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
-2024-08-01 09:53:36.347 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration alexa_media which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
-2024-08-01 09:53:36.347 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration healthchecksio which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
-2024-08-01 09:53:36.348 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration adaptive_lighting which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
-2024-08-01 09:53:36.348 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration pirateweather which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
-2024-08-01 09:53:36.349 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration nodered which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
-2024-08-01 09:53:37.849 WARNING (MainThread) [homeassistant.config] Package homeassistant contains invalid customize
-2024-08-01 09:53:38.108 WARNING (MainThread) [homeassistant.helpers.config_validation] The 'entity_id' option near /config/integrations/../entities/sensors/sensor.kitchen_thermostat_preset_mode.yaml:5 is deprecated, please remove it from your configuration
-2024-08-01 09:53:38.279 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'adaptive_lighting' calls async_forward_entry_setup for integration, adaptive_lighting with title: Office and entry_id: bcc31ca966a109bbbf00abe497488860, which is deprecated and will stop working in Home Assistant 2025.6, await async_forward_entry_setups instead at custom_components/adaptive_lighting/__init__.py, line 69: hass.async_create_task(, please create a bug report at https://github.com/basnijholt/adaptive-lighting/issues
-2024-08-01 09:53:39.970 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'hacs' calls hass.http.register_static_path which is deprecated because it does blocking I/O in the event loop, instead call `await hass.http.async_register_static_paths([StaticPathConfig("/hacsfiles/themes", "/config/themes", True)])`; This function will be removed in 2025.7 at custom_components/hacs/base.py, line 1182: self.hass.http.register_static_path(f"{URL_BASE}/themes", self.hass.config.path("themes")), please create a bug report at https://github.com/hacs/integration/issues
-2024-08-01 09:53:39.985 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'hacs' calls hass.http.register_static_path which is deprecated because it does blocking I/O in the event loop, instead call `await hass.http.async_register_static_paths([StaticPathConfig("/hacsfiles/frontend", "/config/custom_components/hacs/hacs_frontend", False)])`; This function will be removed in 2025.7 at custom_components/hacs/frontend.py, line 54: hass.http.register_static_path(f"{URL_BASE}/frontend", locate_dir(), cache_headers=False), please create a bug report at https://github.com/hacs/integration/issues
-2024-08-01 09:53:40.010 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'hacs' calls hass.http.register_static_path which is deprecated because it does blocking I/O in the event loop, instead call `await hass.http.async_register_static_paths([StaticPathConfig("/hacsfiles/iconset.js", "/config/custom_components/hacs/iconset.js", True)])`; This function will be removed in 2025.7 at custom_components/hacs/frontend.py, line 57: hass.http.register_static_path(, please create a bug report at https://github.com/hacs/integration/issues
-2024-08-01 09:53:40.019 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'hacs' accesses hass.components.frontend. This is deprecated and will stop working in Home Assistant 2024.9, it should be updated to import functions used from frontend directly at custom_components/hacs/frontend.py, line 68: hass.components.frontend.async_register_built_in_panel(, please create a bug report at https://github.com/hacs/integration/issues
-2024-08-01 09:53:40.022 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'hacs' calls hass.http.register_static_path which is deprecated because it does blocking I/O in the event loop, instead call `await hass.http.async_register_static_paths([StaticPathConfig("/hacsfiles", "/config/www/community", False)])`; This function will be removed in 2025.7 at custom_components/hacs/base.py, line 1162: self.hass.http.register_static_path(, please create a bug report at https://github.com/hacs/integration/issues
-2024-08-01 09:53:40.237 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'healthchecksio' calls `async_add_job`, which is deprecated and will be removed in Home Assistant 2025.4; Please review https://developers.home-assistant.io/blog/2024/03/13/deprecate_add_run_job for replacement options at custom_components/healthchecksio/__init__.py, line 76: hass.async_add_job(, please create a bug report at https://github.com/custom-components/healthchecksio/issues
-2024-08-01 09:53:40.417 WARNING (MainThread) [homeassistant.helpers.frame] Detected code that calls async_forward_entry_setup for integration, healthchecksio with title: 2a933a6f-14de-420e-8d5d-353eb08561e9 and entry_id: 01J476RKDXBZ8XD65DCZV9019S, which is deprecated and will stop working in Home Assistant 2025.6, await async_forward_entry_setups instead. Please report this issue.
+2024-08-07 11:50:04.312 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration hacs which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-07 11:50:04.312 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration wundergroundpws which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-07 11:50:04.313 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration scheduler which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-07 11:50:04.314 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration bambu_lab which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-07 11:50:04.314 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration breaking_changes which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-07 11:50:04.314 ERROR (SyncWorker_0) [homeassistant.loader] The custom integration 'breaking_changes' does not have a version key in the manifest file and was blocked from loading. See https://developers.home-assistant.io/blog/2021/01/29/custom-integration-changes#versions for more details
+2024-08-07 11:50:04.315 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration xiaomi_cloud_map_extractor which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-07 11:50:04.316 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration alexa_media which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-07 11:50:04.316 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration healthchecksio which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-07 11:50:04.317 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration adaptive_lighting which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-07 11:50:04.317 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration pirateweather which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-07 11:50:04.317 WARNING (SyncWorker_0) [homeassistant.loader] We found a custom integration nodered which has not been tested by Home Assistant. This component might cause stability problems, be sure to disable it if you experience issues with Home Assistant
+2024-08-07 11:50:05.879 WARNING (MainThread) [homeassistant.config] Package homeassistant contains invalid customize
+2024-08-07 11:50:06.163 WARNING (MainThread) [homeassistant.helpers.config_validation] The 'entity_id' option near /config/integrations/../entities/sensors/sensor.kitchen_thermostat_preset_mode.yaml:5 is deprecated, please remove it from your configuration
+2024-08-07 11:50:06.203 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'adaptive_lighting' calls async_forward_entry_setup for integration, adaptive_lighting with title: Office and entry_id: bcc31ca966a109bbbf00abe497488860, which is deprecated and will stop working in Home Assistant 2025.6, await async_forward_entry_setups instead at custom_components/adaptive_lighting/__init__.py, line 69: hass.async_create_task(, please create a bug report at https://github.com/basnijholt/adaptive-lighting/issues
+2024-08-07 11:50:06.704 ERROR (MainThread) [homeassistant.config_entries] Error setting up entry flamingotter@gmail.com - amazon.com for alexa_media
+Traceback (most recent call last):
+  File "/usr/src/homeassistant/homeassistant/config_entries.py", line 586, in async_setup
+    result = await component.async_setup_entry(hass, self)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/config/custom_components/alexa_media/__init__.py", line 353, in async_setup_entry
+    await login.login(cookies=await login.load_cookie())
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/alexapy/alexalogin.py", line 328, in load_cookie
+    cookies = pickle.loads(await myfile.read())
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/http/cookies.py", line 312, in __setitem__
+    raise CookieError("Invalid attribute %r" % (K,))
+http.cookies.CookieError: Invalid attribute 'partitioned'
+2024-08-07 11:50:08.844 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'healthchecksio' calls `async_add_job`, which is deprecated and will be removed in Home Assistant 2025.4; Please review https://developers.home-assistant.io/blog/2024/03/13/deprecate_add_run_job for replacement options at custom_components/healthchecksio/__init__.py, line 76: hass.async_add_job(, please create a bug report at https://github.com/custom-components/healthchecksio/issues
+2024-08-07 11:50:08.846 WARNING (MainThread) [homeassistant.helpers.frame] Detected code that calls async_forward_entry_setup for integration, healthchecksio with title: 2a933a6f-14de-420e-8d5d-353eb08561e9 and entry_id: 01J4771P50S4YPK5GR8DNHW28R, which is deprecated and will stop working in Home Assistant 2025.6, await async_forward_entry_setups instead. Please report this issue.
 Stack (most recent call last):
   File "<frozen runpy>", line 198, in _run_module_as_main
   File "<frozen runpy>", line 88, in _run_code
@@ -41,22 +50,94 @@ Stack (most recent call last):
     report(
   File "/usr/src/homeassistant/homeassistant/helpers/frame.py", line 151, in report
     _LOGGER.warning(msg, stack_info=True)
-2024-08-01 09:53:41.067 WARNING (MainThread) [homeassistant.helpers.template] Template variable warning: 'None' has no attribute 'state' when rendering '/local/moon_phases/{{ states.sensor.moon.state }}.png'
-2024-08-01 09:53:42.057 ERROR (MainThread) [homeassistant.components.camera] Error requesting stream: Camera not found
-2024-08-01 09:53:42.110 ERROR (MainThread) [homeassistant.components.number] Error while setting up unifiprotect platform for number
+2024-08-07 11:50:09.039 WARNING (MainThread) [homeassistant.helpers.frame] Detected code that calls async_forward_entry_setup for integration adaptive_lighting with title: Office and entry_id: bcc31ca966a109bbbf00abe497488860, during setup without awaiting async_forward_entry_setup, which can cause the setup lock to be released before the setup is done. This will stop working in Home Assistant 2025.1. Please report this issue.
+Stack (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/usr/src/homeassistant/homeassistant/__main__.py", line 223, in <module>
+    sys.exit(main())
+  File "/usr/src/homeassistant/homeassistant/__main__.py", line 209, in main
+    exit_code = runner.run(runtime_conf)
+  File "/usr/src/homeassistant/homeassistant/runner.py", line 190, in run
+    return loop.run_until_complete(setup_and_run_hass(runtime_config))
+  File "/usr/local/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/local/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/local/lib/python3.12/asyncio/base_events.py", line 1990, in _run_once
+    handle._run()
+  File "/usr/local/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/src/homeassistant/homeassistant/config_entries.py", line 2122, in async_forward_entry_setup
+    _report_non_awaited_platform_forwards(entry, "async_forward_entry_setup")
+  File "/usr/src/homeassistant/homeassistant/config_entries.py", line 1175, in _report_non_awaited_platform_forwards
+    report(
+  File "/usr/src/homeassistant/homeassistant/helpers/frame.py", line 151, in report
+    _LOGGER.warning(msg, stack_info=True)
+2024-08-07 11:50:09.043 WARNING (MainThread) [homeassistant.helpers.frame] Detected code that calls async_forward_entry_setup for integration adaptive_lighting with title: MBR and entry_id: e016fc8c66a24b594d6b058922d168fc, during setup without awaiting async_forward_entry_setup, which can cause the setup lock to be released before the setup is done. This will stop working in Home Assistant 2025.1. Please report this issue.
+Stack (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/usr/src/homeassistant/homeassistant/__main__.py", line 223, in <module>
+    sys.exit(main())
+  File "/usr/src/homeassistant/homeassistant/__main__.py", line 209, in main
+    exit_code = runner.run(runtime_conf)
+  File "/usr/src/homeassistant/homeassistant/runner.py", line 190, in run
+    return loop.run_until_complete(setup_and_run_hass(runtime_config))
+  File "/usr/local/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/local/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/local/lib/python3.12/asyncio/base_events.py", line 1990, in _run_once
+    handle._run()
+  File "/usr/local/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/src/homeassistant/homeassistant/config_entries.py", line 2122, in async_forward_entry_setup
+    _report_non_awaited_platform_forwards(entry, "async_forward_entry_setup")
+  File "/usr/src/homeassistant/homeassistant/config_entries.py", line 1175, in _report_non_awaited_platform_forwards
+    report(
+  File "/usr/src/homeassistant/homeassistant/helpers/frame.py", line 151, in report
+    _LOGGER.warning(msg, stack_info=True)
+2024-08-07 11:50:09.046 WARNING (MainThread) [homeassistant.helpers.frame] Detected code that calls async_forward_entry_setup for integration adaptive_lighting with title: Parlor and entry_id: 01J2KYPB809MGVXVZCXTB8PR87, during setup without awaiting async_forward_entry_setup, which can cause the setup lock to be released before the setup is done. This will stop working in Home Assistant 2025.1. Please report this issue.
+Stack (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/usr/src/homeassistant/homeassistant/__main__.py", line 223, in <module>
+    sys.exit(main())
+  File "/usr/src/homeassistant/homeassistant/__main__.py", line 209, in main
+    exit_code = runner.run(runtime_conf)
+  File "/usr/src/homeassistant/homeassistant/runner.py", line 190, in run
+    return loop.run_until_complete(setup_and_run_hass(runtime_config))
+  File "/usr/local/lib/python3.12/asyncio/base_events.py", line 674, in run_until_complete
+    self.run_forever()
+  File "/usr/local/lib/python3.12/asyncio/base_events.py", line 641, in run_forever
+    self._run_once()
+  File "/usr/local/lib/python3.12/asyncio/base_events.py", line 1990, in _run_once
+    handle._run()
+  File "/usr/local/lib/python3.12/asyncio/events.py", line 88, in _run
+    self._context.run(self._callback, *self._args)
+  File "/usr/src/homeassistant/homeassistant/config_entries.py", line 2122, in async_forward_entry_setup
+    _report_non_awaited_platform_forwards(entry, "async_forward_entry_setup")
+  File "/usr/src/homeassistant/homeassistant/config_entries.py", line 1175, in _report_non_awaited_platform_forwards
+    report(
+  File "/usr/src/homeassistant/homeassistant/helpers/frame.py", line 151, in report
+    _LOGGER.warning(msg, stack_info=True)
+2024-08-07 11:50:09.214 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'hacs' calls hass.http.register_static_path which is deprecated because it does blocking I/O in the event loop, instead call `await hass.http.async_register_static_paths([StaticPathConfig("/hacsfiles/themes", "/config/themes", True)])`; This function will be removed in 2025.7 at custom_components/hacs/base.py, line 1182: self.hass.http.register_static_path(f"{URL_BASE}/themes", self.hass.config.path("themes")), please create a bug report at https://github.com/hacs/integration/issues
+2024-08-07 11:50:09.217 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'hacs' calls hass.http.register_static_path which is deprecated because it does blocking I/O in the event loop, instead call `await hass.http.async_register_static_paths([StaticPathConfig("/hacsfiles/frontend", "/config/custom_components/hacs/hacs_frontend", False)])`; This function will be removed in 2025.7 at custom_components/hacs/frontend.py, line 54: hass.http.register_static_path(f"{URL_BASE}/frontend", locate_dir(), cache_headers=False), please create a bug report at https://github.com/hacs/integration/issues
+2024-08-07 11:50:09.220 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'hacs' calls hass.http.register_static_path which is deprecated because it does blocking I/O in the event loop, instead call `await hass.http.async_register_static_paths([StaticPathConfig("/hacsfiles/iconset.js", "/config/custom_components/hacs/iconset.js", True)])`; This function will be removed in 2025.7 at custom_components/hacs/frontend.py, line 57: hass.http.register_static_path(, please create a bug report at https://github.com/hacs/integration/issues
+2024-08-07 11:50:09.222 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'hacs' accesses hass.components.frontend. This is deprecated and will stop working in Home Assistant 2024.9, it should be updated to import functions used from frontend directly at custom_components/hacs/frontend.py, line 68: hass.components.frontend.async_register_built_in_panel(, please create a bug report at https://github.com/hacs/integration/issues
+2024-08-07 11:50:09.224 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'hacs' calls hass.http.register_static_path which is deprecated because it does blocking I/O in the event loop, instead call `await hass.http.async_register_static_paths([StaticPathConfig("/hacsfiles", "/config/www/community", False)])`; This function will be removed in 2025.7 at custom_components/hacs/base.py, line 1162: self.hass.http.register_static_path(, please create a bug report at https://github.com/hacs/integration/issues
+2024-08-07 11:50:09.329 WARNING (MainThread) [homeassistant.helpers.template] Template variable warning: 'None' has no attribute 'state' when rendering '/local/moon_phases/{{ states.sensor.moon.state }}.png'
+2024-08-07 11:50:10.208 ERROR (MainThread) [homeassistant.components.number] Error adding entity number.porch_outside_infrared_custom_lux_trigger for domain number with platform unifiprotect
 Traceback (most recent call last):
-  File "/usr/src/homeassistant/homeassistant/helpers/entity_platform.py", line 364, in _async_setup_platform
-    await asyncio.shield(awaitable)
-  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/number.py", line 243, in async_setup_entry
-    async_all_device_entities(
-  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/entity.py", line 148, in async_all_device_entities
-    _async_device_entities(data, klass, model_type, descs, unadopted_descs)
-  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/entity.py", line 93, in _async_device_entities
-    klass(
-  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/number.py", line 265, in __init__
-    super().__init__(data, device, description)
-  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/entity.py", line 192, in __init__
-    self._async_update_device_from_protect(device)
+  File "/usr/src/homeassistant/homeassistant/helpers/entity_platform.py", line 598, in _async_add_entities
+    await coro
+  File "/usr/src/homeassistant/homeassistant/helpers/entity_platform.py", line 912, in _async_add_entity
+    await entity.add_to_platform_finish()
+  File "/usr/src/homeassistant/homeassistant/helpers/entity.py", line 1361, in add_to_platform_finish
+    await self.async_added_to_hass()
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/entity.py", line 266, in async_added_to_hass
+    self._async_update_device_from_protect(self.device)
   File "/usr/src/homeassistant/homeassistant/components/unifiprotect/number.py", line 273, in _async_update_device_from_protect
     self._attr_native_value = self.entity_description.get_ufp_value(self.device)
                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -67,10 +148,10 @@ Traceback (most recent call last):
     return LUX_MAPPING_VALUES[10 - self.isp_settings.icr_custom_value]
            ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 IndexError: list index out of range
-2024-08-01 09:53:42.411 WARNING (MainThread) [homeassistant.components.sensor] Entity sensor.greenhouse_min_temp (<class 'custom_components.nodered.sensor.NodeRedSensor'>) is using native unit of measurement ''°F'' which is not a valid unit for the device class ('temperature') it is using; expected one of ['°F', 'K', '°C']; Please update your configuration if your entity is manually configured, otherwise create a bug report at https://github.com/zachowj/hass-node-red/issues
-2024-08-01 09:53:42.476 WARNING (MainThread) [homeassistant.components.sensor] Entity sensor.greenhouse_max_temp (<class 'custom_components.nodered.sensor.NodeRedSensor'>) is using native unit of measurement ''°F'' which is not a valid unit for the device class ('temperature') it is using; expected one of ['°F', 'K', '°C']; Please update your configuration if your entity is manually configured, otherwise create a bug report at https://github.com/zachowj/hass-node-red/issues
-2024-08-01 09:53:43.727 WARNING (MainThread) [homeassistant.components.sensor] Entity sensor.konnected_5f0e98_wifi_signal (<class 'homeassistant.components.esphome.sensor.EsphomeSensor'>) is using native unit of measurement '%' which is not a valid unit for the device class ('signal_strength') it is using; expected one of ['dB', 'dBm']; Please update your configuration if your entity is manually configured, otherwise create a bug report at https://github.com/home-assistant/core/issues?q=is%3Aopen+is%3Aissue+label%3A%22integration%3A+esphome%22
-2024-08-01 09:54:19.432 ERROR (MainThread) [homeassistant.helpers.event] Error while processing template: Template<template=({{ states('sensor.kasa_smart_plug_9650_1_current_consumption')|int > 50 }}) renders=2>
+2024-08-07 11:50:10.920 WARNING (MainThread) [homeassistant.components.sensor] Entity sensor.greenhouse_min_temp (<class 'custom_components.nodered.sensor.NodeRedSensor'>) is using native unit of measurement ''°F'' which is not a valid unit for the device class ('temperature') it is using; expected one of ['°C', 'K', '°F']; Please update your configuration if your entity is manually configured, otherwise create a bug report at https://github.com/zachowj/hass-node-red/issues
+2024-08-07 11:50:10.926 WARNING (MainThread) [homeassistant.components.sensor] Entity sensor.greenhouse_max_temp (<class 'custom_components.nodered.sensor.NodeRedSensor'>) is using native unit of measurement ''°F'' which is not a valid unit for the device class ('temperature') it is using; expected one of ['°C', 'K', '°F']; Please update your configuration if your entity is manually configured, otherwise create a bug report at https://github.com/zachowj/hass-node-red/issues
+2024-08-07 11:50:12.272 WARNING (MainThread) [homeassistant.components.sensor] Entity sensor.konnected_5f0e98_wifi_signal (<class 'homeassistant.components.esphome.sensor.EsphomeSensor'>) is using native unit of measurement '%' which is not a valid unit for the device class ('signal_strength') it is using; expected one of ['dB', 'dBm']; Please update your configuration if your entity is manually configured, otherwise create a bug report at https://github.com/home-assistant/core/issues?q=is%3Aopen+is%3Aissue+label%3A%22integration%3A+esphome%22
+2024-08-07 11:50:46.844 ERROR (MainThread) [homeassistant.helpers.event] Error while processing template: Template<template=({{ states('sensor.kasa_smart_plug_9650_1_current_consumption')|int > 50 }}) renders=2>
 Traceback (most recent call last):
   File "/usr/src/homeassistant/homeassistant/helpers/template.py", line 604, in async_render
     render_result = _render_with_context(self.template, compiled, **kwargs)
@@ -98,8 +179,271 @@ Traceback (most recent call last):
   File "/usr/src/homeassistant/homeassistant/helpers/template.py", line 606, in async_render
     raise TemplateError(err) from err
 homeassistant.exceptions.TemplateError: ValueError: Template error: int got invalid input 'unavailable' when rendering template '{{ states('sensor.kasa_smart_plug_9650_1_current_consumption')|int > 50 }}' but no default was specified
-2024-08-01 09:54:19.440 ERROR (MainThread) [homeassistant.components.template.template_entity] TemplateError('ValueError: Template error: int got invalid input 'unavailable' when rendering template '{{ states('sensor.kasa_smart_plug_9650_1_current_consumption')|int > 50 }}' but no default was specified') while processing template 'Template<template=({{ states('sensor.kasa_smart_plug_9650_1_current_consumption')|int > 50 }}) renders=4>' for attribute '_state' in entity 'binary_sensor.gh_heater_running'
-2024-08-01 09:54:19.485 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'hacs' accesses hass.helpers.event. This is deprecated and will stop working in Home Assistant 2024.11, it should be updated to import functions used from event directly at custom_components/hacs/base.py, line 630: self.hass.helpers.event.async_track_time_interval(, please create a bug report at https://github.com/hacs/integration/issues
-2024-08-01 09:54:38.656 ERROR (SyncWorker_8) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
-2024-08-01 09:54:38.658 ERROR (SyncWorker_2) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
-2024-08-01 09:55:08.102 WARNING (MainThread) [homeassistant.components.homeassistant] The 'entity_id' option near /config/integrations/../entities/sensors/sensor.kitchen_thermostat_preset_mode.yaml:5 is deprecated, please remove it from your configuration
+2024-08-07 11:50:46.848 ERROR (MainThread) [homeassistant.components.template.template_entity] TemplateError('ValueError: Template error: int got invalid input 'unavailable' when rendering template '{{ states('sensor.kasa_smart_plug_9650_1_current_consumption')|int > 50 }}' but no default was specified') while processing template 'Template<template=({{ states('sensor.kasa_smart_plug_9650_1_current_consumption')|int > 50 }}) renders=4>' for attribute '_state' in entity 'binary_sensor.gh_heater_running'
+2024-08-07 11:50:46.912 WARNING (MainThread) [homeassistant.helpers.frame] Detected that custom integration 'hacs' accesses hass.helpers.event. This is deprecated and will stop working in Home Assistant 2024.11, it should be updated to import functions used from event directly at custom_components/hacs/base.py, line 630: self.hass.helpers.event.async_track_time_interval(, please create a bug report at https://github.com/hacs/integration/issues
+2024-08-07 11:51:08.216 ERROR (SyncWorker_3) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 11:51:08.219 ERROR (SyncWorker_5) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 11:52:08.209 ERROR (SyncWorker_5) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 11:52:08.212 ERROR (SyncWorker_11) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 11:52:34.710 ERROR (MainThread) [homeassistant.components.google_assistant.smart_home] Unexpected error serializing query for <state cover.parlor_blinds=unknown; device_class=blind, friendly_name=Parlor Blinds, supported_features=15 @ 2024-08-07T11:50:10.922251-05:00>
+Traceback (most recent call last):
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/smart_home.py", line 181, in async_devices_query_response
+    devices[devid] = entity.query_serialize()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/helpers.py", line 702, in query_serialize
+    deep_update(attrs, trt.query_attributes())
+                       ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/trait.py", line 2232, in query_attributes
+    raise SmartHomeError(
+homeassistant.components.google_assistant.error.SmartHomeError: Querying state is not supported
+2024-08-07 11:52:34.717 ERROR (MainThread) [homeassistant.components.google_assistant.smart_home] Unexpected error serializing query for <state cover.dining_room_blinds=unknown; device_class=blind, friendly_name=Dining Room Blinds, supported_features=15 @ 2024-08-07T11:50:10.922097-05:00>
+Traceback (most recent call last):
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/smart_home.py", line 181, in async_devices_query_response
+    devices[devid] = entity.query_serialize()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/helpers.py", line 702, in query_serialize
+    deep_update(attrs, trt.query_attributes())
+                       ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/trait.py", line 2232, in query_attributes
+    raise SmartHomeError(
+homeassistant.components.google_assistant.error.SmartHomeError: Querying state is not supported
+2024-08-07 11:52:36.356 ERROR (MainThread) [homeassistant.components.google_assistant.smart_home] Unexpected error serializing query for <state cover.parlor_blinds=unknown; device_class=blind, friendly_name=Parlor Blinds, supported_features=15 @ 2024-08-07T11:50:10.922251-05:00>
+Traceback (most recent call last):
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/smart_home.py", line 181, in async_devices_query_response
+    devices[devid] = entity.query_serialize()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/helpers.py", line 702, in query_serialize
+    deep_update(attrs, trt.query_attributes())
+                       ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/trait.py", line 2232, in query_attributes
+    raise SmartHomeError(
+homeassistant.components.google_assistant.error.SmartHomeError: Querying state is not supported
+2024-08-07 11:52:36.357 ERROR (MainThread) [homeassistant.components.google_assistant.smart_home] Unexpected error serializing query for <state cover.dining_room_blinds=unknown; device_class=blind, friendly_name=Dining Room Blinds, supported_features=15 @ 2024-08-07T11:50:10.922097-05:00>
+Traceback (most recent call last):
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/smart_home.py", line 181, in async_devices_query_response
+    devices[devid] = entity.query_serialize()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/helpers.py", line 702, in query_serialize
+    deep_update(attrs, trt.query_attributes())
+                       ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/trait.py", line 2232, in query_attributes
+    raise SmartHomeError(
+homeassistant.components.google_assistant.error.SmartHomeError: Querying state is not supported
+2024-08-07 11:52:42.196 ERROR (MainThread) [homeassistant.components.google_assistant.smart_home] Unexpected error serializing query for <state cover.parlor_blinds=unknown; device_class=blind, friendly_name=Parlor Blinds, supported_features=15 @ 2024-08-07T11:50:10.922251-05:00>
+Traceback (most recent call last):
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/smart_home.py", line 181, in async_devices_query_response
+    devices[devid] = entity.query_serialize()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/helpers.py", line 702, in query_serialize
+    deep_update(attrs, trt.query_attributes())
+                       ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/trait.py", line 2232, in query_attributes
+    raise SmartHomeError(
+homeassistant.components.google_assistant.error.SmartHomeError: Querying state is not supported
+2024-08-07 11:52:42.197 ERROR (MainThread) [homeassistant.components.google_assistant.smart_home] Unexpected error serializing query for <state cover.dining_room_blinds=unknown; device_class=blind, friendly_name=Dining Room Blinds, supported_features=15 @ 2024-08-07T11:50:10.922097-05:00>
+Traceback (most recent call last):
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/smart_home.py", line 181, in async_devices_query_response
+    devices[devid] = entity.query_serialize()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/helpers.py", line 702, in query_serialize
+    deep_update(attrs, trt.query_attributes())
+                       ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/trait.py", line 2232, in query_attributes
+    raise SmartHomeError(
+homeassistant.components.google_assistant.error.SmartHomeError: Querying state is not supported
+2024-08-07 11:52:51.455 ERROR (MainThread) [homeassistant.components.google_assistant.smart_home] Unexpected error serializing query for <state cover.parlor_blinds=unknown; device_class=blind, friendly_name=Parlor Blinds, supported_features=15 @ 2024-08-07T11:50:10.922251-05:00>
+Traceback (most recent call last):
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/smart_home.py", line 181, in async_devices_query_response
+    devices[devid] = entity.query_serialize()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/helpers.py", line 702, in query_serialize
+    deep_update(attrs, trt.query_attributes())
+                       ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/trait.py", line 2232, in query_attributes
+    raise SmartHomeError(
+homeassistant.components.google_assistant.error.SmartHomeError: Querying state is not supported
+2024-08-07 11:52:51.457 ERROR (MainThread) [homeassistant.components.google_assistant.smart_home] Unexpected error serializing query for <state cover.dining_room_blinds=unknown; device_class=blind, friendly_name=Dining Room Blinds, supported_features=15 @ 2024-08-07T11:50:10.922097-05:00>
+Traceback (most recent call last):
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/smart_home.py", line 181, in async_devices_query_response
+    devices[devid] = entity.query_serialize()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/helpers.py", line 702, in query_serialize
+    deep_update(attrs, trt.query_attributes())
+                       ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/trait.py", line 2232, in query_attributes
+    raise SmartHomeError(
+homeassistant.components.google_assistant.error.SmartHomeError: Querying state is not supported
+2024-08-07 11:53:08.220 ERROR (SyncWorker_12) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 11:53:08.224 ERROR (SyncWorker_1) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 11:53:33.179 ERROR (MainThread) [homeassistant.components.google_assistant.smart_home] Unexpected error serializing query for <state cover.parlor_blinds=unknown; device_class=blind, friendly_name=Parlor Blinds, supported_features=15 @ 2024-08-07T11:50:10.922251-05:00>
+Traceback (most recent call last):
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/smart_home.py", line 181, in async_devices_query_response
+    devices[devid] = entity.query_serialize()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/helpers.py", line 702, in query_serialize
+    deep_update(attrs, trt.query_attributes())
+                       ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/trait.py", line 2232, in query_attributes
+    raise SmartHomeError(
+homeassistant.components.google_assistant.error.SmartHomeError: Querying state is not supported
+2024-08-07 11:53:33.181 ERROR (MainThread) [homeassistant.components.google_assistant.smart_home] Unexpected error serializing query for <state cover.dining_room_blinds=unknown; device_class=blind, friendly_name=Dining Room Blinds, supported_features=15 @ 2024-08-07T11:50:10.922097-05:00>
+Traceback (most recent call last):
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/smart_home.py", line 181, in async_devices_query_response
+    devices[devid] = entity.query_serialize()
+                     ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/helpers.py", line 702, in query_serialize
+    deep_update(attrs, trt.query_attributes())
+                       ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/google_assistant/trait.py", line 2232, in query_attributes
+    raise SmartHomeError(
+homeassistant.components.google_assistant.error.SmartHomeError: Querying state is not supported
+2024-08-07 11:54:08.205 ERROR (SyncWorker_5) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 11:54:08.208 ERROR (SyncWorker_10) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 11:55:08.206 ERROR (SyncWorker_4) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 11:55:08.210 ERROR (SyncWorker_7) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 11:56:08.242 ERROR (SyncWorker_6) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 11:56:08.245 ERROR (SyncWorker_5) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 11:57:08.219 ERROR (SyncWorker_5) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 11:57:08.221 ERROR (SyncWorker_0) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 11:58:08.213 ERROR (SyncWorker_1) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 11:58:08.216 ERROR (SyncWorker_9) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 11:58:14.294 ERROR (MainThread) [uiprotect.api] Exception while running subscription handler
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/uiprotect/api.py", line 860, in emit_message
+    sub(msg)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/data.py", line 274, in _async_process_ws_message
+    self._async_signal_device_update(camera)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/data.py", line 340, in _async_signal_device_update
+    update_callback(device)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/entity.py", line 238, in _async_updated_event
+    self._async_update_device_from_protect(device)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/number.py", line 273, in _async_update_device_from_protect
+    self._attr_native_value = self.entity_description.get_ufp_value(self.device)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/uiprotect/utils.py", line 651, in get_top_level_attr
+    value = getattr(obj, attr)
+            ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/uiprotect/data/devices.py", line 1130, in icr_lux_display
+    return LUX_MAPPING_VALUES[10 - self.isp_settings.icr_custom_value]
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: list index out of range
+2024-08-07 11:58:14.297 ERROR (MainThread) [uiprotect.api] Exception while running subscription handler
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/uiprotect/api.py", line 860, in emit_message
+    sub(msg)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/data.py", line 296, in _async_process_ws_message
+    self._async_update_device(new_obj, message.changed_data)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/data.py", line 233, in _async_update_device
+    self._async_signal_device_update(device)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/data.py", line 340, in _async_signal_device_update
+    update_callback(device)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/entity.py", line 238, in _async_updated_event
+    self._async_update_device_from_protect(device)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/number.py", line 273, in _async_update_device_from_protect
+    self._attr_native_value = self.entity_description.get_ufp_value(self.device)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/uiprotect/utils.py", line 651, in get_top_level_attr
+    value = getattr(obj, attr)
+            ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/uiprotect/data/devices.py", line 1130, in icr_lux_display
+    return LUX_MAPPING_VALUES[10 - self.isp_settings.icr_custom_value]
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: list index out of range
+2024-08-07 11:58:34.393 ERROR (MainThread) [uiprotect.api] Exception while running subscription handler
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/uiprotect/api.py", line 860, in emit_message
+    sub(msg)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/data.py", line 296, in _async_process_ws_message
+    self._async_update_device(new_obj, message.changed_data)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/data.py", line 233, in _async_update_device
+    self._async_signal_device_update(device)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/data.py", line 340, in _async_signal_device_update
+    update_callback(device)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/entity.py", line 238, in _async_updated_event
+    self._async_update_device_from_protect(device)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/number.py", line 273, in _async_update_device_from_protect
+    self._attr_native_value = self.entity_description.get_ufp_value(self.device)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/uiprotect/utils.py", line 651, in get_top_level_attr
+    value = getattr(obj, attr)
+            ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/uiprotect/data/devices.py", line 1130, in icr_lux_display
+    return LUX_MAPPING_VALUES[10 - self.isp_settings.icr_custom_value]
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: list index out of range
+2024-08-07 11:58:34.442 ERROR (MainThread) [uiprotect.api] Exception while running subscription handler
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/uiprotect/api.py", line 860, in emit_message
+    sub(msg)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/data.py", line 274, in _async_process_ws_message
+    self._async_signal_device_update(camera)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/data.py", line 340, in _async_signal_device_update
+    update_callback(device)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/entity.py", line 238, in _async_updated_event
+    self._async_update_device_from_protect(device)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/number.py", line 273, in _async_update_device_from_protect
+    self._attr_native_value = self.entity_description.get_ufp_value(self.device)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/uiprotect/utils.py", line 651, in get_top_level_attr
+    value = getattr(obj, attr)
+            ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/uiprotect/data/devices.py", line 1130, in icr_lux_display
+    return LUX_MAPPING_VALUES[10 - self.isp_settings.icr_custom_value]
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: list index out of range
+2024-08-07 11:58:34.944 ERROR (MainThread) [uiprotect.api] Exception while running subscription handler
+Traceback (most recent call last):
+  File "/usr/local/lib/python3.12/site-packages/uiprotect/api.py", line 860, in emit_message
+    sub(msg)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/data.py", line 274, in _async_process_ws_message
+    self._async_signal_device_update(camera)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/data.py", line 340, in _async_signal_device_update
+    update_callback(device)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/entity.py", line 238, in _async_updated_event
+    self._async_update_device_from_protect(device)
+  File "/usr/src/homeassistant/homeassistant/components/unifiprotect/number.py", line 273, in _async_update_device_from_protect
+    self._attr_native_value = self.entity_description.get_ufp_value(self.device)
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/uiprotect/utils.py", line 651, in get_top_level_attr
+    value = getattr(obj, attr)
+            ^^^^^^^^^^^^^^^^^^
+  File "/usr/local/lib/python3.12/site-packages/uiprotect/data/devices.py", line 1130, in icr_lux_display
+    return LUX_MAPPING_VALUES[10 - self.isp_settings.icr_custom_value]
+           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+IndexError: list index out of range
+2024-08-07 11:59:08.248 ERROR (SyncWorker_11) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 11:59:08.250 ERROR (SyncWorker_10) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 12:00:08.220 ERROR (SyncWorker_7) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 12:00:08.225 ERROR (SyncWorker_4) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 12:01:08.220 ERROR (SyncWorker_13) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 12:01:08.223 ERROR (SyncWorker_4) [custom_components.bambu_lab.pybambu] Failed to send message to topic device/01P09A3B1800270/request
+2024-08-07 12:01:36.523 WARNING (MainThread) [homeassistant.components.config] The 'entity_id' option near /config/integrations/../entities/sensors/sensor.kitchen_thermostat_preset_mode.yaml:5 is deprecated, please remove it from your configuration
+2024-08-07 12:01:38.673 WARNING (MainThread) [homeassistant.components.config] The 'entity_id' option near /config/integrations/../entities/sensors/sensor.kitchen_thermostat_preset_mode.yaml:5 is deprecated, please remove it from your configuration
+2024-08-07 12:01:41.198 WARNING (MainThread) [homeassistant.components.homeassistant] The 'entity_id' option near /config/integrations/../entities/sensors/sensor.kitchen_thermostat_preset_mode.yaml:5 is deprecated, please remove it from your configuration
+2024-08-07 12:01:41.226 ERROR (MainThread) [homeassistant.config_entries] Error setting up entry Señor Bale for xiaomi_miio
+Traceback (most recent call last):
+  File "/usr/src/homeassistant/homeassistant/config_entries.py", line 586, in async_setup
+    result = await component.async_setup_entry(hass, self)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/xiaomi_miio/__init__.py", line 135, in async_setup_entry
+    or await async_setup_device_entry(hass, entry)
+       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/xiaomi_miio/__init__.py", line 468, in async_setup_device_entry
+    await async_create_miio_device_and_coordinator(hass, entry)
+  File "/usr/src/homeassistant/homeassistant/components/xiaomi_miio/__init__.py", line 395, in async_create_miio_device_and_coordinator
+    await coordinator.async_config_entry_first_refresh()
+  File "/usr/src/homeassistant/homeassistant/helpers/update_coordinator.py", line 277, in async_config_entry_first_refresh
+    await self._async_refresh(
+  File "/usr/src/homeassistant/homeassistant/helpers/update_coordinator.py", line 312, in _async_refresh
+    self.data = await self._async_update_data()
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/helpers/update_coordinator.py", line 268, in _async_update_data
+    return await self.update_method()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/xiaomi_miio/__init__.py", line 272, in update_async
+    return await execute_update()
+           ^^^^^^^^^^^^^^^^^^^^^^
+  File "/usr/src/homeassistant/homeassistant/components/xiaomi_miio/__init__.py", line 267, in execute_update
+    state = await hass.async_add_executor_job(update)
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+asyncio.exceptions.CancelledError: Home Assistant is stopping

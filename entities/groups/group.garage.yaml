@@ -2,5 +2,5 @@
 garage:
   name: Garage
   entities:
-    - light.garage_overhead_light
+    - light.garage_overhead
     - switch.garage_cabinet_lights

@@ -13,3 +13,6 @@ basement:
     - input_boolean.occupied_office
     - light.led_tree
     - light.wled_cloud_main
+    - light.wled_cloud
+    - light.desk_light
+    - light.storage_lights

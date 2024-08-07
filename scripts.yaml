@@ -277,3 +277,63 @@ storage_off:
     data: {}
   mode: single
   icon: mdi:package-variant
+office_normal:
+  alias: Office Normal
+  sequence:
+  - service: light.turn_on
+    data:
+      color_temp: 222
+      brightness_pct: 100
+    target:
+      entity_id: light.office_lights
+  - service: light.turn_on
+    data:
+      rgb_color:
+      - 0
+      - 128
+      - 128
+      brightness_pct: 5
+    target:
+      entity_id:
+      - light.wled_cloud_main
+      - light.wled_cloud
+  mode: single
+  icon: mdi:laptop
+  description: ''
+office_dim:
+  alias: Office Dim
+  sequence:
+  - service: light.turn_on
+    data:
+      brightness_pct: 50
+      color_temp: 222
+    target:
+      entity_id: light.office_lights
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id: light.office_lamp
+  mode: single
+  icon: mdi:laptop
+  description: ''
+office_1_2_4_off:
+  alias: Office 1 2 4 Off
+  sequence:
+  - service: light.turn_off
+    data: {}
+    target:
+      entity_id:
+      - light.office_four
+      - light.office_one
+      - light.office_two
+      - light.office_lamp
+  - service: light.turn_on
+    data:
+      brightness_pct: 100
+    target:
+      entity_id:
+      - light.office_three
+      - light.desk_light
+  mode: single
+  icon: mdi:laptop
+  description: ''

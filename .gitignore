@@ -20,6 +20,8 @@ custom_components/
 *.sqlite
 *.old
 *.log
+*.log1
+*.log.fault
 !*.yaml
 !.gitignore
 secrets.yaml

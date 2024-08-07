@@ -1,6 +1,0 @@
----
-platform: group
-name: Storage Lights
-entities:
-  - light.storage_01
-  - light.storage_02

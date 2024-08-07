@@ -1,4 +1,0 @@
----
-platform: switch
-name: Front Door Light
-entity_id: switch.front_door_light

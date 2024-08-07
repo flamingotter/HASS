@@ -1,0 +1,9 @@
+---
+media_room:
+  name: Media Room
+  entities:
+    - light.spot_light
+    - light.media_one
+    - light.media_two
+    - light.media_three
+    - light.media_four

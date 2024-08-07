@@ -14,7 +14,7 @@ cards:
             color:
               {% if is_state(config.entity, "on") %}
                 red
-              {% elif is_state(config.entity, "off") %}
+              {% elif is_state(config.entity, "locked") %}
                 green
               {% endif %}
               ;

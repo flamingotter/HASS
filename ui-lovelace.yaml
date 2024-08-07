@@ -16,4 +16,4 @@ views:
   - !include lovelace/views/main/10_vacuum_view.yaml
   - !include lovelace/views/main/11_settings_view.yaml
   #
-  #####################################
+  ##################################

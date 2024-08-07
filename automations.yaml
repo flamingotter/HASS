@@ -314,24 +314,6 @@
     target:
       entity_id: light.office_lights
   mode: single
-- id: '1722616326485'
-  alias: Garden Timelapse
-  description: ''
-  trigger:
-  - platform: time_pattern
-    hours: '1'
-  condition:
-  - condition: state
-    entity_id: sun.sun
-    state: above_horizon
-  action:
-  - service: camera.snapshot
-    metadata: {}
-    data:
-      filename: www/tmp/timelapse/snapshot_{{now().strftime('%H:%M-%d%b')}}.jpg
-    target:
-      entity_id: camera.backyard_n_outside
-  mode: single
 - id: '1722617998122'
   alias: Low Battery Notifications & Actions
   description: ''

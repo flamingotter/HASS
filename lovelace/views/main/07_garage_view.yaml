@@ -11,7 +11,7 @@ cards:
       - sensor.szpffqlkc_temp_2
       - sensor.szpffqlkc_humidity_2
       - type: divider
-      - light.garage_overhead_light
+      - light.garage_overhead
       - switch.garage_cabinet_lights
       
       - type: divider

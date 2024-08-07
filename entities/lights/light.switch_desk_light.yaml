@@ -1,4 +1,0 @@
----
-platform: switch
-name: Desk Light
-entity_id: switch.desk_light

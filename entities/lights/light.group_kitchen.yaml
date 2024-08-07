@@ -1,6 +1,0 @@
----
-platform: group
-name: Kitchen
-entities:
-  - light.kitchen_light
-  - light.dining_room_light

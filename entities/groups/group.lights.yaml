@@ -11,7 +11,7 @@ lights:
     - light.office_lamp
     - light.office_lights
     - light.kitchen
-    - light.garage_overhead_light
+    - light.garage_overhead
     - light.fireplace_light
     - light.deck_lights
     - light.patio_lights

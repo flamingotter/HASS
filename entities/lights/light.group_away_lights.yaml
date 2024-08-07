@@ -1,6 +1,0 @@
----
-platform: group
-name: Away Lights
-entities:
-  - light.dining_room_light
-  - light.table_lamp

@@ -1,4 +1,0 @@
----
-platform: switch
-name: North Deck Light
-entity_id: switch.n_deck

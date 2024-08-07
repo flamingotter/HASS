@@ -9,7 +9,7 @@ cards:
     entities:
       - entity: sensor.media_room_temperature
       - entity: sensor.media_room_relative_humidity
-      - entity: binary_sensor.media_room_motion
+      - entity: binary_sensor.motion_media_room
       - type: divider
       # - entity: media_player.tv_samsung_bsmt
       # - type: divider

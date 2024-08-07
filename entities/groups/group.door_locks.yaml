@@ -1,7 +1,0 @@
----
-door_locks:
-  name: Door Locks
-  icon: mdi:door
-  entities:
-    - lock.schlage_front
-    # - lock.schlage_back
