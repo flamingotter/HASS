@@ -1,7 +1,7 @@
 www/googlef62d7edb89f95f8b.html
 www/
 deps/
-image/
+image/*
 backup/
 custom_components/
 *.pid
