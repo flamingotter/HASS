@@ -1,9 +1,0 @@
----
-all_tabs_css: 'padding: 0px 20px;'
-header_text: '{{ time }}'
-compact_mode: true
-footer_mode: false
-options_hide: true
-active_tab_color: '#00a1ff'
-chevrons: false
-####

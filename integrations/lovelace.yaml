@@ -1,5 +1,0 @@
----
-lovelace:
-  mode: yaml
-  resources: !include ../lovelace/resources/resources.yaml
-  dashboards: !include ../lovelace/dashboards/dashboards.yaml

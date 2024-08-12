@@ -264,17 +264,16 @@ storage_on:
       brightness_pct: 100
       color_temp: 222
     target:
-      entity_id: light.storage
+      entity_id: light.storage_lights
   mode: single
   icon: mdi:package-variant
 storage_off:
   alias: Storage Off
   sequence:
   - service: light.turn_off
-    target:
-      entity_id:
-      - light.storage
     data: {}
+    target:
+      entity_id: light.storage_lights
   mode: single
   icon: mdi:package-variant
 office_normal:
