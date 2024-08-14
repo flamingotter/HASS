@@ -283,7 +283,6 @@
     metadata: {}
     data:
       transition: 300
-      brightness_pct: 100
     target:
       entity_id: light.bedroom_lamps
   - service: input_boolean.turn_off
@@ -387,3 +386,96 @@
       include_easy_notify: enable_easy_notify
       notify_device:
       - de59f44bd04cf3c8c7ba5ab30d27f57f
+- id: '1723572383977'
+  alias: 3D Printer Safety
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.3dprinter_saftey
+    to: 'on'
+  condition: []
+  action:
+  - sequence:
+    - delay:
+        hours: 0
+        minutes: 0
+        seconds: 3
+        milliseconds: 0
+    - service: input_boolean.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id: input_boolean.3dprinter_saftey
+  mode: single
+- id: '1723572617932'
+  alias: 3D Printer ON/OFF
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_boolean.3dprinter_power
+    to: 'on'
+    id: t01
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 1
+  - platform: state
+    entity_id:
+    - input_boolean.3dprinter_power
+    to: 'off'
+    for:
+      hours: 0
+      minutes: 0
+      seconds: 0
+    id: t02
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - t01
+      sequence:
+      - service: switch.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: switch.3d_printer
+    - conditions:
+      - condition: and
+        conditions:
+        - condition: trigger
+          id:
+          - t02
+        - condition: state
+          entity_id: input_boolean.3dprinter_safety
+          state: 'on'
+      sequence:
+      - service: switch.turn_off
+        metadata: {}
+        data: {}
+        target:
+          entity_id: switch.3d_printer
+    - conditions:
+      - condition: and
+        conditions:
+        - condition: trigger
+          id:
+          - t02
+        - condition: state
+          entity_id: input_boolean.3dprinter_safety
+          state: 'off'
+      sequence:
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 1
+          milliseconds: 0
+      - service: input_boolean.turn_on
+        metadata: {}
+        data: {}
+        target:
+          entity_id: input_boolean.3dprinter_power
+  mode: single

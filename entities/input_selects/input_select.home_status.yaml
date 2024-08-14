@@ -1,9 +1,0 @@
----
-home_status:
-  name: Home Status
-  #icon: mdi:castle
-  options:
-  - "Disarmed"
-  - "Away" #Arm Away
-  - "Armed" #Arm Home
-  - "Sleeping" #Arm Night

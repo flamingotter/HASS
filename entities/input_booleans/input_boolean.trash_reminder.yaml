@@ -1,5 +1,0 @@
----
-trash_reminder:
-  name: Trash Reminder
-  initial: off
-  icon: mdi:delete-alert

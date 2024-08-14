@@ -1,7 +1,0 @@
----
-gh_temp_min:
-  name: Greenhouse Temp Min
-  icon: mdi:thermometer-minus
-  min: 0
-  max: 79
-  step: 1

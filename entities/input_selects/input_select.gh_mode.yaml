@@ -1,8 +1,0 @@
----
-gh_mode:
-  name: Greenhouse Mode
-  icon: mdi:home
-  options:
-  - "Normal"
-  - "Germination"
-  - "Empty"
