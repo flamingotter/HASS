@@ -28,6 +28,8 @@ secrets.yaml
 known_devices.yaml
 *.db
 home-assistant.log
+home-assistant.log.1
+home-assistant.log.fault
 gitupdate.sh
 OZW_Log.txt
 ip_bans.yaml

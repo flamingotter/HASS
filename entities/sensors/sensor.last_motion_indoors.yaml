@@ -7,9 +7,8 @@ sensors:
     value_template: >
       {%- set sensors = [
         states.binary_sensor.motion_media_room, 
-        states.binary_sensor.motion_dining, 
+        states.binary_sensor.kitchen_dining_motion, 
         states.binary_sensor.motion_basement_stairs, 
-        states.binary_sensor.motion_kitchen, 
         states.binary_sensor.motion_parlor, 
         states.binary_sensor.motion_mbr, 
         states.binary_sensor.motion_office, 

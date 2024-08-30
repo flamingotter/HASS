@@ -4,24 +4,32 @@ platform: template
 sensors:
   home_status:
     friendly_name: 'Home'
-    #entity_id: input_select.home_status
+    #entity_id: 'alarm_control_panel.home_alarm
     value_template: >-
-      {% if states.input_select.home_status.state == 'Disarmed' %}
+      {% if states.alarm_control_panel.home_alarm.state == 'disarmed' %}
         Disarmed
-      {% elif states.input_select.home_status.state == 'Armed' %}
-        Armed
-      {% elif states.input_select.home_status.state == 'Away' %}
-        Away
-      {% elif states.input_select.home_status.state == 'Sleeping' %}
-        Sleeping
+      {% elif states.alarm_control_panel.home_alarm.state == 'armed_away' %}
+        Armed Away
+      {% elif states.alarm_control_panel.home_alarm.state == 'armed_vacation' %}
+        Vacation
+      {% elif states.alarm_control_panel.home_alarm.state == 'armed_night' %}
+        Armed Night
+      {% elif states.alarm_control_panel.home_alarm.state == 'armed_home' %}
+        Armed Home
+      {% elif states.alarm_control_panel.home_alarm.state == 'tirggered' %}
+        Triggered
       {% endif %}
     icon_template: >-
-      {% if states.input_select.home_status.state == 'Disarmed' %}
+      {% if states.alarm_control_panel.home_alarm.state == 'disarmed' %}
         mdi:bell-off-outline
-      {% elif states.input_select.home_status.state == 'Armed' %}
+      {% elif states.alarm_control_panel.home_alarm.state == 'armed_away' %}
         mdi:bell-outline
-      {% elif states.input_select.home_status.state == 'Away' %}
+      {% elif states.alarm_control_panel.home_alarm.state == 'armed_vacation' %}
         mdi:airplane-takeoff
-      {% elif states.input_select.home_status.state == 'Sleeping' %}
+      {% elif states.alarm_control_panel.home_alarm.state == 'armed_night' %}
         mdi:weather-night
+      {% elif states.alarm_control_panel.home_alarm.state == 'armed_home' %}
+        mdi:bell-outline
+      {% elif states.alarm_control_panel.home_alarm.state == 'triggered' %}
+        mdi:mdi:bullhorn
       {% endif %}

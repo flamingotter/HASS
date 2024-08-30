@@ -336,3 +336,14 @@ office_1_2_4_off:
   mode: single
   icon: mdi:laptop
   description: ''
+arm_night:
+  alias: Arm Night
+  sequence:
+  - action: alarm_control_panel.alarm_disarm
+    metadata: {}
+    data:
+      code: !secret alarm_panel_code
+    target:
+      entity_id: alarm_control_panel.home_alarm
+  description: Used for Alexa routine to turn off arm night with need the voice code
+  fields: {}
