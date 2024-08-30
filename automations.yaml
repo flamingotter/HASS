@@ -386,7 +386,7 @@
   - action: alarm_control_panel.alarm_disarm
     metadata: {}
     data:
-      code: !secret alarm_panel_code
+      code: '!secret alarm_panel_code'
     target:
       entity_id: alarm_control_panel.home_alarm
   - metadata: {}
@@ -1141,7 +1141,7 @@
         - action: alarm_control_panel.alarm_disarm
           metadata: {}
           data:
-            code: !secret alarm_panel_code
+            code: '!secret alarm_panel_code'
           target:
             entity_id: alarm_control_panel.home_alarm
           enabled: true
@@ -1190,7 +1190,7 @@
         - action: alarm_control_panel.alarm_disarm
           metadata: {}
           data:
-            code: !secret alarm_panel_code
+            code: '!secret alarm_panel_code'
           target:
             entity_id: alarm_control_panel.home_alarm
           enabled: true
@@ -1216,7 +1216,7 @@
         - action: alarm_control_panel.alarm_disarm
           metadata: {}
           data:
-            code: !secret alarm_panel_code
+            code: '!secret alarm_panel_code'
           target:
             entity_id: alarm_control_panel.home_alarm
           enabled: true
