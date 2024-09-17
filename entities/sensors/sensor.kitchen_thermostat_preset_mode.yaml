@@ -4,7 +4,7 @@ sensors:
   kitchen_thermostat_preset_mode:
     friendly_name: 'Thermostat Preset Mode'
     unique_id: thermo002
-    entity_id:
-      - climate.kitchen
+    # entity_id:
+    #   - climate.kitchen
     value_template: >
       {{ state_attr('climate.kitchen', 'preset_mode') }}

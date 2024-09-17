@@ -279,14 +279,13 @@ storage_off:
 office_normal:
   alias: Office Normal
   sequence:
-  - service: light.turn_on
-    data:
+  - data:
       color_temp: 222
       brightness_pct: 100
     target:
       entity_id: light.office_lights
-  - service: light.turn_on
-    data:
+    action: light.turn_on
+  - data:
       rgb_color:
       - 0
       - 128
@@ -296,9 +295,11 @@ office_normal:
       entity_id:
       - light.wled_cloud_main
       - light.wled_cloud
-  mode: single
+    action: light.turn_on
+  mode: parallel
   icon: mdi:laptop
   description: ''
+  max: 5
 office_dim:
   alias: Office Dim
   sequence:
@@ -336,14 +337,94 @@ office_1_2_4_off:
   mode: single
   icon: mdi:laptop
   description: ''
-arm_night:
-  alias: Arm Night
+armed_night_disarm:
+  alias: Armed Night Disarm
   sequence:
-  - action: alarm_control_panel.alarm_disarm
-    metadata: {}
-    data:
-      code: !secret alarm_panel_code
-    target:
+  - if:
+    - condition: state
       entity_id: alarm_control_panel.home_alarm
-  description: Used for Alexa routine to turn off arm night with need the voice code
-  fields: {}
+      state: armed_night
+    then:
+    - action: alarm_control_panel.alarm_disarm
+      metadata: {}
+      data:
+        code: '1977'
+      target:
+        entity_id: alarm_control_panel.home_alarm
+  description: ''
+  icon: mdi:alarm
+activate_alexa_actionable_notification:
+  alias: activate_alexa_actionable_notification
+  description: Activates an actionable notification on a specific echo device
+  fields:
+    text:
+      description: The text you would like alexa to speak.
+      example: What would you like the thermostat set to?
+    event_id:
+      description: Correlation ID for event responses
+      example: ask_for_temperature
+    alexa_device:
+      description: Alexa device you want to trigger
+      example: media_player.office_dot
+    suppress_confirmation:
+      description: Set true if you want to suppress 'okay' confirmation
+      example: 'true'
+  sequence:
+  - data_template:
+      entity_id: input_text.alexa_actionable_notification
+      value: '{"text": "{{ text }}", "event": "{{ event_id }}", "suppress_confirmation":
+        "{{ suppress_confirmation }}"}'
+    action: input_text.set_value
+  - data_template:
+      entity_id: '{{ alexa_device }}'
+      media_content_type: skill
+      media_content_id: amzn1.ask.skill.c2564a56-c75d-451e-9a04-6349756d92c9
+    action: media_player.play_media
+  mode: single
+activate_mobile_actionable_notification:
+  alias: activate_mobile_actionable_notification
+  description: Activates an actionable notification on a mobile device
+  fields:
+    notify_target:
+      description: The mobile device(s) that you want to target the notification
+      example: notify.all_devices
+    title:
+      description: The text you would like in the notification title.
+      example: Feed the Pets
+    message:
+      description: The text you would like in the notification message.
+      example: It is time to feed the Cats
+    notify_tag:
+      description: The notification tag used to thread the messages
+      example: pets-notify
+    notify_action_1:
+      description: Notification actions
+      example: feed_done, feed_ignore, feed_passon, etc...
+    notify_action_1_title:
+      description: Notification actions
+      example: Done, Ignore, Ask Other, etc...
+    notify_action_2:
+      description: Notification actions
+      example: feed_done, feed_ignore, feed_passon, etc...
+    notify_action_2_title:
+      description: Notification actions
+      example: Done, Ignore, Ask Other, etc...
+    notify_action_3:
+      description: Notification actions
+      example: feed_done, feed_ignore, feed_passon, etc...
+    notify_action_3_title:
+      description: Notification actions
+      example: Done, Ignore, Ask Other, etc...
+  sequence:
+  - action: '{{ notify_target }}'
+    data:
+      message: '{{ message }}'
+      title: '{{ title }}'
+      data:
+        tag: '{{ notify_tag }}'
+        actions:
+        - action: '{{ notify_action_1 }}'
+          title: '{{ notify_action_1_title }}'
+        - action: '{{ notify_action_2 }}'
+          title: '{{ notify_action_2_title }}'
+  mode: single

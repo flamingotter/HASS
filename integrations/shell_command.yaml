@@ -1,5 +1,0 @@
----
-shell_command: 
-  grocy_consume_item: "curl -X POST http://{{server_ip}}:9283/api/stock/products/{{product_id}}/consume -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'GROCY-API-KEY: {{grocy_key}}' -H 'cache-control: no-cache' -d '{ \"amount\": {{amount}},  \"transaction_type\": \"consume\",  \"spoiled\": false }'"
-
-  grocy_add_item: "curl -X POST http://{{server_ip}}:9283/api/stock/products/{{product_id}}/add -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'GROCY-API-KEY: {{grocy_key}}' -H 'cache-control: no-cache' -d '{ \"amount\": {{amount}},  \"transaction_type\": \"purchase\" }'"

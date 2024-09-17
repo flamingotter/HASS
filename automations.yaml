@@ -186,47 +186,6 @@
         target:
           entity_id: scene.before_onair
   mode: single
-- id: '1717275334743'
-  alias: Trash Reminder
-  description: ''
-  trigger:
-  - platform: time
-    at: '17:00:00'
-  condition:
-  - condition: state
-    entity_id: binary_sensor.trash_day
-    state: 'on'
-  action:
-  - metadata: {}
-    data: {}
-    target:
-      entity_id: input_boolean.trash_reminder
-    action: input_boolean.turn_on
-  - action: notify.all_devices
-    data:
-      data:
-        tag: trash-notify
-        actions:
-        - action: trash_done
-          title: Done
-        - action: trash_passon
-          title: Ask Other
-      message: Put to the Curb
-      title: Trash and Recycling
-    enabled: true
-  - action: notify.mobile_app_josh_pixel_8_pro
-    data:
-      data:
-        tag: trash-notify
-        actions:
-        - action: trash_done
-          title: Done
-        - action: trash_passon
-          title: Ask Other
-      title: Trash and Recycling
-      message: Put to the Curb
-    enabled: false
-  mode: single
 - id: '1717275482675'
   alias: 'Office Scene '
   description: ''
@@ -275,6 +234,7 @@
         entity_id:
         - input_boolean.reading_mode
         - input_boolean.motion_lockout
+        - input_boolean.wake_up
       action: input_boolean.turn_off
     - metadata: {}
       data: {}
@@ -341,6 +301,13 @@
       target:
         entity_id: input_boolean.bedtime
       action: input_boolean.turn_off
+    - action: logbook.log
+      metadata: {}
+      data:
+        name: Bedtime
+        entity_id: automation.bedtime
+        message: Initiated Bedtime
+        domain: automation
   mode: single
 - id: '1720447716098'
   alias: Set Theme
@@ -386,7 +353,7 @@
   - action: alarm_control_panel.alarm_disarm
     metadata: {}
     data:
-      code: '!secret alarm_panel_code'
+      code: '1977'
     target:
       entity_id: alarm_control_panel.home_alarm
   - metadata: {}
@@ -401,28 +368,6 @@
       entity_id: input_boolean.wake_up
     action: input_boolean.turn_off
   mode: single
-- id: '1721330692346'
-  alias: office AL test
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - input_button.test
-  condition: []
-  action:
-  - service: switch.turn_off
-    metadata: {}
-    data: {}
-    target:
-      entity_id: switch.adaptive_lighting_sleep_mode_office
-  - service: light.turn_on
-    metadata: {}
-    data:
-      transition: 300
-      brightness_pct: 80
-    target:
-      entity_id: light.office_lights
-  mode: single
 - id: '1722628663642'
   alias: Motion Parlor
   description: ''
@@ -431,7 +376,7 @@
     entity_id:
     - binary_sensor.motion_parlor
     to: 'on'
-    id: t01
+    id: motion
   - platform: event
     event_type: timer.finished
     event_data:
@@ -454,82 +399,54 @@
     if:
     - condition: trigger
       id:
-      - t01
+      - motion
     then:
     - if:
       - condition: state
-        entity_id: timer.timer_parlor
-        state: idle
+        entity_id: light.parlor_lamps
+        state: 'on'
       then:
+      - metadata: {}
+        data: {}
+        action: timer.start
+        target:
+          entity_id: timer.timer_parlor
+      else:
       - parallel:
         - metadata: {}
           data: {}
-          action: script.parlor_on
-        - metadata: {}
-          data: {}
           action: timer.start
           target:
             entity_id: timer.timer_parlor
-      else:
-      - if:
-        - condition: and
-          conditions:
-          - condition: state
-            entity_id: input_boolean.cleaning
-            state: 'off'
-          - condition: state
-            entity_id: sensor.last_motion_indoors
-            state: Parlor
-            enabled: true
-        then:
-        - metadata: {}
-          data: {}
-          action: timer.start
+        - action: light.turn_on
+          metadata: {}
+          data:
+            transition: 1
           target:
-            entity_id: timer.timer_parlor
+            entity_id: light.parlor_lamps
   - if:
-    - condition: trigger
-      id:
-      - t02
+    - condition: and
+      conditions:
+      - condition: trigger
+        id:
+        - t02
+      - condition: state
+        entity_id: input_boolean.cleaning
+        state: 'off'
+      - condition: not
+        conditions:
+        - condition: state
+          entity_id: sensor.last_motion_indoors
+          state: Parlor
     then:
-    - action: script.parlor_off
+    - action: light.turn_off
       metadata: {}
-      data: {}
-  mode: single
-- id: '1723060117455'
-  alias: Low Battery Notifications & Actions
-  description: ''
-  use_blueprint:
-    path: Blackshome/low-battery-notifications-and-actions.yaml
-    input:
-      include_button: enable_button_trigger
-      button_entity: input_button.check_batteries
-      include_time: time_enabled
-      time: '17:00:00'
-      include_easy_notify: enable_easy_notify
-      notify_device:
-      - de59f44bd04cf3c8c7ba5ab30d27f57f
-- id: '1723572383977'
-  alias: 3D Printer Safety
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - input_boolean.3dprinter_safety
-    to: 'on'
-  condition: []
-  action:
-  - sequence:
-    - delay:
-        hours: 0
-        minutes: 0
-        seconds: 3
-        milliseconds: 0
-    - metadata: {}
-      data: {}
-      action: input_boolean.turn_off
+      data:
+        transition: 1
       target:
-        entity_id: input_boolean.3dprinter_safety
+        entity_id:
+        - light.parlor_lamps
+        - light.front_door_light
   mode: single
 - id: '1723572617932'
   alias: 3D Printer ON/OFF
@@ -552,7 +469,13 @@
       hours: 0
       minutes: 0
       seconds: 0
-    id: t02
+    id: power off
+  - platform: state
+    entity_id:
+    - input_boolean.3dprinter_safety
+    to: 'off'
+    id: t03
+    enabled: true
   condition: []
   action:
   - choose:
@@ -561,47 +484,58 @@
         id:
         - t01
       sequence:
-      - service: switch.turn_on
-        metadata: {}
+      - metadata: {}
         data: {}
         target:
           entity_id: switch.3d_printer
+        action: switch.turn_on
     - conditions:
-      - condition: and
-        conditions:
-        - condition: trigger
-          id:
-          - t02
-        - condition: state
-          entity_id: input_boolean.3dprinter_safety
-          state: 'on'
+      - condition: trigger
+        id:
+        - power off
       sequence:
-      - service: switch.turn_off
-        metadata: {}
-        data: {}
-        target:
-          entity_id: switch.3d_printer
-    - conditions:
-      - condition: and
-        conditions:
-        - condition: trigger
-          id:
-          - t02
+      - if:
         - condition: state
           entity_id: input_boolean.3dprinter_safety
           state: 'off'
+          for:
+            hours: 0
+            minutes: 0
+            seconds: 0
+        then:
+        - action: switch.turn_off
+          metadata: {}
+          data: {}
+          target:
+            entity_id: switch.3d_printer
+        else:
+        - delay:
+            hours: 0
+            minutes: 0
+            seconds: 1
+            milliseconds: 0
+        - action: input_boolean.turn_on
+          metadata: {}
+          data: {}
+          target:
+            entity_id: input_boolean.3dprinter_power
+    - conditions:
+      - condition: trigger
+        id:
+        - t03
       sequence:
-      - delay:
-          hours: 0
-          minutes: 0
-          seconds: 1
-          milliseconds: 0
-      - service: input_boolean.turn_on
-        metadata: {}
-        data: {}
-        target:
-          entity_id: input_boolean.3dprinter_power
-  mode: single
+      - sequence:
+        - delay:
+            hours: 0
+            minutes: 0
+            seconds: 10
+            milliseconds: 0
+        - action: input_boolean.turn_on
+          target:
+            entity_id: input_boolean.3dprinter_safety
+          data: {}
+  mode: parallel
+  max: 10
 - id: '1723652703682'
   alias: 3D Print Progress Notify
   description: ''
@@ -634,7 +568,7 @@
         data:
           message: 3D print is fifty percent complete
           target: media_player.media_room, media_player.counter, media_player.garage_dot
-      - service: notify.mobile_app_josh_pixel_8_pro
+      - service: notify.mobile_app_josh_mobile
         metadata: {}
         data:
           title: 50% Complete
@@ -649,7 +583,7 @@
         data:
           message: Pardon the interuption, your 3D print has finished
           target: media_player.media_room, media_player.counter, media_player.garage_dot
-      - service: notify.mobile_app_josh_pixel_8_pro
+      - service: notify.mobile_app_josh_mobile
         metadata: {}
         data:
           message: Print has been finished
@@ -1002,7 +936,7 @@
                 - action: cleaning_off
                   title: 'Off'
                 - action: cleaning_snooze
-                  title: Snooze
+                  title: Snooze 30min
             action: notify.all_devices
     - conditions:
       - condition: trigger
@@ -1091,182 +1025,113 @@
     - input_select.josh_status
     - input_select.mj_status
     id: person status
+    alias: person status
+  - platform: time
+    at: 08:00:00
+    id: 0800
+    alias: 0800
   condition: []
   action:
-  - parallel:
-    - alias: Changing Alarm Panel States
-      parallel:
-      - alias: Disarmed Josh
-        if:
-        - condition: trigger
-          id:
-          - person status
-        - condition: not
-          conditions:
-          - condition: state
-            entity_id: alarm_control_panel.home_alarm
-            state: disarmed
-          - condition: state
-            entity_id: alarm_control_panel.home_alarm
-            state: armed_night
-          alias: Is Not Disarmed or Armed Night
-          enabled: true
-        - condition: or
-          conditions:
-          - condition: state
-            entity_id: input_select.josh_status
-            state: Just Arrived
-          - condition: state
-            entity_id: input_select.josh_status
-            state: Home
-          alias: Josh is Home OR Just Arrived
-        - condition: or
-          conditions:
-          - condition: state
-            entity_id: input_select.mj_status
-            state: Away
-          - condition: state
-            entity_id: input_select.mj_status
-            state: Extended Away
-          - condition: state
-            entity_id: input_select.mj_status
-            state: Work
-          alias: MJ is in an Away State
-        then:
-        - action: notify.mobile_app_josh_pixel_8_pro
-          metadata: {}
-          data:
-            message: Josh has Arrived Home
-            title: Disarmed
-        - action: alarm_control_panel.alarm_disarm
-          metadata: {}
-          data:
-            code: '!secret alarm_panel_code'
-          target:
-            entity_id: alarm_control_panel.home_alarm
-          enabled: true
-      - alias: Disarmed MJ
-        if:
-        - condition: trigger
-          id:
-          - person status
-        - condition: not
-          conditions:
-          - condition: state
-            entity_id: alarm_control_panel.home_alarm
-            state: disarmed
-          - condition: state
-            entity_id: alarm_control_panel.home_alarm
-            state: armed_night
-          alias: Is Not Disarmed or Armed Night
-          enabled: true
-        - alias: Josh is Home OR Just Arrived
-          condition: or
-          conditions:
-          - condition: state
-            entity_id: input_select.mj_status
-            state: Just Arrived
-          - condition: state
-            entity_id: input_select.mj_status
-            state: Home
-        - alias: Josh is in an Away State
-          condition: or
-          conditions:
-          - condition: state
-            entity_id: input_select.josh_status
-            state: Away
-          - condition: state
-            entity_id: input_select.josh_status
-            state: Extended Away
-          - condition: state
-            entity_id: input_select.josh_status
-            state: Work
-        then:
-        - action: notify.mobile_app_josh_pixel_8_pro
-          metadata: {}
-          data:
-            message: MJ has arrived Home
-            title: Disarmed
-        - action: alarm_control_panel.alarm_disarm
-          metadata: {}
-          data:
-            code: '!secret alarm_panel_code'
-          target:
-            entity_id: alarm_control_panel.home_alarm
-          enabled: true
-      - alias: Both Home Disarmed
-        if:
-        - condition: and
-          conditions:
-          - condition: state
-            entity_id: input_select.josh_status
-            state: Home
-            for:
-              hours: 0
-              minutes: 1
-              seconds: 0
-          - condition: state
-            entity_id: input_select.mj_status
-            state: Home
-            for:
-              hours: 0
-              minutes: 1
-              seconds: 0
-        then:
-        - action: alarm_control_panel.alarm_disarm
-          metadata: {}
-          data:
-            code: '!secret alarm_panel_code'
-          target:
-            entity_id: alarm_control_panel.home_alarm
-          enabled: true
-        - action: notify.mobile_app_josh_pixel_8_pro
-          metadata: {}
-          data:
-            message: Josh and MJ are both Home
-            title: Disarmed
-        enabled: false
-      - alias: Armed Vacation
-        if:
-        - condition: and
-          conditions:
-          - condition: trigger
-            id:
-            - person status
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - person status
+      sequence:
+      - choose:
+        - conditions:
+          - condition: not
+            conditions:
+            - condition: state
+              entity_id: alarm_control_panel.home_alarm
+              state: disarmed
+            - condition: state
+              entity_id: alarm_control_panel.home_alarm
+              state: armed_night
+            alias: Is Not Disarmed or Armed Night
             enabled: true
-          - condition: state
-            entity_id: input_select.josh_status
-            state: Extended Away
-          - condition: state
-            entity_id: input_select.mj_status
-            state: Extended Away
-        then:
-        - action: alarm_control_panel.alarm_arm_vacation
-          metadata: {}
-          data: {}
-          target:
-            entity_id: alarm_control_panel.home_alarm
-          enabled: true
-        - action: notify.mobile_app_josh_pixel_8_pro
-          metadata: {}
-          data:
-            title: Armed Vacation / Eco Mode
-            message: Home is set to Armed Vacation. Eco Mode Activated. Set number
-              of days until return to normal.
+          - alias: Josh is Home OR Just Arrived
+            condition: or
+            conditions:
+            - condition: state
+              entity_id: input_select.josh_status
+              state: Just Arrived
+            - condition: state
+              entity_id: input_select.josh_status
+              state: Home
+          - condition: or
+            conditions:
+            - condition: state
+              entity_id: input_select.mj_status
+              state: Away
+            - condition: state
+              entity_id: input_select.mj_status
+              state: Extended Away
+            - condition: state
+              entity_id: input_select.mj_status
+              state: Work
+            alias: MJ is in an Away State
+          sequence:
+          - action: notify.mobile_app_josh_mobile
+            metadata: {}
             data:
-              tag: eco-activate
-              actions:
-              - action: REPLY
-                title: Set Days to Normal
-              - action: eco-ignore
-                title: Ignore
-      - alias: Armed Away
-        if:
-        - condition: trigger
-          id:
-          - person status
-        then:
-        - if:
+              message: Josh has Arrived Home
+              title: Disarmed
+          - action: alarm_control_panel.alarm_disarm
+            metadata: {}
+            data:
+              code: '1977'
+            enabled: true
+            target:
+              entity_id: alarm_control_panel.home_alarm
+          alias: Josh Disarmed
+        - conditions:
+          - condition: not
+            conditions:
+            - condition: state
+              entity_id: alarm_control_panel.home_alarm
+              state: disarmed
+            - condition: state
+              entity_id: alarm_control_panel.home_alarm
+              state: armed_night
+            alias: Is Not Disarmed or Armed Night
+            enabled: true
+          - alias: MJ is Home OR Just Arrived
+            condition: or
+            conditions:
+            - condition: state
+              entity_id: input_select.mj_status
+              state: Just Arrived
+            - condition: state
+              entity_id: input_select.mj_status
+              state: Home
+          - alias: Josh is in an Away State
+            condition: or
+            conditions:
+            - condition: state
+              entity_id: input_select.josh_status
+              state: Away
+            - condition: state
+              entity_id: input_select.josh_status
+              state: Extended Away
+            - condition: state
+              entity_id: input_select.josh_status
+              state: Work
+          sequence:
+          - action: notify.mobile_app_josh_mobile
+            metadata: {}
+            data:
+              message: MJ has Arrived Home
+              title: Disarmed
+          - action: alarm_control_panel.alarm_disarm
+            metadata: {}
+            data:
+              code: '1977'
+            enabled: true
+            target:
+              entity_id: alarm_control_panel.home_alarm
+          alias: MJ Disarmed
+        - conditions:
           - condition: and
             conditions:
             - condition: state
@@ -1276,7 +1141,7 @@
               entity_id: input_select.mj_status
               state: Away
             alias: Away / Away
-          then:
+          sequence:
           - if:
             - condition: state
               entity_id: input_boolean.house_guests
@@ -1300,184 +1165,219 @@
               data: {}
               target:
                 entity_id: alarm_control_panel.home_alarm
-          else:
-          - if:
-            - condition: and
-              conditions:
-              - condition: state
-                entity_id: input_select.josh_status
-                state: Away
-              - condition: state
-                entity_id: input_select.mj_status
-                state: Work
-            then:
-            - if:
-              - condition: state
-                entity_id: input_boolean.house_guests
-                state: 'on'
-              then:
-              - action: notify.all_devices
-                metadata: {}
-                data:
-                  title: Arm Away Verify
-                  message: Set home to Armed Away with House Guests?
-                  data:
-                    tag: arm-guests
-                    actions:
-                    - action: guests_arm
-                      title: Arm
-                    - action: guests_ignore
-                      title: Ignore
-              else:
-              - action: alarm_control_panel.alarm_arm_away
-                metadata: {}
-                data: {}
-                target:
-                  entity_id: alarm_control_panel.home_alarm
-            alias: Josh Away  /MJ Work
-          - if:
-            - condition: and
-              conditions:
-              - condition: state
-                entity_id: input_select.josh_status
-                state: Work
-              - condition: state
-                entity_id: input_select.mj_status
-                state: Away
-            then:
-            - if:
-              - condition: state
-                entity_id: input_boolean.house_guests
-                state: 'on'
-              then:
-              - action: notify.all_devices
-                metadata: {}
-                data:
-                  title: Arm Away Verify
-                  message: Set home to Armed Away with House Guests?
-                  data:
-                    tag: arm-guests
-                    actions:
-                    - action: guests_arm
-                      title: Arm
-                    - action: guests_ignore
-                      title: Ignore
-              else:
-              - action: alarm_control_panel.alarm_arm_away
-                metadata: {}
-                data: {}
-                target:
-                  entity_id: alarm_control_panel.home_alarm
-            alias: Josh Work / MJ Away
-          - if:
-            - condition: and
-              conditions:
-              - condition: state
-                entity_id: input_select.josh_status
-                state: Work
-              - condition: state
-                entity_id: input_select.mj_status
-                state: Work
-            then:
-            - if:
-              - condition: state
-                entity_id: input_boolean.house_guests
-                state: 'on'
-              then:
-              - action: notify.all_devices
-                metadata: {}
-                data:
-                  title: Arm Away Verify
-                  message: Set home to Armed Away with House Guests?
-                  data:
-                    tag: arm-guests
-                    actions:
-                    - action: guests_arm
-                      title: Arm
-                    - action: guests_ignore
-                      title: Ignore
-              else:
-              - action: alarm_control_panel.alarm_arm_away
-                metadata: {}
-                data: {}
-                target:
-                  entity_id: alarm_control_panel.home_alarm
-            alias: Work / Work
-          - if:
-            - condition: and
-              conditions:
-              - condition: state
-                entity_id: input_select.josh_status
-                state: Away
-              - condition: state
-                entity_id: input_select.mj_status
-                state: Extended Away
-            then:
-            - if:
-              - condition: state
-                entity_id: input_boolean.house_guests
-                state: 'on'
-              then:
-              - action: notify.all_devices
-                metadata: {}
-                data:
-                  title: Arm Away Verify
-                  message: Set home to Armed Away with House Guests?
-                  data:
-                    tag: arm-guests
-                    actions:
-                    - action: guests_arm
-                      title: Arm
-                    - action: guests_ignore
-                      title: Ignore
-              else:
-              - action: alarm_control_panel.alarm_arm_away
-                metadata: {}
-                data: {}
-                target:
-                  entity_id: alarm_control_panel.home_alarm
+          alias: Away / Away
+        - conditions:
+          - condition: and
+            conditions:
+            - condition: state
+              entity_id: input_select.josh_status
+              state: Away
+            - condition: state
+              entity_id: input_select.mj_status
+              state: Extended Away
             alias: Josh Away / MJ Ext Away
+          sequence:
           - if:
-            - condition: and
-              conditions:
-              - condition: state
-                entity_id: input_select.josh_status
-                state: Extended Away
-              - condition: state
-                entity_id: input_select.mj_status
-                state: Away
+            - condition: state
+              entity_id: input_boolean.house_guests
+              state: 'on'
             then:
-            - if:
-              - condition: state
-                entity_id: input_boolean.house_guests
-                state: 'on'
-              then:
-              - action: notify.all_devices
-                metadata: {}
+            - action: notify.all_devices
+              metadata: {}
+              data:
+                title: Arm Away Verify
+                message: Set home to Armed Away with House Guests?
                 data:
-                  title: Arm Away Verify
-                  message: Set home to Armed Away with House Guests?
-                  data:
-                    tag: arm-guests
-                    actions:
-                    - action: guests_arm
-                      title: Arm
-                    - action: guests_ignore
-                      title: Ignore
-              else:
-              - action: alarm_control_panel.alarm_arm_away
-                metadata: {}
-                data: {}
-                target:
-                  entity_id: alarm_control_panel.home_alarm
-            alias: Josh Ext Away / MJ Away
-    - alias: Armed Away Functions
-      if:
+                  tag: arm-guests
+                  actions:
+                  - action: guests_arm
+                    title: Arm
+                  - action: guests_ignore
+                    title: Ignore
+            else:
+            - action: alarm_control_panel.alarm_arm_away
+              metadata: {}
+              data: {}
+              target:
+                entity_id: alarm_control_panel.home_alarm
+          alias: Josh Away / MJ Ext Away
+        - conditions:
+          - alias: Josh Away / MJ Ext Away
+            condition: and
+            conditions:
+            - condition: state
+              entity_id: input_select.josh_status
+              state: Extended Away
+            - condition: state
+              entity_id: input_select.mj_status
+              state: Away
+          sequence:
+          - if:
+            - condition: state
+              entity_id: input_boolean.house_guests
+              state: 'on'
+            then:
+            - action: notify.all_devices
+              metadata: {}
+              data:
+                title: Arm Away Verify
+                message: Set home to Armed Away with House Guests?
+                data:
+                  tag: arm-guests
+                  actions:
+                  - action: guests_arm
+                    title: Arm
+                  - action: guests_ignore
+                    title: Ignore
+            else:
+            - action: alarm_control_panel.alarm_arm_away
+              metadata: {}
+              data: {}
+              target:
+                entity_id: alarm_control_panel.home_alarm
+          alias: Josh Ext Away / MJ Away
+        - conditions:
+          - alias: Work / Work
+            condition: and
+            conditions:
+            - condition: state
+              entity_id: input_select.josh_status
+              state: Work
+            - condition: state
+              entity_id: input_select.mj_status
+              state: Work
+          sequence:
+          - if:
+            - condition: state
+              entity_id: input_boolean.house_guests
+              state: 'on'
+            then:
+            - action: notify.all_devices
+              metadata: {}
+              data:
+                title: Arm Away Verify
+                message: Set home to Armed Away with House Guests?
+                data:
+                  tag: arm-guests
+                  actions:
+                  - action: guests_arm
+                    title: Arm
+                  - action: guests_ignore
+                    title: Ignore
+            else:
+            - action: alarm_control_panel.alarm_arm_away
+              metadata: {}
+              data: {}
+              target:
+                entity_id: alarm_control_panel.home_alarm
+          alias: Work / Work
+        - conditions:
+          - alias: Work / Away
+            condition: and
+            conditions:
+            - condition: state
+              entity_id: input_select.josh_status
+              state: Work
+            - condition: state
+              entity_id: input_select.mj_status
+              state: Away
+          sequence:
+          - if:
+            - condition: state
+              entity_id: input_boolean.house_guests
+              state: 'on'
+            then:
+            - action: notify.all_devices
+              metadata: {}
+              data:
+                title: Arm Away Verify
+                message: Set home to Armed Away with House Guests?
+                data:
+                  tag: arm-guests
+                  actions:
+                  - action: guests_arm
+                    title: Arm
+                  - action: guests_ignore
+                    title: Ignore
+            else:
+            - action: alarm_control_panel.alarm_arm_away
+              metadata: {}
+              data: {}
+              target:
+                entity_id: alarm_control_panel.home_alarm
+          alias: Josh Work / MJ Away
+        - conditions:
+          - alias: Josh Away / MJ Work
+            condition: and
+            conditions:
+            - condition: state
+              entity_id: input_select.josh_status
+              state: Away
+            - condition: state
+              entity_id: input_select.mj_status
+              state: Work
+          sequence:
+          - if:
+            - condition: state
+              entity_id: input_boolean.house_guests
+              state: 'on'
+            then:
+            - action: notify.all_devices
+              metadata: {}
+              data:
+                title: Arm Away Verify
+                message: Set home to Armed Away with House Guests?
+                data:
+                  tag: arm-guests
+                  actions:
+                  - action: guests_arm
+                    title: Arm
+                  - action: guests_ignore
+                    title: Ignore
+            else:
+            - action: alarm_control_panel.alarm_arm_away
+              metadata: {}
+              data: {}
+              target:
+                entity_id: alarm_control_panel.home_alarm
+          alias: Josh Away / MJ Work
+        - conditions:
+          - alias: Ext Away / Ext Away
+            condition: and
+            conditions:
+            - condition: state
+              entity_id: input_select.josh_status
+              state: Extended Away
+            - condition: state
+              entity_id: input_select.mj_status
+              state: Extended Away
+          sequence:
+          - action: alarm_control_panel.alarm_arm_vacation
+            metadata: {}
+            data: {}
+            target:
+              entity_id: alarm_control_panel.home_alarm
+            enabled: true
+          - action: notify.mobile_app_josh_mobile
+            metadata: {}
+            data:
+              title: Armed Vacation / Eco Mode
+              message: Home is set to Armed Vacation. Eco Mode Activated. Set number
+                of days until return to normal.
+              data:
+                tag: eco-activate
+                actions:
+                - action: REPLY
+                  title: Set Days to Normal
+                - action: eco-ignore
+                  title: Ignore
+          alias: Armed Vacation
+    - conditions:
       - condition: trigger
         id:
         - armed away
         enabled: true
-      then:
+      sequence:
       - parallel:
         - action: lock.lock
           metadata: {}
@@ -1500,18 +1400,17 @@
           data: {}
           target:
             entity_id: input_boolean.camera_alerts
-        - action: notify.mobile_app_josh_pixel_8_pro
+        - action: notify.mobile_app_josh_mobile
           metadata: {}
           data:
             title: Armed Away
             message: Both Josh and MJ are Away!
-      enabled: true
-    - alias: Armed Night to Disarmed Functions (Morning)
-      if:
+    - conditions:
       - condition: trigger
         id:
         - disarmed from armed night
-      then:
+        - 0800
+      sequence:
       - action: switch.turn_off
         metadata: {}
         data: {}
@@ -1534,14 +1433,15 @@
           - media_player.media_room
           - media_player.office_dot
           - media_player.parlor
-    - alias: Disarmed Functions
-      if:
-      - condition: trigger
-        id:
-        - disarmed
-      - condition: template
-        value_template: '{{ trigger.from_stat.state != "armed night" }}'
-      then:
+    - conditions:
+      - condition: and
+        conditions:
+        - condition: trigger
+          id:
+          - disarmed
+        - condition: template
+          value_template: '{{ trigger.from_state.state != "armed_night" }}'
+      sequence:
       - if:
         - condition: sun
           before: sunset
@@ -1566,11 +1466,29 @@
               the residence has remained secure during you time away", "One word.
               Beanie Weenee"] | random }}'
             target: media_player.counter
+        - delay:
+            hours: 0
+            minutes: 0
+            seconds: 5
+            milliseconds: 0
+        - action: media_player.volume_set
+          metadata: {}
+          data:
+            volume_level: 0.3
+          target:
+            entity_id: media_player.counter
         else:
         - parallel:
-          - action: script.disarmed_night
+          - action: light.turn_on
             metadata: {}
-            data: {}
+            data:
+              transition: 2
+              brightness_pct: 100
+              kelvin: 4500
+            target:
+              entity_id:
+              - light.kitchen
+              - light.parlor_lamps
           - sequence:
             - wait_template: '{{ is_state(''binary_sensor.motion_kitchen'', ''on'')
                 }}'
@@ -1589,31 +1507,19 @@
                   still plotting against you", "Battle Cat was worried that you would
                   never return"] | random }}'
                 target: media_player.counter
+            - delay:
+                hours: 0
+                minutes: 0
+                seconds: 5
+                milliseconds: 0
+            - action: media_player.volume_set
+              metadata: {}
+              data:
+                volume_level: 0.3
+              target:
+                entity_id: media_player.counter
+      alias: When triggered by disarmed
   mode: parallel
-- id: '1724371894098'
-  alias: Variables Test
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - input_button.test
-    id: t01
-  condition: []
-  action:
-  - if:
-    - condition: trigger
-      id:
-      - t01
-    then:
-    - variables:
-        away_msg: Both Josh and MJ are Away!
-      alias: Define Away Msg
-    - action: notify.mobile_app_josh_pixel_8_pro
-      metadata: {}
-      data:
-        title: Away Test
-        message: The is the {{ away_msg }}
-  mode: single
 - id: '1724440692522'
   alias: Motion Kitchen/Dining
   description: ''
@@ -1622,7 +1528,8 @@
     entity_id:
     - binary_sensor.kitchen_dining_motion
     to: 'on'
-    id: t01
+    id: motion
+    alias: motion
   - platform: event
     event_type: timer.finished
     event_data:
@@ -1642,46 +1549,48 @@
     if:
     - condition: trigger
       id:
-      - t01
+      - motion
     then:
     - if:
       - condition: state
-        entity_id: timer.timer_kitchen_dining
-        state: idle
+        entity_id: light.kitchen
+        state: 'on'
       then:
+      - metadata: {}
+        data: {}
+        action: timer.start
+        target:
+          entity_id: timer.timer_kitchen_dining
+      else:
       - parallel:
-        - action: script.kitchen_on
-          data: {}
         - metadata: {}
           data: {}
           action: timer.start
           target:
             entity_id: timer.timer_kitchen_dining
-      else:
-      - if:
-        - condition: and
-          conditions:
-          - condition: state
-            entity_id: input_boolean.cleaning
-            state: 'off'
-          - condition: state
-            entity_id: sensor.last_motion_indoors
-            state: Kitchen Dining
-            enabled: true
-        then:
-        - metadata: {}
+        - action: light.turn_on
+          metadata: {}
           data: {}
-          action: timer.start
           target:
-            entity_id:
-            - timer.timer_kitchen_dining
+            entity_id: light.kitchen
   - if:
     - condition: trigger
       id:
       - t02
+    - condition: state
+      entity_id: input_boolean.cleaning
+      state: 'off'
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: sensor.last_motion_indoors
+        state: Kitchen Dining
     then:
-    - action: script.kitchen_off
+    - action: light.turn_off
+      metadata: {}
       data: {}
+      target:
+        entity_id: light.kitchen
   mode: single
 - id: '1724443335411'
   alias: Motion Storage
@@ -1691,7 +1600,8 @@
     entity_id:
     - binary_sensor.motion_storage_room
     to: 'on'
-    id: t01
+    id: motion
+    alias: motion
   - platform: event
     event_type: timer.finished
     event_data:
@@ -1711,46 +1621,54 @@
     if:
     - condition: trigger
       id:
-      - t01
+      - motion
     then:
     - if:
       - condition: state
-        entity_id: timer.timer_storage
-        state: idle
+        entity_id: light.storage_lights
+        state: 'on'
       then:
+      - metadata: {}
+        data: {}
+        action: timer.start
+        target:
+          entity_id:
+          - timer.timer_storage
+      else:
       - parallel:
-        - action: script.storage_on
-          data: {}
         - metadata: {}
           data: {}
           action: timer.start
           target:
             entity_id:
             - timer.timer_storage
-      else:
-      - if:
-        - condition: and
-          conditions:
-          - condition: state
-            entity_id: input_boolean.cleaning
-            state: 'off'
-          - condition: state
-            entity_id: sensor.last_motion_indoors
-            state: Storage Room
-            enabled: true
-        then:
-        - metadata: {}
-          data: {}
-          action: timer.start
+        - action: light.turn_on
+          metadata: {}
+          data:
+            brightness_pct: 100
+            kelvin: 4500
           target:
-            entity_id: timer.timer_storage
+            entity_id: light.storage_lights
+    else: []
+    enabled: true
   - if:
     - condition: trigger
       id:
       - t02
+    - condition: state
+      entity_id: input_boolean.cleaning
+      state: 'off'
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: sensor.last_motion_indoors
+        state: Storage
     then:
-    - action: script.storage_off
+    - action: light.turn_off
+      metadata: {}
       data: {}
+      target:
+        entity_id: light.storage_lights
   mode: single
 - id: '1724443780328'
   alias: Motion Basement Stairs
@@ -1760,7 +1678,8 @@
     entity_id:
     - binary_sensor.motion_basement_stairs
     to: 'on'
-    id: t01
+    id: motion
+    alias: motion
   - platform: event
     event_type: timer.finished
     event_data:
@@ -1780,43 +1699,42 @@
     if:
     - condition: trigger
       id:
-      - t01
+      - motion
     then:
-    - if:
-      - condition: state
-        entity_id: timer.timer_basement_stairs
-        state: idle
-      then:
-      - parallel:
-        - action: script.basement_stairs_on
-          data: {}
-        - metadata: {}
-          data: {}
-          action: timer.start
-          target:
-            entity_id:
-            - timer.timer_basement_stairs
-      else:
-      - if:
-        - condition: and
-          conditions:
-          - condition: state
-            entity_id: input_boolean.cleaning
-            state: 'off'
-        then:
-        - metadata: {}
-          data: {}
-          action: timer.start
-          target:
-            entity_id:
-            - timer.timer_basement_stairs
+    - parallel:
+      - metadata: {}
+        data: {}
+        action: timer.start
+        target:
+          entity_id:
+          - timer.timer_basement_stairs
+      - action: light.turn_on
+        metadata: {}
+        data:
+          brightness_pct: 100
+          kelvin: 4500
+        target:
+          entity_id: light.stair_light
   - if:
     - condition: trigger
       id:
       - t02
+    - condition: state
+      entity_id: input_boolean.cleaning
+      state: 'off'
     then:
-    - action: script.basement_stairs_off
-      data: {}
+    - action: lifx.effect_colorloop
+      metadata: {}
+      data:
+        saturation_min: 80
+        saturation_max: 100
+        period: 5
+        change: 20
+        spread: 30
+        power_on: true
+        brightness_pct: 50
+      target:
+        entity_id: light.stair_light
   mode: single
 - id: '1724444093504'
   alias: Motion Media Room
@@ -1827,7 +1745,8 @@
     - binary_sensor.motion_media_room
     - binary_sensor.motion_basement_stairs
     to: 'on'
-    id: t01
+    id: motion
+    alias: motion
   - platform: event
     event_type: timer.finished
     event_data:
@@ -1850,22 +1769,34 @@
     if:
     - condition: trigger
       id:
-      - t01
+      - motion
     then:
     - if:
       - condition: state
-        entity_id: timer.timer_media_room
-        state: idle
+        entity_id: light.media_lights
+        state: 'on'
       then:
+      - metadata: {}
+        data: {}
+        action: timer.start
+        target:
+          entity_id:
+          - timer.timer_media_room
+      else:
       - parallel:
-        - action: script.media_room_on
-          data: {}
         - metadata: {}
           data: {}
           action: timer.start
           target:
             entity_id:
             - timer.timer_media_room
+        - action: light.turn_on
+          metadata: {}
+          data:
+            brightness_pct: 50
+            kelvin: 4500
+          target:
+            entity_id: light.media_three
         - if:
           - condition: state
             entity_id: input_boolean.holiday_mode
@@ -1876,15 +1807,6 @@
             data: {}
             target:
               entity_id: light.led_tree
-      else:
-      - if: []
-        then:
-        - metadata: {}
-          data: {}
-          action: timer.start
-          target:
-            entity_id:
-            - timer.timer_media_room
   - if:
     - condition: trigger
       id:
@@ -1904,8 +1826,12 @@
         entity_id: input_boolean.cleaning
         state: 'off'
     then:
-    - action: script.media_room_off
-      data: {}
+    - action: light.turn_off
+      metadata: {}
+      data:
+        transition: 1
+      target:
+        entity_id: light.media_three
     - action: light.turn_off
       metadata: {}
       data: {}
@@ -1920,7 +1846,8 @@
     entity_id:
     - binary_sensor.motion_office
     to: 'on'
-    id: t01
+    id: motion
+    alias: motion
   - platform: event
     event_type: timer.finished
     event_data:
@@ -1940,16 +1867,49 @@
     if:
     - condition: trigger
       id:
-      - t01
+      - motion
     then:
     - if:
       - condition: state
-        entity_id: timer.timer_office
-        state: idle
+        entity_id: light.office_lights
+        state: 'on'
       then:
+      - if:
+        - condition: state
+          entity_id: binary_sensor.workday_sensor
+          state: 'on'
+        then:
+        - metadata: {}
+          data:
+            duration: 01:00:00
+          action: timer.start
+          target:
+            entity_id:
+            - timer.timer_office
+        else:
+        - metadata: {}
+          data:
+            duration: 00:30:00
+          action: timer.start
+          target:
+            entity_id:
+            - timer.timer_office
+      else:
       - parallel:
-        - action: script.office_normal
-          data: {}
+        - action: light.turn_on
+          metadata: {}
+          data:
+            brightness_pct: 100
+          target:
+            entity_id: light.office_lights
+        - action: light.turn_on
+          metadata: {}
+          data:
+            brightness_pct: 5
+          target:
+            entity_id:
+            - light.wled_cloud
+            - light.wled_cloud_main
         - action: light.turn_on
           metadata: {}
           data:
@@ -1984,42 +1944,18 @@
             target:
               entity_id:
               - timer.timer_office
-      else:
-      - if:
-        - condition: and
-          conditions:
-          - condition: state
-            entity_id: input_boolean.cleaning
-            state: 'off'
-          - condition: state
-            entity_id: sensor.last_motion_indoors
-            state: Office Motion
-            enabled: true
-        then:
-        - if:
-          - condition: state
-            entity_id: binary_sensor.workday_sensor
-            state: 'on'
-          then:
-          - metadata: {}
-            data:
-              duration: 01:00:00
-            action: timer.start
-            target:
-              entity_id:
-              - timer.timer_office
-          else:
-          - metadata: {}
-            data:
-              duration: 00:30:00
-            action: timer.start
-            target:
-              entity_id:
-              - timer.timer_office
   - if:
     - condition: trigger
       id:
       - t02
+    - condition: state
+      entity_id: input_boolean.cleaning
+      state: 'off'
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: sensor.last_motion_indoors
+        state: Office
     then:
     - action: light.turn_off
       metadata: {}
@@ -2079,11 +2015,13 @@
     event_data:
       action: hvac_done
     id: t03
+    alias: t03 hvac_done
   - platform: event
     event_type: mobile_app_notification_action
     event_data:
       action: hvac_snooze
     id: t04
+    alias: t04 hvac_snooze
   condition: []
   action:
   - if:
@@ -2091,7 +2029,7 @@
       id:
       - t01
     then:
-    - action: notify.mobile_app_josh_pixel_8_pro
+    - action: notify.mobile_app_josh_mobile
       data:
         data:
           tag: hvac-reminder
@@ -2123,7 +2061,7 @@
         minutes: 0
         seconds: 0
         milliseconds: 0
-    - action: notify.mobile_app_josh_pixel_8_pro
+    - action: notify.mobile_app_josh_mobile
       data:
         data:
           tag: hvac-reminder
@@ -2253,7 +2191,7 @@
         id:
         - t03
       sequence:
-      - action: notify.mobile_app_josh_pixel_8_pro
+      - action: notify.mobile_app_josh_mobile
         data:
           title: Trash and Recycling
           message: MJ Completed
@@ -2262,7 +2200,7 @@
         id:
         - t04
       sequence:
-      - action: notify.mobile_app_josh_pixel_8_pro
+      - action: notify.mobile_app_josh_mobile
         data:
           title: Trash and Recycling
           message: YOU'RE MY ONLY HOPE.
@@ -2321,7 +2259,7 @@
       action: feed_passon
       device_id: d818035824cf47ea
     id: t02
-  - alias: When MJ confirms Feed DONE
+  - alias: t03 When MJ confirms Feed DONE
     platform: event
     event_type: mobile_app_notification_action
     event_data:
@@ -2340,6 +2278,7 @@
     event_type: mobile_app_notification_cleared
     event_data:
       tag: pets-notify
+      action: feed_done
       device_id: 0aa560faf0e8784c
     id: mj_cleared
   - alias: Josh CLEARED
@@ -2347,6 +2286,7 @@
     event_type: mobile_app_notification_cleared
     event_data:
       tag: pets-notify
+      action: feed_done
       device_id: d818035824cf47ea
     id: josh_cleared
   condition: []
@@ -2406,7 +2346,6 @@
               media_player.parlor, media_player.bedroom, media_player.babe_cave
           enabled: true
         - action: notify.all_devices
-          metadata: {}
           data:
             title: Feed the Felions
             message: '{{ generated_content[''text''] }}'
@@ -2426,6 +2365,8 @@
         data:
           title: Pets are Fed
           message: Josh Completed
+          data:
+            tag: pets-notify
     - conditions:
       - condition: trigger
         id:
@@ -2445,16 +2386,18 @@
         id:
         - t03
       sequence:
-      - action: notify.mobile_app_josh_pixel_8_pro
+      - action: notify.mobile_app_josh_mobile
         data:
           title: Pets are Fed
           message: MJ Completed
+          data:
+            tag: pets-notify
     - conditions:
       - condition: trigger
         id:
         - t04
       sequence:
-      - action: notify.mobile_app_josh_pixel_8_pro
+      - action: notify.mobile_app_josh_mobile
         data:
           title: The Gorgons need the feeds
           message: YOU'RE MY ONLY HOPE.
@@ -2509,7 +2452,7 @@
             minutes: 0
             seconds: 2
             milliseconds: 0
-        - action: notify.mobile_app_josh_pixel_8_pro
+        - action: notify.mobile_app_josh_mobile
           metadata: {}
           data:
             title: Feed the Felions
@@ -2582,7 +2525,7 @@
       id:
       - t01
     then:
-    - action: notify.mobile_app_josh_pixel_8_pro
+    - action: notify.mobile_app_josh_mobile
       metadata: {}
       data:
         title: Armed Vacation / Eco Mode
@@ -2621,7 +2564,7 @@
           id:
           - t02
         then:
-        - action: notify.mobile_app_josh_pixel_8_pro
+        - action: notify.mobile_app_josh_mobile
           metadata: {}
           data:
             message: Eco mode activated and will return to normal operation in "{{
@@ -2630,7 +2573,7 @@
               tag: eco-activate
             title: Confirmation
         else:
-        - action: notify.mobile_app_josh_pixel_8_pro
+        - action: notify.mobile_app_josh_mobile
           metadata: {}
           data:
             message: Eco mode extended and will return to normal operation in "{{
@@ -2649,7 +2592,7 @@
       data: {}
       target:
         entity_id: input_boolean.eco_mode
-    - action: notify.mobile_app_josh_pixel_8_pro
+    - action: notify.mobile_app_josh_mobile
       metadata: {}
       data:
         message: Eco mode deactivated.
@@ -2662,7 +2605,7 @@
       id:
       - eco_activate_cleared
     then:
-    - action: notify.mobile_app_josh_pixel_8_pro
+    - action: notify.mobile_app_josh_mobile
       metadata: {}
       data:
         title: Armed Vacation / Eco Mode
@@ -2679,7 +2622,7 @@
       id:
       - eco_finish_cleared
     then:
-    - action: notify.mobile_app_josh_pixel_8_pro
+    - action: notify.mobile_app_josh_mobile
       metadata: {}
       data:
         title: Armed Vacation / Eco Mode
@@ -2697,7 +2640,7 @@
       id:
       - eco-ignore
     then:
-    - action: notify.mobile_app_josh_pixel_8_pro
+    - action: notify.mobile_app_josh_mobile
       metadata: {}
       data:
         message: Eco mode Ignored.
@@ -2730,4 +2673,569 @@
       metadata: {}
       data:
         preset_mode: none
+  mode: single
+- id: '1725030108440'
+  alias: Notify Cleaning
+  description: ''
+  trigger:
+  - platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.timer_cleaning
+    id: timer.finished
+  - alias: cleaning_off
+    platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: cleaning_off
+    id: cleaning_off
+  - alias: cleaning_snooze
+    platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: cleaning_snooze
+    id: cleaning_snooze
+  - platform: event
+    event_type: mobile_app_notification_cleared
+    event_data:
+      action: cleaning_off
+    id: cleared
+    alias: cleared
+  condition: []
+  action:
+  - alias: timer.finished
+    if:
+    - condition: trigger
+      id:
+      - timer.finished
+    then:
+    - action: notify.all_devices
+      data:
+        data:
+          tag: cleaning-warning
+          actions:
+          - action: cleaning_off
+            title: 'Off'
+          - action: cleaning_snooze
+            title: Snooze 30min
+        message: Cleaning Mode Still Needed?
+        title: Cleaning
+  - if:
+    - condition: trigger
+      id:
+      - cleaning_off
+    then:
+    - action: input_boolean.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id: input_boolean.cleaning
+    alias: cleaning_off
+  - alias: cleaning_snooze
+    if:
+    - condition: trigger
+      id:
+      - cleaning_snooze
+    then:
+    - action: timer.start
+      metadata: {}
+      data:
+        duration: 00:30:00
+      target:
+        entity_id: timer.timer_cleaning
+  - if:
+    - condition: trigger
+      id:
+      - cleared
+    then:
+    - action: notify.all_devices
+      metadata: {}
+      data:
+        message: Cleaning Mode Still Needed?
+        title: Cleaning
+        data:
+          tag: cleaning-warning
+          actions:
+          - action: cleaning_off
+            title: 'Off'
+          - action: cleaning_snooze
+            title: Snooze 30min
+    alias: cleared
+  mode: single
+- id: '1725031300511'
+  alias: Notify House Guests
+  description: ''
+  trigger:
+  - alias: guests_arm
+    platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: guests_arm
+    id: guests_arm
+  - alias: guests_ignore
+    platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: guests_ignore
+    id: guests_ignore
+  - platform: event
+    event_type: mobile_app_notification_cleared
+    event_data:
+      action_1_key: guests_arm
+    alias: cleared
+    id: cleared
+  condition: []
+  action:
+  - alias: guests_arm
+    if:
+    - condition: trigger
+      id:
+      - guests_arm
+    then:
+    - action: alarm_control_panel.alarm_arm_away
+      metadata: {}
+      data: {}
+      target:
+        entity_id: alarm_control_panel.home_alarm
+  - alias: guests_ignore
+    if:
+    - condition: trigger
+      id:
+      - guests_ignore
+    then:
+    - action: notify.all_devices
+      metadata: {}
+      data:
+        title: Arm Away Verify
+        message: Arming has been ignored.
+        data:
+          tag: arm-guests
+  - if:
+    - condition: trigger
+      id:
+      - cleared
+    then:
+    - action: notify.all_devices
+      metadata: {}
+      data:
+        message: Set home to Armed Away with House Guests?
+        title: Arm Away Verify
+        data:
+          tag: arm-guests
+          actions:
+          - action: guests_arm
+            title: Arm
+          - action: guests_ignore
+            title: Ignore
+    alias: cleared
+  mode: single
+- id: '1725558382236'
+  alias: Notify Garage
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - cover.shuttle_bay
+    id: shuttle-bay
+    alias: shuttle_bay
+  - platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.timer_garage_door
+    id: timer_finished
+    alias: timer_finished
+  - platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: close_garage
+    id: close_garage
+    alias: close_garage
+  - platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: ignore_garage
+    id: ignore_garage
+    alias: ignore_garage
+  - alias: cleared
+    platform: event
+    event_type: mobile_app_notification_cleared
+    id: cleared
+    event_data:
+      tag: garage-warning
+      action_1_key: close_garage
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - shuttle-bay
+      sequence:
+      - if:
+        - condition: state
+          entity_id: cover.shuttle_bay
+          state: open
+        then:
+        - action: timer.start
+          metadata: {}
+          data:
+            duration: 01:00:00
+          target:
+            entity_id: timer.timer_garage_door
+        else:
+        - if:
+          - condition: state
+            entity_id: cover.shuttle_bay
+            state: closed
+          then:
+          - action: timer.cancel
+            metadata: {}
+            data: {}
+            target:
+              entity_id: timer.timer_garage_door
+      alias: shuttle_bay
+    - conditions:
+      - condition: trigger
+        id:
+        - timer_finished
+      - condition: state
+        entity_id: cover.shuttle_bay
+        state: open
+      sequence:
+      - action: notify.mobile_app_josh_mobile
+        metadata: {}
+        data:
+          title: Garage Door
+          message: Garage Door Open
+          data:
+            tag: garage-warning
+            actions:
+            - action: close_garage
+              title: Close
+            - action: ignore_garage
+              title: Ignore
+      alias: timer_finished
+    - conditions:
+      - condition: trigger
+        id:
+        - close_garage
+      sequence:
+      - action: cover.close_cover
+        metadata: {}
+        data: {}
+        target:
+          entity_id: cover.shuttle_bay
+      - action: notify.all_devices
+        metadata: {}
+        data:
+          title: Garage Door
+          message: Garage Door Closing
+          data:
+            tag: garage-warning
+      alias: close_garage
+    - conditions:
+      - condition: trigger
+        id:
+        - ignore_garage
+      sequence:
+      - action: timer.start
+        data:
+          duration: 01:00:00
+      - action: notify.all_devices
+        metadata: {}
+        data:
+          title: Garage Door
+          message: Garage Door Ignored. Reminding in 1 hour
+          data:
+            tag: garage-warning
+      alias: ignore_garage
+    - conditions:
+      - condition: trigger
+        id:
+        - cleared
+      sequence:
+      - variables:
+          device_id: '{{ trigger.event.data.device_id }}'
+          cleared: true
+      - action: system_log.write
+        metadata: {}
+        data:
+          level: warning
+          message: device id= "{{ device_id }}" and cleared= "{{ cleared }}"
+  mode: single
+- id: '1726150283065'
+  alias: Josh Status
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_select.josh_status
+  condition: []
+  action:
+  - action: notify.mobile_app_josh_mobile
+    metadata: {}
+    data:
+      message: Josh just changed from {{ trigger.from_state.state }} to {{ trigger.to_state.state
+        }}
+  mode: single
+- id: '1726254835466'
+  alias: 'Person: Josh Status Update'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: person.josh
+    to: home
+    id: device_tracker_home
+  - platform: state
+    entity_id: input_select.josh_status
+    for:
+      minutes: 3
+    id: input_select_wait_arrived
+    to: Just Arrived
+  - platform: state
+    entity_id: input_select.josh_status
+    from: Just Left
+    to: Just Arrived
+    id: input_select_debounce
+  - platform: state
+    entity_id: person.josh
+    from: home
+    id: device_tracker_not_home
+  - platform: state
+    entity_id: input_select.josh_status
+    to: Just Left
+    for:
+      minutes: 3
+    id: input_select_wait_left
+  - platform: state
+    entity_id: input_select.josh_status
+    to: Away
+    for:
+      hours: 24
+    id: input_select_wait_away
+  condition:
+  - condition: template
+    value_template: '{{ trigger.to_state.state != trigger.from_state.state }}'
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: device_tracker_home
+      - condition: state
+        entity_id: input_select.josh_status
+        state: Just Left
+      sequence:
+      - target:
+          entity_id: input_select.josh_status
+        data:
+          option: Home
+        action: input_select.select_option
+    - conditions:
+      - condition: trigger
+        id: device_tracker_home
+      sequence:
+      - target:
+          entity_id: input_select.josh_status
+        data:
+          option: Just Arrived
+        action: input_select.select_option
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: trigger
+          id: input_select_wait_arrived
+        - condition: trigger
+          id: input_select_debounce
+      sequence:
+      - target:
+          entity_id: input_select.josh_status
+        data:
+          option: Home
+        action: input_select.select_option
+    - conditions:
+      - condition: trigger
+        id: device_tracker_not_home
+      sequence:
+      - target:
+          entity_id: input_select.josh_status
+        data:
+          option: Just Left
+        action: input_select.select_option
+    - conditions:
+      - condition: trigger
+        id: input_select_wait_left
+      sequence:
+      - target:
+          entity_id: input_select.josh_status
+        data:
+          option: Away
+        action: input_select.select_option
+    default:
+    - condition: trigger
+      id: input_select_wait_away
+    - target:
+        entity_id: input_select.josh_status
+      data:
+        option: Extended Away
+      action: input_select.select_option
+  mode: queued
+- id: '1726255162894'
+  alias: 'Person: MJ Status Update'
+  description: ''
+  trigger:
+  - platform: state
+    entity_id: person.mj
+    to: home
+    id: device_tracker_home
+  - platform: state
+    entity_id: input_select.mj_status
+    for:
+      minutes: 3
+    id: input_select_wait_arrived
+    to: Just Arrived
+  - platform: state
+    entity_id: input_select.mj_status
+    from: Just Left
+    to: Just Arrived
+    id: input_select_debounce
+  - platform: state
+    entity_id: person.mj
+    from: home
+    id: device_tracker_not_home
+  - platform: state
+    entity_id: input_select.mj_status
+    to: Just Left
+    for:
+      minutes: 3
+    id: input_select_wait_left
+  - platform: state
+    entity_id: input_select.mj_status
+    to: Away
+    for:
+      hours: 24
+    id: input_select_wait_away
+  condition:
+  - condition: template
+    value_template: '{{ trigger.to_state.state != trigger.from_state.state }}'
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: device_tracker_home
+      - condition: state
+        entity_id: input_select.mj_status
+        state: Just Left
+      sequence:
+      - target:
+          entity_id: input_select.mj_status
+        data:
+          option: Home
+        action: input_select.select_option
+    - conditions:
+      - condition: trigger
+        id: device_tracker_home
+      sequence:
+      - target:
+          entity_id: input_select.mj_status
+        data:
+          option: Just Arrived
+        action: input_select.select_option
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: trigger
+          id: input_select_wait_arrived
+        - condition: trigger
+          id: input_select_debounce
+      sequence:
+      - target:
+          entity_id: input_select.mj_status
+        data:
+          option: Home
+        action: input_select.select_option
+    - conditions:
+      - condition: trigger
+        id: device_tracker_not_home
+      sequence:
+      - target:
+          entity_id: input_select.mj_status
+        data:
+          option: Just Left
+        action: input_select.select_option
+    - conditions:
+      - condition: trigger
+        id: input_select_wait_left
+      sequence:
+      - target:
+          entity_id: input_select.mj_status
+        data:
+          option: Away
+        action: input_select.select_option
+    default:
+    - condition: trigger
+      id: input_select_wait_away
+    - target:
+        entity_id: input_select.mj_status
+      data:
+        option: Extended Away
+      action: input_select.select_option
+  mode: queued
+- id: '1726508948251'
+  alias: notification test
+  description: ''
+  trigger:
+  - platform: state
+    entity_id:
+    - input_button.test
+    id: button
+  - platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: test_done
+      device_id: d818035824cf47ea
+    id: done
+  - platform: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: test_passon
+      device_id: d818035824cf47ea
+    id: pass
+  - platform: event
+    event_type: mobile_app_notification_cleared
+    event_data:
+      device_id: d818035824cf47ea
+    id: cleared
+  condition: []
+  action:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - button
+      sequence:
+      - action: script.activate_mobile_actionable_notification
+        data_template:
+          notify_target: notify.mobile_app_josh_mobile
+          message: first test message
+          title: test message
+          notify_tag: test_tag
+          notify_action_1: test_done
+          notify_action_1_title: Done
+          notify_action_2: test_passon
+          notify_action_2_title: Pass
+    - conditions:
+      - condition: trigger
+        id:
+        - done
+      sequence: []
+    - conditions:
+      - condition: trigger
+        id:
+        - pass
+      sequence: []
+    - conditions:
+      - condition: trigger
+        id:
+        - cleared
+      sequence: []
   mode: single
