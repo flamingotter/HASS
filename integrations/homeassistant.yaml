@@ -3,7 +3,8 @@ homeassistant:
   allowlist_external_dirs:
     - "www/tmp/"
     - www/tmp/snapshots/parlor
-    - "/media/snapshots"
+    - "/media/snapshots"    
+    - "/media/maintenance"
 
   media_dirs:
     media: /media

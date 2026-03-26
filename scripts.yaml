@@ -610,3 +610,45 @@ welcome_home_ai_debrief:
     target:
       entity_id: input_boolean.porch_visitor_while_away
   description: ''
+system_log_maintenance_task:
+  alias: 'System: Log Maintenance Task'
+  sequence:
+  - action: timer.start
+    target:
+      entity_id: '{{ timer_entity | default(''timer.none'') }}'
+  - action: notify.send_message
+    target:
+      entity_id: notify.maintenance_log_csv
+    data:
+      message: '"{{ now().strftime(''%Y-%m-%d'') }}","{{ now().strftime(''%H:%M:%S'')
+        }}","{{ task_name | default(''Unknown Task'') }}","COMPLETED"
+
+        '
+  - action: notify.mobile_app_josh_mobile
+    data:
+      title: Log Updated
+      message: Maintenance for {{ task_name | default('Task') }} has been logged.
+      data:
+        tag: '{{ (task_name | default(''task'') | lower | replace('' '', ''-'')) }}-reminder'
+log_generator_test:
+  alias: Log Generator Test
+  sequence:
+  - action: script.system_log_maintenance_task
+    data:
+      task_name: Generator Test
+      timer_entity: timer.generator_test
+log_hvac_maintenance:
+  alias: Log HVAC Maintenance
+  sequence:
+  - action: script.system_log_maintenance_task
+    data:
+      task_name: HVAC Filter
+      timer_entity: timer.timer_hvac_filter
+log_water_maintenance:
+  alias: Log Water Filter Maintenance
+  sequence:
+  - action: script.system_log_maintenance_task
+    data:
+      task_name: Water Filter
+      timer_entity: timer.water_filter
+  description: ''
