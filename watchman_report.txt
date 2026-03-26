@@ -2,7 +2,7 @@
 
 -== Congratulations, all 53 actions from your config are available!
 
--== Missing 127 entity(ies) from 370 found in your config:
+-== Missing 126 entity(ies) from 369 found in your config:
 +--------------------------------+---------+---------------------------------------------------------------+
 | Entity ID                      | State   | Location                                                      |
 +--------------------------------+---------+---------------------------------------------------------------+
@@ -11,9 +11,6 @@
 |                                |         | 📄 .storage/lovelace.lovelace:581                             |
 |                                |         | 📄 automations.yaml:1484                                      |
 |                                |         | 📄 scripts.yaml:49                                            |
-| light.bar_light                | missing | 👥 Group: "Downstairs"                                        |
-|                                |         | 📄 .storage/lovelace.lovelace:412,432                         |
-| light.foyer_light              | missing | 👥 Group: "Downstairs"                                        |
 | camera.g3_instant_greenhouse   | missing | 📄 .storage/lovelace.dashboard_grow:24                        |
 | switch.kasa_smart_plug_9650_2  | missing | 📄 .storage/lovelace.dashboard_grow:57,176                    |
 | switch.gh_exhaust_fan          | missing | 📄 .storage/lovelace.dashboard_grow:58,160                    |
@@ -163,6 +160,7 @@
 | select.wled_node_bed_preset    | missing | 📄 .storage/lovelace.lovelace:309                             |
 | light.bedroom_fan_light        | missing | 📄 .storage/lovelace.lovelace:333                             |
 | climate.master_ac              | missing | 📄 .storage/lovelace.lovelace:374                             |
+| light.bar_light                | missing | 📄 .storage/lovelace.lovelace:412,432                         |
 | light.dining_room_light_01     | missing | 📄 .storage/lovelace.lovelace:473                             |
 | light.dining_room_light_02     | missing | 📄 .storage/lovelace.lovelace:476                             |
 | light.piano_lamp               | missing | 📄 .storage/lovelace.lovelace:525                             |
@@ -230,6 +228,6 @@
 | light.front_door_light         | missing | 📄 scenes.yaml:382                                            |
 +--------------------------------+---------+---------------------------------------------------------------+
 
--== Report created on 26 Mar 2026 09:01:56
--== Parsed 83 files in 0.03s., ignored 0 files 
--== Generated in: 0.15s. Validated in: 0.00s.
+-== Report created on 26 Mar 2026 09:08:14
+-== Parsed 83 files in 0.26s., ignored 0 files 
+-== Generated in: 0.08s. Validated in: 0.00s.
