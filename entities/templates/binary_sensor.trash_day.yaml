@@ -2,5 +2,9 @@
 binary_sensor:
   - name: "Trash Day"
     unique_id: trash_day_binary_sensor
-    state: "{{ states('sensor.dayoftheweek') == states('input_select.trash_pickup_day') }}"
+    # Calculate the day name directly to avoid "missing sensor" errors
+    state: >
+      {% set days = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'] %}
+      {% set current_day = days[now().weekday()] %}
+      {{ current_day == states('input_select.trash_pickup_day') }}
     icon: "{{ iif(this.state == 'on', 'mdi:delete', 'mdi:delete-empty') }}"
