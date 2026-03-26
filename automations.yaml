@@ -7,8 +7,6 @@
   condition: []
   action:
   - service: input_boolean.toggle
-    metadata: {}
-    data: {}
     target:
       entity_id: input_boolean.reading_mode
   mode: single
@@ -24,34 +22,6 @@
   - service: script.turn_on
     data_template:
       entity_id: script.{{trigger.to_state.state}}
-  mode: single
-- id: '1717271327275'
-  alias: Backdoor Open
-  description: Is the backdoor open?
-  trigger:
-  - platform: state
-    entity_id: binary_sensor.contact_back_door
-    to: 'on'
-    for: 00:03:00
-  condition: []
-  action:
-  - service: notify.all_devices
-    data:
-      message: Back Door is Open!
-      title: Door Open
-  - service: notify.alexa_media
-    data:
-      message: The Back Door is Open!
-      data:
-        type: announce
-      target:
-      - media_player.echo_show
-      - media_player.kitchen_echo
-      - media_player.parlor
-      - maeia_player.bedroom
-      - media_player.babe_cave
-      - media_player.family_room
-      - media_player.garage
   mode: single
 - id: '1717271382609'
   alias: Garden Timelapse
@@ -70,88 +40,45 @@
       filename: www/tmp/timelapse/snapshot_{{now().strftime('%H:%M-%d%b')}}.jpg
   mode: single
 - id: '1717271470147'
-  alias: Garage Door
+  alias: Garage Door 01
   description: Open/Close the garage door
-  trigger:
-  - platform: tag
-    tag_id: garage
-  condition: []
-  action:
-  - service: cover.toggle
-    data:
-      entity_id: cover.shuttle_bay
+  triggers:
+  - tag_id: garage
+    trigger: tag
+  conditions: []
+  actions:
+  - action: cover.toggle
+    target:
+      entity_id:
+      - cover.shuttle_bay
   mode: single
 - id: '1717274816399'
   alias: On Air
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - input_boolean.onair
-  condition: []
-  action:
+    trigger: state
+  conditions: []
+  actions:
   - if:
     - condition: state
       entity_id: input_boolean.onair
       state: 'on'
     then:
+    - action: scene.create
+      data:
+        scene_id: before_onair
+        snapshot_entities:
+        - light.office_light
+        - light.spot_light
+    - delay:
+        seconds: 1
     - parallel:
-      - metadata: {}
-        data:
+      - data:
           name: red
         action: frontend.set_theme
-      - if:
-        - condition: state
-          entity_id: input_boolean.dual_occupied_office
-          state: 'on'
-        then:
-        - sequence:
-          - action: scene.create
-            metadata: {}
-            data:
-              scene_id: before_onair
-              snapshot_entities:
-              - light.office_four
-              - light.office_one
-              - light.office_two
-              - light.office_three
-              - light.office_lamp
-              - light.desk_light
-              - light.stair_light
-          - delay:
-              hours: 0
-              minutes: 0
-              seconds: 1
-              milliseconds: 0
-          - action: light.turn_off
-            metadata: {}
-            data: {}
-            target:
-              entity_id: light.office_one
-        else:
-        - sequence:
-          - action: scene.create
-            metadata: {}
-            data:
-              scene_id: before_onair
-              snapshot_entities:
-              - light.office_four
-              - light.office_one
-              - light.office_two
-              - light.office_three
-              - light.office_lamp
-              - light.desk_light
-              - light.stair_light
-          - delay:
-              hours: 0
-              minutes: 0
-              seconds: 1
-              milliseconds: 0
-          - action: script.office_dim
-            metadata: {}
-            data: {}
       - action: light.turn_on
-        metadata: {}
         data:
           rgb_color:
           - 255
@@ -160,29 +87,14 @@
           brightness_pct: 100
         target:
           entity_id:
-          - light.stair_light
           - light.spot_light
     else:
     - parallel:
-      - metadata: {}
-        data:
+      - data:
           name: clear
         action: frontend.set_theme
-      - action: light.turn_on
-        metadata: {}
-        data:
-          rgb_color:
-          - 0
-          - 255
-          - 0
-          brightness_pct: 100
-        target:
-          entity_id: light.spot_light
-      - action: script.basement_stairs_off
-        metadata: {}
-        data: {}
       - action: scene.turn_on
-        metadata: {}
+        data: {}
         target:
           entity_id: scene.before_onair
   mode: single
@@ -202,112 +114,101 @@
   mode: single
 - id: '1717276452552'
   alias: MBR Bedtime
-  description: ''
-  trigger:
-  - platform: tag
-    tag_id: bedtime_01
-  - platform: state
-    entity_id:
+  description: Two-stage bedtime process controlled by Alarm State.
+  triggers:
+  - tag_id: bedtime_01
+    trigger: tag
+  - entity_id:
     - input_boolean.bedtime
     to: 'on'
-  condition: []
-  action:
+    trigger: state
+  conditions: []
+  actions:
   - if:
     - condition: state
       entity_id: alarm_control_panel.home_alarm
       state: disarmed
     then:
-    - action: alarm_control_panel.alarm_arm_night
-      metadata: {}
-      data: {}
-      target:
-        entity_id: alarm_control_panel.home_alarm
-    - metadata: {}
-      data: {}
-      target:
-        entity_id:
-        - input_boolean.camera_alerts
-      action: input_boolean.turn_on
-    - metadata: {}
-      data: {}
-      target:
-        entity_id:
-        - input_boolean.reading_mode
-        - input_boolean.motion_lockout
-        - input_boolean.wake_up
-      action: input_boolean.turn_off
-    - metadata: {}
-      data: {}
-      target:
-        entity_id: lock.schlage_front
-      action: lock.lock
-    - metadata: {}
-      data: {}
-      target:
-        entity_id:
-        - light.parlor_lamps
-        - light.front_door_light
-        - light.spot_light
-        - light.media_lights
-        - light.stair_light
-        - light.hall_light
-        - light.office_lamp
-        - light.office_lights
-        - light.kitchen
-        - light.garage_overhead_light
-        - light.fireplace_light
-        - light.deck_lights
-        - light.patio_lights
-        - light.christmas_tree
-        - light.wled_cloud_main
-        - light.wled_cloud
-        - light.storage
-      action: light.turn_off
-    - metadata: {}
-      data: {}
-      target:
-        entity_id: switch.adaptive_lighting_sleep_mode_mbr
-      action: switch.turn_on
-    - metadata: {}
-      data: {}
-      target:
-        entity_id: input_boolean.bedtime
-      action: input_boolean.turn_off
+    - sequence:
+      - action: alarm_control_panel.alarm_arm_night
+        target:
+          entity_id: alarm_control_panel.home_alarm
+        data: {}
+      - action: lock.lock
+        enabled: true
+        target:
+          entity_id: lock.garage_door
+      - if:
+        - condition: state
+          entity_id: input_boolean.trash_reminder
+          state:
+          - 'on'
+        then:
+        - data:
+            message: It looks like you may have forgotten to take the trash to the
+              street.
+            target: media_player.bedroom
+            data:
+              type: tts
+          action: notify.alexa_media
+        alias: Check Trash Reminder
+      - if:
+        - condition: state
+          entity_id: input_boolean.holiday_mode
+          state:
+          - 'on'
+        then:
+        - action: light.turn_off
+          target:
+            entity_id: light.led_tree
+        alias: Holiday mode actions
+      - if:
+        - condition: state
+          entity_id: climate.t6_pro_downstairs
+          state:
+          - heat
+        then:
+        - action: switch.turn_on
+          metadata: {}
+          target:
+            entity_id: switch.bedroom_humidifier
+          data: {}
+        alias: Thermostat set to Heat actions
+      - action: homeassistant.turn_off
+        metadata: {}
+        target:
+          label_id: bedtime_off
+        data: {}
+      - action: homeassistant.turn_on
+        metadata: {}
+        target:
+          label_id: bedtime_on
+        data: {}
     else:
-    - metadata: {}
-      data: {}
-      target:
+    - action: script.bedtime_charging_check
+    - target:
         device_id: 8781654d992a7a4701cbec887fab30d9
       action: media_player.turn_off
-    - metadata: {}
-      data:
-        transition: 2
-      target:
+    - target:
         entity_id:
         - light.eugene
         - light.rapunzel
-        - light.wled_bed
-        - light.wled_node_mbr
       action: light.turn_off
-    - metadata: {}
-      data:
-        media_content_id: bedtime
-        media_content_type: routine
-      target:
-        entity_id: media_player.bedroom
-      action: media_player.play_media
-    - metadata: {}
       data: {}
+    - data:
+        media:
+          media_content_id: bedtime
+          media_content_type: routine
+      action: media_player.play_media
       target:
+        device_id:
+        - 66288267303a20ddbebaff9c0666d31d
+    - target:
+        entity_id: switch.noise_machines
+      action: switch.turn_on
+    - target:
         entity_id: input_boolean.bedtime
       action: input_boolean.turn_off
-    - action: logbook.log
-      metadata: {}
-      data:
-        name: Bedtime
-        entity_id: automation.bedtime
-        message: Initiated Bedtime
-        domain: automation
   mode: single
 - id: '1720447716098'
   alias: Set Theme
@@ -330,59 +231,55 @@
       entity_id: sun.sun
       state: above_horizon
     then:
-    - metadata: {}
-      data:
+    - data:
         name: clear
       action: frontend.set_theme
     else:
-    - metadata: {}
-      data:
+    - data:
         name: clear-dark
       action: frontend.set_theme
   mode: single
 - id: '1720737172368'
   alias: MBR Wakeup
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - input_boolean.wake_up
     to: 'on'
-  condition: []
-  action:
-  - action: alarm_control_panel.alarm_disarm
-    metadata: {}
-    data:
-      code: '1977'
-    target:
-      entity_id: alarm_control_panel.home_alarm
-  - metadata: {}
-    data:
-      transition: 300
-    target:
-      entity_id: light.bedroom_lamps
-    action: light.turn_on
-  - metadata: {}
-    data: {}
-    target:
-      entity_id: input_boolean.wake_up
-    action: input_boolean.turn_off
-  mode: single
+    trigger: state
+  conditions: []
+  actions:
+  - sequence:
+    - action: alarm_control_panel.alarm_disarm
+      data:
+        code: '1977'
+      target:
+        entity_id: alarm_control_panel.home_alarm
+    - target:
+        entity_id: input_boolean.wake_up
+      action: input_boolean.turn_off
+    - action: switch.turn_off
+      target:
+        entity_id:
+        - switch.adaptive_lighting_sleep_mode_mbr
+        - switch.bedroom_humidifier
+  mode: parallel
+  max: 10
 - id: '1722628663642'
   alias: Motion Parlor
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - binary_sensor.motion_parlor
     to: 'on'
     id: motion
-  - platform: event
-    event_type: timer.finished
+    trigger: state
+  - event_type: timer.finished
     event_data:
       entity_id: timer.timer_parlor
     id: t02
-  condition:
+    trigger: event
+  conditions:
   - condition: and
     conditions:
     - condition: state
@@ -394,7 +291,7 @@
     - condition: state
       entity_id: input_boolean.reading_mode
       state: 'off'
-  action:
+  actions:
   - alias: Turn on and start timer
     if:
     - condition: trigger
@@ -403,27 +300,74 @@
     then:
     - if:
       - condition: state
-        entity_id: light.parlor_lamps
         state: 'on'
+        entity_id: light.parlor_light
       then:
-      - metadata: {}
-        data: {}
-        action: timer.start
+      - action: timer.start
         target:
           entity_id: timer.timer_parlor
       else:
-      - parallel:
-        - metadata: {}
-          data: {}
-          action: timer.start
-          target:
-            entity_id: timer.timer_parlor
-        - action: light.turn_on
-          metadata: {}
-          data:
-            transition: 1
-          target:
-            entity_id: light.parlor_lamps
+      - if:
+        - condition: device
+          type: is_on
+          device_id: 784f7bc2a44b163370bd3af1580c7626
+          entity_id: d4aa1165af3cb0daf0fc7e48a251088a
+          domain: remote
+        then:
+        - parallel:
+          - action: timer.start
+            target:
+              entity_id: timer.timer_parlor
+          - action: light.turn_on
+            data:
+              rgb_color:
+              - 106
+              - 0
+              - 255
+              brightness_pct: 100
+              transition: 2
+            target:
+              entity_id: light.masonic_lamp
+          - action: light.turn_on
+            data:
+              rgb_color:
+              - 137
+              - 41
+              - 255
+              brightness_pct: 100
+              transition: 2
+            target:
+              entity_id: light.spot_light
+        else:
+        - parallel:
+          - action: timer.start
+            target:
+              entity_id: timer.timer_parlor
+          - action: light.turn_on
+            data:
+              transition: 1
+            target:
+              entity_id: light.parlor_light
+          - action: light.turn_on
+            data:
+              rgb_color:
+              - 137
+              - 41
+              - 255
+              brightness_pct: 100
+              transition: 2
+            target:
+              entity_id: light.spot_light
+          - action: light.turn_on
+            data:
+              rgb_color:
+              - 106
+              - 0
+              - 255
+              brightness_pct: 100
+              transition: 2
+            target:
+              entity_id: light.masonic_lamp
   - if:
     - condition: and
       conditions:
@@ -440,14 +384,14 @@
           state: Parlor
     then:
     - action: light.turn_off
-      metadata: {}
       data:
-        transition: 1
+        transition: 2
       target:
         entity_id:
-        - light.parlor_lamps
-        - light.front_door_light
-  mode: single
+        - light.spot_light
+        - light.masonic_lamp
+        - light.parlor_light
+  mode: restart
 - id: '1723572617932'
   alias: 3D Printer ON/OFF
   description: ''
@@ -484,10 +428,8 @@
         id:
         - t01
       sequence:
-      - metadata: {}
-        data: {}
-        target:
-          entity_id: switch.3d_printer
+      - target:
+          entity_id: switch.office_strip_socket_06
         action: switch.turn_on
     - conditions:
       - condition: trigger
@@ -504,10 +446,8 @@
             seconds: 0
         then:
         - action: switch.turn_off
-          metadata: {}
-          data: {}
           target:
-            entity_id: switch.3d_printer
+            entity_id: switch.office_strip_socket_06
         else:
         - delay:
             hours: 0
@@ -515,8 +455,6 @@
             seconds: 1
             milliseconds: 0
         - action: input_boolean.turn_on
-          metadata: {}
-          data: {}
           target:
             entity_id: input_boolean.3dprinter_power
     - conditions:
@@ -533,7 +471,6 @@
         - action: input_boolean.turn_on
           target:
             entity_id: input_boolean.3dprinter_safety
-          data: {}
   mode: parallel
   max: 10
 - id: '1723652703682'
@@ -564,12 +501,10 @@
         - t01
       sequence:
       - service: notify.alexa_media
-        metadata: {}
         data:
           message: 3D print is fifty percent complete
           target: media_player.media_room, media_player.counter, media_player.garage_dot
       - service: notify.mobile_app_josh_mobile
-        metadata: {}
         data:
           title: 50% Complete
           message: Print is at 50%
@@ -579,12 +514,10 @@
         - t02
       sequence:
       - service: notify.alexa_media
-        metadata: {}
         data:
           message: Pardon the interuption, your 3D print has finished
           target: media_player.media_room, media_player.counter, media_player.garage_dot
       - service: notify.mobile_app_josh_mobile
-        metadata: {}
         data:
           message: Print has been finished
           title: 3D Print Complete
@@ -666,7 +599,6 @@
         - t01
       sequence:
       - service: fan.set_percentage
-        metadata: {}
         data:
           percentage: 30
         target:
@@ -677,7 +609,6 @@
         - t02
       sequence:
       - service: fan.set_percentage
-        metadata: {}
         data:
           percentage: 40
         target:
@@ -688,7 +619,6 @@
         - t03
       sequence:
       - service: fan.set_percentage
-        metadata: {}
         data:
           percentage: 50
         target:
@@ -699,7 +629,6 @@
         - t04
       sequence:
       - service: fan.set_percentage
-        metadata: {}
         data:
           percentage: 70
         target:
@@ -710,7 +639,6 @@
         - t05
       sequence:
       - service: fan.set_percentage
-        metadata: {}
         data:
           percentage: 80
         target:
@@ -721,7 +649,6 @@
         - t06
       sequence:
       - service: fan.set_percentage
-        metadata: {}
         data:
           percentage: 100
         target:
@@ -733,7 +660,6 @@
         - t07
       sequence:
       - service: fan.set_percentage
-        metadata: {}
         data:
           percentage: 0
         target:
@@ -765,8 +691,6 @@
         - t01
       sequence:
       - service: light.turn_on
-        metadata: {}
-        data: {}
         target:
           entity_id: light.bambu_p1s_chamber_light
       alias: Turn on Chamber Light
@@ -779,66 +703,24 @@
         target:
           entity_id:
           - light.bambu_p1s_chamber_light
-        data: {}
       alias: Turn off Chamber Light
-  mode: single
-- id: '1723666603090'
-  alias: Blinds Open/Close
-  description: ''
-  trigger:
-  - platform: sun
-    event: sunrise
-    offset: 0
-    id: t01
-  - platform: sun
-    event: sunset
-    offset: 0
-    id: t02
-  condition: []
-  action:
-  - choose:
-    - conditions:
-      - condition: trigger
-        id:
-        - t01
-      sequence:
-      - service: cover.open_cover
-        metadata: {}
-        data: {}
-        target:
-          entity_id:
-          - cover.dining_room_blinds
-          - cover.parlor_blinds
-      alias: Open Blinds
-    - conditions:
-      - condition: trigger
-        id:
-        - t02
-      sequence:
-      - service: cover.close_cover
-        target:
-          entity_id:
-          - cover.dining_room_blinds
-          - cover.parlor_blinds
-        data: {}
-      alias: Close Blinds
   mode: single
 - id: '1723755616026'
   alias: Cleaning
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - input_boolean.cleaning
     to: 'on'
     id: t01
-  - platform: state
-    entity_id:
+    trigger: state
+  - entity_id:
     - input_boolean.cleaning
     to: 'off'
     id: t02
-  condition: []
-  action:
+    trigger: state
+  conditions: []
+  actions:
   - choose:
     - conditions:
       - condition: trigger
@@ -847,26 +729,21 @@
       sequence:
       - alias: Create scene, then turn on ALL lights
         sequence:
-        - metadata: {}
-          data:
+        - data:
             scene_id: cleaning_before
             snapshot_entities:
             - light.eugene
             - light.rapunzel
             - light.wled_bed
-            - light.dining_room_light
-            - light.kitchen_light
-            - light.fireplace_light
+            - light.dining
             - light.desk_light
             - light.office_lamp
             - light.office_one
             - light.office_two
             - light.office_three
             - light.office_four
-            - light.front_door_light
             - light.table_lamp
             - light.piano_lamp
-            - light.hall_light
             - light.garage_overhead
             - light.garage_cabinet_lights
             - light.spot_light
@@ -883,38 +760,13 @@
             minutes: 0
             seconds: 1
             milliseconds: 0
-        - data:
+        - action: homeassistant.turn_on
+          metadata: {}
+          target:
+            label_id: cleaning_light
+          data:
             brightness_pct: 100
             kelvin: 4500
-          action: light.turn_on
-          target:
-            entity_id:
-            - light.eugene
-            - light.rapunzel
-            - light.wled_bed
-            - light.dining_room_light
-            - light.kitchen_light
-            - light.fireplace_light
-            - light.desk_light
-            - light.office_lamp
-            - light.office_one
-            - light.office_two
-            - light.office_three
-            - light.office_four
-            - light.front_door_light
-            - light.table_lamp
-            - light.piano_lamp
-            - light.hall_light
-            - light.garage_overhead
-            - light.garage_cabinet_lights
-            - light.spot_light
-            - light.stair_light
-            - light.media_one
-            - light.media_two
-            - light.media_three
-            - light.media_four
-            - light.storage_01
-            - light.storage_02
       - sequence:
         - delay:
             hours: 1
@@ -926,8 +778,7 @@
             entity_id: input_boolean.cleaning
             state: 'on'
           then:
-          - metadata: {}
-            data:
+          - data:
               message: Cleaning Mode Still Needed?
               title: Cleaning
               data:
@@ -944,8 +795,7 @@
         - t02
       sequence:
       - sequence:
-        - metadata: {}
-          target:
+        - target:
             entity_id: scene.cleaning_before
           action: scene.turn_on
         - delay:
@@ -955,20 +805,17 @@
             milliseconds: 0
         - sequence:
           - action: scene.create
-            metadata: {}
             data:
               scene_id: last_alexa_volume
               snapshot_entities:
               - '{{ states.sensor.last_alexa.state }}'
           - action: media_player.volume_set
-            metadata: {}
             data:
               volume_level: 0.5
             target:
               entity_id:
               - '{{ states.sensor.last_alexa.state }}'
-          - metadata: {}
-            data:
+          - data:
               message: '{{ ["Good fuck ing Job you glorious Mother fuck er!", "The
                 House Looks fucking marvelous!", "Holy Shit it! This is one clean
                 house.", "Holy Shit it! This is one fuck er fucking really fuck ing
@@ -977,61 +824,70 @@
             enabled: true
             action: notify.alexa_media
           - action: scene.turn_on
-            metadata: {}
             target:
               entity_id: scene.last_alexa_volume
-          - action: scene.delete
-            metadata: {}
-            data: {}
-            target:
-              entity_id:
-              - scene.last_alexa_volume
-              - scene.cleaning_before
-            enabled: false
   mode: restart
 - id: '1724262570606'
-  alias: Alarm panel functions
+  alias: Alarm panel functions and mode actions
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - alarm_control_panel.home_alarm
     id: disarmed
     to: disarmed
+    trigger: state
   - alias: When Home Alarm changes from Armed Night to Disarmed
-    platform: state
     entity_id:
     - alarm_control_panel.home_alarm
     id: disarmed from armed night
     to: disarmed
     from: armed_night
-  - platform: state
-    entity_id:
+    trigger: state
+  - entity_id:
     - alarm_control_panel.home_alarm
     id: armed night
     to: armed_night
-  - platform: state
-    entity_id:
+    trigger: state
+  - entity_id:
     - alarm_control_panel.home_alarm
     id: armed
     to: armed_home
-  - platform: state
-    entity_id:
+    trigger: state
+  - entity_id:
     - alarm_control_panel.home_alarm
     id: armed away
     to: armed_away
-  - platform: state
-    entity_id:
+    trigger: state
+  - entity_id:
     - input_select.josh_status
     - input_select.mj_status
     id: person status
     alias: person status
-  - platform: time
-    at: 08:00:00
+    trigger: state
+  - at: 08:00:00
     id: 0800
     alias: 0800
-  condition: []
-  action:
+    trigger: time
+  - trigger: state
+    entity_id:
+    - timer.timer_garage_spotlight
+    to:
+    - idle
+    from:
+    - active
+    id: Spotlight Timer Complete
+    alias: Spotlight Timer Complete
+  - trigger: event
+    event_type: zwave_js_notification
+    event_data:
+      device_id: 621aa1c4c9243ca0eb0bb5c81174a2c6
+      command_class: 113
+      type: 6
+      event: 5
+    id: garage_door_locked
+    alias: When Garage Door is Locked
+  conditions: []
+  actions:
   - choose:
     - conditions:
       - condition: trigger
@@ -1049,7 +905,6 @@
               entity_id: alarm_control_panel.home_alarm
               state: armed_night
             alias: Is Not Disarmed or Armed Night
-            enabled: true
           - alias: Josh is Home OR Just Arrived
             condition: or
             conditions:
@@ -1073,15 +928,12 @@
             alias: MJ is in an Away State
           sequence:
           - action: notify.mobile_app_josh_mobile
-            metadata: {}
             data:
               message: Josh has Arrived Home
               title: Disarmed
           - action: alarm_control_panel.alarm_disarm
-            metadata: {}
             data:
               code: '1977'
-            enabled: true
             target:
               entity_id: alarm_control_panel.home_alarm
           alias: Josh Disarmed
@@ -1095,7 +947,6 @@
               entity_id: alarm_control_panel.home_alarm
               state: armed_night
             alias: Is Not Disarmed or Armed Night
-            enabled: true
           - alias: MJ is Home OR Just Arrived
             condition: or
             conditions:
@@ -1119,15 +970,12 @@
               state: Work
           sequence:
           - action: notify.mobile_app_josh_mobile
-            metadata: {}
             data:
               message: MJ has Arrived Home
               title: Disarmed
           - action: alarm_control_panel.alarm_disarm
-            metadata: {}
             data:
               code: '1977'
-            enabled: true
             target:
               entity_id: alarm_control_panel.home_alarm
           alias: MJ Disarmed
@@ -1147,11 +995,10 @@
               entity_id: input_boolean.house_guests
               state: 'on'
             then:
-            - action: notify.all_devices
-              metadata: {}
+            - action: notify.mobile_app_josh_mobile
               data:
-                title: Arm Away Verify
                 message: Set home to Armed Away with House Guests?
+                title: Arm Away Verify
                 data:
                   tag: arm-guests
                   actions:
@@ -1161,186 +1008,9 @@
                     title: Ignore
             else:
             - action: alarm_control_panel.alarm_arm_away
-              metadata: {}
-              data: {}
               target:
                 entity_id: alarm_control_panel.home_alarm
           alias: Away / Away
-        - conditions:
-          - condition: and
-            conditions:
-            - condition: state
-              entity_id: input_select.josh_status
-              state: Away
-            - condition: state
-              entity_id: input_select.mj_status
-              state: Extended Away
-            alias: Josh Away / MJ Ext Away
-          sequence:
-          - if:
-            - condition: state
-              entity_id: input_boolean.house_guests
-              state: 'on'
-            then:
-            - action: notify.all_devices
-              metadata: {}
-              data:
-                title: Arm Away Verify
-                message: Set home to Armed Away with House Guests?
-                data:
-                  tag: arm-guests
-                  actions:
-                  - action: guests_arm
-                    title: Arm
-                  - action: guests_ignore
-                    title: Ignore
-            else:
-            - action: alarm_control_panel.alarm_arm_away
-              metadata: {}
-              data: {}
-              target:
-                entity_id: alarm_control_panel.home_alarm
-          alias: Josh Away / MJ Ext Away
-        - conditions:
-          - alias: Josh Away / MJ Ext Away
-            condition: and
-            conditions:
-            - condition: state
-              entity_id: input_select.josh_status
-              state: Extended Away
-            - condition: state
-              entity_id: input_select.mj_status
-              state: Away
-          sequence:
-          - if:
-            - condition: state
-              entity_id: input_boolean.house_guests
-              state: 'on'
-            then:
-            - action: notify.all_devices
-              metadata: {}
-              data:
-                title: Arm Away Verify
-                message: Set home to Armed Away with House Guests?
-                data:
-                  tag: arm-guests
-                  actions:
-                  - action: guests_arm
-                    title: Arm
-                  - action: guests_ignore
-                    title: Ignore
-            else:
-            - action: alarm_control_panel.alarm_arm_away
-              metadata: {}
-              data: {}
-              target:
-                entity_id: alarm_control_panel.home_alarm
-          alias: Josh Ext Away / MJ Away
-        - conditions:
-          - alias: Work / Work
-            condition: and
-            conditions:
-            - condition: state
-              entity_id: input_select.josh_status
-              state: Work
-            - condition: state
-              entity_id: input_select.mj_status
-              state: Work
-          sequence:
-          - if:
-            - condition: state
-              entity_id: input_boolean.house_guests
-              state: 'on'
-            then:
-            - action: notify.all_devices
-              metadata: {}
-              data:
-                title: Arm Away Verify
-                message: Set home to Armed Away with House Guests?
-                data:
-                  tag: arm-guests
-                  actions:
-                  - action: guests_arm
-                    title: Arm
-                  - action: guests_ignore
-                    title: Ignore
-            else:
-            - action: alarm_control_panel.alarm_arm_away
-              metadata: {}
-              data: {}
-              target:
-                entity_id: alarm_control_panel.home_alarm
-          alias: Work / Work
-        - conditions:
-          - alias: Work / Away
-            condition: and
-            conditions:
-            - condition: state
-              entity_id: input_select.josh_status
-              state: Work
-            - condition: state
-              entity_id: input_select.mj_status
-              state: Away
-          sequence:
-          - if:
-            - condition: state
-              entity_id: input_boolean.house_guests
-              state: 'on'
-            then:
-            - action: notify.all_devices
-              metadata: {}
-              data:
-                title: Arm Away Verify
-                message: Set home to Armed Away with House Guests?
-                data:
-                  tag: arm-guests
-                  actions:
-                  - action: guests_arm
-                    title: Arm
-                  - action: guests_ignore
-                    title: Ignore
-            else:
-            - action: alarm_control_panel.alarm_arm_away
-              metadata: {}
-              data: {}
-              target:
-                entity_id: alarm_control_panel.home_alarm
-          alias: Josh Work / MJ Away
-        - conditions:
-          - alias: Josh Away / MJ Work
-            condition: and
-            conditions:
-            - condition: state
-              entity_id: input_select.josh_status
-              state: Away
-            - condition: state
-              entity_id: input_select.mj_status
-              state: Work
-          sequence:
-          - if:
-            - condition: state
-              entity_id: input_boolean.house_guests
-              state: 'on'
-            then:
-            - action: notify.all_devices
-              metadata: {}
-              data:
-                title: Arm Away Verify
-                message: Set home to Armed Away with House Guests?
-                data:
-                  tag: arm-guests
-                  actions:
-                  - action: guests_arm
-                    title: Arm
-                  - action: guests_ignore
-                    title: Ignore
-            else:
-            - action: alarm_control_panel.alarm_arm_away
-              metadata: {}
-              data: {}
-              target:
-                entity_id: alarm_control_panel.home_alarm
-          alias: Josh Away / MJ Work
         - conditions:
           - alias: Ext Away / Ext Away
             condition: and
@@ -1353,13 +1023,9 @@
               state: Extended Away
           sequence:
           - action: alarm_control_panel.alarm_arm_vacation
-            metadata: {}
-            data: {}
             target:
               entity_id: alarm_control_panel.home_alarm
-            enabled: true
           - action: notify.mobile_app_josh_mobile
-            metadata: {}
             data:
               title: Armed Vacation / Eco Mode
               message: Home is set to Armed Vacation. Eco Mode Activated. Set number
@@ -1372,67 +1038,31 @@
                 - action: eco-ignore
                   title: Ignore
           alias: Armed Vacation
+      alias: When triggered by person status, set alarm panel mode.
     - conditions:
       - condition: trigger
         id:
         - armed away
-        enabled: true
       sequence:
       - parallel:
         - action: lock.lock
-          metadata: {}
-          data: {}
           target:
             entity_id: lock.door_locks
         - action: light.turn_off
-          metadata: {}
-          data: {}
           target:
             entity_id:
             - light.lights
             - light.bedroom
         - action: input_boolean.turn_off
-          metadata: {}
-          data: {}
           target:
             entity_id: input_boolean.reading_mode
         - action: input_boolean.turn_on
-          data: {}
           target:
             entity_id: input_boolean.camera_alerts
         - action: notify.mobile_app_josh_mobile
-          metadata: {}
           data:
             title: Armed Away
             message: Both Josh and MJ are Away!
-    - conditions:
-      - condition: trigger
-        id:
-        - disarmed from armed night
-        - 0800
-      sequence:
-      - action: switch.turn_off
-        metadata: {}
-        data: {}
-        target:
-          entity_id:
-          - switch.adaptive_lighting_sleep_mode_mbr
-          - switch.adaptive_lighting_sleep_mode_parlor
-      - action: media_player.volume_set
-        metadata: {}
-        data:
-          volume_level: 0.3
-        target:
-          entity_id:
-          - media_player.babe_cave
-          - media_player.bedroom
-          - media_player.counter
-          - media_player.dining_room
-          - media_player.echo_show
-          - media_player.garage_dot
-          - media_player.media_room
-          - media_player.office_dot
-          - media_player.parlor
     - conditions:
       - condition: and
         conditions:
@@ -1441,101 +1071,100 @@
           - disarmed
         - condition: template
           value_template: '{{ trigger.from_state.state != "armed_night" }}'
+      alias: When triggered by disarmed
+      sequence:
+      - action: script.turn_on
+        target:
+          entity_id:
+          - script.welcome_home_ai_debrief
+        data: {}
+      - parallel:
+        - action: switch.turn_on
+          target:
+            entity_id: switch.garage_spot_light
+        - action: timer.start
+          data:
+            duration: 00:05:00
+          target:
+            entity_id: timer.timer_garage_spotlight
+    - conditions:
+      - condition: trigger
+        id:
+        - 0800
+      sequence:
+      - action: media_player.volume_set
+        data:
+          volume_level: 0.3
+        target:
+          entity_id:
+          - media_player.babe_cave
+          - media_player.counter
+          - media_player.dining_room
+    - conditions:
+      - condition: trigger
+        id:
+        - Spotlight Timer Complete
+      sequence:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.garage_spot_light
+    - conditions:
+      - condition: trigger
+        id:
+        - garage_door_locked
+      - condition: state
+        entity_id: input_select.josh_status
+        state:
+        - Away
+        - Extended Away
+      - condition: state
+        entity_id: input_select.mj_status
+        state:
+        - Away
+        - Extended Away
+      - condition: state
+        entity_id: alarm_control_panel.home_alarm
+        state: disarmed
       sequence:
       - if:
-        - condition: sun
-          before: sunset
-          after: sunrise
+        - condition: state
+          entity_id: input_select.josh_status
+          state: Extended Away
+        - condition: state
+          entity_id: input_select.mj_status
+          state: Extended Away
         then:
-        - wait_template: '{{ is_state(''binary_sensor.motion_kitchen'', ''on'') }}'
-          continue_on_timeout: true
-        - action: media_player.volume_set
-          metadata: {}
-          data:
-            volume_level: 0.5
+        - action: alarm_control_panel.alarm_arm_vacation
           target:
-            entity_id: media_player.counter
-        - action: notify.alexa_media_counter
-          data:
-            message: '{{ ["Good Day, Welcome home Lord and Lady", "Good Day, Welcome
-              home", "Hello your Highness", "Keep your eye on the Orange One, it''s
-              been up to no good", "The cats are planning to kill you and make it
-              look like an accident. Be alert.", "Mr. Cat was on his best behavior
-              while you were out.", "if you left food out, Custard probably ate it",
-              "Josie did bad while you were away", "Colonel Higgentoot, reports that
-              the residence has remained secure during you time away", "One word.
-              Beanie Weenee"] | random }}'
-            target: media_player.counter
-        - delay:
-            hours: 0
-            minutes: 0
-            seconds: 5
-            milliseconds: 0
-        - action: media_player.volume_set
-          metadata: {}
-          data:
-            volume_level: 0.3
-          target:
-            entity_id: media_player.counter
+            entity_id: alarm_control_panel.home_alarm
         else:
-        - parallel:
-          - action: light.turn_on
-            metadata: {}
-            data:
-              transition: 2
-              brightness_pct: 100
-              kelvin: 4500
-            target:
-              entity_id:
-              - light.kitchen
-              - light.parlor_lamps
-          - sequence:
-            - wait_template: '{{ is_state(''binary_sensor.motion_kitchen'', ''on'')
-                }}'
-              continue_on_timeout: true
-            - action: media_player.volume_set
-              metadata: {}
-              data:
-                volume_level: 0.5
-              target:
-                entity_id: media_player.counter
-            - action: notify.alexa_media_counter
-              data:
-                message: '{{ ["Good Evening, Welcome home.", "Hello your Highness",
-                  "the cats had a meeting with the dream lord while you were out.
-                  don''t turn you''re back on them.", "Welcome home. The cats are
-                  still plotting against you", "Battle Cat was worried that you would
-                  never return"] | random }}'
-                target: media_player.counter
-            - delay:
-                hours: 0
-                minutes: 0
-                seconds: 5
-                milliseconds: 0
-            - action: media_player.volume_set
-              metadata: {}
-              data:
-                volume_level: 0.3
-              target:
-                entity_id: media_player.counter
-      alias: When triggered by disarmed
+        - action: alarm_control_panel.alarm_arm_away
+          target:
+            entity_id: alarm_control_panel.home_alarm
+      - action: notify.mobile_app_josh_mobile
+        data:
+          title: "\U0001F512 House Secured"
+          message: The garage man door was locked and the alarm has re-armed based
+            on your current status.
+      alias: Sitter Departs / Smart Re-Arm
   mode: parallel
+  max: 15
 - id: '1724440692522'
-  alias: Motion Kitchen/Dining
+  alias: Motion Kitchen
   description: ''
-  trigger:
-  - platform: state
+  triggers:
+  - alias: motion
     entity_id:
-    - binary_sensor.kitchen_dining_motion
+    - binary_sensor.motion_indoors_kitchen
     to: 'on'
     id: motion
-    alias: motion
-  - platform: event
-    event_type: timer.finished
+    trigger: state
+  - event_type: timer.finished
     event_data:
-      entity_id: timer.timer_kitchen_dining
+      entity_id: timer.timer_kitchen
     id: t02
-  condition:
+    trigger: event
+  conditions:
   - condition: and
     conditions:
     - condition: state
@@ -1544,7 +1173,7 @@
     - condition: state
       entity_id: input_boolean.motion_lockout
       state: 'off'
-  action:
+  actions:
   - alias: Turn on and start timer
     if:
     - condition: trigger
@@ -1553,26 +1182,51 @@
     then:
     - if:
       - condition: state
-        entity_id: light.kitchen
         state: 'on'
+        entity_id: light.kitchen_light
       then:
       - metadata: {}
         data: {}
         action: timer.start
         target:
-          entity_id: timer.timer_kitchen_dining
+          entity_id: timer.timer_kitchen
       else:
-      - parallel:
-        - metadata: {}
-          data: {}
-          action: timer.start
-          target:
-            entity_id: timer.timer_kitchen_dining
-        - action: light.turn_on
-          metadata: {}
-          data: {}
-          target:
-            entity_id: light.kitchen
+      - if:
+        - condition: and
+          conditions:
+          - condition: state
+            entity_id: media_player.samsung_65
+            state: 'on'
+        then: []
+        else:
+        - parallel:
+          - metadata: {}
+            data: {}
+            action: timer.start
+            target:
+              entity_id: timer.timer_kitchen
+          - action: light.turn_on
+            metadata: {}
+            data:
+              transition: 0.5
+              color_temp_kelvin: 4500
+              brightness_pct: 100
+            target:
+              entity_id:
+              - light.island
+              - light.big_kitchen_lights
+              - light.dining
+          - action: light.turn_on
+            metadata: {}
+            data:
+              rgb_color:
+              - 137
+              - 41
+              - 255
+              brightness_pct: 100
+              transition: 2
+            target:
+              entity_id: light.spot_light
   - if:
     - condition: trigger
       id:
@@ -1584,30 +1238,33 @@
       conditions:
       - condition: state
         entity_id: sensor.last_motion_indoors
-        state: Kitchen Dining
+        state: Kitchen
     then:
     - action: light.turn_off
       metadata: {}
       data: {}
       target:
-        entity_id: light.kitchen
-  mode: single
+        entity_id:
+        - light.island
+        - light.big_kitchen_lights
+        - light.dining
+  mode: restart
 - id: '1724443335411'
   alias: Motion Storage
   description: ''
-  trigger:
-  - platform: state
+  triggers:
+  - alias: motion
     entity_id:
     - binary_sensor.motion_storage_room
     to: 'on'
     id: motion
-    alias: motion
-  - platform: event
-    event_type: timer.finished
+    trigger: state
+  - event_type: timer.finished
     event_data:
       entity_id: timer.timer_storage
     id: t02
-  condition:
+    trigger: event
+  conditions:
   - condition: and
     conditions:
     - condition: state
@@ -1616,7 +1273,7 @@
     - condition: state
       entity_id: input_boolean.motion_lockout
       state: 'off'
-  action:
+  actions:
   - alias: Turn on and start timer
     if:
     - condition: trigger
@@ -1628,22 +1285,17 @@
         entity_id: light.storage_lights
         state: 'on'
       then:
-      - metadata: {}
-        data: {}
-        action: timer.start
+      - action: timer.start
         target:
           entity_id:
           - timer.timer_storage
       else:
       - parallel:
-        - metadata: {}
-          data: {}
-          action: timer.start
+        - action: timer.start
           target:
             entity_id:
             - timer.timer_storage
         - action: light.turn_on
-          metadata: {}
           data:
             brightness_pct: 100
             kelvin: 4500
@@ -1665,77 +1317,9 @@
         state: Storage
     then:
     - action: light.turn_off
-      metadata: {}
-      data: {}
       target:
         entity_id: light.storage_lights
-  mode: single
-- id: '1724443780328'
-  alias: Motion Basement Stairs
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - binary_sensor.motion_basement_stairs
-    to: 'on'
-    id: motion
-    alias: motion
-  - platform: event
-    event_type: timer.finished
-    event_data:
-      entity_id: timer.timer_basement_stairs
-    id: t02
-  condition:
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: alarm_control_panel.home_alarm
-      state: disarmed
-    - condition: state
-      entity_id: input_boolean.motion_lockout
-      state: 'off'
-  action:
-  - alias: Turn on and start timer
-    if:
-    - condition: trigger
-      id:
-      - motion
-    then:
-    - parallel:
-      - metadata: {}
-        data: {}
-        action: timer.start
-        target:
-          entity_id:
-          - timer.timer_basement_stairs
-      - action: light.turn_on
-        metadata: {}
-        data:
-          brightness_pct: 100
-          kelvin: 4500
-        target:
-          entity_id: light.stair_light
-  - if:
-    - condition: trigger
-      id:
-      - t02
-    - condition: state
-      entity_id: input_boolean.cleaning
-      state: 'off'
-    then:
-    - action: lifx.effect_colorloop
-      metadata: {}
-      data:
-        saturation_min: 80
-        saturation_max: 100
-        period: 5
-        change: 20
-        spread: 30
-        power_on: true
-        brightness_pct: 50
-      target:
-        entity_id: light.stair_light
-  mode: single
+  mode: restart
 - id: '1724444093504'
   alias: Motion Media Room
   description: ''
@@ -1776,22 +1360,17 @@
         entity_id: light.media_lights
         state: 'on'
       then:
-      - metadata: {}
-        data: {}
-        action: timer.start
+      - action: timer.start
         target:
           entity_id:
           - timer.timer_media_room
       else:
       - parallel:
-        - metadata: {}
-          data: {}
-          action: timer.start
+        - action: timer.start
           target:
             entity_id:
             - timer.timer_media_room
         - action: light.turn_on
-          metadata: {}
           data:
             brightness_pct: 50
             kelvin: 4500
@@ -1803,8 +1382,6 @@
             state: 'on'
           then:
           - action: light.turn_on
-            metadata: {}
-            data: {}
             target:
               entity_id: light.led_tree
   - if:
@@ -1827,33 +1404,30 @@
         state: 'off'
     then:
     - action: light.turn_off
-      metadata: {}
       data:
         transition: 1
       target:
         entity_id: light.media_three
     - action: light.turn_off
-      metadata: {}
-      data: {}
       target:
         entity_id: light.led_tree
-  mode: single
+  mode: restart
 - id: '1724445299299'
   alias: Motion Office
   description: ''
-  trigger:
-  - platform: state
+  triggers:
+  - alias: motion
     entity_id:
-    - binary_sensor.motion_office
+    - binary_sensor.motion_indoors_office
     to: 'on'
     id: motion
-    alias: motion
-  - platform: event
-    event_type: timer.finished
+    trigger: state
+  - event_type: timer.finished
     event_data:
       entity_id: timer.timer_office
     id: t02
-  condition:
+    trigger: event
+  conditions:
   - condition: and
     conditions:
     - condition: state
@@ -1862,7 +1436,7 @@
     - condition: state
       entity_id: input_boolean.motion_lockout
       state: 'off'
-  action:
+  actions:
   - alias: Turn on and start timer
     if:
     - condition: trigger
@@ -1871,24 +1445,23 @@
     then:
     - if:
       - condition: state
-        entity_id: light.office_lights
-        state: 'on'
+        entity_id: light.office_light
+        state:
+        - 'on'
       then:
       - if:
         - condition: state
           entity_id: binary_sensor.workday_sensor
           state: 'on'
         then:
-        - metadata: {}
-          data:
+        - data:
             duration: 01:00:00
           action: timer.start
           target:
             entity_id:
             - timer.timer_office
         else:
-        - metadata: {}
-          data:
+        - data:
             duration: 00:30:00
           action: timer.start
           target:
@@ -1897,31 +1470,19 @@
       else:
       - parallel:
         - action: light.turn_on
-          metadata: {}
           data:
             brightness_pct: 100
+          enabled: true
           target:
-            entity_id: light.office_lights
+            entity_id: light.office_light
         - action: light.turn_on
-          metadata: {}
           data:
             brightness_pct: 5
           target:
             entity_id:
             - light.wled_cloud
             - light.wled_cloud_main
-        - action: light.turn_on
-          metadata: {}
-          data:
-            rgb_color:
-            - 0
-            - 128
-            - 0
-          target:
-            entity_id: light.spot_light
         - action: input_boolean.turn_on
-          metadata: {}
-          data: {}
           target:
             entity_id: input_boolean.occupied_office
         - if:
@@ -1929,16 +1490,14 @@
             entity_id: binary_sensor.workday_sensor
             state: 'on'
           then:
-          - metadata: {}
-            data:
+          - data:
               duration: 01:00:00
             action: timer.start
             target:
               entity_id:
               - timer.timer_office
           else:
-          - metadata: {}
-            data:
+          - data:
               duration: 00:30:00
             action: timer.start
             target:
@@ -1958,46 +1517,65 @@
         state: Office
     then:
     - action: light.turn_off
-      metadata: {}
-      data: {}
       target:
         entity_id:
-        - light.office_lights
-        - light.office_lamp
-        - light.desk_light
-        - light.spot_light
+        - light.wled_cloud
+        - light.office_light
     - action: input_boolean.turn_off
-      metadata: {}
-      data: {}
       target:
         entity_id: input_boolean.occupied_office
-  mode: single
+  mode: restart
 - id: '1724446425944'
   alias: Motion Garage
   description: ''
-  trigger:
-  - platform: state
+  triggers:
+  - entity_id:
+    - binary_sensor.motion_indoors_garage_motion_light
+    trigger: state
+    to:
+    - 'on'
+    id: t01
+    alias: t01 - Motion Detected
+  - alias: t02 - Light Changes to Off
+    trigger: state
     entity_id:
-    - light.garage_overhead
-  condition: []
-  action:
-  - if:
-    - condition: state
-      entity_id: light.garage_overhead
-      state: 'on'
-    then:
-    - action: light.turn_on
-      metadata: {}
-      data: {}
-      target:
-        entity_id: light.garage_cabinet_lights
-    else:
-    - action: light.turn_off
-      metadata: {}
-      data: {}
-      target:
-        entity_id: light.garage_cabinet_lights
-  mode: single
+    - switch.garage_lights
+    to:
+    - 'off'
+    id: t02
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - t01
+      sequence:
+      - if:
+        - condition: and
+          conditions:
+          - condition: state
+            entity_id: lock.garage_door
+            state:
+            - locked
+          - condition: state
+            entity_id: alarm_control_panel.home_alarm
+            state:
+            - disarmed
+        then:
+        - action: lock.unlock
+          target:
+            entity_id: lock.garage_door
+        enabled: true
+    - conditions:
+      - condition: trigger
+        id:
+        - t02
+      sequence:
+      - action: lock.lock
+        target:
+          entity_id: lock.garage_door
+  mode: restart
 - id: '1724525664627'
   alias: 'Notify HVAC Filter '
   description: ''
@@ -2047,8 +1625,6 @@
       - t03
     then:
     - action: timer.start
-      metadata: {}
-      data: {}
       target:
         entity_id: timer.timer_hvac_filter
   - if:
@@ -2076,71 +1652,51 @@
 - id: '1724690161012'
   alias: Notify Trash Day
   description: ''
-  trigger:
-  - alias: When confirmed DONE by anyone turn off IB Trash Reminder
-    platform: event
-    event_type: mobile_app_notification_action
-    id: t00
+  triggers:
+  - at: '17:00:00'
+    id: trash_time
+    trigger: time
+  - event_type: mobile_app_notification_action
     event_data:
       action: trash_done
-  - platform: event
-    event_type: mobile_app_notification_action
-    id: t01
-    event_data:
-      action: trash_done
-      device_id: d818035824cf47ea
-    alias: When Josh confirms Trash DONE
-  - alias: When Josh asks to PASS ON
-    platform: event
-    event_type: mobile_app_notification_action
-    id: t02
+    id: trash_done
+    trigger: event
+    alias: Done
+  - event_type: mobile_app_notification_action
     event_data:
       action: trash_passon
-      device_id: d818035824cf47ea
-  - alias: When MJ confirms Trash DONE
-    platform: event
-    event_type: mobile_app_notification_action
-    id: t03
+    id: trash_passon
+    trigger: event
+    alias: Pass on
+  - event_type: mobile_app_notification_action
     event_data:
-      action: trash_done
-      device_id: 0aa560faf0e8784c
-  - alias: When MJ asks to PASS ON
-    platform: event
-    event_type: mobile_app_notification_action
-    id: t04
-    event_data:
-      action: trash_passon
-      device_id: 0aa560faf0e8784c
-  - platform: time
-    at: '17:00:00'
-    id: t05
-  - platform: event
-    event_type: mobile_app_notification_cleared
+      action: trash_delay
+    id: trash_delay
+    trigger: event
+    alias: Delay
+  - event_type: mobile_app_notification_cleared
     event_data:
       tag: trash-notify
-    id: cleared
-  - platform: tag
-    tag_id: b6ac1acd-4dfb-4940-8c10-d4cb717f61c1
-    id: trash_done
-  condition: []
-  action:
+    id: trash_cleared
+    trigger: event
+    alias: Cleared
+  - tag_id: b6ac1acd-4dfb-4940-8c10-d4cb717f61c1
+    id: trash_tag_scanned
+    trigger: tag
+    alias: Tag Scan
+  actions:
   - choose:
     - conditions:
       - condition: trigger
-        id:
-        - t05
+        id: trash_time
       - condition: state
         entity_id: binary_sensor.trash_day
         state: 'on'
       sequence:
-      - action: input_boolean.turn_on
-        metadata: {}
-        data: {}
-        target:
+      - target:
           entity_id: input_boolean.trash_reminder
-      - action: notify.all_devices
-        metadata: {}
-        data:
+        action: input_boolean.turn_on
+      - data:
           message: Put to the Curb
           title: Trash and Recycling
           data:
@@ -2150,86 +1706,82 @@
               title: Done
             - action: trash_passon
               title: Ask Other
-      alias: t05 on Trash Day, send notify and IB on
+            - action: trash_delay
+              title: Delay 24hr
+        action: notify.all_devices
     - conditions:
       - condition: trigger
         id:
-        - t00
         - trash_done
+        - trash_tag_scanned
       sequence:
-      - action: input_boolean.turn_off
-        metadata: {}
-        data: {}
-        target:
+      - target:
           entity_id: input_boolean.trash_reminder
-      alias: t00 Turn off IB Trash Reminder
+        action: input_boolean.turn_off
+      - choose:
+        - conditions:
+          - '{{ trigger.id == ''trash_done'' and trigger.event.data.device_id == josh_device_id
+            }}'
+          sequence:
+          - data:
+              title: Trash and Recycling
+              message: Josh Completed
+            action: notify.mobile_app_mj_pixel_8_pro
+        - conditions:
+          - condition: template
+            value_template: '{{ trigger.id == ''trash_done'' and trigger.event.data.device_id
+              == mj_device_id }}'
+          sequence:
+          - data:
+              title: Trash and Recycling
+              message: MJ Completed
+            action: notify.mobile_app_josh_mobile
     - conditions:
       - condition: trigger
-        id:
-        - t01
+        id: trash_passon
       sequence:
-      - action: notify.mobile_app_mj_pixel_8_pro
-        data:
-          title: Trash and Recycling
-          message: Josh Completed
+      - choose:
+        - conditions:
+          - condition: template
+            value_template: '{{ trigger.event.data.device_id == josh_device_id }}'
+          sequence:
+          - data:
+              title: Trash and Recycling
+              message: YOU'RE MY ONLY HOPE.
+              data:
+                tag: trash-notify
+                actions:
+                - action: trash_done
+                  title: Done
+            action: notify.mobile_app_mj_pixel_8_pro
+        - conditions:
+          - condition: template
+            value_template: '{{ trigger.event.data.device_id == mj_device_id }}'
+          sequence:
+          - data:
+              title: Trash and Recycling
+              message: YOU'RE MY ONLY HOPE.
+              data:
+                tag: trash-notify
+                actions:
+                - action: trash_done
+                  title: Done
+            action: notify.mobile_app_josh_mobile
     - conditions:
       - condition: trigger
-        id:
-        - t02
+        id: trash_cleared
       sequence:
-      - action: notify.mobile_app_mj_pixel_8_pro
-        data:
-          title: Trash and Recycling
-          message: YOU'RE MY ONLY HOPE.
-          data:
-            tag: trash-notify
-            actions:
-            - action: trash_done
-              title: Done
-    - conditions:
-      - condition: trigger
-        id:
-        - t03
-      sequence:
-      - action: notify.mobile_app_josh_mobile
-        data:
-          title: Trash and Recycling
-          message: MJ Completed
-    - conditions:
-      - condition: trigger
-        id:
-        - t04
-      sequence:
-      - action: notify.mobile_app_josh_mobile
-        data:
-          title: Trash and Recycling
-          message: YOU'RE MY ONLY HOPE.
-          data:
-            tag: trash-notify
-            actions:
-            - action: trash_done
-              title: Done
-    - conditions:
-      - condition: trigger
-        id:
-        - cleared
-      sequence:
-      - action: google_generative_ai_conversation.generate_content
-        metadata: {}
-        data:
-          prompt: 'Rewrite this in a creative way, limit to about 35 words: "The trash
-            isn''t going to take itself out."'
+      - data:
+          task_name: Trash Nag
+          instructions: 'Rewrite this in a creative way, limit to about 35 words:
+            "The trash isn''t going to take itself out."'
         response_variable: generated_content
+        action: ai_task.generate_data
       - delay:
-          hours: 0
-          minutes: 0
           seconds: 2
-          milliseconds: 0
-      - action: notify.all_devices
-        metadata: {}
-        data:
+      - data:
           title: Trash and Recycling
-          message: '{{ generated_content[''text''] }}'
+          message: '{{ generated_content[''data''] }}'
           data:
             tag: trash-notify
             actions:
@@ -2237,233 +1789,222 @@
               title: Done
             - action: trash_passon
               title: Ask Other
+            - action: trash_delay
+              title: Delay 24hr
+        action: notify.all_devices
+    - conditions:
+      - condition: trigger
+        id: trash_delay
+      sequence:
+      - delay:
+          hours: 24
+      - data:
+          message: Put to the Curb
+          title: Trash and Recycling
+          data:
+            tag: trash-notify
+            actions:
+            - action: trash_done
+              title: Done
+            - action: trash_passon
+              title: Ask Other
+            - action: trash_delay
+              title: Delay 24hr
+        action: notify.all_devices
+  variables:
+    josh_device_id: d818035824cf47ea
+    mj_device_id: 0aa560faf0e8784c
   mode: single
 - id: '1724695238002'
   alias: Notify Feed Pets
-  description: ''
-  trigger:
-  - platform: time
-    at: '17:00:00'
-    id: t00
-  - platform: event
-    event_type: mobile_app_notification_action
+  triggers:
+  - at: '17:00:00'
+    id: feed_time
+    trigger: time
+  - event_type: mobile_app_notification_action
     event_data:
       action: feed_done
-      device_id: d818035824cf47ea
-    id: t01
-    alias: When Josh confirms Feed DONE
-  - alias: When Josh asks to PASS ON
-    platform: event
-    event_type: mobile_app_notification_action
+    id: feed_done
+    trigger: event
+  - event_type: mobile_app_notification_action
     event_data:
       action: feed_passon
-      device_id: d818035824cf47ea
-    id: t02
-  - alias: t03 When MJ confirms Feed DONE
-    platform: event
-    event_type: mobile_app_notification_action
-    event_data:
-      action: feed_done
-      device_id: 0aa560faf0e8784c
-    id: t03
-  - alias: When MJ asks to PASS ON
-    platform: event
-    event_type: mobile_app_notification_action
-    event_data:
-      action: feed_passon
-      device_id: 0aa560faf0e8784c
-    id: t04
-  - alias: MJ CLEARED
-    platform: event
-    event_type: mobile_app_notification_cleared
+    id: feed_passon
+    trigger: event
+  - event_type: mobile_app_notification_cleared
     event_data:
       tag: pets-notify
-      action: feed_done
-      device_id: 0aa560faf0e8784c
-    id: mj_cleared
-  - alias: Josh CLEARED
-    platform: event
-    event_type: mobile_app_notification_cleared
-    event_data:
-      tag: pets-notify
-      action: feed_done
-      device_id: d818035824cf47ea
-    id: josh_cleared
-  condition: []
-  action:
+    id: feed_cleared
+    trigger: event
+  conditions:
+  - condition: state
+    entity_id: input_boolean.do_not_disturb
+    state: 'off'
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.home_alarm
+      state: armed_vacation
+  actions:
   - choose:
     - conditions:
       - condition: trigger
-        id:
-        - t00
+        id: feed_time
       sequence:
-      - sequence:
-        - action: scene.create
-          metadata: {}
-          data:
-            scene_id: last_alexa_volume
-            snapshot_entities:
-            - media_player.babe_cave
-            - media_player.bedroom
-            - media_player.counter
-            - tag.garage
-            - media_player.media_room
-            - media_player.parlor
-        - action: media_player.volume_set
-          metadata: {}
-          data:
-            volume_level: 0.5
-          target:
-            entity_id: media_player.all_echos
-        - action: media_player.play_media
-          metadata: {}
-          data:
+      - data:
+          scene_id: last_alexa_volume
+          snapshot_entities:
+          - media_player.counter
+          - media_player.garage
+        action: scene.create
+      - data:
+          volume_level: 0.5
+        target:
+          entity_id:
+          - media_player.counter
+          - media_player.garage
+        action: media_player.volume_set
+      - data:
+          media:
             media_content_id: amzn_sfx_rooster_crow_01
             media_content_type: sound
-          target:
-            entity_id: media_player.all_echos
-        - delay:
-            hours: 0
-            minutes: 0
-            seconds: 2
-            milliseconds: 0
-        - action: google_generative_ai_conversation.generate_content
-          metadata: {}
-          data:
-            prompt: 'Rewrite this in a creative way, limit to about 35 words: "It
-              is time to feed the Cats"'
-          response_variable: generated_content
-        - delay:
-            hours: 0
-            minutes: 0
-            seconds: 2
-            milliseconds: 0
-          enabled: true
-        - action: notify.alexa_media
-          data:
-            message: '{{ generated_content[''text''] }}'
-            target: media_player.media_room, media_player.counter, media_player.garage_dot,
-              media_player.parlor, media_player.bedroom, media_player.babe_cave
-          enabled: true
-        - action: notify.all_devices
-          data:
-            title: Feed the Felions
-            message: '{{ generated_content[''text''] }}'
-            data:
-              tag: pets-notify
-              actions:
-              - action: feed_done
-                title: Done
-              - action: feed_passon
-                title: Ask Other
-    - conditions:
-      - condition: trigger
-        id:
-        - t01
-      sequence:
-      - action: notify.mobile_app_mj_pixel_8_pro
-        data:
-          title: Pets are Fed
-          message: Josh Completed
-          data:
-            tag: pets-notify
-    - conditions:
-      - condition: trigger
-        id:
-        - t02
-      sequence:
-      - action: notify.mobile_app_mj_pixel_8_pro
-        data:
-          title: The Gorgons need the feeds
-          message: YOU'RE MY ONLY HOPE.
+            metadata: {}
+        target:
+          entity_id:
+          - media_player.counter
+          - media_player.garage
+        action: media_player.play_media
+      - delay:
+          seconds: 2
+      - data:
+          task_name: Feed Cats Notification
+          instructions: 'Rephrase this in a demanding way, limit to about 35 words:
+            It is time to feed the Cats'
+        response_variable: generated_text
+        action: ai_task.generate_data
+      - delay:
+          seconds: 2
+      - data:
+          message: '{{ generated_text[''data''] }}'
+          target: media_player.counter
+        action: notify.alexa_media
+      - data:
+          title: Feed the Felions
+          message: '{{ generated_text[''data''] }}'
           data:
             tag: pets-notify
             actions:
             - action: feed_done
               title: Done
+            - action: feed_passon
+              title: Ask Other
+        action: notify.all_devices
+      - target:
+          entity_id: scene.last_alexa_volume
+        action: scene.turn_on
     - conditions:
       - condition: trigger
-        id:
-        - t03
+        id: feed_done
       sequence:
-      - action: notify.mobile_app_josh_mobile
-        data:
-          title: Pets are Fed
-          message: MJ Completed
-          data:
-            tag: pets-notify
+      - choose:
+        - conditions:
+          - '{{ trigger.event.data.device_id == josh_device_id }}'
+          sequence:
+          - data:
+              title: Pets are Fed
+              message: Josh Completed
+              data:
+                tag: pets-notify
+            action: notify.mobile_app_mj_pixel_8_pro
+        - conditions:
+          - '{{ trigger.event.data.device_id == mj_device_id }}'
+          sequence:
+          - data:
+              title: Pets are Fed
+              message: MJ Completed
+              data:
+                tag: pets-notify
+            action: notify.mobile_app_josh_mobile
     - conditions:
       - condition: trigger
-        id:
-        - t04
+        id: feed_passon
       sequence:
-      - action: notify.mobile_app_josh_mobile
-        data:
-          title: The Gorgons need the feeds
-          message: YOU'RE MY ONLY HOPE.
-          data:
-            tag: pets-notify
-            actions:
-            - action: feed_done
-              title: Done
+      - choose:
+        - conditions:
+          - '{{ trigger.event.data.device_id == josh_device_id }}'
+          sequence:
+          - data:
+              title: The Gorgons need the feeds
+              message: YOU'RE MY ONLY HOPE.
+              data:
+                tag: pets-notify
+                actions:
+                - action: feed_done
+                  title: Done
+            action: notify.mobile_app_mj_pixel_8_pro
+        - conditions:
+          - '{{ trigger.event.data.device_id == mj_device_id }}'
+          sequence:
+          - data:
+              title: The Gorgons need the feeds
+              message: YOU'RE MY ONLY HOPE.
+              data:
+                tag: pets-notify
+                actions:
+                - action: feed_done
+                  title: Done
+            action: notify.mobile_app_josh_mobile
     - conditions:
       - condition: trigger
-        id:
-        - mj_cleared
+        id: feed_cleared
       sequence:
-      - sequence:
-        - action: google_generative_ai_conversation.generate_content
-          metadata: {}
-          data:
-            prompt: 'Rewrite this in a creative way, limit to about 35 words: "Maryleigh,
-              The cats aren''t going away. They still need to be fed"'
-          response_variable: generated_content
-        - delay:
-            hours: 0
-            minutes: 0
-            seconds: 2
-            milliseconds: 0
-        - action: notify.mobile_app_mj_pixel_8_pro
-          metadata: {}
-          data:
-            title: Feed the Felions
-            message: '{{ generated_content[''text''] }}'
-            data:
-              tag: pets-notify
-              actions:
-              - action: feed_done
-                title: Done
-              - action: feed_passon
-                title: Ask Other
-    - conditions:
-      - condition: trigger
-        id:
-        - josh_cleared
-      sequence:
-      - sequence:
-        - action: google_generative_ai_conversation.generate_content
-          metadata: {}
-          data:
-            prompt: 'Rewrite this in a creative way, limit to about 35 words: "Josh,
-              The cats aren''t going away. They still need to be fed"'
-          response_variable: generated_content
-        - delay:
-            hours: 0
-            minutes: 0
-            seconds: 2
-            milliseconds: 0
-        - action: notify.mobile_app_josh_mobile
-          metadata: {}
-          data:
-            title: Feed the Felions
-            message: '{{ generated_content[''text''] }}'
-            data:
-              tag: pets-notify
-              actions:
-              - action: feed_done
-                title: Done
-              - action: feed_passon
-                title: Ask Other
+      - choose:
+        - conditions:
+          - condition: template
+            value_template: '{{ trigger.event.data.device_id == josh_device_id }}'
+          sequence:
+          - data:
+              task_name: Feed Cats Nag
+              instructions: 'Rewrite this in a creative way, limit to about 35 words:
+                "Josh, The cats aren''t going away. They still need to be fed"'
+            response_variable: generated_content
+            action: ai_task.generate_data
+          - delay: 2
+          - data:
+              title: Feed the Felions
+              message: '{{ generated_content[''data''] }}'
+              data:
+                tag: pets-notify
+                actions:
+                - action: feed_done
+                  title: Done
+                - action: feed_passon
+                  title: Ask Other
+            action: notify.mobile_app_josh_mobile
+        - conditions:
+          - condition: template
+            value_template: '{{ trigger.event.data.device_id == mj_device_id }}'
+          sequence:
+          - data:
+              prompt: 'Rewrite this in a creative way, limit to about 35 words: "Maryleigh,
+                The cats aren''t going away. They still need to be fed"'
+            response_variable: generated_content
+            action: ai_task.generate_data
+          - delay: 2
+          - data:
+              title: Feed the Felions
+              message: '{{ generated_content[''data''] }}'
+              data:
+                tag: pets-notify
+                actions:
+                - action: feed_done
+                  title: Done
+                - action: feed_passon
+                  title: Ask Other
+            action: notify.mobile_app_mj_pixel_8_pro
+  variables:
+    josh_device_id: d818035824cf47ea
+    mj_device_id: 0aa560faf0e8784c
   mode: single
 - id: '1724794143393'
   alias: Notify Eco Mode & Turn on/off
@@ -2526,7 +2067,6 @@
       - t01
     then:
     - action: notify.mobile_app_josh_mobile
-      metadata: {}
       data:
         title: Armed Vacation / Eco Mode
         message: Eco Mode timer has finished. What would you like to do?
@@ -2549,14 +2089,11 @@
           delay: '{{ trigger.event.data.reply_text | int(0) }}'
           delay_hours: '{{ delay | int * 86400 }}'
       - action: timer.start
-        metadata: {}
         data:
           duration: '{{ delay_hours }}'
         target:
           entity_id: timer.timer_eco_mode_normal
       - action: input_boolean.turn_on
-        metadata: {}
-        data: {}
         target:
           entity_id: input_boolean.eco_mode
       - if:
@@ -2565,7 +2102,6 @@
           - t02
         then:
         - action: notify.mobile_app_josh_mobile
-          metadata: {}
           data:
             message: Eco mode activated and will return to normal operation in "{{
               delay }}" days.
@@ -2574,7 +2110,6 @@
             title: Confirmation
         else:
         - action: notify.mobile_app_josh_mobile
-          metadata: {}
           data:
             message: Eco mode extended and will return to normal operation in "{{
               delay }}" days.
@@ -2588,12 +2123,9 @@
       - t04
     then:
     - action: input_boolean.turn_off
-      metadata: {}
-      data: {}
       target:
         entity_id: input_boolean.eco_mode
     - action: notify.mobile_app_josh_mobile
-      metadata: {}
       data:
         message: Eco mode deactivated.
         data:
@@ -2606,7 +2138,6 @@
       - eco_activate_cleared
     then:
     - action: notify.mobile_app_josh_mobile
-      metadata: {}
       data:
         title: Armed Vacation / Eco Mode
         message: Home is set to Armed Vacation. Eco Mode Activated. Set number of
@@ -2623,7 +2154,6 @@
       - eco_finish_cleared
     then:
     - action: notify.mobile_app_josh_mobile
-      metadata: {}
       data:
         title: Armed Vacation / Eco Mode
         message: Eco Mode timer has finished. What would you like to do?
@@ -2641,7 +2171,6 @@
       - eco-ignore
     then:
     - action: notify.mobile_app_josh_mobile
-      metadata: {}
       data:
         message: Eco mode Ignored.
         data:
@@ -2651,28 +2180,28 @@
 - id: '1724965532381'
   alias: Eco Mode Functions
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
+  triggers:
+  - entity_id:
     - input_boolean.eco_mode
-  condition: []
-  action:
+    trigger: state
+  conditions: []
+  actions:
   - if:
     - condition: state
       entity_id: input_boolean.eco_mode
       state: 'on'
     then:
     - action: climate.set_preset_mode
-      metadata: {}
       data:
         preset_mode: eco
       target:
         entity_id: climate.kitchen
     else:
     - action: climate.set_preset_mode
-      metadata: {}
       data:
         preset_mode: none
+      target:
+        entity_id: climate.kitchen
   mode: single
 - id: '1725030108440'
   alias: Notify Cleaning
@@ -2726,8 +2255,6 @@
       - cleaning_off
     then:
     - action: input_boolean.turn_off
-      metadata: {}
-      data: {}
       target:
         entity_id: input_boolean.cleaning
     alias: cleaning_off
@@ -2738,7 +2265,6 @@
       - cleaning_snooze
     then:
     - action: timer.start
-      metadata: {}
       data:
         duration: 00:30:00
       target:
@@ -2749,7 +2275,6 @@
       - cleared
     then:
     - action: notify.all_devices
-      metadata: {}
       data:
         message: Cleaning Mode Still Needed?
         title: Cleaning
@@ -2793,8 +2318,6 @@
       - guests_arm
     then:
     - action: alarm_control_panel.alarm_arm_away
-      metadata: {}
-      data: {}
       target:
         entity_id: alarm_control_panel.home_alarm
   - alias: guests_ignore
@@ -2804,7 +2327,6 @@
       - guests_ignore
     then:
     - action: notify.all_devices
-      metadata: {}
       data:
         title: Arm Away Verify
         message: Arming has been ignored.
@@ -2816,7 +2338,6 @@
       - cleared
     then:
     - action: notify.all_devices
-      metadata: {}
       data:
         message: Set home to Armed Away with House Guests?
         title: Arm Away Verify
@@ -2828,155 +2349,6 @@
           - action: guests_ignore
             title: Ignore
     alias: cleared
-  mode: single
-- id: '1725558382236'
-  alias: Notify Garage
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - cover.shuttle_bay
-    id: shuttle-bay
-    alias: shuttle_bay
-  - platform: event
-    event_type: timer.finished
-    event_data:
-      entity_id: timer.timer_garage_door
-    id: timer_finished
-    alias: timer_finished
-  - platform: event
-    event_type: mobile_app_notification_action
-    event_data:
-      action: close_garage
-    id: close_garage
-    alias: close_garage
-  - platform: event
-    event_type: mobile_app_notification_action
-    event_data:
-      action: ignore_garage
-    id: ignore_garage
-    alias: ignore_garage
-  - alias: cleared
-    platform: event
-    event_type: mobile_app_notification_cleared
-    id: cleared
-    event_data:
-      tag: garage-warning
-      action_1_key: close_garage
-  condition: []
-  action:
-  - choose:
-    - conditions:
-      - condition: trigger
-        id:
-        - shuttle-bay
-      sequence:
-      - if:
-        - condition: state
-          entity_id: cover.shuttle_bay
-          state: open
-        then:
-        - action: timer.start
-          metadata: {}
-          data:
-            duration: 01:00:00
-          target:
-            entity_id: timer.timer_garage_door
-        else:
-        - if:
-          - condition: state
-            entity_id: cover.shuttle_bay
-            state: closed
-          then:
-          - action: timer.cancel
-            metadata: {}
-            data: {}
-            target:
-              entity_id: timer.timer_garage_door
-      alias: shuttle_bay
-    - conditions:
-      - condition: trigger
-        id:
-        - timer_finished
-      - condition: state
-        entity_id: cover.shuttle_bay
-        state: open
-      sequence:
-      - action: notify.mobile_app_josh_mobile
-        metadata: {}
-        data:
-          title: Garage Door
-          message: Garage Door Open
-          data:
-            tag: garage-warning
-            actions:
-            - action: close_garage
-              title: Close
-            - action: ignore_garage
-              title: Ignore
-      alias: timer_finished
-    - conditions:
-      - condition: trigger
-        id:
-        - close_garage
-      sequence:
-      - action: cover.close_cover
-        metadata: {}
-        data: {}
-        target:
-          entity_id: cover.shuttle_bay
-      - action: notify.all_devices
-        metadata: {}
-        data:
-          title: Garage Door
-          message: Garage Door Closing
-          data:
-            tag: garage-warning
-      alias: close_garage
-    - conditions:
-      - condition: trigger
-        id:
-        - ignore_garage
-      sequence:
-      - action: timer.start
-        data:
-          duration: 01:00:00
-      - action: notify.all_devices
-        metadata: {}
-        data:
-          title: Garage Door
-          message: Garage Door Ignored. Reminding in 1 hour
-          data:
-            tag: garage-warning
-      alias: ignore_garage
-    - conditions:
-      - condition: trigger
-        id:
-        - cleared
-      sequence:
-      - variables:
-          device_id: '{{ trigger.event.data.device_id }}'
-          cleared: true
-      - action: system_log.write
-        metadata: {}
-        data:
-          level: warning
-          message: device id= "{{ device_id }}" and cleared= "{{ cleared }}"
-  mode: single
-- id: '1726150283065'
-  alias: Josh Status
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - input_select.josh_status
-  condition: []
-  action:
-  - action: notify.mobile_app_josh_mobile
-    metadata: {}
-    data:
-      message: Josh just changed from {{ trigger.from_state.state }} to {{ trigger.to_state.state
-        }}
   mode: single
 - id: '1726254835466'
   alias: 'Person: Josh Status Update'
@@ -3180,62 +2552,1778 @@
         option: Extended Away
       action: input_select.select_option
   mode: queued
-- id: '1726508948251'
-  alias: notification test
+- id: '1729186019941'
+  alias: question prep_for_bed
   description: ''
   trigger:
-  - platform: state
-    entity_id:
-    - input_button.test
-    id: button
+  - platform: template
+    value_template: '{{ is_state(''binary_sensor.withings_in_bed_mj'', ''on'') }}'
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+  condition:
+  - condition: and
+    conditions:
+    - condition: device
+      device_id: 8781654d992a7a4701cbec887fab30d9
+      domain: media_player
+      entity_id: 89314646c55658b623279571e9990873
+      type: is_on
+    - condition: state
+      entity_id: alarm_control_panel.home_alarm
+      state: disarmed
+  action:
+  - action: script.activate_alexa_actionable_notification
+    data:
+      text: It looks like you have settled into bed. Would you like to dim the lights
+        and put the house to sleep?
+      event_id: prep_for_bed
+      alexa_device: media_player.bedroom
+  mode: single
+- id: '1729192794568'
+  alias: Response prep_for_bed
+  description: ''
+  trigger:
   - platform: event
-    event_type: mobile_app_notification_action
+    event_type: alexa_actionable_notification
     event_data:
-      action: test_done
-      device_id: d818035824cf47ea
-    id: done
-  - platform: event
-    event_type: mobile_app_notification_action
-    event_data:
-      action: test_passon
-      device_id: d818035824cf47ea
-    id: pass
-  - platform: event
-    event_type: mobile_app_notification_cleared
-    event_data:
-      device_id: d818035824cf47ea
-    id: cleared
+      event_id: prep_for_bed
+      event_response_type: ResponseYes
+    id: 'Yes'
   condition: []
   action:
+  - action: input_boolean.turn_on
+    target:
+      entity_id: input_boolean.bedtime
+  mode: single
+- id: '1734030058026'
+  alias: Parlor - Snapshot on Motion
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.g3_instant_motion
+    to:
+    - 'on'
+  conditions: []
+  actions:
+  - action: script.camera_parlor_snapshot_ai_notification
+  mode: single
+- id: '1734033803185'
+  alias: AI - Kitchen - Snapshot on Motion
+  description: ''
+  triggers:
+  - type: motion
+    device_id: 3781f2e6149311eb8b9c692e1c03a073
+    entity_id: bcc86af7384d451a107b7ff078ed15f5
+    domain: binary_sensor
+    trigger: device
+  conditions: []
+  actions:
+  - action: script.camera_kitchen_snapshot_ai_notification
+  mode: single
+- id: '1734037840009'
+  alias: AI - Locate Cats
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - input_boolean.locate_cats
+    to: 'on'
+  conditions: []
+  actions:
+  - action: script.locate_cats_snapshot_ai_notification_duplicate
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.locate_cats
+  mode: single
+- id: '1734124053963'
+  alias: Front door unlock notify
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - lock.schlage_front
+    to: unlocked
+  conditions: []
+  actions:
+  - action: camera.snapshot
+    data:
+      filename: ./www/tmp/snapshots/parlor/parlor_snapshot_lock.jpg
+    target:
+      entity_id: camera.parlor_inside
+  - action: camera.snapshot
+    data:
+      filename: ./www/tmp/snapshots/porch/porch_snapshot_lock.jpg
+    target:
+      entity_id: camera.porch_outside_medium_resolution_channel
+  - action: notify.mobile_app_josh_mobile
+    data:
+      message: Front Door Unlocked
+      data:
+        priority: high
+        image: /local/tmp/snapshots/parlor/parlor_snapshot_lock.jpg
+        clickAction: /dashboard-kitchen/security
+  - action: notify.mobile_app_josh_mobile
+    data:
+      message: Front Door Unlocked
+      data:
+        priority: high
+        image: /local/tmp/snapshots/porch/porch_snapshot_lock.jpg
+        clickAction: /dashboard-kitchen/security
+  mode: single
+- id: '1735859411446'
+  alias: webhook test
+  description: ''
+  triggers:
+  - trigger: webhook
+    allowed_methods:
+    - POST
+    - PUT
+    local_only: false
+    webhook_id: -Eka36m_1RWWgShzgPDJWROCm
+  conditions: []
+  actions:
+  - action: notify.mobile_app_josh_mobile
+    data:
+      message: Overseerr Request Pending
+  mode: single
+- id: '1736967153841'
+  alias: watchtower
+  description: ''
+  triggers:
+  - trigger: webhook
+    allowed_methods:
+    - POST
+    - PUT
+    local_only: false
+    webhook_id: -lHZeOEMbGp__o2N3y7Boot9W
+  conditions: []
+  actions:
+  - action: notify.mobile_app_josh_mobile
+    data:
+      message: watchtower notify getting sent via webhook {{  trigger.json.message
+        }}
+      title: watchtower notify
+  mode: single
+- id: '1737473920871'
+  alias: Sump Running
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.sump_01_electric_consumption_w
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    above: 10
+    id: sump01_event
+  - trigger: numeric_state
+    entity_id:
+    - sensor.sump_02_electric_consumption_w
+    for:
+      hours: 0
+      minutes: 5
+      seconds: 0
+    above: 10
+    id: sump02_event
+  - trigger: event
+    event_type: mobile_app_notification_action
+    event_data:
+      tag: sump-notify
+    id: action
+  - trigger: event
+    event_type: mobile_app_notification_cleared
+    event_data:
+      tag: sump-notify
+    id: cleared
+  conditions: []
+  actions:
   - choose:
     - conditions:
       - condition: trigger
         id:
-        - button
+        - sump01_event
       sequence:
       - action: script.activate_mobile_actionable_notification
         data_template:
           notify_target: notify.mobile_app_josh_mobile
-          message: first test message
-          title: test message
-          notify_tag: test_tag
-          notify_action_1: test_done
-          notify_action_1_title: Done
-          notify_action_2: test_passon
-          notify_action_2_title: Pass
+          message: Sump 01 is Running Away
+          title: Sump 01 Alert
+          notify_tag: sump-notify
+          notify_action_1: sump01-off
+          notify_action_1_title: Turn Off
+          ttl: 0
+          importance: high
+          channel: alarm_stream
+          color: red
     - conditions:
       - condition: trigger
         id:
-        - done
-      sequence: []
+        - sump02_event
+      sequence:
+      - action: script.activate_mobile_actionable_notification
+        data_template:
+          notify_target: notify.mobile_app_josh_mobile
+          message: Sump 02 is Running Away
+          title: Sump 02 Alert
+          notify_tag: sump-notify
+          notify_action_1: sump02-off
+          notify_action_1_title: Turn Off
+          ttl: 0
+          importance: high
+          channel: alarm_stream
+          color: red
     - conditions:
       - condition: trigger
         id:
-        - pass
-      sequence: []
+        - action
+      sequence:
+      - choose:
+        - conditions:
+          - condition: template
+            value_template: '{{ trigger.event.data.action == ''sump01-off'' }}'
+          sequence:
+          - action: switch.turn_off
+            target:
+              entity_id: switch.sump_01
+          alias: 'Sump 01 Off '
+        - conditions:
+          - condition: template
+            value_template: '{{ trigger.event.data.action == ''sump02-off'' }}'
+          sequence:
+          - action: switch.turn_off
+            target:
+              entity_id: switch.sump_02
+          alias: 'Sump 02 Off '
     - conditions:
       - condition: trigger
         id:
         - cleared
-      sequence: []
+      sequence:
+      - choose:
+        - conditions:
+          - condition: template
+            value_template: '{{ trigger.event.data.action == ''sump01-off'' }}'
+          sequence:
+          - action: script.activate_mobile_actionable_notification
+            data_template:
+              notify_target: notify.mobile_app_josh_mobile
+              message: Sump 01 is Running Away
+              title: Sump 01 Alert
+              notify_tag: sump-notify
+              notify_action_1: sump01-off
+              notify_action_1_title: Turn Off
+              ttl: 0
+              importance: high
+              channel: alarm_stream
+              color: red
+          alias: 'Sump 01 Off '
+        - conditions:
+          - condition: template
+            value_template: '{{ trigger.event.data.action == ''sump02-off'' }}'
+          sequence:
+          - action: script.activate_mobile_actionable_notification
+            data_template:
+              notify_target: notify.mobile_app_josh_mobile
+              message: Sump 02 is Running Away
+              title: Sump 02 Alert
+              notify_tag: sump-notify
+              notify_action_1: sump02-off
+              notify_action_1_title: Turn Off
+              ttl: 0
+              importance: high
+              channel: alarm_stream
+              color: red
+          alias: 'Sump 02 Off '
+      - action: script.activate_mobile_actionable_notification
+        data_template:
+          notify_target: notify.mobile_app_josh_mobile
+          message: Sump 01 is Running Away
+          title: Sump 01 Alert
+          notify_tag: sump-notify
+          notify_action_1: sump01-off
+          notify_action_1_title: Turn Off
+          ttl: 0
+          importance: high
+          channel: alarm_stream
+          color: red
+        enabled: false
+  mode: single
+- id: '1737854106356'
+  alias: Generator Test
+  description: ''
+  triggers:
+  - event_type: timer.finished
+    event_data:
+      entity_id: timer.generator_test
+    id: t01
+    trigger: event
+  - tag_id: 95e7dd1a-71d0-4af9-a813-a9974de3cf87
+    id: t02
+    trigger: tag
+  - alias: t03 gen_done
+    event_type: mobile_app_notification_action
+    event_data:
+      action: gen_done
+    id: t03
+    trigger: event
+  - alias: t04 gen_snooze
+    event_type: mobile_app_notification_action
+    event_data:
+      action: gen_snooze
+    id: t04
+    trigger: event
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - t01
+      sequence:
+      - action: notify.mobile_app_josh_mobile
+        data:
+          data:
+            tag: gen-reminder
+            actions:
+            - action: gen_done
+              title: Done
+            - action: gen_snooze
+              title: Snooze
+          message: Start the Generator
+          title: Reminder
+    - conditions:
+      - condition: trigger
+        id:
+        - t02
+        - t03
+      sequence:
+      - action: timer.start
+        target:
+          entity_id: timer.generator_test
+    - conditions:
+      - condition: trigger
+        id:
+        - t04
+      sequence:
+      - sequence:
+        - wait_for_trigger:
+          - trigger: time
+            at: 09:00:00
+          continue_on_timeout: false
+        - action: notify.mobile_app_josh_mobile
+          data:
+            data:
+              tag: gen-reminder
+              actions:
+              - action: gen_done
+                title: Done
+              - action: gen_snooze
+                title: Snooze
+            message: Start the Generator
+            title: Reminder
+  mode: single
+- id: '1749583028093'
+  alias: Motion Dining Room
+  description: ''
+  triggers:
+  - alias: motion
+    entity_id:
+    - binary_sensor.motion_dining
+    to: 'on'
+    id: motion
+    trigger: state
+  - event_type: timer.finished
+    event_data:
+      entity_id: timer.timer_dining
+    id: t02
+    trigger: event
+  conditions:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.home_alarm
+      state: disarmed
+    - condition: state
+      entity_id: input_boolean.motion_lockout
+      state: 'off'
+  actions:
+  - alias: Turn on and start timer
+    if:
+    - condition: trigger
+      id:
+      - motion
+    then:
+    - if:
+      - condition: state
+        entity_id: light.dining
+        state: 'on'
+      then:
+      - action: timer.start
+        target:
+          entity_id: timer.timer_dining
+      else:
+      - if:
+        - condition: numeric_state
+          entity_id: sensor.szpffqlkc_irradiance
+          below: 200
+        then:
+        - parallel:
+          - action: timer.start
+            target:
+              entity_id: timer.timer_dining
+          - action: light.turn_on
+            data:
+              transition: 0.5
+            target:
+              entity_id: light.dining
+  - if:
+    - condition: trigger
+      id:
+      - t02
+    - condition: state
+      entity_id: input_boolean.cleaning
+      state: 'off'
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: sensor.last_motion_indoors
+        state: Dining Room
+    then:
+    - action: light.turn_off
+      target:
+        entity_id: light.dining
+  mode: restart
+- id: '1751050325495'
+  alias: 'Notify Beer Fridge Alert '
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.beer_fridge_electric_consumption_w
+    for:
+      hours: 3
+      minutes: 0
+      seconds: 0
+    below: 10
+    id: below 10
+  - trigger: numeric_state
+    entity_id:
+    - sensor.beer_fridge_electric_consumption_w
+    for:
+      hours: 5
+      minutes: 0
+      seconds: 0
+    above: 10
+    id: above 10
+  - trigger: event
+    event_type: mobile_app_notification_action
+    id: action
+    event_data:
+      tag: beer01-notify
+      action_1_key: beer01-off
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - below 10
+      sequence:
+      - action: script.activate_mobile_actionable_notification
+        data_template:
+          notify_target: notify.mobile_app_josh_mobile
+          message: Beer Fridge ain't run in 3 hours!
+          title: BEER FRIDGE ALERT
+          notify_tag: beer_fridge
+        alias: Send ain't run msg
+    - conditions:
+      - condition: trigger
+        id:
+        - above 10
+      sequence:
+      - action: script.activate_mobile_actionable_notification
+        data_template:
+          notify_target: notify.mobile_app_josh_mobile
+          message: Beer Fridge has been running for > 5hrs!
+          title: BEER FRIDGE ALERT
+          notify_tag: beer01-notify
+          notify_action_1: beer01-off
+          notify_action_1_title: Turn Off
+        alias: Send been running too long msg
+    - conditions:
+      - condition: trigger
+        id:
+        - action
+      sequence:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.beer_fridge
+  mode: parallel
+  max: 10
+- id: '1751052706469'
+  alias: Notify Freezer Alerts
+  description: ''
+  triggers:
+  - trigger: numeric_state
+    entity_id:
+    - sensor.freezer_electric_consumption_w
+    for:
+      hours: 3
+      minutes: 0
+      seconds: 0
+    below: 10
+    id: below 10
+  - trigger: numeric_state
+    entity_id:
+    - sensor.freezer_electric_consumption_w
+    for:
+      hours: 5
+      minutes: 0
+      seconds: 0
+    above: 10
+    id: above 10
+  - trigger: event
+    event_type: mobile_app_notification_action
+    id: action
+    event_data:
+      tag: frzr01-notify
+      action_1_key: frzr01-off
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - below 10
+      sequence:
+      - action: script.activate_mobile_actionable_notification
+        data_template:
+          notify_target: notify.mobile_app_josh_mobile
+          message: Freezer ain't run in 3 hours!
+          title: FREEZER ALERT
+          notify_tag: frzr01-notify
+        alias: Send ain't run msg
+    - conditions:
+      - condition: trigger
+        id:
+        - above 10
+      sequence:
+      - action: script.activate_mobile_actionable_notification
+        data_template:
+          notify_target: notify.mobile_app_josh_mobile
+          message: Freezer has been running for > 5hrs!
+          title: FREEZER ALERT
+          notify_tag: frzr01-notify
+          notify_action_1: frzr01-off
+          notify_action_1_title: Turn Off
+        alias: Send been running too long msg
+    - conditions:
+      - condition: trigger
+        id:
+        - action
+      sequence:
+      - action: switch.turn_off
+        target:
+          entity_id: switch.freezer
+  mode: parallel
+  max: 10
+- id: '1751911826375'
+  alias: Motion Boudoir
+  description: ''
+  triggers:
+  - alias: Motion
+    entity_id:
+    - binary_sensor.boudoir_sensor_motion_detection
+    to: 'on'
+    id: Motion
+    trigger: state
+  - event_type: timer.finished
+    event_data:
+      entity_id: timer.timer_boudoir
+    id: Timer
+    trigger: event
+    alias: Timer
+  conditions:
+  - condition: state
+    entity_id: input_boolean.motion_lockout
+    state: 'off'
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - Motion
+      sequence:
+      - choose:
+        - conditions:
+          - condition: state
+            entity_id: alarm_control_panel.home_alarm
+            state: disarmed
+          sequence:
+          - if:
+            - condition: sun
+              before: sunset
+            then:
+            - if:
+              - condition: state
+                state: 'on'
+                entity_id: light.boudoir
+              then:
+              - data:
+                  duration: 00:10:00
+                action: timer.start
+                target:
+                  entity_id: timer.timer_boudoir
+              else:
+              - parallel:
+                - data:
+                    duration: 00:10:00
+                  action: timer.start
+                  target:
+                    entity_id: timer.timer_boudoir
+                - action: light.turn_on
+                  data:
+                    transition: 0.5
+                    color_temp_kelvin: 4500
+                    brightness_pct: 100
+                  target:
+                    entity_id:
+                    - light.boudoir_light
+                    - light.boudoir_lamps
+                    - light.boudoir_fairy_lights
+            else:
+            - if:
+              - condition: state
+                state: 'on'
+                entity_id: light.boudoir
+              then:
+              - data:
+                  duration: 00:10:00
+                action: timer.start
+                target:
+                  entity_id: timer.timer_boudoir
+              else:
+              - parallel:
+                - data:
+                    duration: 00:10:00
+                  action: timer.start
+                  target:
+                    entity_id: timer.timer_boudoir
+                - action: light.turn_on
+                  data:
+                    transition: 0.5
+                    color_temp_kelvin: 4500
+                    brightness_pct: 100
+                  target:
+                    entity_id:
+                    - light.boudoir_fairy_lights
+        - conditions:
+          - condition: state
+            entity_id: alarm_control_panel.home_alarm
+            state: armed_night
+          sequence:
+          - if:
+            - condition: trigger
+              id:
+              - motion
+            then:
+            - if:
+              - condition: state
+                state: 'on'
+                entity_id: switch.boudoir_fairy_lights
+              then:
+              - data:
+                  duration: 00:05:00
+                action: timer.start
+                target:
+                  entity_id: timer.timer_boudoir
+              else:
+              - parallel:
+                - data:
+                    duration: 00:05:00
+                  action: timer.start
+                  target:
+                    entity_id: timer.timer_boudoir
+                - action: light.turn_on
+                  target:
+                    entity_id: light.boudoir_fairy_lights
+          alias: If Home Alarm Is Armed Night
+    - conditions:
+      - condition: trigger
+        id:
+        - Timer
+      sequence:
+      - if:
+        - condition: state
+          entity_id: input_boolean.cleaning
+          state: 'off'
+        - condition: not
+          conditions:
+          - condition: state
+            entity_id: sensor.last_motion_indoors
+            state: Boudoir
+        then:
+        - action: light.turn_off
+          target:
+            entity_id:
+            - light.boudoir_light
+            - light.boudoir_lamps
+            - light.boudoir_fairy_lights
+  mode: restart
+- id: '1752157984119'
+  alias: Notify Shuttle Bay
+  description: ''
+  triggers:
+  - alias: shuttle_bay Open
+    entity_id:
+    - cover.shuttle_bay
+    id: shuttle-bay
+    trigger: state
+    to: open
+  - alias: timer_finished
+    event_type: timer.finished
+    event_data:
+      entity_id: timer.timer_garage_door
+    id: timer_finished
+    trigger: event
+  - event_type: mobile_app_notification_action
+    event_data:
+      action: close_garage_01
+    id: close_garage_01
+    alias: close_garage_01
+    trigger: event
+  - event_type: mobile_app_notification_action
+    event_data:
+      action: ignore_garage_01
+    id: ignore_garage_01
+    alias: ignore_garage_01
+    trigger: event
+  - alias: cleared
+    event_type: mobile_app_notification_cleared
+    id: cleared
+    event_data:
+      tag: garage-warning_01
+      action_1_key: close_garage_01
+    trigger: event
+  - alias: shuttle_bay Closed
+    entity_id:
+    - cover.shuttle_bay
+    id: shuttle-bay-closed
+    trigger: state
+    to: closed
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - shuttle-bay
+      sequence:
+      - if:
+        - condition: state
+          entity_id: cover.shuttle_bay
+          state: open
+        then:
+        - action: timer.start
+          data:
+            duration: 00:05:00
+          target:
+            entity_id: timer.timer_garage_door
+        else:
+        - if:
+          - condition: state
+            entity_id: cover.shuttle_bay
+            state: closed
+          then:
+          - action: timer.cancel
+            data: {}
+            target:
+              entity_id: timer.timer_garage_door
+      alias: shuttle_bay
+    - conditions:
+      - condition: trigger
+        id:
+        - timer_finished
+      - condition: state
+        entity_id: cover.shuttle_bay
+        state: open
+      sequence:
+      - action: notify.mobile_app_josh_mobile
+        data:
+          title: Garage Door
+          message: Garage Door 01 Open
+          data:
+            tag: garage-warning_01
+            actions:
+            - action: close_garage_01
+              title: Close
+            - action: ignore_garage_01
+              title: Ignore
+      alias: timer_finished
+    - conditions:
+      - condition: trigger
+        id:
+        - close_garage_01
+      sequence:
+      - action: cover.close_cover
+        target:
+          entity_id: cover.shuttle_bay
+        data: {}
+      - action: notify.all_devices
+        data:
+          title: Garage Door
+          message: Garage Door 01 Closing
+          data:
+            tag: garage-warning_01
+      alias: close_garage_01
+    - conditions:
+      - condition: trigger
+        id:
+        - ignore_garage_01
+      sequence:
+      - action: timer.start
+        data:
+          duration: 01:00:00
+        target:
+          entity_id: timer.timer_garage_door
+      - action: notify.all_devices
+        data:
+          title: Garage Door
+          message: Garage Door 01 Ignored. Reminding in 1 hour
+          data:
+            tag: garage-warning_01
+      alias: ignore_garage_01
+    - conditions:
+      - condition: trigger
+        id:
+        - cleared
+      sequence:
+      - variables:
+          device_id: '{{ trigger.event.data.device_id }}'
+          cleared: true
+      - action: system_log.write
+        data:
+          level: warning
+          message: device id= "{{ device_id }}" and cleared= "{{ cleared }}"
+  mode: single
+- id: '1752168379671'
+  alias: Motion Hall
+  description: ''
+  triggers:
+  - alias: motion
+    entity_id:
+    - binary_sensor.motion_hall_01
+    to: 'on'
+    id: motion
+    trigger: state
+  - event_type: timer.finished
+    event_data:
+      entity_id: timer.timer_hall
+    id: t02
+    trigger: event
+  conditions:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.home_alarm
+      state: disarmed
+    - condition: state
+      entity_id: input_boolean.motion_lockout
+      state: 'off'
+  actions:
+  - alias: Turn on and start timer
+    if:
+    - condition: trigger
+      id:
+      - motion
+    then:
+    - if:
+      - condition: state
+        entity_id: light.hall_lights
+        state: 'on'
+      then:
+      - data:
+          duration: 00:02:00
+        action: timer.start
+        target:
+          entity_id: timer.timer_hall
+      else:
+      - parallel:
+        - data:
+            duration: 00:02:00
+          action: timer.start
+          target:
+            entity_id: timer.timer_hall
+        - action: light.turn_on
+          data:
+            transition: 0.5
+            brightness_pct: 50
+          target:
+            entity_id: light.hall_lights
+  - if:
+    - condition: trigger
+      id:
+      - t02
+    - condition: state
+      entity_id: input_boolean.cleaning
+      state: 'off'
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: sensor.last_motion_indoors
+        state: Hall
+    then:
+    - action: light.turn_off
+      data:
+        transition: 0.5
+      target:
+        entity_id: light.hall_lights
+  mode: restart
+- id: '1752169679107'
+  alias: Motion Bedroom
+  description: ''
+  triggers:
+  - alias: Motion
+    entity_id:
+    - binary_sensor.motion_bedroom
+    to: 'on'
+    id: Motion
+    trigger: state
+  - event_type: timer.finished
+    event_data:
+      entity_id: timer.timer_bedroom
+    id: Timer
+    trigger: event
+    alias: Timer
+  conditions:
+  - condition: state
+    entity_id: input_boolean.motion_lockout
+    state: 'off'
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - Motion
+      sequence:
+      - if:
+        - condition: state
+          entity_id: alarm_control_panel.home_alarm
+          state: disarmed
+        then:
+        - if:
+          - condition: state
+            state: 'on'
+            entity_id: light.bedroom
+          then:
+          - data:
+              duration: 00:10:00
+            action: timer.start
+            target:
+              entity_id: timer.timer_bedroom
+          else:
+          - parallel:
+            - data:
+                duration: 00:10:00
+              action: timer.start
+              target:
+                entity_id: timer.timer_bedroom
+            - action: light.turn_on
+              data:
+                transition: 0.5
+              target:
+                entity_id: light.bedroom_light
+                device_id:
+                - 9516c2da13f111eb855b57b1e7beb4a7
+                - 22f8b69f142111ebaba3518d86d62d4c
+                - 6e47c9417083c80414ff547afebaf165
+        enabled: false
+      - choose:
+        - conditions:
+          - condition: state
+            entity_id: alarm_control_panel.home_alarm
+            state: disarmed
+          sequence:
+          - if:
+            - condition: state
+              state: 'on'
+              entity_id: light.bedroom
+            then:
+            - data:
+                duration: 00:10:00
+              action: timer.start
+              target:
+                entity_id: timer.timer_bedroom
+            else:
+            - parallel:
+              - data:
+                  duration: 00:10:00
+                action: timer.start
+                target:
+                  entity_id: timer.timer_bedroom
+              - action: light.turn_on
+                data:
+                  transition: 0.5
+                target:
+                  entity_id:
+                  - light.eugene
+                  - light.rapunzel
+                  - light.pascal
+        - conditions:
+          - condition: state
+            entity_id: alarm_control_panel.home_alarm
+            state: armed_night
+          sequence:
+          - if:
+            - condition: state
+              state: 'on'
+              entity_id: light.bedroom
+            then:
+            - data:
+                duration: 00:10:00
+              action: timer.start
+              target:
+                entity_id: timer.timer_bedroom
+            else:
+            - parallel:
+              - data:
+                  duration: 00:10:00
+                action: timer.start
+                target:
+                  entity_id: timer.timer_bedroom
+              - action: light.turn_on
+                data:
+                  transition: 0.5
+                target:
+                  entity_id: light.bedroom_light
+                enabled: false
+    - conditions:
+      - condition: trigger
+        id:
+        - Timer
+      sequence:
+      - if:
+        - condition: state
+          entity_id: input_boolean.cleaning
+          state: 'off'
+        - condition: not
+          conditions:
+          - condition: state
+            entity_id: sensor.last_motion_indoors
+            state: Bedroom
+        then:
+        - action: light.turn_off
+          target:
+            entity_id:
+            - light.bedroom
+  mode: restart
+- id: '1752174710917'
+  alias: Notify Water Filter
+  description: ''
+  triggers:
+  - event_type: timer.finished
+    event_data:
+      entity_id: timer.water_filter
+    id: t01
+    trigger: event
+  - tag_id: 1e923fae-efb1-40c4-8c45-b5ab3f8beb78
+    id: t02
+    trigger: tag
+  - event_type: mobile_app_notification_action
+    event_data:
+      action: water_done
+    id: t03
+    alias: t03 water_done
+    trigger: event
+  - event_type: mobile_app_notification_action
+    event_data:
+      action: water_snooze
+    id: t04
+    alias: t04 water_snooze
+    trigger: event
+  conditions: []
+  actions:
+  - if:
+    - condition: trigger
+      id:
+      - t01
+    then:
+    - action: notify.mobile_app_josh_mobile
+      data:
+        data:
+          tag: water-reminder
+          actions:
+          - action: water_done
+            title: Done
+          - action: water_snooze
+            title: Snooze
+        message: Replace Water Filter
+        title: Reminder
+  - if:
+    - condition: trigger
+      id:
+      - t02
+      - t03
+    then:
+    - action: timer.start
+      target:
+        entity_id: timer.water_filter
+  - if:
+    - condition: trigger
+      id:
+      - t04
+    then:
+    - delay:
+        hours: 24
+        minutes: 0
+        seconds: 0
+        milliseconds: 0
+    - action: notify.mobile_app_josh_mobile
+      data:
+        data:
+          tag: water-reminder
+          actions:
+          - action: water_done
+            title: Done
+          - action: water_snooze
+            title: Snooze
+        message: Replace Water Filter
+        title: Reminder
+  mode: single
+- id: '1754058094802'
+  alias: Entertainment Automations
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id:
+    - media_player.samsung_65
+    to: 'on'
+  conditions: []
+  actions:
+  - action: light.turn_off
+    data:
+      transition: 2
+    target:
+      entity_id: light.parlor_light
+  - action: light.turn_on
+    data:
+      transition: 2
+      brightness_pct: 10
+    target:
+      entity_id: light.spot_light
+  - action: light.turn_on
+    data:
+      transition: 2
+      brightness_pct: 50
+    target:
+      entity_id:
+      - light.masonic_lamp
+  mode: single
+- id: '1762105854595'
+  alias: Kitchen Controller - All Devices & LED Sync
+  description: 4-Way Sync for 3x ZEN35 devices. Centralized logic for Button 1 (Island),
+    Button 2 (Scenes), Button 3 (Adaptive), and Button 5 (Big Kitchen).
+  triggers:
+  - alias: 'Button 1: Island (Device 1)'
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      device_id: 90b93592f74bc654b85e4aaa098918d4
+      property_key: '001'
+      value: KeyPressed
+    id: '001'
+  - alias: 'Button 2: Night Scene (Device 1)'
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      device_id: 90b93592f74bc654b85e4aaa098918d4
+      property_key: '002'
+      value: KeyPressed
+    id: '002'
+  - alias: 'Button 3: Adaptive Toggle (Device 1)'
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      device_id: 90b93592f74bc654b85e4aaa098918d4
+      property_key: '003'
+      value: KeyPressed
+    id: '003'
+  - alias: 'Button 5: Big Kitchen (Device 1)'
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      device_id: 90b93592f74bc654b85e4aaa098918d4
+      property_key: '005'
+      value: KeyPressed
+    id: '005'
+  - alias: 'Button 1: Island (Device 2)'
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      device_id: d4640b2dea23e698568497b326543ba1
+      property_key: '001'
+      value: KeyPressed
+    id: '001'
+  - alias: 'Button 2: Night Scene (Device 2)'
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      device_id: d4640b2dea23e698568497b326543ba1
+      property_key: '002'
+      value: KeyPressed
+    id: '002'
+  - alias: 'Button 3: Adaptive Toggle (Device 2)'
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      device_id: d4640b2dea23e698568497b326543ba1
+      property_key: '003'
+      value: KeyPressed
+    id: '003'
+  - alias: 'Button 5: Big Kitchen (Device 2)'
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      device_id: d4640b2dea23e698568497b326543ba1
+      property_key: '005'
+      value: KeyPressed
+    id: '005'
+  - alias: 'Button 1: Island (Device 3)'
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      device_id: ed054a2617f24033ca54f8a5ed0f186c
+      property_key: '001'
+      value: KeyPressed
+    id: '001'
+  - alias: 'Button 2: Night Scene (Device 3)'
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      device_id: ed054a2617f24033ca54f8a5ed0f186c
+      property_key: '002'
+      value: KeyPressed
+    id: '002'
+  - alias: 'Button 3: Adaptive Toggle (Device 3)'
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      device_id: ed054a2617f24033ca54f8a5ed0f186c
+      property_key: '003'
+      value: KeyPressed
+    id: '003'
+  - alias: 'Button 5: Big Kitchen (Device 3)'
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      device_id: ed054a2617f24033ca54f8a5ed0f186c
+      property_key: '005'
+      value: KeyPressed
+    id: '005'
+  - alias: 'State Change: Big Kitchen'
+    trigger: state
+    entity_id: light.big_kitchen_lights
+    id: Update LEDs
+  - alias: 'State Change: Island'
+    trigger: state
+    entity_id: light.island
+    id: Update LEDs
+  - alias: 'Brightness Change: Big Kitchen'
+    trigger: state
+    entity_id: light.big_kitchen_lights
+    attribute: brightness
+    id: Update LEDs
+  - alias: 'Brightness Change: Island'
+    trigger: state
+    entity_id: light.island
+    attribute: brightness
+    id: Update LEDs
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: '005'
+      sequence:
+      - action: light.toggle
+        target:
+          entity_id: light.big_kitchen_lights
+        data:
+          transition: 0.5
+    - conditions:
+      - condition: trigger
+        id: '001'
+      sequence:
+      - if:
+        - condition: state
+          entity_id: light.island
+          state: 'on'
+        then:
+        - action: light.turn_off
+          target:
+            entity_id: light.island
+        else:
+        - action: light.turn_on
+          target:
+            entity_id: light.island
+          data:
+            brightness_pct: 100
+            transition: 0.5
+    - conditions:
+      - condition: trigger
+        id: '002'
+      sequence:
+      - action: scene.turn_on
+        metadata: {}
+        target:
+          entity_id: scene.kitchen_dim
+        data: {}
+    - conditions:
+      - condition: trigger
+        id: '003'
+      sequence:
+      - if:
+        - condition: state
+          entity_id: switch.adaptive_lighting_kitchen
+          state: 'on'
+        then:
+        - action: switch.turn_off
+          target:
+            entity_id: switch.adaptive_lighting_kitchen
+        - action: light.turn_on
+          target:
+            entity_id:
+            - light.big_kitchen_lights
+            - light.island
+          data:
+            transition: 0
+            color_temp_kelvin: 4500
+            brightness_pct: 100
+        else:
+        - action: switch.turn_on
+          target:
+            entity_id: switch.adaptive_lighting_kitchen
+    - conditions:
+      - condition: trigger
+        id: Update LEDs
+      sequence:
+      - action: script.update_kitchen_zen35_leds
+  mode: restart
+- id: '1765936000477'
+  alias: Outdoor lights
+  description: ''
+  triggers:
+  - trigger: sun
+    event: sunrise
+    offset: 0
+    id: Rise
+  - trigger: sun
+    event: sunset
+    offset: 0
+    id: Set
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id:
+        - Rise
+      sequence:
+      - action: switch.turn_off
+        target:
+          entity_id:
+          - switch.garage_porch_light
+          - switch.narnia
+          - switch.outdoor_lights
+          - switch.front_door_porch_light
+        data: {}
+    - conditions:
+      - condition: trigger
+        id:
+        - Set
+      sequence:
+      - action: switch.turn_on
+        target:
+          entity_id:
+          - switch.garage_porch_light
+          - switch.narnia
+          - switch.front_door_porch_light
+        data: {}
+  mode: single
+- id: '1766015428765'
+  alias: Dining Room Lights
+  description: Controls smart bulbs via ZEN23 Scene Events
+  triggers:
+  - event_type: zwave_js_value_notification
+    event_data:
+      device_id: 4f85b8e83fb2e6f3b130438e382af85b
+      command_class: 91
+    id: zen23_event
+    trigger: event
+  - event_type: zwave_js_value_notification
+    event_data:
+      device_id: 81d2709e0359c0ec68a29a70154c04dc
+      command_class: 91
+    id: zen23_event
+    trigger: event
+  actions:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.event.data.property_key == ''002'' and trigger.event.data.value
+          == ''KeyPressed'' }}'
+      sequence:
+      - data:
+          brightness_pct: 100
+          transition: 0.5
+        action: light.turn_on
+        target:
+          entity_id: light.dining
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.event.data.property_key == ''001'' and trigger.event.data.value
+          == ''KeyPressed'' }}'
+      sequence:
+      - target:
+          entity_id: light.dining
+        action: light.turn_off
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.event.data.property_key == ''001'' and trigger.event.data.value
+          == ''KeyPressed2x'' }}'
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id:
+          - light.dining
+        data:
+          transition: 0.5
+          brightness_pct: 20
+  mode: restart
+- id: '1772286703556'
+  alias: Door Security & Safety
+  description: Instant entry announcements + 3-minute cat-safety alerts
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.garage_man_door_window_door_is_open
+    to: 'on'
+    id: instant_announce
+  - trigger: state
+    entity_id:
+    - binary_sensor.garage_man_door_window_door_is_open
+    to: 'on'
+    for: 00:03:00
+    id: long_open_alert
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: instant_announce
+      sequence:
+      - action: notify.alexa_media
+        data:
+          message: '{{ state_attr(trigger.entity_id, ''friendly_name'') }} opened'
+          target: media_player.counter
+      - wait_for_trigger:
+        - trigger: template
+          value_template: '{{ false }}'
+        timeout: 00:10:00
+    - conditions:
+      - condition: trigger
+        id: long_open_alert
+      sequence:
+      - action: notify.all_devices
+        data:
+          title: Door Open
+          message: The {{ state_attr(trigger.entity_id, 'friendly_name') }} is Open!
+      - action: notify.alexa_media
+        data:
+          message: Attention! The {{ state_attr(trigger.entity_id, 'friendly_name')
+            }} has been open for three minutes!
+          data:
+            type: announce
+          target:
+          - media_player.counter
+          - media_player.living_room
+          - media_player.bedroom
+          - media_player.garage
+          - media_player.dining_room
+  mode: parallel
+  max: 10
+- id: '1772634026962'
+  alias: Motion Front Porch Presence Lighting
+  description: Lights on when person detected at porch, off 2 mins after G5 motion
+    clears
+  triggers:
+  - entity_id: binary_sensor.front_porch_ptz_person_detected
+    to: 'on'
+    trigger: state
+  conditions:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  actions:
+  - target:
+      entity_id: switch.front_yard_lights
+    action: switch.turn_on
+  - wait_for_trigger:
+    - entity_id:
+      - binary_sensor.front_porch_ptz_object_detected
+      for:
+        minutes: 2
+      trigger: state
+      to:
+      - 'off'
+  - target:
+      entity_id: switch.front_yard_lights
+    action: switch.turn_off
+  mode: restart
+- id: '1772634663538'
+  alias: Motion Backyard Presence Lighting
+  description: Trigger on Person AI, maintain state with General Motion
+  triggers:
+  - entity_id: binary_sensor.patio_left_person_detected
+    to: 'on'
+    trigger: state
+  conditions:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  - condition: state
+    entity_id: input_boolean.motion_lockout
+    state:
+    - 'off'
+  actions:
+  - target:
+      entity_id: switch.backyard_lights
+    action: switch.turn_on
+  - wait_for_trigger:
+    - entity_id:
+      - binary_sensor.motion_outdoors_patio_left
+      to:
+      - 'off'
+      for:
+        minutes: 2
+      trigger: state
+  - target:
+      entity_id: switch.backyard_lights
+    action: switch.turn_off
+  mode: restart
+- id: '1772635458147'
+  alias: Motion Driveway Spotlight Presence
+  description: Trigger on Person AI, maintain state with General Driveway Motion
+  triggers:
+  - entity_id: binary_sensor.driveway_outside_person_detected
+    to: 'on'
+    trigger: state
+  conditions:
+  - condition: state
+    entity_id: sun.sun
+    state: below_horizon
+  actions:
+  - target:
+      entity_id: switch.garage_spot_light
+    action: switch.turn_on
+  - wait_for_trigger:
+    - entity_id:
+      - binary_sensor.motion_outdoors_driveway
+      to:
+      - 'off'
+      for:
+        minutes: 2
+      trigger: state
+  - target:
+      entity_id: switch.garage_spot_light
+    action: switch.turn_off
+  mode: restart
+- id: '1772728212323'
+  alias: 'Security: Front Porch - AI Video Analysis'
+  description: ''
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.front_porch_ptz_person_detected
+    to: 'on'
+  - trigger: state
+    entity_id: input_button.test_porch_ai
+  conditions:
+  - condition: state
+    entity_id: input_boolean.camera_alerts
+    state: 'on'
+  - condition: template
+    value_template: '{# If it has never triggered before, or if the time since last
+      trigger is > 300 seconds, evaluate as True #} {{ this.attributes.last_triggered
+      == None or (now() - this.attributes.last_triggered).total_seconds() > 300 }}
+
+      '
+  actions:
+  - parallel:
+    - action: camera.record
+      target:
+        entity_id: camera.front_porch_ptz_high_resolution_channel
+      data:
+        duration: 12
+        lookback: 3
+        filename: /media/snapshots/porch/approach.mp4
+    - action: camera.record
+      target:
+        entity_id: camera.doorbell_outside_high_resolution_channel
+      data:
+        duration: 12
+        lookback: 3
+        filename: /media/snapshots/porch/dropoff.mp4
+  - action: ai_task.generate_data
+    data:
+      entity_id: ai_task.google_ai_task
+      task_name: Porch Video Analysis
+      instructions: 'Attachment 1 and 2 are reference photos of the residents, MJ
+        and Josh. Notice their distinctive arm tattoos. The remaining video attachments
+        are current security footage. Ignore any vehicles or people in the distance.
+        Compare the person in the footage to the reference photos.
+
+        RULE 1: If the person in the footage is a visual match for Josh or MJ, start
+        your response with the exact tag: [RESIDENT] RULE 2: If the person is a guest
+        who is let inside the house or walks through the front door, start your response
+        with: [ENTERED] RULE 3: For all other visitors, deliveries, or solicitors,
+        start your response with: [ALERT]
+
+        After the tag, provide a concise summary in under 50 words: - Person: [Details]
+        - Package/Action: [What they left, or if they went inside] - Intent: [Delivery,
+        Visitor, Solicitor, or Resident]
+
+        '
+      attachments:
+      - media_content_id: media-source://media_source/local/snapshots/reference/mj.jpg
+        media_content_type: image/jpeg
+      - media_content_id: media-source://media_source/local/snapshots/reference/josh.jpg
+        media_content_type: image/jpeg
+      - media_content_id: media-source://media_source/local/snapshots/porch/approach.mp4
+        media_content_type: video/mp4
+      - media_content_id: media-source://media_source/local/snapshots/porch/dropoff.mp4
+        media_content_type: video/mp4
+    response_variable: gemini_report
+  - action: notify.send_message
+    target:
+      entity_id: notify.daily_camera_log
+    data:
+      message: '{{ now().strftime(''%I:%M %p'') }} - Front Porch: {{ gemini_report.data
+        }}'
+  - action: notify.send_message
+    target:
+      entity_id: notify.porch_history_csv
+    data:
+      message: '"{{ now().strftime(''%Y-%m-%d'') }}","{{ now().strftime(''%H:%M:%S'')
+        }}","{{ gemini_report.data.split('']'')[0] ~ '']'' }}","{{ gemini_report.data
+        | replace(''"'', ''""'') }}"
+
+        '
+  - if:
+    - condition: template
+      value_template: '{{ ''[ALERT]'' in gemini_report.data }}'
+    then:
+    - action: notify.persistent_notification
+      data:
+        title: Porch Intel (Full Report)
+        message: '{{ gemini_report.data | replace(''[ALERT] '', '''') }}'
+    - action: notify.mobile_app_josh_mobile
+      data:
+        title: Porch Intel
+        message: '{{ gemini_report.data | replace(''[ALERT] '', '''') | truncate(150,
+          true, ''...'') }}'
+    - if:
+      - condition: state
+        entity_id: alarm_control_panel.home_alarm
+        state:
+        - armed_away
+        - armed_vacation
+      then:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.porch_visitor_while_away
+  mode: single
+- id: '1772742848092'
+  alias: System - Cameras - Evening AI Rollup
+  description: ''
+  triggers:
+  - at: '20:00:00'
+    trigger: time
+  actions:
+  - action: ai_task.generate_data
+    data:
+      entity_id: ai_task.google_ai_task
+      task_name: Daily Security Briefing
+      instructions: 'Read the attached log of today''s camera events.  Write a cohesive
+        evening briefing summarizing the activity. Group similar events together.
+        If the log is completely blank, simply output: "<h3>All clear. No porch activity
+        detected today.</h3>" Format your entire response using basic HTML (use <h3>
+        for headers, <ul> and <li> for bullet points, and <b> for bold text). Do not
+        use markdown.
+
+        '
+      attachments:
+      - media_content_id: media-source://media_source/local/snapshots/daily_camera_log.txt
+        media_content_type: text/plain
+    response_variable: evening_rollup
+  - action: notify.email_daily_rollup
+    data:
+      title: Security Briefing - {{ now().strftime('%b %d, %Y') }}
+      message: Please view this email in an HTML-compatible client.
+      data:
+        html: '{{ evening_rollup.data }}'
+- id: '1772743146418'
+  alias: System - Cameras - Clear Daily Log
+  description: ''
+  triggers:
+  - at: '20:10:00'
+    trigger: time
+  actions:
+  - action: shell_command.clear_daily_camera_log
+- id: '1773788016200'
+  alias: 'Security: Garage Man Door Opened'
+  description: Alerts when the garage man door opens while armed away or on vacation.
+  triggers:
+  - entity_id: binary_sensor.garage_man_door_window_door_is_open
+    to: 'on'
+    trigger: state
+  conditions:
+  - condition: or
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.home_alarm
+      state: armed_away
+    - condition: state
+      entity_id: alarm_control_panel.home_alarm
+      state: armed_vacation
+  actions:
+  - action: notify.mobile_app_josh_mobile
+    data:
+      title: ⚠️ Garage Alert
+      message: The Garage Man Door was just opened while the system is armed!
+  mode: single
+- id: '1773858634897'
+  alias: 'Security: Devine''s Code Used'
+  description: Disarms the house when the Devine's use their specific lock code.
+  triggers:
+  - trigger: event
+    event_type: zwave_js_notification
+    event_data:
+      device_id: 621aa1c4c9243ca0eb0bb5c81174a2c6
+      command_class: 113
+      type: 6
+      event: 6
+      parameters:
+        userId: 3
+  actions:
+  - action: alarm_control_panel.alarm_disarm
+    target:
+      entity_id: alarm_control_panel.home_alarm
+    data:
+      code: '1977'
+  - action: notify.mobile_app_josh_mobile
+    data:
+      title: Garage Man Door Unlocked
+      message: Devine's unlocked the door. The house has been temporarily disarmed.
   mode: single

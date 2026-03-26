@@ -1,0 +1,10 @@
+---
+sensor:
+  - name: 'Freezer Running'
+    unique_id: frz001
+    state: >
+      {% if states('sensor.freezer_electric_consumption_w') | float(0) > 10 %}
+        On
+      {% else %}
+        Off
+      {% endif %}

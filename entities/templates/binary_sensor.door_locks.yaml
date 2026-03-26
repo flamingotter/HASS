@@ -1,0 +1,14 @@
+---
+binary_sensor:
+  - name: "Door Locks"
+    unique_id: door_locks_binary_sensor
+    device_class: lock
+    state: "{{ is_state('lock.garage_door', 'unlocked') }}"
+    icon: >-
+      {% if this.state == 'off' %}
+        mdi:lock
+      {% elif this.state == 'on' %}
+        mdi:lock-open
+      {% else %}
+        mdi:lock-alert
+      {% endif %}

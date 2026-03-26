@@ -1,0 +1,15 @@
+---
+binary_sensor:
+  - name: "Shuttle Bay"
+    unique_id: shuttle_bay_binary_sensor
+    device_class: garage_door
+    state: "{{ is_state('cover.shuttle_bay', 'open') }}"
+    icon: >-
+      {% set state = states('cover.shuttle_bay') %}
+      {% if state == 'open' %}
+        mdi:garage-open
+      {% elif state == 'closed' %}
+        mdi:garage
+      {% else %}
+        mdi:garage-alert
+      {% endif %}

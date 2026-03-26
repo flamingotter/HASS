@@ -1,0 +1,5 @@
+---
+binary_sensor:
+  - name: "Freezer Running"
+    unique_id: frz003
+    state: "{{ states('sensor.freezer_electric_consumption_w') | float(0) > 10 }}"

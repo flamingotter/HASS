@@ -1,0 +1,39 @@
+---
+sensor:
+  - name: 'Last Motion Outdoors'
+    unique_id: last_motion_outdoors_dynamic
+    icon: 'mdi:walk'
+    state: >
+      {# Select all binary sensors whose entity ID contains 'binary_sensor.motion_outdoors_' #}
+      {% set motion_sensors = states.binary_sensor 
+        | selectattr('entity_id', 'search', 'binary_sensor.motion_outdoors_') 
+        | list 
+      %}
+      
+      {% if motion_sensors | count > 0 %}
+        {# Sort by last_changed timestamp (most recent first) and pick the top one #}
+        {% set latest_sensor = motion_sensors 
+          | sort(attribute='last_changed', reverse=true) 
+          | first 
+        %}
+        {# Use the friendly name of the sensor as the state value #}
+        {{ latest_sensor.name }}
+      {% else %}
+        None
+      {% endif %}
+    attributes:
+      last_triggered: >
+        {% set motion_sensors = states.binary_sensor 
+          | selectattr('entity_id', 'search', 'binary_sensor.motion_outdoors_') 
+          | list 
+        %}
+        
+        {% if motion_sensors | count > 0 %}
+          {% set latest_sensor = motion_sensors 
+            | sort(attribute='last_changed', reverse=true) 
+            | first 
+          %}
+          {{ latest_sensor.last_changed }}
+        {% else %}
+          None
+        {% endif %}

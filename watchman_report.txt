@@ -1,0 +1,73 @@
+-== Watchman Report ==- 
+
+-== Congratulations, all 50 actions from your config are available!
+
+-== Missing 58 entity(ies) from 209 found in your config:
++--------------------------------+---------+--------------------------------------------------------------+
+| Entity ID                      | State   | Location                                                     |
++--------------------------------+---------+--------------------------------------------------------------+
+| light.foyer_light              | missing | .storage/core.config_entries:31,53                           |
+| light.parlor_01                | missing | .storage/core.config_entries:31                              |
+| light.spot_light               | unavail | .storage/core.config_entries:33                              |
+| light.wled_cloud_main          | unavail | .storage/core.config_entries:33                              |
+| media_player.babe_cave         | unavail | .storage/core.config_entries:36                              |
+| media_player.echo_show         | missing | .storage/core.config_entries:36                              |
+| media_player.media_room        | missing | .storage/core.config_entries:36                              |
+| media_player.office_dot        | missing | .storage/core.config_entries:36                              |
+| media_player.parlor            | missing | .storage/core.config_entries:36                              |
+| light.bar_light                | missing | .storage/core.config_entries:53                              |
+| light.boudoir_01               | missing | .storage/core.config_entries:55                              |
+| light.boudoir_02               | missing | .storage/core.config_entries:55                              |
+| light.boudoir_light            | unavail | .storage/core.config_entries:58                              |
+| light.boudoir_lamps            | unavail | .storage/core.config_entries:58                              |
+| light.boudoir_lamp_01          | missing | .storage/core.config_entries:59                              |
+| light.boudoir_lamp_02          | missing | .storage/core.config_entries:59                              |
+| scene.before_onair             | missing | automations.yaml:127                                         |
+| light.led_tree                 | disable | automations.yaml:205,1512,1539                               |
+|                                | d       |                                                              |
+| light.wled_bed                 | missing | automations.yaml:211,785,819                                 |
+| light.mbr_one                  | missing | automations.yaml:224                                         |
+| light.mbr_two                  | missing | automations.yaml:225                                         |
+| light.mbr_three                | missing | automations.yaml:226                                         |
+| light.masonic_lamp             | missing | automations.yaml:378,418,440,829,4039                        |
+| switch.office_strip_socket_06  | missing | automations.yaml:480,498                                     |
+| light.desk_light               | missing | automations.yaml:787,820                                     |
+| light.office_lamp              | missing | automations.yaml:788,821                                     |
+| light.office_one               | missing | automations.yaml:789                                         |
+| light.office_two               | missing | automations.yaml:790                                         |
+| light.office_three             | missing | automations.yaml:791                                         |
+| light.office_four              | missing | automations.yaml:792                                         |
+| light.table_lamp               | missing | automations.yaml:793,822                                     |
+| light.piano_lamp               | missing | automations.yaml:794,823                                     |
+| light.garage_overhead          | missing | automations.yaml:795                                         |
+| light.garage_cabinet_lights    | missing | automations.yaml:796                                         |
+| light.media_one                | missing | automations.yaml:799,1520                                    |
+| light.media_two                | missing | automations.yaml:800,1523                                    |
+| light.media_three              | missing | automations.yaml:801,1504,1536                               |
+| light.media_four               | missing | automations.yaml:802,1526                                    |
+| light.storage_01               | missing | automations.yaml:803                                         |
+| light.storage_02               | missing | automations.yaml:804                                         |
+| light.bedroom_light            | missing | automations.yaml:832,3854,3917                               |
+| scene.cleaning_before          | missing | automations.yaml:862                                         |
+| binary_sensor.motion_kitchen   | missing | automations.yaml:1186,1225                                   |
+| binary_sensor.withings_in_bed_ | missing | automations.yaml:2878                                        |
+| mj                             |         |                                                              |
+| camera.parlor_inside           | missing | automations.yaml:2972                                        |
+| timer.timer_garage_door_01     | missing | automations.yaml:3652,3661,3707                              |
+| media_player.office            | unavail | entities/groups/group.echos.yaml:10                          |
+| switch.grow_light_01           | missing | entities/groups/group.grow_shelf.yaml:5                      |
+| switch.grow_light_02           | missing | entities/groups/group.grow_shelf.yaml:6                      |
+| switch.grow_light_03           | missing | entities/groups/group.grow_shelf.yaml:7                      |
+| switch.grow_fan_01             | missing | entities/groups/group.grow_shelf.yaml:8                      |
+| switch.plug_6                  | missing | entities/groups/group.grow_shelf.yaml:9                      |
+| sensor.dayoftheweek            | missing | entities/templates/binary_sensor.trash_day.yaml:5            |
+| sensor.freezer_last_seen       | missing | integrations/logbook.yaml:13                                 |
+| sensor.yr_symbol               | missing | integrations/recorder.yaml:16                                |
+| sensor.internet_time           | missing | integrations/recorder.yaml:17                                |
+| light.front_door_light         | missing | scenes.yaml:382                                              |
+| light.office_lights            | missing | scripts.yaml:39,64                                           |
++--------------------------------+---------+--------------------------------------------------------------+
+
+-== Report created on 14 Feb 2026 11:38:15
+-== Parsed 78 files in 0.33s., ignored 0 files 
+-== Generated in: 0.09s. Validated in: 0.00s.

@@ -3,3 +3,8 @@ homeassistant:
   customize: !include_dir_merge_named ../customizations/entities
   allowlist_external_dirs:
     - "www/tmp/"
+    - www/tmp/snapshots/parlor
+    - "/media/snapshots"
+
+  media_dirs:
+    media: /media

@@ -1,0 +1,17 @@
+# Ignore the main database and its temporary files
+home-assistant_v2.db
+home-assistant_v2.db-shm
+home-assistant_v2.db-wal
+
+# Ignore all backup folders
+backups/
+
+# Ignore specific large data directories
+tts/
+media/
+
+# Ignore sensitive secrets
+secrets.yaml
+
+# Ignore logs
+*.log

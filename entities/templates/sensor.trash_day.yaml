@@ -1,0 +1,6 @@
+---
+sensor:
+  - name: 'Trash Day'
+    unique_id: trash_day_sensor
+    state: "{{ iif(is_state('binary_sensor.trash_day', 'on'), 'Put to Curb', 'Not Today') }}"
+    icon: "{{ iif(is_state('binary_sensor.trash_day', 'on'), 'mdi:delete', 'mdi:delete-empty') }}"

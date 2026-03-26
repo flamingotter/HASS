@@ -1,6 +1,0 @@
----
-storage_room:
-  name: Storage Room
-  entities:
-    - light.storage_01
-    - light.storage_02

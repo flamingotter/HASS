@@ -1,0 +1,6 @@
+---
+sensor:
+  - name: 'Moon'
+    unique_id: moon_phases_sensor
+    state: "{{ states('sensor.moon') }}"
+    picture: "/local/moon_phases/{{ states('sensor.moon') }}.png"

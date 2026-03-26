@@ -1,0 +1,3 @@
+---
+shell_command:
+  clear_daily_camera_log: 'echo "" > /media/snapshots/daily_camera_log.txt'

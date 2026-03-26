@@ -1,0 +1,5 @@
+---
+sensor:
+  - name: Day of the Week
+    unique_id: day_of_the_week
+    state: "{{ ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'][now().weekday()] }}"

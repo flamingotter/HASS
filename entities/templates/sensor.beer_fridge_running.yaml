@@ -1,0 +1,10 @@
+---
+sensor:
+  - name: 'Beer Fridge Running'
+    unique_id: beer002
+    state: >
+      {% if states('sensor.beer_fridge_electric_consumption_w') | float(0) > 15 %}
+        On
+      {% else %}
+        Off
+      {% endif %}

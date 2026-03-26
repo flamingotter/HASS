@@ -1,0 +1,71 @@
+blueprint:
+  name: PIR Motion Lighting
+  description: >
+    Controls lights with a PIR sensor and a timer.
+    Turns on the light when motion is detected and starts a timer.
+    Turns off the light when the timer finishes.
+  domain: automation
+  input:
+    pir_sensor:
+      name: PIR Motion Sensor
+      selector:
+        entity:
+          domain: binary_sensor
+          device_class: motion
+    light_target:
+      name: Light(s)
+      selector:
+        target:
+          entity:
+            domain: light
+    timer_entity:
+      name: Timer Helper
+      selector:
+        entity:
+          domain: timer
+    turn_off_delay:
+      name: Turn Off Delay (minutes)
+      description: The duration for the timer.
+      default: 5
+      selector:
+        number:
+          min: 0
+          max: 60
+          unit_of_measurement: minutes
+
+mode: restart
+max_exceeded: silent
+
+variables:
+  delay_seconds: "{{ (turn_off_delay | int) * 60 }}"
+
+trigger:
+  - platform: state
+    entity_id: !input pir_sensor
+    to: 'on'
+    id: pir_on
+  - platform: event
+    event_type: timer.finished
+    event_data:
+      entity_id: !input timer_entity
+    id: timer_finished
+
+action:
+  - choose:
+      - conditions:
+          - condition: trigger
+            id: pir_on
+        sequence:
+          - service: light.turn_on
+            target: !input light_target
+          - service: timer.start
+            target:
+              entity_id: !input timer_entity
+            data:
+              duration: '{{ delay_seconds }}'
+      - conditions:
+          - condition: trigger
+            id: timer_finished
+        sequence:
+          - service: light.turn_off
+            target: !input light_target

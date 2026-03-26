@@ -1,0 +1,5 @@
+---
+binary_sensor:
+  - name: "Beer Fridge Running"
+    unique_id: beer001
+    state: "{{ states('sensor.beer_fridge_electric_consumption_w') | float(0) > 15 }}"

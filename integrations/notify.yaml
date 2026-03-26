@@ -1,13 +1,21 @@
 ---
 notify:
-  # platform: html5
-  # name: html5_push
-  # vapid_pub_key: BKnLWTMqRcOsEjtgE_GYj3sev3ZRQmpeRAHr4QN-h84KpTpchiGDLRW6yy7w0GQ67XhtnlsYwsrmOIJYgMrOGhU
-  # vapid_prv_key: ha-I0kqyhkb9jPBr9hSVnpW_6iB_yxkK8b_fDAuRUI0
-  # vapid_email: firebase-adminsdk-f4sn5@moonlit-botany-293421.iam.gserviceaccount.com
-  name: ALL_DEVICES
-  platform: group
-  services: 
-    - service: mobile_app_josh_pixel_8_pro
-    - service: mobile_app_mj_pixel_8_pro
+  - name: ALL_DEVICES
+    platform: group
+    services: 
+      - service: mobile_app_josh_mobile
+      - service: mobile_app_mj_pixel_8_pro
+
+  - name: email_daily_rollup
+    platform: smtp
+    server: smtp.gmail.com
+    port: 587
+    timeout: 15
+    sender: flamingotter@gmail.com
+    encryption: starttls
+    username: flamingotter@gmail.com
+    password: "mdppapjwbpzpygdc" # No spaces
+    recipient:
+      - flamingotter+hass@gmail.com # Where you want the report sent
+    sender_name: "Home Assistant"
 

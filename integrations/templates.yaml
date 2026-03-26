@@ -1,2 +1,3 @@
 ---
+#../integrations/templates.yaml
 template: !include_dir_list ../entities/templates

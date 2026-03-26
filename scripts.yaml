@@ -1,254 +1,27 @@
-basement_stairs_on:
-  alias: basement_stairs_on
-  sequence:
-  - service: light.turn_on
-    data:
-      color_temp: 222
-      brightness_pct: 100
-    target:
-      entity_id: light.stair_light
-  mode: single
-  icon: mdi:stairs
-basement_stairs_off:
-  alias: basement_stairs_off
-  sequence:
-  - service: lifx.effect_colorloop
-    data:
-      saturation_min: 80
-      saturation_max: 100
-      period: 5
-      change: 20
-      spread: 30
-      power_on: true
-      brightness_pct: 50
-    target:
-      entity_id: light.stair_light
-  mode: single
-  icon: mdi:stairs
 dinner_msg:
   alias: Dinner Msg
   sequence:
-  - service: notify.alexa_media
-    data:
+  - data:
       message: It's time to eat, please make your way to the kitchen
       target:
       - media_player.bedroom
       - media_player.garage
-      - media_player.office
-      - media_player.babe_cave
-      - media_player.media_room
       data:
         method: all
         type: announce
+    action: notify.alexa_media
   mode: single
   icon: mdi:food-turkey
-disarmed_night:
-  alias: Disarmed Night
-  sequence:
-  - service: light.turn_on
-    data:
-      transition: 2
-      color_temp: 222
-      brightness_pct: 100
-    target:
-      entity_id:
-      - light.kitchen
-      - light.parlor_lamps
-  mode: single
-  icon: mdi:shield-moon
-media_room_on:
-  alias: Media Room On
-  sequence:
-  - service: light.turn_on
-    data:
-      brightness_pct: 50
-      color_temp: 222
-    target:
-      entity_id: light.media_three
-  mode: single
-  icon: mdi:sofa
-media_room_off:
-  alias: Media Room Off
-  sequence:
-  - service: light.turn_off
-    data:
-      transition: 1
-    target:
-      entity_id: light.media_three
-  mode: single
-  icon: mdi:sofa
-kitchen_on:
-  alias: Kitchen On
-  sequence:
-  - service: light.turn_on
-    data:
-      brightness_pct: 50
-      color_temp: 222
-    target:
-      entity_id: light.kitchen
-  mode: single
-  icon: mdi:silverware
-kitchen_off:
-  alias: Kitchen Off
-  sequence:
-  - service: light.turn_off
-    data: {}
-    target:
-      entity_id: light.kitchen
-  mode: single
-  icon: mdi:silverware
-parlor_on:
-  alias: Parlor On
-  sequence:
-  - service: light.turn_on
-    data:
-      color_temp: 222
-      brightness_pct: 100
-      transition: 1
-    target:
-      entity_id:
-      - light.parlor_lamps
-  mode: single
-  icon: mdi:piano
-parlor_off:
-  alias: Parlor Off
-  sequence:
-  - service: light.turn_off
-    data:
-      transition: 5
-    target:
-      entity_id:
-      - light.parlor_lamps
-      - light.front_door_light
-  mode: single
-  icon: mdi:piano-off
-media_dim:
-  alias: Media Dim
-  sequence:
-  - service: light.turn_on
-    data:
-      brightness_pct: 30
-      color_temp: 222
-    target:
-      entity_id: light.media_lights
-  - service: light.turn_on
-    data:
-      brightness_pct: 30
-      rgb_color:
-      - 0
-      - 128
-      - 128
-    target:
-      entity_id: light.spot_light
-  mode: single
-  icon: mdi:sofa
-media_movie:
-  alias: Media Movie
-  sequence:
-  - service: light.turn_off
-    data:
-      transition: 1
-    target:
-      entity_id:
-      - light.media_one
-      - light.media_two
-      - light.media_three
-  - service: light.turn_on
-    data:
-      rgb_color:
-      - 0
-      - 69
-      - 255
-      brightness_pct: 20
-      transition: 1
-    target:
-      entity_id: light.media_four
-  - service: light.turn_on
-    data:
-      transition: 1
-      rgb_color:
-      - 0
-      - 128
-      - 128
-      brightness_pct: 30
-    target:
-      entity_id: light.spot_light
-  mode: single
-  icon: mdi:sofa
-media_normal:
-  alias: Media Normal
-  sequence:
-  - service: light.turn_on
-    data:
-      color_temp: 222
-      brightness_pct: 100
-    target:
-      entity_id: light.media_lights
-  - service: light.turn_on
-    data:
-      rgb_color:
-      - 0
-      - 128
-      - 128
-      brightness_pct: 30
-    target:
-      entity_id: light.spot_light
-  mode: single
-  icon: mdi:sofa
-media_middle_off:
-  alias: Media Middle Off
-  sequence:
-  - service: light.turn_off
-    data:
-      transition: 1
-    target:
-      entity_id:
-      - light.media_two
-      - light.media_three
-  - service: light.turn_on
-    data:
-      transition: 1
-      color_temp: 222
-      brightness_pct: 99
-    target:
-      entity_id:
-      - light.media_one
-      - light.media_four
-  mode: single
-  icon: mdi:sofa
-media_outer_off:
-  alias: Media Outer Off
-  sequence:
-  - service: light.turn_off
-    data:
-      transition: 1
-    target:
-      entity_id:
-      - light.media_one
-      - light.media_four
-  - service: light.turn_on
-    data:
-      transition: 1
-      color_temp: 222
-      brightness_pct: 99
-    target:
-      entity_id:
-      - light.media_two
-      - light.media_three
-  mode: single
-  icon: mdi:sofa
 bed_mood_light:
   alias: Bed Mood Light
   sequence:
   - service: light.turn_on
-    metadata: {}
     data:
       transition: 1
       brightness: 128
     target:
       entity_id: light.wled_bed
   - service: mqtt.publish
-    metadata: {}
     data:
       qos: '1'
       retain: false
@@ -256,26 +29,6 @@ bed_mood_light:
       payload: SX=50 FX=09
   mode: single
   icon: mdi:bed
-storage_on:
-  alias: Storage On
-  sequence:
-  - service: light.turn_on
-    data:
-      brightness_pct: 100
-      color_temp: 222
-    target:
-      entity_id: light.storage_lights
-  mode: single
-  icon: mdi:package-variant
-storage_off:
-  alias: Storage Off
-  sequence:
-  - service: light.turn_off
-    data: {}
-    target:
-      entity_id: light.storage_lights
-  mode: single
-  icon: mdi:package-variant
 office_normal:
   alias: Office Normal
   sequence:
@@ -310,7 +63,6 @@ office_dim:
     target:
       entity_id: light.office_lights
   - service: light.turn_off
-    data: {}
     target:
       entity_id: light.office_lamp
   mode: single
@@ -320,7 +72,6 @@ office_1_2_4_off:
   alias: Office 1 2 4 Off
   sequence:
   - service: light.turn_off
-    data: {}
     target:
       entity_id:
       - light.office_four
@@ -346,7 +97,6 @@ armed_night_disarm:
       state: armed_night
     then:
     - action: alarm_control_panel.alarm_disarm
-      metadata: {}
       data:
         code: '1977'
       target:
@@ -394,6 +144,9 @@ activate_mobile_actionable_notification:
     message:
       description: The text you would like in the notification message.
       example: It is time to feed the Cats
+    id:
+      description: The unquie id of you choice
+      example: An unquie id for a message
     notify_tag:
       description: The notification tag used to thread the messages
       example: pets-notify
@@ -415,6 +168,16 @@ activate_mobile_actionable_notification:
     notify_action_3_title:
       description: Notification actions
       example: Done, Ignore, Ask Other, etc...
+    ttl:
+      description: time to live
+    priority:
+      description: Priority level
+    color:
+      description: color of notification
+    channel:
+      description: Use 'alarm_stream' to give audible alert even if on silent
+  variables:
+    device: 123
   sequence:
   - action: '{{ notify_target }}'
     data:
@@ -422,9 +185,428 @@ activate_mobile_actionable_notification:
       title: '{{ title }}'
       data:
         tag: '{{ notify_tag }}'
+        ttl: '{{ ttl }}'
+        importance: '{{ importance }}'
+        color: '{{ color }}'
+        channel: '{{ channel }}'
         actions:
         - action: '{{ notify_action_1 }}'
           title: '{{ notify_action_1_title }}'
         - action: '{{ notify_action_2 }}'
           title: '{{ notify_action_2_title }}'
   mode: single
+genai_response_to_actionable_notification:
+  alias: GenAI Response to Actionable Notification
+  fields:
+    msg_target:
+      description: The Name of the user the the message is targeting
+      example: Josh
+    msg_prompt:
+      description: This prompt that is sent to gen ai to return the message.
+      example: Josh
+  variables:
+    targets:
+      Josh: notify.mobile_app_josh_mobile
+      MJ: notify.mobile_app_mj_pixel_8_pro
+  sequence:
+  - action: ai_task.generate_data
+    data:
+      prompt: 'Rewrite this in a creative way prompting {{ msg_target }} to do the
+        task, limit to about 35 words: The cats are not going away. They still need
+        to be fed.'
+    response_variable: generated_content
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 2
+      milliseconds: 0
+  - action: script.activate_mobile_actionable_notification
+    data_template:
+      notify_target: '{{ targets.get(msg_target, ''unknown'') }}'
+      title: test message
+      message: '{{ generated_content[''text''] }}'
+      notify_tag: test_tag
+      notify_action_1: done
+      notify_action_1_title: Done
+      notify_action_2: pass
+      notify_action_2_title: Pass
+  description: ''
+camera_parlor_snapshot_ai_notification:
+  alias: Camera - Parlor - Snapshot, AI & Notification
+  sequence:
+  - action: camera.snapshot
+    data:
+      filename: ./www/tmp/snapshots/parlor/parlor_snapshot1.jpg
+    target:
+      entity_id:
+      - camera.dining_room_inside_medium_resolution_channel
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - action: camera.snapshot
+    data:
+      filename: ./www/tmp/snapshots/parlor/parlor_snapshot1.jpg
+    target:
+      entity_id:
+      - camera.dining_room_inside_medium_resolution_channel
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - action: camera.snapshot
+    data:
+      filename: ./www/tmp/snapshots/parlor/parlor_snapshot1.jpg
+    target:
+      entity_id:
+      - camera.dining_room_inside_medium_resolution_channel
+  - action: ai_task.generate_data
+    data:
+      prompt: Count how many unique people and or animals are present. If you see
+        no obvious causes of motion, reply with "No Obvious Motion Detected." Your
+        message needs to be short enough to fit in a phone notification.
+      image_filename:
+      - ./www/tmp/snapshots/parlor/parlor_snapshot1.jpg
+      - ./www/tmp/snapshots/parlor/parlor_snapshot2.jpg
+      - ./www/tmp/snapshots/parlor/parlor_snapshot3.jpg
+    response_variable: generated_content
+  - if:
+    - condition: template
+      value_template: '{{ ''No Obvious Motion Detected.'' in generated_content.text
+        }}'
+    then:
+    - stop: ''
+    else:
+    - action: notify.mobile_app_josh_mobile
+      data:
+        message: '{{generated_content[''text''] }}'
+        title: Parlor Motion Detected
+        data:
+          image: /local/tmp/snapshots/parlor/parlor_snapshot2.jpg
+  description: ''
+  icon: mdi:cctv
+camera_kitchen_snapshot_ai_notification:
+  alias: Camera - Kitchen - Snapshot, AI & Notification
+  sequence:
+  - action: camera.snapshot
+    data:
+      filename: ./www/tmp/snapshots/kitchen/kitchen_snapshot1.jpg
+    target:
+      entity_id: camera.kitchen_inside
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - action: camera.snapshot
+    data:
+      filename: ./www/tmp/snapshots/kitchen/kitchen_snapshot2.jpg
+    target:
+      entity_id: camera.kitchen_inside
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 0
+      milliseconds: 500
+  - action: camera.snapshot
+    data:
+      filename: ./www/tmp/snapshots/kitchen/kitchen_snapshot3.jpg
+    target:
+      entity_id: camera.kitchen_inside
+  - action: ai_task.generate_data
+    data:
+      prompt: Count how many unique people and or animals are present. If you see
+        no obvious causes of motion, reply with "No Obvious Motion Detected." Your
+        message needs to be short enough to fit in a phone notification.
+      image_filename:
+      - ./www/tmp/snapshots/kitchen/kitchen_snapshot1.jpg
+      - ./www/tmp/snapshots/kitchen/kitchen_snapshot2.jpg
+      - ./www/tmp/snapshots/kitchen/kitchen_snapshot3.jpg
+    response_variable: generated_content
+  - if:
+    - condition: template
+      value_template: '{{ ''No Obvious Motion Detected.'' in generated_content.text
+        }}'
+    then:
+    - stop: ''
+    else:
+    - action: notify.mobile_app_josh_mobile
+      data:
+        message: '{{generated_content[''text''] }}'
+        title: Kitchen Motion Detected
+        data:
+          image: /local/tmp/snapshots/kitchen/kitchen_snapshot2.jpg
+  description: ''
+  icon: mdi:cctv
+locate_cats_snapshot_ai_notification_duplicate:
+  alias: Locate Cats - Snapshot, AI & Notification (Duplicate)
+  sequence:
+  - action: camera.snapshot
+    data:
+      filename: ./www/tmp/snapshots/all/kitchen_snapshot1.jpg
+    target:
+      entity_id:
+      - camera.kitchen_inside
+  - action: camera.snapshot
+    data:
+      filename: ./www/tmp/snapshots/all/parlor_snapshot1.jpg
+    target:
+      entity_id: camera.parlor_inside
+  - action: camera.snapshot
+    data:
+      filename: ./www/tmp/snapshots/all/garage_snapshot1.jpg
+    target:
+      entity_id: camera.garage_inside
+  - action: ai_task.generate_data
+    data:
+      prompt: Determine form the images where cats are visable, with a brief description
+        of the location. Look specifically for orange cats and black cats. Use the
+        camera name in the image upper left. If you see no obvious causes of motion,
+        reply with "No Cats Detected." Your message needs to be short enough to fit
+        in a phone notification.
+      image_filename:
+      - ./www/tmp/snapshots/all/kitchen_snapshot1.jpg
+      - ./www/tmp/snapshots/all/parlor_snapshot1.jpg
+      - ./www/tmp/snapshots/all/garage_snapshot1.jpg
+    response_variable: generated_content
+  - if:
+    - condition: template
+      value_template: '{{ ''No Obvious Cats Detected.'' in generated_content.text
+        }}'
+    then:
+    - stop: ''
+    else:
+    - action: notify.mobile_app_josh_mobile
+      data:
+        message: '{{generated_content[''text''] }}'
+        title: Locating Cats
+  description: ''
+  icon: mdi:cctv
+update_kitchen_zen35_leds:
+  alias: Update Kitchen ZEN35 LEDs
+  mode: restart
+  sequence:
+  - variables:
+      dim_threshold: 230
+      light_state_big: '{{ states(''light.big_kitchen_lights'') }}'
+      light_brightness_big: '{{ state_attr(''light.big_kitchen_lights'', ''brightness'')
+        | int(0) }}'
+      light_state_island: '{{ states(''light.island'') }}'
+      light_brightness_island: '{{ state_attr(''light.island'', ''brightness'') |
+        int(0) }}'
+  - variables:
+      led_mode_big: "{% if light_state_big == 'off' or light_brightness_big < dim_threshold
+        %}\n  Always on\n{% else %}\n  Always off\n{% endif %}\n"
+      led_color_big: '{% if light_state_big == ''off'' %} White {% else %} Blue {%
+        endif %}
+
+        '
+      led_mode_island: "{% if light_state_island == 'off' or light_brightness_island
+        < dim_threshold %}\n  Always on\n{% else %}\n  Always off\n{% endif %}\n"
+      led_color_island: '{% if light_state_island == ''off'' %} White {% else %} Blue
+        {% endif %}
+
+        '
+  - action: select.select_option
+    target:
+      entity_id:
+      - select.kitchen_controller_01_led_indicator_relay
+      - select.kitchen_controller_02_led_indicator_relay
+      - select.kitchen_controller_03_led_indicator_relay
+    data:
+      option: '{{ led_mode_big }}'
+  - action: select.select_option
+    target:
+      entity_id:
+      - select.kitchen_controller_01_led_indicator_button_1
+      - select.kitchen_controller_02_led_indicator_button_1
+      - select.kitchen_controller_03_led_indicator_button_1
+    data:
+      option: '{{ led_mode_island }}'
+  - delay: 00:00:01
+  - if:
+    - condition: template
+      value_template: '{{ led_mode_big == ''Always on'' }}'
+    then:
+    - action: select.select_option
+      target:
+        entity_id:
+        - select.kitchen_controller_01_led_indicator_color_relay
+        - select.kitchen_controller_02_led_indicator_color_relay
+        - select.kitchen_controller_03_led_indicator_color_relay
+      data:
+        option: '{{ led_color_big }}'
+  - if:
+    - condition: template
+      value_template: '{{ led_mode_island == ''Always on'' }}'
+    then:
+    - action: select.select_option
+      target:
+        entity_id:
+        - select.kitchen_controller_01_led_indicator_color_button_1
+        - select.kitchen_controller_02_led_indicator_color_button_1
+        - select.kitchen_controller_03_led_indicator_color_button_1
+      data:
+        option: '{{ led_color_island }}'
+bedtime_charging_check:
+  alias: Bedtime Charging Check
+  sequence:
+  - variables:
+      devices_not_charging: []
+      non_charging_states_list:
+      - not_charging
+      - discharging
+  - if:
+    - condition: state
+      entity_id: person.josh
+      state: home
+    - condition: template
+      value_template: '{{ states(''sensor.josh_mobile_battery_state'') in non_charging_states_list
+        }}
+
+        '
+    then:
+    - variables:
+        devices_not_charging: '{{ devices_not_charging + [''Josh\''s phone''] }}'
+  - if:
+    - condition: state
+      entity_id: person.josh
+      state: home
+    - condition: template
+      value_template: '{{ states(''sensor.pixel_watch_2_battery_state'') in non_charging_states_list
+        }}
+
+        '
+    then:
+    - variables:
+        devices_not_charging: '{{ devices_not_charging + [''Josh\''s watch''] }}'
+    enabled: false
+  - if:
+    - condition: state
+      entity_id: person.mj
+      state: home
+    - condition: template
+      value_template: '{{ states(''sensor.mj_pixel_8_pro_battery_state'') in non_charging_states_list
+        }}
+
+        '
+    then:
+    - variables:
+        devices_not_charging: '{{ devices_not_charging + [''MJ\''s phone''] }}'
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ devices_not_charging | length > 0 }}'
+      sequence:
+      - variables:
+          list_items: '{{ devices_not_charging | map(''lower'') | list }}'
+          last_item: '{{ list_items | last }}'
+          all_but_last: '{{ list_items[:-1] }}'
+          list_string: "{% if list_items | length == 1 %}\n  {{ list_items[0] }}\n{%
+            else %}\n  {{ all_but_last | join(', ') }}{% if all_but_last | length
+            > 0 %}, and {% endif %}{{ last_item }}\n{% endif %}\n"
+          message: 'It looks like {{ list_string }} {{ "is not" if devices_not_charging
+            | length == 1 else "are not" }} charging. Please plug them in.
+
+            '
+      - data:
+          message: '{{ message }}'
+          target: media_player.bedroom
+          data:
+            type: tts
+        action: notify.alexa_media
+      - wait_for_trigger:
+        - entity_id:
+          - sensor.josh_mobile_battery_state
+          - sensor.mj_pixel_8_pro_battery_state
+          - sensor.pixel_watch_2_battery_state
+          to:
+          - charging
+          trigger: state
+        timeout: 00:01:00
+        continue_on_timeout: true
+  description: ''
+fix_zooz_smart_bulb_mode:
+  alias: 'Recovery: Zooz Smart Bulb Relay Fix'
+  icon: mdi:power-restore
+  mode: single
+  sequence:
+  - repeat:
+      for_each:
+      - entity: switch.dining_room_switch_01
+      - entity: switch.dining_room_switch_02
+      sequence:
+      - target:
+          entity_id: '{{ repeat.item.entity }}'
+        data:
+          parameter: 11
+          value: 1
+        action: zwave_js.set_config_parameter
+      - target:
+          entity_id: '{{ repeat.item.entity }}'
+        action: switch.turn_on
+      - delay: 00:00:02
+      - target:
+          entity_id: '{{ repeat.item.entity }}'
+        data:
+          parameter: 11
+          value: 2
+        action: zwave_js.set_config_parameter
+welcome_home_ai_debrief:
+  alias: Welcome Home AI Debrief
+  mode: single
+  sequence:
+  - action: ai_task.generate_data
+    data:
+      instructions: "{% set josh_home = states('input_select.josh_status') in ['Home',
+        'Just Arrived'] %} {% set mj_home = states('input_select.mj_status') in ['Home',
+        'Just Arrived'] %} {% set is_vacation = states('alarm_control_panel.home_alarm')
+        == 'armed_vacation' %} {% set time_of_day = 'evening' if is_state('sun.sun',
+        'below_horizon') else 'daytime' %}\n{% if josh_home and mj_home %}\n  {% set
+        person = \"Josh and MJ\" %}\n{% elif josh_home %}\n  {% set person = \"Josh\"
+        %}\n{% elif mj_home %}\n  {% set person = \"MJ\" %}\n{% else %}\n  {% set
+        person = \"the Devines (Derrick and Gia)\" %}\n{% endif %}\n{% set visitor_status
+        = \"A visitor or delivery was detected at the front door while the house was
+        empty.\" if is_state('input_boolean.porch_visitor_while_away', 'on') else
+        \"\" %}\n{# This picks a random way to refer to the pets to keep it fresh
+        #} {% set cat_prompt = [\n  \"Include a cute observation about one specific
+        cat chosen from: Battle Cat, Josie, or Custard.\",\n  \"Include a funny observation
+        about two of their cats (choose two from: Battle Cat, Josie, and Custard).\",\n
+        \ \"Include a brief, chaotic update on all three cats: Battle Cat, Josie,
+        and Custard.\",\n  \"Refer to the cats generally as 'the cats' or 'the felines'
+        without using their specific names.\"\n] | random %}\nWrite a short, creative
+        {{ time_of_day }} welcome home message for {{ person }}.  {% if is_vacation
+        %}Mention they are returning from a long trip and the Home is secure.{% endif
+        %} {{ cat_prompt }} {{ visitor_status }}  Limit the entire response to 35
+        words."
+      task_name: Generate Welcome Message
+    response_variable: ai_greeting
+  - wait_template: '{{ is_state(''binary_sensor.motion_indoors_kitchen'', ''on'')
+      }}'
+    continue_on_timeout: true
+    timeout: 00:15:00
+  - action: media_player.volume_set
+    data:
+      volume_level: 0.5
+    target:
+      entity_id: media_player.counter
+  - action: notify.alexa_media_counter
+    data:
+      message: '{{ ai_greeting[''data''] }}'
+      target: media_player.counter
+  - delay:
+      hours: 0
+      minutes: 0
+      seconds: 15
+      milliseconds: 0
+  - action: media_player.volume_set
+    data:
+      volume_level: 0.3
+    target:
+      entity_id: media_player.counter
+  - action: input_boolean.turn_off
+    target:
+      entity_id: input_boolean.porch_visitor_while_away
+  description: ''

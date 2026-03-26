@@ -10,8 +10,5 @@ logbook:
       - sensor.time_date
       - sensor.date_time
       - sensor.time_utc
-      - sensor.yr_symbol
-      - sensor.internet_time
-      - sensor.sump_01_last_seen
-      - sensor.sump_02_last_seen
-      - sensor.bsmt_freezer_last_seen
+      - sensor.freezer_last_seen
+      - sensor.beer_fridge_last_seen

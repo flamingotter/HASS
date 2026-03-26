@@ -1,6 +1,0 @@
----
-state_topic: "home/mbr/mbrNode"
-unique_id: mbr_temp
-name: "MBR Temp"
-unit_of_measurement: "°F"
-value_template: '{{ value_json.t | round(1) }}'

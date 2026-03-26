@@ -1,0 +1,96 @@
+##----------------------------------------------------------------------------------------------------------------------
+##
+## Unavailable Entities Sensor
+##
+## 05-Feb-2024 | Andy Symons | created
+##
+## Credit: based loosely on https://github.com/jazzyisj/unavailable-entities-sensor/blob/main/README.md
+##
+## The sensor provides lists related to real devices, not internal entities, helpers, automations etc.,
+## Entities with state 'unknown' are not counted, because it is possible for a device to have a sub-entity that is
+##    unknown while the device itself is available.
+##
+## The STATE simply gives the count of unavailable entities.
+## The long results have to be attributes because the state cannot contain more than 255 characters:
+##   ATTRIBUTE 'entity_id_list' contains a list of unavailable entities using their entity ids, which may or may not have been set by the user.
+##   ATTRIBUTE 'entity_name_list' contains a list of unavailable entities using their friendly names as assigned by the user.
+##   ATTRIBUTE 'device_name_list contains a list of the devices that are unavailable, which is to say having one or more entities that are unavailable,
+##      using their friendly names as assigned by the user.
+##
+##----------------------------------------------------------------------------------------------------------------------
+
+
+---
+sensor:
+  - name: "Unavailable Entities"
+    unique_id: unavailable_entities
+    icon: "{{ iif(states(this.entity_id)|int(-1) > 0,'mdi:alert-circle','mdi:check-circle') }}"
+    state_class: measurement
+    unit_of_measurement: entities
+
+    # The entity state is the count of unavailable entites
+    state: >
+      {{ states
+      | selectattr('domain','in',['binary_sensor', 'climate', 'light', 'sensor', 'switch'])
+      | selectattr('state', 'in', ['unavailable'])
+      | map(attribute='entity_id')
+      | unique
+      | list 
+      | count
+      }}
+
+    # The long results have to be attributes because the state cannot contain more than 255 characters.
+    attributes:
+      ## A list of unavailable entities using their entity ids (which mnay or may not have been set by the user).
+      entity_id_list: >-
+        {{ states
+        | selectattr('domain','in',['binary_sensor', 'climate', 'light', 'sensor', 'switch'])
+        | selectattr('state', 'in', ['unavailable'])
+        | map(attribute='entity_id')
+        | reject('match', 'None')
+        | list 
+        | sort 
+        | join('\n')
+        }}
+
+      ## A list of unavailable entities using their friendly names as assigned by the user.
+      entity_name_list: >-
+        {{ states
+        | selectattr('domain','in',['binary_sensor', 'climate', 'light', 'sensor', 'switch']) 
+        | selectattr('state', 'in', ['unavailable'])
+        | map(attribute='entity_id')
+        | map('state_attr', 'friendly_name') 
+        | reject('match', 'None')
+        | list 
+        | sort 
+        | join('\n')
+        }}
+
+      ## A list of the devices that are unavailable, using their friendly names as assigned by the user.
+      device_name_list: >-
+        {{ states
+        | selectattr('domain','in',['binary_sensor', 'climate', 'light', 'sensor', 'switch'])
+        | selectattr('state', 'in', ['unavailable'])
+        | map(attribute='entity_id')
+        | map('device_attr', 'name_by_user') 
+        | reject('match', 'None')
+        | unique
+        | list 
+        | sort 
+        | join('\n')
+        }}
+
+# HOW THE ATTRIBUTE TEMPLATES WORK
+#  -- Taking device_name_list as an example...
+#
+# {{ states                                                        -- all the states (entities) in the system
+#    | selectattr('domain','in',['binary_sensor', 'climate', etc.  -- filter only the entities for real devices
+#    | selectattr('state', 'in', ['unavailable'])                  -- filter only entities that are unavailable
+#    | map(attribute='entity_id')                                  -- get the entity id from the record
+#    | map('device_attr', 'name_by_user')                          -- map the entity id onto the device name
+#    | reject('match', 'None')                                     -- take out names 'None' (meaning there is no name, so not a device)
+#    | unique                                                      -- take out duplicates (devices usually have several entities)
+#    | list                                                        -- make into a list (in the template sense)
+#    | sort                                                        -- put them in alphabetical order
+#    | join('\n')                                                  -- take out extraneous punctuation for a tidy output
+#  }}

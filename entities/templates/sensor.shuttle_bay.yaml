@@ -1,0 +1,20 @@
+---
+sensor:
+  - name: "Shuttle Bay"
+    unique_id: shuttle_bay_sensor
+    state: >
+      {% set state = states('cover.shuttle_bay') %}
+      {% set state_map = {
+        'open': 'Open',
+        'closed': 'Closed',
+        'opening': 'Opening',
+        'closing': 'Closing'
+      } %}
+      {{ state_map.get(state, 'Obstruction') }}
+    icon: >
+      {% set state = states('cover.shuttle_bay') %}
+      {% set icon_map = {
+        'open': 'mdi:garage-open',
+        'closed': 'mdi:garage'
+      } %}
+      {{ icon_map.get(state, 'mdi:garage-alert') }}
