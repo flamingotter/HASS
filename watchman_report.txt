@@ -2,7 +2,7 @@
 
 -== Congratulations, all 53 actions from your config are available!
 
--== Missing 130 entity(ies) from 374 found in your config:
+-== Missing 127 entity(ies) from 370 found in your config:
 +--------------------------------+---------+---------------------------------------------------------------+
 | Entity ID                      | State   | Location                                                      |
 +--------------------------------+---------+---------------------------------------------------------------+
@@ -227,12 +227,9 @@
 | media_player.parlor            | missing | 📄 entities/groups/group.echos.yaml:8                         |
 | media_player.office            | unavail | 📄 entities/groups/group.echos.yaml:10                        |
 | media_player.echo_show         | missing | 📄 entities/groups/group.echos.yaml:13                        |
-| sensor.freezer_last_seen       | missing | 📄 integrations/logbook.yaml:13                               |
-| sensor.yr_symbol               | missing | 📄 integrations/recorder.yaml:16                              |
-| sensor.internet_time           | missing | 📄 integrations/recorder.yaml:17                              |
 | light.front_door_light         | missing | 📄 scenes.yaml:382                                            |
 +--------------------------------+---------+---------------------------------------------------------------+
 
--== Report created on 26 Mar 2026 08:28:00
--== Parsed 83 files in 0.02s., ignored 0 files 
--== Generated in: 0.20s. Validated in: 0.00s.
+-== Report created on 26 Mar 2026 09:01:56
+-== Parsed 83 files in 0.03s., ignored 0 files 
+-== Generated in: 0.15s. Validated in: 0.00s.

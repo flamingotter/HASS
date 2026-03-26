@@ -10,5 +10,3 @@ logbook:
       - sensor.time_date
       - sensor.date_time
       - sensor.time_utc
-      - sensor.freezer_last_seen
-      - sensor.beer_fridge_last_seen

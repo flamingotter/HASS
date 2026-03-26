@@ -13,5 +13,3 @@ recorder:
       - sensor.time_date
       - sensor.date_time
       - sensor.time_utc
-      - sensor.yr_symbol
-      - sensor.internet_time
