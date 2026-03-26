@@ -1,4 +1,5 @@
 ---
 # configuration.yaml
 homeassistant:
-  packages: !include_dir_named integrations
+  packages: !include_dir_named integrations  
+  # customize: !include_dir_merge_named customizations/entities
