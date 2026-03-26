@@ -2,7 +2,7 @@
 
 -== Congratulations, all 53 actions from your config are available!
 
--== Missing 126 entity(ies) from 369 found in your config:
+-== Missing 125 entity(ies) from 369 found in your config:
 +--------------------------------+---------+---------------------------------------------------------------+
 | Entity ID                      | State   | Location                                                      |
 +--------------------------------+---------+---------------------------------------------------------------+
@@ -39,77 +39,42 @@
 | sensor.tent_temp               | missing | 📄 .storage/lovelace.dashboard_grow:290,309                   |
 | sensor.tent_hum                | missing | 📄 .storage/lovelace.dashboard_grow:291,320                   |
 | sensor.tent_moisture_percent   | missing | 📄 .storage/lovelace.dashboard_grow:292,331                   |
-| input_boolean.feed_pets        | missing | 📄 .storage/lovelace.dashboard_kitchen:140                    |
+| input_boolean.feed_pets        | missing | 📄 .storage/lovelace.dashboard_kitchen:143                    |
 |                                |         | 📄 .storage/lovelace.dashboard_sparrows:139                   |
 |                                |         | 📄 .storage/lovelace.lovelace:142                             |
-| sensor.kitchen_temperature     | missing | 📄 .storage/lovelace.dashboard_kitchen:197                    |
-| camera.driveway_outside        | missing | 📄 .storage/lovelace.dashboard_kitchen:277                    |
-| camera.driveway_ptz_medium_res | missing | 📄 .storage/lovelace.dashboard_kitchen:278                    |
-| olution_channel                |         | 📄 .storage/lovelace.lovelace:237                             |
-| camera.parlor_inside           | missing | 📄 .storage/lovelace.dashboard_kitchen:290                    |
-|                                |         | 📄 .storage/lovelace.lovelace:253                             |
-|                                |         | 📄 automations.yaml:2655                                      |
-|                                |         | 📄 scripts.yaml:356                                           |
-| camera.bambu_p1s_camera        | unavail | 📄 .storage/lovelace.dashboard_kitchen:382,391,394            |
+| camera.driveway_outside        | missing | 📄 .storage/lovelace.dashboard_kitchen:281                    |
+| camera.bambu_p1s_camera        | unavail | 📄 .storage/lovelace.dashboard_kitchen:390,399,402            |
 |                                |         | 📄 .storage/lovelace.dashboard_sparrows:900                   |
 |                                |         | 📄 .storage/lovelace.lovelace:735                             |
-| select.bambu_p1s_printing_spee | unavail | 📄 .storage/lovelace.dashboard_kitchen:407                    |
+| select.bambu_p1s_printing_spee | unavail | 📄 .storage/lovelace.dashboard_kitchen:415                    |
 | d                              |         | 📄 .storage/lovelace.dashboard_sparrows:894                   |
 |                                |         | 📄 .storage/lovelace.lovelace:729                             |
-| light.bambu_p1s_chamber_light  | unavail | 📄 .storage/lovelace.dashboard_kitchen:410                    |
+| light.bambu_p1s_chamber_light  | unavail | 📄 .storage/lovelace.dashboard_kitchen:418                    |
 |                                |         | 📄 automations.yaml:695,705                                   |
-| light.office_four              | missing | 📄 .storage/lovelace.dashboard_kitchen:413                    |
-|                                |         | 📄 .storage/lovelace.lovelace:677                             |
-|                                |         | 📄 automations.yaml:744                                       |
-|                                |         | 📄 scripts.yaml:77                                            |
-| sensor.bambu_p1s_current_stage | unavail | 📄 .storage/lovelace.dashboard_kitchen:419                    |
+| sensor.bambu_p1s_current_stage | unavail | 📄 .storage/lovelace.dashboard_kitchen:424                    |
 |                                |         | 📄 .storage/lovelace.dashboard_sparrows:906                   |
 |                                |         | 📄 .storage/lovelace.lovelace:741                             |
 |                                |         | 📄 automations.yaml:589,675,681                               |
-| sensor.bambu_p1s_print_progres | unavail | 📄 .storage/lovelace.dashboard_kitchen:422                    |
+| sensor.bambu_p1s_print_progres | unavail | 📄 .storage/lovelace.dashboard_kitchen:427                    |
 | s                              |         | 📄 .storage/lovelace.dashboard_sparrows:909                   |
 |                                |         | 📄 .storage/lovelace.lovelace:744                             |
-| sensor.bambu_p1s_remaining_tim | unavail | 📄 .storage/lovelace.dashboard_kitchen:425                    |
+| sensor.bambu_p1s_remaining_tim | unavail | 📄 .storage/lovelace.dashboard_kitchen:430                    |
 | e                              |         |                                                               |
-| sensor.bambu_p1s_target_bed_te | unavail | 📄 .storage/lovelace.dashboard_kitchen:445                    |
+| sensor.bambu_p1s_target_bed_te | unavail | 📄 .storage/lovelace.dashboard_kitchen:450                    |
 | mperature                      |         |                                                               |
-| sensor.bambu_p1s_bed_temperatu | unavail | 📄 .storage/lovelace.dashboard_kitchen:450                    |
+| sensor.bambu_p1s_bed_temperatu | unavail | 📄 .storage/lovelace.dashboard_kitchen:455                    |
 | re                             |         | 📄 .storage/lovelace.dashboard_sparrows:912                   |
 |                                |         | 📄 .storage/lovelace.lovelace:747                             |
-| sensor.bambu_p1s_nozzle_target | unavail | 📄 .storage/lovelace.dashboard_kitchen:465                    |
+| sensor.bambu_p1s_nozzle_target | unavail | 📄 .storage/lovelace.dashboard_kitchen:470                    |
 | _temperature                   |         |                                                               |
-| sensor.bambu_p1s_nozzle_temper | unavail | 📄 .storage/lovelace.dashboard_kitchen:470                    |
+| sensor.bambu_p1s_nozzle_temper | unavail | 📄 .storage/lovelace.dashboard_kitchen:475                    |
 | ature                          |         | 📄 .storage/lovelace.dashboard_sparrows:915                   |
 |                                |         | 📄 .storage/lovelace.lovelace:750                             |
-| fan.bambu_p1s_cooling_fan      | unavail | 📄 .storage/lovelace.dashboard_kitchen:518                    |
-| fan.bambu_p1s_aux_fan          | unavail | 📄 .storage/lovelace.dashboard_kitchen:540                    |
-| input_boolean.window_ac_instal | missing | 📄 .storage/lovelace.dashboard_kitchen:609                    |
-| led                            |         | 📄 .storage/lovelace.lovelace:368,928                         |
-| timer.timer_kitchen_dining     | missing | 📄 .storage/lovelace.dashboard_kitchen:624                    |
+| fan.bambu_p1s_cooling_fan      | unavail | 📄 .storage/lovelace.dashboard_kitchen:523                    |
+| fan.bambu_p1s_aux_fan          | unavail | 📄 .storage/lovelace.dashboard_kitchen:545                    |
+| timer.timer_kitchen_dining     | missing | 📄 .storage/lovelace.dashboard_kitchen:626                    |
 |                                |         | 📄 .storage/lovelace.lovelace:959                             |
-| sensor.motion_basement_stairs_ | missing | 📄 .storage/lovelace.dashboard_kitchen:669                    |
-| battery_level                  |         | 📄 .storage/lovelace.lovelace:1014                            |
-| sensor.motion_parlor_battery_l | missing | 📄 .storage/lovelace.dashboard_kitchen:671                    |
-| evel                           |         | 📄 .storage/lovelace.lovelace:1016                            |
-| sensor.front_door_lock_battery | missing | 📄 .storage/lovelace.dashboard_kitchen:672                    |
-| _level                         |         | 📄 .storage/lovelace.lovelace:1017                            |
-| sensor.media_room_sensor_batte | missing | 📄 .storage/lovelace.dashboard_kitchen:673                    |
-| ry_level                       |         | 📄 .storage/lovelace.lovelace:1018                            |
-| sensor.sensor_office_battery_l | missing | 📄 .storage/lovelace.dashboard_kitchen:674                    |
-| evel                           |         | 📄 .storage/lovelace.lovelace:1019                            |
-| sensor.motion_dining_battery_l | missing | 📄 .storage/lovelace.dashboard_kitchen:675                    |
-| evel                           |         | 📄 .storage/lovelace.lovelace:1020                            |
-| sensor.bambu_p1s_chamber_batte | missing | 📄 .storage/lovelace.dashboard_kitchen:676                    |
-| ry_level                       |         | 📄 .storage/lovelace.lovelace:1021                            |
-| sensor.backdoor_sensor_battery | missing | 📄 .storage/lovelace.dashboard_kitchen:677                    |
-| _level                         |         | 📄 .storage/lovelace.lovelace:1022                            |
-| sensor.open_close_xs_sensor_ba | missing | 📄 .storage/lovelace.dashboard_kitchen:678                    |
-| ttery_level                    |         | 📄 .storage/lovelace.lovelace:1023                            |
-| sensor.storage_room_battery_le | missing | 📄 .storage/lovelace.dashboard_kitchen:679                    |
-| vel                            |         | 📄 .storage/lovelace.lovelace:1024                            |
-| sensor.water_leak_sensor_01_ba | missing | 📄 .storage/lovelace.dashboard_kitchen:680                    |
-| ttery_level                    |         | 📄 .storage/lovelace.lovelace:1025                            |
-| image.senor_bale_map           | missing | 📄 .storage/lovelace.dashboard_kitchen:841                    |
+| image.senor_bale_map           | missing | 📄 .storage/lovelace.dashboard_kitchen:824                    |
 | light.boudoir_lamp_01          | missing | 📄 .storage/lovelace.dashboard_sparrows:692                   |
 | light.boudoir_lamp_02          | missing | 📄 .storage/lovelace.dashboard_sparrows:695                   |
 | light.boudoir_01               | missing | 📄 .storage/lovelace.dashboard_sparrows:698                   |
@@ -150,6 +115,11 @@
 | l                              |         |                                                               |
 | light.parlor_lamps             | missing | 📄 .storage/lovelace.lovelace:163,504                         |
 | camera.driveway_ptz            | missing | 📄 .storage/lovelace.lovelace:236                             |
+| camera.driveway_ptz_medium_res | missing | 📄 .storage/lovelace.lovelace:237                             |
+| olution_channel                |         |                                                               |
+| camera.parlor_inside           | missing | 📄 .storage/lovelace.lovelace:253                             |
+|                                |         | 📄 automations.yaml:2655                                      |
+|                                |         | 📄 scripts.yaml:356                                           |
 | binary_sensor.withings_in_bed_ | missing | 📄 .storage/lovelace.lovelace:289                             |
 | mj                             |         | 📄 automations.yaml:2560                                      |
 | switch.mbr_noise_machines      | missing | 📄 .storage/lovelace.lovelace:292                             |
@@ -159,6 +129,8 @@
 |                                |         | 📄 scripts.yaml:23                                            |
 | select.wled_node_bed_preset    | missing | 📄 .storage/lovelace.lovelace:309                             |
 | light.bedroom_fan_light        | missing | 📄 .storage/lovelace.lovelace:333                             |
+| input_boolean.window_ac_instal | missing | 📄 .storage/lovelace.lovelace:368,928                         |
+| led                            |         |                                                               |
 | climate.master_ac              | missing | 📄 .storage/lovelace.lovelace:374                             |
 | light.bar_light                | missing | 📄 .storage/lovelace.lovelace:412,432                         |
 | light.dining_room_light_01     | missing | 📄 .storage/lovelace.lovelace:473                             |
@@ -193,6 +165,9 @@
 | light.office_three             | missing | 📄 .storage/lovelace.lovelace:671                             |
 |                                |         | 📄 automations.yaml:743                                       |
 |                                |         | 📄 scripts.yaml:86                                            |
+| light.office_four              | missing | 📄 .storage/lovelace.lovelace:677                             |
+|                                |         | 📄 automations.yaml:744                                       |
+|                                |         | 📄 scripts.yaml:77                                            |
 | sensor.bsmt_freezer_electric_c | missing | 📄 .storage/lovelace.lovelace:820                             |
 | onsumption_w                   |         |                                                               |
 | sensor.bsmt_freezer_electric_c | missing | 📄 .storage/lovelace.lovelace:823                             |
@@ -204,6 +179,28 @@
 |                                | d       |                                                               |
 | sensor.media_room_person_count | disable | 📄 .storage/lovelace.lovelace:879                             |
 |                                | d       |                                                               |
+| sensor.motion_basement_stairs_ | missing | 📄 .storage/lovelace.lovelace:1014                            |
+| battery_level                  |         |                                                               |
+| sensor.motion_parlor_battery_l | missing | 📄 .storage/lovelace.lovelace:1016                            |
+| evel                           |         |                                                               |
+| sensor.front_door_lock_battery | missing | 📄 .storage/lovelace.lovelace:1017                            |
+| _level                         |         |                                                               |
+| sensor.media_room_sensor_batte | missing | 📄 .storage/lovelace.lovelace:1018                            |
+| ry_level                       |         |                                                               |
+| sensor.sensor_office_battery_l | missing | 📄 .storage/lovelace.lovelace:1019                            |
+| evel                           |         |                                                               |
+| sensor.motion_dining_battery_l | missing | 📄 .storage/lovelace.lovelace:1020                            |
+| evel                           |         |                                                               |
+| sensor.bambu_p1s_chamber_batte | missing | 📄 .storage/lovelace.lovelace:1021                            |
+| ry_level                       |         |                                                               |
+| sensor.backdoor_sensor_battery | missing | 📄 .storage/lovelace.lovelace:1022                            |
+| _level                         |         |                                                               |
+| sensor.open_close_xs_sensor_ba | missing | 📄 .storage/lovelace.lovelace:1023                            |
+| ttery_level                    |         |                                                               |
+| sensor.storage_room_battery_le | missing | 📄 .storage/lovelace.lovelace:1024                            |
+| vel                            |         |                                                               |
+| sensor.water_leak_sensor_01_ba | missing | 📄 .storage/lovelace.lovelace:1025                            |
+| ttery_level                    |         |                                                               |
 | scene.before_onair             | missing | 📄 automations.yaml:99                                        |
 | light.led_tree                 | disable | 📄 automations.yaml:163,1386,1413                             |
 |                                | d       |                                                               |
@@ -228,6 +225,6 @@
 | light.front_door_light         | missing | 📄 scenes.yaml:382                                            |
 +--------------------------------+---------+---------------------------------------------------------------+
 
--== Report created on 26 Mar 2026 09:08:14
--== Parsed 83 files in 0.26s., ignored 0 files 
--== Generated in: 0.08s. Validated in: 0.00s.
+-== Report created on 26 Mar 2026 09:22:43
+-== Parsed 83 files in 0.32s., ignored 0 files 
+-== Generated in: 0.09s. Validated in: 0.00s.
