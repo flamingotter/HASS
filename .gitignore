@@ -40,6 +40,8 @@ ip_bans.yaml
 .cloud
 .cache
 .vscode
+.ha_run.lock
+.geminiignore
 GEMINI.md
 HA.code-workspace
 watchman_report.txt
