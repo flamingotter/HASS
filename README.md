@@ -11,18 +11,29 @@
 
 # Connected Devices:
 
+## Environment:
+* Docker Stack
+    * Home Assistant Container
+    * Mariadb
+    * Influxdb
+    * Mosquito MQTT
+    * Nodered
+    * Zwave JS
+
 ## Enabling Components:
 * Amazon Echo Devices
 * Google Home Mini
+* Home Assistant Voice Preview Edition
+* Apollo R Pro 1 mmwave
+* Konnected GDO blaQ
 * Lifx A19
 * Lifx Mini
-* Sonoff Basic
-* Aeotec Z-Stick Gen5
-* GE Z-wave Smart Switches
-* GE Z-wave Smart Dimmers
+* Zooz Z-Wave Stick 800LR
+* Honeywell T6 Pro Thermostats
+* Zooz Z-wave devices
+* GE Enbrighten Z-wave devices
 * Schlage Connect Z-Wave Locks
 * Custom Sensors (D1 Minis, ESP32)
-* Zooz Z-wave devices
 * WLED
 * <a href="https://amzn.to/4cbHVal" target="_blank">Elgado Stream Deck
 * <a href="https://amzn.to/4dpzn0G" target="_blank">Ambient Weather WS-2902 WiFi Smart Weather Station
@@ -31,16 +42,21 @@
 * UniFi Dream Machine Pro
 * Unifi 16-Port POE Switch
 * Unifi AP-AC-LC
+* Unifi AP-U6-Lite
+* Unifi Cable Internet
+* Unifi UNAS Pro
 
 ## Cameras:
 * Unifi G3 Micro
 * Unifi G3 AF
 * Unifi G3 Flex
+* Unifi G3 Instant
 * Unifi G4 Doorbell
 * Unifi G4 Dome
-* Wyze Cam V2
+* Unifi G5 PTZ
+* Unifi G6 Turrent
 
-## 3D Printers:
-* Ender 3 Pro
-  * OctoPi (RPI3 B+)
-  * Cisco PrecisionHD Webcam
+## Integrated Devices:
+* Whisker Litter Robot 4
+* Roborock S7 Max Ultra
+* Bambu Labs P1S
