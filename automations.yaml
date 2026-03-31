@@ -35,7 +35,7 @@
             }}_{{ now().strftime('%Y%m%d_%H%M') }}.jpg
   mode: single
 - id: '1717271470147'
-  alias: Garage Door 01
+  alias: Shuttle Bay Door
   description: Open/Close the garage door
   triggers:
   - tag_id: garage
@@ -132,7 +132,7 @@
       - action: lock.lock
         enabled: true
         target:
-          entity_id: lock.garage_door
+          entity_id: lock.garage_man_lock
       - if:
         - condition: state
           entity_id: input_boolean.trash_reminder
@@ -1348,13 +1348,12 @@
           enabled: true
           target:
             entity_id: light.office_light
-        - action: light.turn_on
-          data:
-            brightness_pct: 5
+        - action: select.select_option
+          metadata: {}
           target:
-            entity_id:
-            - light.wled_cloud
-            - light.wled_cloud_main
+            entity_id: select.wled_cloud_preset
+          data:
+            option: Static Cloud
         - action: input_boolean.turn_on
           target:
             entity_id: input_boolean.occupied_office
@@ -1428,7 +1427,7 @@
         - condition: and
           conditions:
           - condition: state
-            entity_id: lock.garage_door
+            entity_id: lock.garage_man_lock
             state:
             - locked
           - condition: state
@@ -1438,7 +1437,7 @@
         then:
         - action: lock.unlock
           target:
-            entity_id: lock.garage_door
+            entity_id: lock.garage_man_lock
         enabled: true
     - conditions:
       - condition: trigger
@@ -1447,7 +1446,7 @@
       sequence:
       - action: lock.lock
         target:
-          entity_id: lock.garage_door
+          entity_id: lock.garage_man_lock
   mode: restart
 - id: '1724525664627'
   alias: 'Notify: HVAC Filter Maintenance'
@@ -1502,7 +1501,7 @@
       - condition: trigger
         id: reset
       sequence:
-      - action: script.log_maintenance_task
+      - action: script.system_log_maintenance_task
         data:
           task_name: HVAC Filter
           timer_entity: timer.timer_hvac_filter
@@ -1683,7 +1682,8 @@
     mj_device_id: 0aa560faf0e8784c
   mode: single
 - id: '1724695238002'
-  alias: Notify Feed Pets
+  alias: 'Notify: Feed Pets'
+  description: Mission-ready feeding with discrete tags for task and status.
   triggers:
   - at: '17:00:00'
     id: feed_time
@@ -1703,61 +1703,25 @@
       tag: pets-notify
     id: feed_cleared
     trigger: event
-  conditions:
-  - condition: state
-    entity_id: input_boolean.do_not_disturb
-    state: 'off'
-  - condition: not
-    conditions:
-    - condition: state
-      entity_id: alarm_control_panel.home_alarm
-      state: armed_vacation
+  - event_type: test_cats
+    id: feed_time
+    trigger: event
   actions:
   - choose:
     - conditions:
       - condition: trigger
         id: feed_time
       sequence:
-      - data:
-          scene_id: last_alexa_volume
-          snapshot_entities:
-          - media_player.counter
-          - media_player.garage
-        action: scene.create
-      - data:
-          volume_level: 0.5
-        target:
-          entity_id:
-          - media_player.counter
-          - media_player.garage
-        action: media_player.volume_set
-      - data:
-          media:
-            media_content_id: amzn_sfx_rooster_crow_01
-            media_content_type: sound
-            metadata: {}
-        target:
-          entity_id:
-          - media_player.counter
-          - media_player.garage
-        action: media_player.play_media
-      - delay:
-          seconds: 2
-      - data:
-          task_name: Feed Cats Notification
-          instructions: 'Rephrase this in a demanding way, limit to about 35 words:
-            It is time to feed the Cats'
-        response_variable: generated_text
-        action: ai_task.generate_data
-      - delay:
-          seconds: 2
-      - data:
-          message: '{{ generated_text[''data''] }}'
-          target: media_player.counter
-        action: notify.alexa_media
-      - data:
-          title: Feed the Felions
-          message: '{{ generated_text[''data''] }}'
+      - action: ai_task.generate_data
+        data:
+          task_name: Feed Cats
+          instructions: 'Demanding but short: It is time to feed the cats. Max 25
+            words.'
+        response_variable: gen_text
+      - action: notify.all_devices
+        data:
+          title: Feeding Mission
+          message: '{{ gen_text[''data''] }}'
           data:
             tag: pets-notify
             actions:
@@ -1765,114 +1729,68 @@
               title: Done
             - action: feed_passon
               title: Ask Other
-        action: notify.all_devices
-      - target:
-          entity_id: scene.last_alexa_volume
-        action: scene.turn_on
     - conditions:
       - condition: trigger
         id: feed_done
       sequence:
-      - choose:
-        - conditions:
-          - '{{ trigger.event.data.device_id == josh_device_id }}'
-          sequence:
-          - data:
-              title: Pets are Fed
-              message: Josh Completed
-              data:
-                tag: pets-notify
-            action: notify.mobile_app_mj_pixel_8_pro
-        - conditions:
-          - '{{ trigger.event.data.device_id == mj_device_id }}'
-          sequence:
-          - data:
-              title: Pets are Fed
-              message: MJ Completed
-              data:
-                tag: pets-notify
-            action: notify.mobile_app_josh_mobile
+      - action: notify.all_devices
+        data:
+          message: clear_notification
+          data:
+            tag: pets-notify
+      - action: notify.{{ 'mobile_app_mj_pixel_8_pro' if trigger.event.data.device_id
+          == josh_device_id else 'mobile_app_josh_mobile' }}
+        data:
+          title: Mission Accomplished
+          message: '{{ ''Josh'' if trigger.event.data.device_id == josh_device_id
+            else ''MJ'' }} has fed the cats.'
+          data:
+            tag: pets-status
     - conditions:
       - condition: trigger
         id: feed_passon
       sequence:
-      - choose:
-        - conditions:
-          - '{{ trigger.event.data.device_id == josh_device_id }}'
-          sequence:
-          - data:
-              title: The Gorgons need the feeds
-              message: YOU'RE MY ONLY HOPE.
-              data:
-                tag: pets-notify
-                actions:
-                - action: feed_done
-                  title: Done
-            action: notify.mobile_app_mj_pixel_8_pro
-        - conditions:
-          - '{{ trigger.event.data.device_id == mj_device_id }}'
-          sequence:
-          - data:
-              title: The Gorgons need the feeds
-              message: YOU'RE MY ONLY HOPE.
-              data:
-                tag: pets-notify
-                actions:
-                - action: feed_done
-                  title: Done
-            action: notify.mobile_app_josh_mobile
+      - action: notify.{{ 'mobile_app_mj_pixel_8_pro' if trigger.event.data.device_id
+          == josh_device_id else 'mobile_app_josh_mobile' }}
+        data:
+          title: Reinforcements Requested
+          message: Help! The cats are winning. Can you take this one?
+          data:
+            tag: pets-notify
+            actions:
+            - action: feed_done
+              title: Done
     - conditions:
       - condition: trigger
         id: feed_cleared
+      - condition: template
+        value_template: '{{ trigger.event.event_type == ''mobile_app_notification_cleared''
+          }}'
       sequence:
-      - choose:
-        - conditions:
-          - condition: template
-            value_template: '{{ trigger.event.data.device_id == josh_device_id }}'
-          sequence:
-          - data:
-              task_name: Feed Cats Nag
-              instructions: 'Rewrite this in a creative way, limit to about 35 words:
-                "Josh, The cats aren''t going away. They still need to be fed"'
-            response_variable: generated_content
-            action: ai_task.generate_data
-          - delay: 2
-          - data:
-              title: Feed the Felions
-              message: '{{ generated_content[''data''] }}'
-              data:
-                tag: pets-notify
-                actions:
-                - action: feed_done
-                  title: Done
-                - action: feed_passon
-                  title: Ask Other
-            action: notify.mobile_app_josh_mobile
-        - conditions:
-          - condition: template
-            value_template: '{{ trigger.event.data.device_id == mj_device_id }}'
-          sequence:
-          - data:
-              prompt: 'Rewrite this in a creative way, limit to about 35 words: "Maryleigh,
-                The cats aren''t going away. They still need to be fed"'
-            response_variable: generated_content
-            action: ai_task.generate_data
-          - delay: 2
-          - data:
-              title: Feed the Felions
-              message: '{{ generated_content[''data''] }}'
-              data:
-                tag: pets-notify
-                actions:
-                - action: feed_done
-                  title: Done
-                - action: feed_passon
-                  title: Ask Other
-            action: notify.mobile_app_mj_pixel_8_pro
+      - action: ai_task.generate_data
+        data:
+          task_name: Feed Cats Nag
+          instructions: 'The user swiped away the cat feeding notification without  completing
+            it. Write a creative, firm nag. Limit to 20 words.
+
+            '
+        response_variable: nag_text
+      - action: notify.mobile_app_josh_mobile
+        data:
+          title: Feeding Required
+          message: '{{ nag_text[''data''] }}'
+          data:
+            tag: pets-notify
+            sticky: true
+            actions:
+            - action: feed_done
+              title: Done
+            - action: feed_passon
+              title: Ask Other
+  mode: restart
   variables:
     josh_device_id: d818035824cf47ea
     mj_device_id: 0aa560faf0e8784c
-  mode: single
 - id: '1724794143393'
   alias: Notify Eco Mode & Turn on/off
   description: ''
@@ -2532,57 +2450,6 @@
     target:
       entity_id: input_boolean.locate_cats
   mode: single
-- id: '1734124053963'
-  alias: Front door unlock notify
-  description: ''
-  triggers:
-  - trigger: state
-    entity_id:
-    - lock.schlage_front
-    to: unlocked
-  conditions: []
-  actions:
-  - action: camera.snapshot
-    data:
-      filename: ./www/tmp/snapshots/parlor/parlor_snapshot_lock.jpg
-    target:
-      entity_id: camera.parlor_inside
-  - action: camera.snapshot
-    data:
-      filename: ./www/tmp/snapshots/porch/porch_snapshot_lock.jpg
-    target:
-      entity_id: camera.porch_outside_medium_resolution_channel
-  - action: notify.mobile_app_josh_mobile
-    data:
-      message: Front Door Unlocked
-      data:
-        priority: high
-        image: /local/tmp/snapshots/parlor/parlor_snapshot_lock.jpg
-        clickAction: /dashboard-kitchen/security
-  - action: notify.mobile_app_josh_mobile
-    data:
-      message: Front Door Unlocked
-      data:
-        priority: high
-        image: /local/tmp/snapshots/porch/porch_snapshot_lock.jpg
-        clickAction: /dashboard-kitchen/security
-  mode: single
-- id: '1735859411446'
-  alias: webhook test
-  description: ''
-  triggers:
-  - trigger: webhook
-    allowed_methods:
-    - POST
-    - PUT
-    local_only: false
-    webhook_id: -Eka36m_1RWWgShzgPDJWROCm
-  conditions: []
-  actions:
-  - action: notify.mobile_app_josh_mobile
-    data:
-      message: Overseerr Request Pending
-  mode: single
 - id: '1736967153841'
   alias: watchtower
   description: ''
@@ -2653,7 +2520,7 @@
       - condition: trigger
         id: reset
       sequence:
-      - action: script.log_maintenance_task
+      - action: script.system_log_maintenance_task
         data:
           task_name: Generator Test
           timer_entity: timer.generator_test
@@ -3417,7 +3284,7 @@
       - condition: trigger
         id: reset
       sequence:
-      - action: script.log_maintenance_task
+      - action: script.system_log_maintenance_task
         data:
           task_name: Water Filter
           timer_entity: timer.water_filter
@@ -3569,16 +3436,6 @@
     trigger: state
     entity_id: light.island
     id: Update LEDs
-  - alias: 'Brightness Change: Big Kitchen'
-    trigger: state
-    entity_id: light.big_kitchen_lights
-    attribute: brightness
-    id: Update LEDs
-  - alias: 'Brightness Change: Island'
-    trigger: state
-    entity_id: light.island
-    attribute: brightness
-    id: Update LEDs
   actions:
   - choose:
     - conditions:
@@ -3647,6 +3504,8 @@
       - condition: trigger
         id: Update LEDs
       sequence:
+      - action: script.update_kitchen_zen35_leds
+      - delay: 00:00:05
       - action: script.update_kitchen_zen35_leds
   mode: restart
 - id: '1765936000477'
@@ -3746,12 +3605,12 @@
   triggers:
   - trigger: state
     entity_id:
-    - binary_sensor.garage_man_door_window_door_is_open
+    - binary_sensor.garage_man_door
     to: 'on'
     id: instant_announce
   - trigger: state
     entity_id:
-    - binary_sensor.garage_man_door_window_door_is_open
+    - binary_sensor.garage_man_door
     to: 'on'
     for: 00:03:00
     id: long_open_alert
@@ -3950,7 +3809,8 @@
         }}'
   - action: notify.send_message
     target:
-      entity_id: notify.porch_history_csv
+      entity_id:
+      - notify.porch_history
     data:
       message: '"{{ now().strftime(''%Y-%m-%d'') }}","{{ now().strftime(''%H:%M:%S'')
         }}","{{ gemini_report.data.split('']'')[0] ~ '']'' }}","{{ gemini_report.data
@@ -4022,7 +3882,7 @@
   alias: 'Security: Garage Man Door Opened'
   description: Alerts when the garage man door opens while armed away or on vacation.
   triggers:
-  - entity_id: binary_sensor.garage_man_door_window_door_is_open
+  - entity_id: binary_sensor.garage_man_door
     to: 'on'
     trigger: state
   conditions:

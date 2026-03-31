@@ -1,0 +1,22 @@
+---
+lock:
+  - name: "Garage Man Entry"
+    unique_id: garage_man_entry
+    state: "{{ states('lock.garage_man_lock') }}"
+    lock:
+      action: lock.lock
+      target:
+        entity_id: lock.garage_man_lock
+    unlock:
+      action: lock.unlock
+      target:
+        entity_id: lock.garage_man_lock
+    # The modern key is 'icon', not 'icon_template'
+    icon: >
+      {% if is_state('binary_sensor.garage_man_door', 'on') %}
+        mdi:door-open
+      {% elif is_state('lock.garage_man_lock', 'locked') %}
+        mdi:door-closed-lock
+      {% else %}
+        mdi:door-closed
+      {% endif %}

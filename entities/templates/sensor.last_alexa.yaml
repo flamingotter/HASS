@@ -1,9 +1,22 @@
 ---
+trigger:
+  - platform: state
+    entity_id: 
+      - media_player.bedroom
+      - media_player.counter
+      - media_player.garage
+      - media_player.dining_room
+      - media_player.babe_cave
+      - media_player.living_room
+    attribute: last_called
 sensor:
   - name: Last Alexa
-    state: |-
-      {{ expand(integration_entities('alexa_media') | select('search', 'media_player'))
-      | selectattr('attributes.last_called', 'eq', True) | map(attribute='entity_id') | first }}
-    availability: |-
-      {{ expand(integration_entities('alexa_media') | select('search', 'media_player'))
-      | selectattr('attributes.last_called','eq',True) | first is defined }}
+    unique_id: last_alexa_sensor # Good practice for UI editing
+    icon: mdi:amazon-alexa
+    state: >-
+      {% set alexas = integration_entities('alexa_media') | select('search', 'media_player') | list %}
+      {{ expand(alexas) | selectattr('attributes.last_called', 'eq', True) 
+          | map(attribute='entity_id') | first | default('media_player.bedroom') }}
+    availability: >-
+      {% set alexas = integration_entities('alexa_media') | select('search', 'media_player') | list %}
+      {{ expand(alexas) | selectattr('attributes.last_called', 'eq', True) | first is defined }}

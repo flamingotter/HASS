@@ -3,6 +3,7 @@ www/
 deps/
 image/*
 backups/
+tts/
 custom_components/
 *.pid
 *.xml
@@ -37,3 +38,7 @@ ip_bans.yaml
 .HA_VERSION
 .storage
 .cloud
+.cache
+GEMINI.md
+HA.code-workspace
+watchman_report.txt

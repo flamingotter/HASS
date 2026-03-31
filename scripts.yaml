@@ -1,108 +1,3 @@
-dinner_msg:
-  alias: Dinner Msg
-  sequence:
-  - data:
-      message: It's time to eat, please make your way to the kitchen
-      target:
-      - media_player.bedroom
-      - media_player.garage
-      data:
-        method: all
-        type: announce
-    action: notify.alexa_media
-  mode: single
-  icon: mdi:food-turkey
-bed_mood_light:
-  alias: Bed Mood Light
-  sequence:
-  - service: light.turn_on
-    data:
-      transition: 1
-      brightness: 128
-    target:
-      entity_id: light.wled_bed
-  - service: mqtt.publish
-    data:
-      qos: '1'
-      retain: false
-      topic: wled/mbr/mood/bed/api
-      payload: SX=50 FX=09
-  mode: single
-  icon: mdi:bed
-office_normal:
-  alias: Office Normal
-  sequence:
-  - data:
-      color_temp: 222
-      brightness_pct: 100
-    target:
-      entity_id: light.office_lights
-    action: light.turn_on
-  - data:
-      rgb_color:
-      - 0
-      - 128
-      - 128
-      brightness_pct: 5
-    target:
-      entity_id:
-      - light.wled_cloud_main
-      - light.wled_cloud
-    action: light.turn_on
-  mode: parallel
-  icon: mdi:laptop
-  description: ''
-  max: 5
-office_dim:
-  alias: Office Dim
-  sequence:
-  - service: light.turn_on
-    data:
-      brightness_pct: 50
-      color_temp: 222
-    target:
-      entity_id: light.office_lights
-  - service: light.turn_off
-    target:
-      entity_id: light.office_lamp
-  mode: single
-  icon: mdi:laptop
-  description: ''
-office_1_2_4_off:
-  alias: Office 1 2 4 Off
-  sequence:
-  - service: light.turn_off
-    target:
-      entity_id:
-      - light.office_four
-      - light.office_one
-      - light.office_two
-      - light.office_lamp
-  - service: light.turn_on
-    data:
-      brightness_pct: 100
-    target:
-      entity_id:
-      - light.office_three
-      - light.desk_light
-  mode: single
-  icon: mdi:laptop
-  description: ''
-armed_night_disarm:
-  alias: Armed Night Disarm
-  sequence:
-  - if:
-    - condition: state
-      entity_id: alarm_control_panel.home_alarm
-      state: armed_night
-    then:
-    - action: alarm_control_panel.alarm_disarm
-      data:
-        code: '1977'
-      target:
-        entity_id: alarm_control_panel.home_alarm
-  description: ''
-  icon: mdi:alarm
 activate_alexa_actionable_notification:
   alias: activate_alexa_actionable_notification
   description: Activates an actionable notification on a specific echo device
@@ -613,9 +508,13 @@ welcome_home_ai_debrief:
 system_log_maintenance_task:
   alias: 'System: Log Maintenance Task'
   sequence:
-  - action: timer.start
-    target:
-      entity_id: '{{ timer_entity | default(''timer.none'') }}'
+  - if:
+    - condition: template
+      value_template: '{{ timer_entity is defined and timer_entity != none }}'
+    then:
+    - action: timer.start
+      target:
+        entity_id: '{{ timer_entity }}'
   - action: notify.send_message
     target:
       entity_id: notify.maintenance_log_csv
