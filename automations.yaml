@@ -11,16 +11,16 @@
       entity_id: input_boolean.reading_mode
   mode: single
 - id: '1717271382609'
-  alias: Garden Timelapse
+  alias: Outdoor Timelapse
   description: ''
-  trigger:
-  - platform: time_pattern
-    hours: /1
-  condition:
+  triggers:
+  - hours: /1
+    trigger: time_pattern
+  conditions:
   - condition: state
     entity_id: sun.sun
     state: above_horizon
-  action:
+  actions:
   - repeat:
       for_each:
       - camera.driveway_outside_high_resolution_channel
@@ -35,7 +35,7 @@
             }}_{{ now().strftime('%Y%m%d_%H%M') }}.jpg
   mode: single
 - id: '1717271470147'
-  alias: Shuttle Bay Door
+  alias: 'Entry: Shuttle Bay Door'
   description: Open/Close the garage door
   triggers:
   - tag_id: garage
@@ -256,137 +256,10 @@
     - action: switch.turn_off
       target:
         entity_id:
-        - switch.adaptive_lighting_sleep_mode_mbr
+        - switch.bedroom_sleep_mode
         - switch.bedroom_humidifier
   mode: parallel
   max: 10
-- id: '1722628663642'
-  alias: Motion Parlor
-  description: ''
-  triggers:
-  - entity_id:
-    - binary_sensor.motion_parlor
-    to: 'on'
-    id: motion
-    trigger: state
-  - event_type: timer.finished
-    event_data:
-      entity_id: timer.timer_parlor
-    id: t02
-    trigger: event
-  conditions:
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: alarm_control_panel.home_alarm
-      state: disarmed
-    - condition: state
-      entity_id: input_boolean.motion_lockout
-      state: 'off'
-    - condition: state
-      entity_id: input_boolean.reading_mode
-      state: 'off'
-  actions:
-  - alias: Turn on and start timer
-    if:
-    - condition: trigger
-      id:
-      - motion
-    then:
-    - if:
-      - condition: state
-        state: 'on'
-        entity_id: light.parlor_light
-      then:
-      - action: timer.start
-        target:
-          entity_id: timer.timer_parlor
-      else:
-      - if:
-        - condition: device
-          type: is_on
-          device_id: 784f7bc2a44b163370bd3af1580c7626
-          entity_id: d4aa1165af3cb0daf0fc7e48a251088a
-          domain: remote
-        then:
-        - parallel:
-          - action: timer.start
-            target:
-              entity_id: timer.timer_parlor
-          - action: light.turn_on
-            data:
-              rgb_color:
-              - 106
-              - 0
-              - 255
-              brightness_pct: 100
-              transition: 2
-            target:
-              entity_id: light.masonic_lamp
-          - action: light.turn_on
-            data:
-              rgb_color:
-              - 137
-              - 41
-              - 255
-              brightness_pct: 100
-              transition: 2
-            target:
-              entity_id: light.spot_light
-        else:
-        - parallel:
-          - action: timer.start
-            target:
-              entity_id: timer.timer_parlor
-          - action: light.turn_on
-            data:
-              transition: 1
-            target:
-              entity_id: light.parlor_light
-          - action: light.turn_on
-            data:
-              rgb_color:
-              - 137
-              - 41
-              - 255
-              brightness_pct: 100
-              transition: 2
-            target:
-              entity_id: light.spot_light
-          - action: light.turn_on
-            data:
-              rgb_color:
-              - 106
-              - 0
-              - 255
-              brightness_pct: 100
-              transition: 2
-            target:
-              entity_id: light.masonic_lamp
-  - if:
-    - condition: and
-      conditions:
-      - condition: trigger
-        id:
-        - t02
-      - condition: state
-        entity_id: input_boolean.cleaning
-        state: 'off'
-      - condition: not
-        conditions:
-        - condition: state
-          entity_id: sensor.last_motion_indoors
-          state: Parlor
-    then:
-    - action: light.turn_off
-      data:
-        transition: 2
-      target:
-        entity_id:
-        - light.spot_light
-        - light.masonic_lamp
-        - light.parlor_light
-  mode: restart
 - id: '1723572617932'
   alias: 3D Printer ON/OFF
   description: ''
@@ -1122,169 +995,6 @@
         - light.big_kitchen_lights
         - light.dining
   mode: restart
-- id: '1724443335411'
-  alias: Motion Storage
-  description: ''
-  triggers:
-  - alias: motion
-    entity_id:
-    - binary_sensor.motion_storage_room
-    to: 'on'
-    id: motion
-    trigger: state
-  - event_type: timer.finished
-    event_data:
-      entity_id: timer.timer_storage
-    id: t02
-    trigger: event
-  conditions:
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: alarm_control_panel.home_alarm
-      state: disarmed
-    - condition: state
-      entity_id: input_boolean.motion_lockout
-      state: 'off'
-  actions:
-  - alias: Turn on and start timer
-    if:
-    - condition: trigger
-      id:
-      - motion
-    then:
-    - if:
-      - condition: state
-        entity_id: light.storage_lights
-        state: 'on'
-      then:
-      - action: timer.start
-        target:
-          entity_id:
-          - timer.timer_storage
-      else:
-      - parallel:
-        - action: timer.start
-          target:
-            entity_id:
-            - timer.timer_storage
-        - action: light.turn_on
-          data:
-            brightness_pct: 100
-            kelvin: 4500
-          target:
-            entity_id: light.storage_lights
-    else: []
-    enabled: true
-  - if:
-    - condition: trigger
-      id:
-      - t02
-    - condition: state
-      entity_id: input_boolean.cleaning
-      state: 'off'
-    - condition: not
-      conditions:
-      - condition: state
-        entity_id: sensor.last_motion_indoors
-        state: Storage
-    then:
-    - action: light.turn_off
-      target:
-        entity_id: light.storage_lights
-  mode: restart
-- id: '1724444093504'
-  alias: Motion Media Room
-  description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - binary_sensor.motion_media_room
-    - binary_sensor.motion_basement_stairs
-    to: 'on'
-    id: motion
-    alias: motion
-  - platform: event
-    event_type: timer.finished
-    event_data:
-      entity_id: timer.timer_media_room
-    id: t02
-  condition:
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: alarm_control_panel.home_alarm
-      state: disarmed
-    - condition: state
-      entity_id: input_boolean.motion_lockout
-      state: 'off'
-    - condition: state
-      entity_id: media_player.tv_samsung_bsmt
-      state: unavailable
-  action:
-  - alias: Turn on and start timer
-    if:
-    - condition: trigger
-      id:
-      - motion
-    then:
-    - if:
-      - condition: state
-        entity_id: light.media_lights
-        state: 'on'
-      then:
-      - action: timer.start
-        target:
-          entity_id:
-          - timer.timer_media_room
-      else:
-      - parallel:
-        - action: timer.start
-          target:
-            entity_id:
-            - timer.timer_media_room
-        - action: light.turn_on
-          data:
-            brightness_pct: 50
-            kelvin: 4500
-          target:
-            entity_id: light.media_three
-        - if:
-          - condition: state
-            entity_id: input_boolean.holiday_mode
-            state: 'on'
-          then:
-          - action: light.turn_on
-            target:
-              entity_id: light.led_tree
-  - if:
-    - condition: trigger
-      id:
-      - t02
-    - condition: and
-      conditions:
-      - condition: state
-        entity_id: light.media_one
-        state: 'off'
-      - condition: state
-        entity_id: light.media_two
-        state: 'off'
-      - condition: state
-        entity_id: light.media_four
-        state: 'off'
-      - condition: state
-        entity_id: input_boolean.cleaning
-        state: 'off'
-    then:
-    - action: light.turn_off
-      data:
-        transition: 1
-      target:
-        entity_id: light.media_three
-    - action: light.turn_off
-      target:
-        entity_id: light.led_tree
-  mode: restart
 - id: '1724445299299'
   alias: Motion Office
   description: ''
@@ -1450,14 +1160,17 @@
   mode: restart
 - id: '1724525664627'
   alias: 'Notify: HVAC Filter Maintenance'
-  description: Manages HVAC filter lifecycle with AI reminders and centralized logging
-    script.
+  description: Manages HVAC filter lifecycle with AI reminders and Eco-Aware logic.
   triggers:
   - event_type: timer.finished
     event_data:
       entity_id: timer.timer_hvac_filter
     id: remind
     trigger: event
+  - entity_id: input_boolean.eco_mode
+    to: 'off'
+    id: remind
+    trigger: state
   - tag_id: 1e923fae-efb1-40c4-8c45-b5ab3f8beb78
     id: reset
     trigger: tag
@@ -1476,13 +1189,19 @@
     - conditions:
       - condition: trigger
         id: remind
+      - condition: state
+        entity_id: timer.timer_hvac_filter
+        state: idle
+      - condition: state
+        entity_id: input_boolean.eco_mode
+        state: 'off'
       sequence:
       - action: ai_task.generate_data
         data:
-          instructions: 'The HVAC filter needs replacing to maintain air quality and  system
-            efficiency. Write a short, creative reminder for Josh.  Make it sound
-            like a high-end estate manager reporting a  necessary maintenance item.
-            Limit to 25 words.
+          instructions: 'The HVAC filter needs replacing to maintain air quality and
+            system efficiency. Write a short, creative reminder for Josh. Make it
+            sound like a high-end estate manager reporting a  necessary maintenance
+            item. Limit to 25 words.
 
             '
         response_variable: hvac_nag
@@ -1516,7 +1235,7 @@
           entity_id: timer.timer_hvac_filter
   mode: restart
 - id: '1724690161012'
-  alias: Notify Trash Day
+  alias: 'Notify: Trash Day'
   description: ''
   triggers:
   - at: '17:00:00'
@@ -1586,8 +1305,9 @@
         action: input_boolean.turn_off
       - choose:
         - conditions:
-          - '{{ trigger.id == ''trash_done'' and trigger.event.data.device_id == josh_device_id
-            }}'
+          - condition: template
+            value_template: '{{ trigger.id == ''trash_done'' and trigger.event.data.device_id
+              == josh_device_id }}'
           sequence:
           - data:
               title: Trash and Recycling
@@ -1792,202 +1512,98 @@
     josh_device_id: d818035824cf47ea
     mj_device_id: 0aa560faf0e8784c
 - id: '1724794143393'
-  alias: Notify Eco Mode & Turn on/off
-  description: ''
-  trigger:
-  - platform: event
-    event_type: timer.finished
+  alias: 'Presence: Enhanced Eco Mode Manager'
+  description: Handles Eco Mode timers, extensions via actionable notifications, and
+    climate resets
+  triggers:
+  - event_type: timer.finished
     event_data:
       entity_id: timer.timer_eco_mode_normal
-    id: t01
-    alias: t01 Timer Finished
-  - alias: t02 eco_activate message with number of days
-    platform: event
-    event_type: mobile_app_notification_action
-    id: t02
-    event_data:
-      tag: eco-activate
-      action: REPLY
-  - alias: t03 eco_finish message with number of days to add
-    platform: event
-    event_type: mobile_app_notification_action
-    id: t03
+    id: timer_done
+    trigger: event
+  - event_type: mobile_app_notification_action
     event_data:
       tag: eco-finish
       action: REPLY
-  - alias: t04 eco_finish message Turn OFF Eco mode
-    platform: event
-    event_type: mobile_app_notification_action
-    id: t04
+    id: extend_eco
+    trigger: event
+  - event_type: mobile_app_notification_action
     event_data:
       tag: eco-finish
       action: eco_normal
-  - alias: reply_cleared
-    platform: event
-    event_type: mobile_app_notification_cleared
-    id: eco_activate_cleared
-    event_data:
-      tag: eco-activate
-      action_1_key: REPLY
-  - alias: eco_normal_cleared
-    platform: event
-    event_type: mobile_app_notification_cleared
-    id: eco_finish_cleared
+    id: deactivate_eco
+    trigger: event
+  - event_type: mobile_app_notification_cleared
     event_data:
       tag: eco-finish
-      action_1_key: eco_normal
-  - platform: event
-    event_type: mobile_app_notification_action
-    event_data:
-      tag: eco-activate
-      action: eco-ignore
-    id: eco-ignore
-    alias: eco-ignore
-  condition: []
-  action:
-  - alias: t01 Timer Finished. Confirm Turn Off/Add more Days
-    if:
-    - condition: trigger
-      id:
-      - t01
-    then:
-    - action: notify.mobile_app_josh_mobile
-      data:
-        title: Armed Vacation / Eco Mode
-        message: Eco Mode timer has finished. What would you like to do?
+    id: notification_cleared
+    trigger: event
+  actions:
+  - choose:
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: trigger
+          id: timer_done
+        - condition: trigger
+          id: notification_cleared
+      - condition: state
+        entity_id: input_boolean.eco_mode
+        state: 'on'
+      sequence:
+      - action: notify.mobile_app_josh_mobile
         data:
-          tag: eco-finish
-          actions:
-          - action: eco_normal
-            title: Return to Normal
-          - action: REPLY
-            title: Add more days
-  - alias: t02/t03 Start Timer based on REPLY from eco_activate or eco_finish
-    if:
-    - condition: trigger
-      id:
-      - t02
-      - t03
-    then:
-    - sequence:
+          title: Eco Mode Status
+          message: Eco Mode timer has finished. Would you like to return to normal
+            or extend?
+          data:
+            tag: eco-finish
+            persistent: true
+            actions:
+            - action: eco_normal
+              title: Return to Normal
+            - action: REPLY
+              title: Add Days
+    - conditions:
+      - condition: trigger
+        id: extend_eco
+      sequence:
       - variables:
-          delay: '{{ trigger.event.data.reply_text | int(0) }}'
-          delay_hours: '{{ delay | int * 86400 }}'
+          days: '{{ trigger.event.data.reply_text | int(1) }}'
+          seconds: '{{ (trigger.event.data.reply_text | int(1)) * 86400 }}'
       - action: timer.start
         data:
-          duration: '{{ delay_hours }}'
+          duration: '{{ seconds }}'
         target:
           entity_id: timer.timer_eco_mode_normal
-      - action: input_boolean.turn_on
+      - action: notify.mobile_app_josh_mobile
+        data:
+          title: Eco Mode Extended
+          message: Eco Mode will remain active for {{ days }} more days.
+          data:
+            tag: eco-finish
+    - conditions:
+      - condition: trigger
+        id: deactivate_eco
+      sequence:
+      - action: input_boolean.turn_off
         target:
           entity_id: input_boolean.eco_mode
-      - if:
-        - condition: trigger
-          id:
-          - t02
-        then:
-        - action: notify.mobile_app_josh_mobile
+      - action: timer.cancel
+        target:
+          entity_id: timer.timer_eco_mode_normal
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.t6_pro_downstairs
+        data:
+          temperature: 68
+      - action: notify.mobile_app_josh_mobile
+        data:
+          title: Welcome Home
+          message: Eco Mode deactivated. Thermostat set to 68°F.
           data:
-            message: Eco mode activated and will return to normal operation in "{{
-              delay }}" days.
-            data:
-              tag: eco-activate
-            title: Confirmation
-        else:
-        - action: notify.mobile_app_josh_mobile
-          data:
-            message: Eco mode extended and will return to normal operation in "{{
-              delay }}" days.
-            data:
-              tag: eco-finish
-            title: Confirmation
-  - alias: t03 Turn Eco mode OFF
-    if:
-    - condition: trigger
-      id:
-      - t04
-    then:
-    - action: input_boolean.turn_off
-      target:
-        entity_id: input_boolean.eco_mode
-    - action: notify.mobile_app_josh_mobile
-      data:
-        message: Eco mode deactivated.
-        data:
-          tag: eco-finish
-        title: Confirmation
-  - alias: Resend eco_activate Message if Cleared
-    if:
-    - condition: trigger
-      id:
-      - eco_activate_cleared
-    then:
-    - action: notify.mobile_app_josh_mobile
-      data:
-        title: Armed Vacation / Eco Mode
-        message: Home is set to Armed Vacation. Eco Mode Activated. Set number of
-          days until return to normal.
-        data:
-          tag: eco-activate
-          actions:
-          - action: REPLY
-            title: Set Days to Normal
-  - alias: Resend Return to Normal Message if Cleared
-    if:
-    - condition: trigger
-      id:
-      - eco_finish_cleared
-    then:
-    - action: notify.mobile_app_josh_mobile
-      data:
-        title: Armed Vacation / Eco Mode
-        message: Eco Mode timer has finished. What would you like to do?
-        data:
-          tag: eco-finish
-          actions:
-          - action: eco_normal
-            title: Return to Normal
-          - action: REPLY
-            title: Add more days
-  - alias: eco-ignore
-    if:
-    - condition: trigger
-      id:
-      - eco-ignore
-    then:
-    - action: notify.mobile_app_josh_mobile
-      data:
-        message: Eco mode Ignored.
-        data:
-          tag: eco-activate
-        title: Confirmation
-  mode: single
-- id: '1724965532381'
-  alias: Eco Mode Functions
-  description: ''
-  triggers:
-  - entity_id:
-    - input_boolean.eco_mode
-    trigger: state
-  conditions: []
-  actions:
-  - if:
-    - condition: state
-      entity_id: input_boolean.eco_mode
-      state: 'on'
-    then:
-    - action: climate.set_preset_mode
-      data:
-        preset_mode: eco
-      target:
-        entity_id: climate.kitchen
-    else:
-    - action: climate.set_preset_mode
-      data:
-        preset_mode: none
-      target:
-        entity_id: climate.kitchen
-  mode: single
+            tag: eco-finish
+  mode: restart
 - id: '1725030108440'
   alias: Cleaning Lifecycle
   description: Manages lights, timers, and AI notifications for cleaning mode.
@@ -2451,7 +2067,7 @@
       entity_id: input_boolean.locate_cats
   mode: single
 - id: '1736967153841'
-  alias: watchtower
+  alias: 'System: Watchtower Notification'
   description: ''
   triggers:
   - trigger: webhook
@@ -2470,14 +2086,17 @@
   mode: single
 - id: '1737854106356'
   alias: 'Notify: Generator Maintenance Test'
-  description: Mission readiness check for the generator with AI alerts and centralized
-    logging script.
+  description: Mission-ready generator check with Eco-Aware catch-up logic.
   triggers:
   - event_type: timer.finished
     event_data:
       entity_id: timer.generator_test
     id: remind
     trigger: event
+  - entity_id: input_boolean.eco_mode
+    to: 'off'
+    id: remind
+    trigger: state
   - tag_id: 95e7dd1a-71d0-4af9-a813-a9974de3cf87
     id: reset
     trigger: tag
@@ -2496,11 +2115,17 @@
     - conditions:
       - condition: trigger
         id: remind
+      - condition: state
+        entity_id: timer.generator_test
+        state: idle
+      - condition: state
+        entity_id: input_boolean.eco_mode
+        state: 'off'
       sequence:
       - action: ai_task.generate_data
         data:
           instructions: 'The monthly generator test is due. Write a short, authoritative
-            "Mission Readiness" style reminder for Josh. Focus on ensuring backup
+            "Mission Readiness" style reminder for Josh. Focus on ensuring  backup
             power is mission-capable. Limit to 25 words.
 
             '
@@ -2531,82 +2156,9 @@
       - action: timer.start
         data:
           duration: '{% set target = (now() + timedelta(days=1)).replace(hour=9, minute=0,
-            second=0) %}  {{ (target - now()).total_seconds() | int }}
-
-            '
+            second=0) %} {{ (target - now()).total_seconds() | int }}'
         target:
           entity_id: timer.generator_test
-  mode: restart
-- id: '1749583028093'
-  alias: Motion Dining Room
-  description: ''
-  triggers:
-  - alias: motion
-    entity_id:
-    - binary_sensor.motion_dining
-    to: 'on'
-    id: motion
-    trigger: state
-  - event_type: timer.finished
-    event_data:
-      entity_id: timer.timer_dining
-    id: t02
-    trigger: event
-  conditions:
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: alarm_control_panel.home_alarm
-      state: disarmed
-    - condition: state
-      entity_id: input_boolean.motion_lockout
-      state: 'off'
-  actions:
-  - alias: Turn on and start timer
-    if:
-    - condition: trigger
-      id:
-      - motion
-    then:
-    - if:
-      - condition: state
-        entity_id: light.dining
-        state: 'on'
-      then:
-      - action: timer.start
-        target:
-          entity_id: timer.timer_dining
-      else:
-      - if:
-        - condition: numeric_state
-          entity_id: sensor.szpffqlkc_irradiance
-          below: 200
-        then:
-        - parallel:
-          - action: timer.start
-            target:
-              entity_id: timer.timer_dining
-          - action: light.turn_on
-            data:
-              transition: 0.5
-            target:
-              entity_id: light.dining
-  - if:
-    - condition: trigger
-      id:
-      - t02
-    - condition: state
-      entity_id: input_boolean.cleaning
-      state: 'off'
-    - condition: not
-      conditions:
-      - condition: state
-        entity_id: sensor.last_motion_indoors
-        state: Dining Room
-    then:
-    - action: light.turn_off
-      target:
-        entity_id: light.dining
   mode: restart
 - id: '1751050325495'
   alias: 'Notify Beer Fridge Alert '
@@ -3234,14 +2786,17 @@
   mode: restart
 - id: '1752174710917'
   alias: 'Notify: Water Filter'
-  description: Manages water filter lifecycle with AI reminders and centralized logging
-    script.
+  description: Manages water filter lifecycle with AI reminders and Eco-Aware logic.
   triggers:
   - event_type: timer.finished
     event_data:
       entity_id: timer.water_filter
     id: remind
     trigger: event
+  - entity_id: input_boolean.eco_mode
+    to: 'off'
+    id: remind
+    trigger: state
   - tag_id: 1e923fae-efb1-40c4-8c45-b5ab3f8beb78
     id: reset
     trigger: tag
@@ -3260,12 +2815,18 @@
     - conditions:
       - condition: trigger
         id: remind
+      - condition: state
+        entity_id: timer.water_filter
+        state: idle
+      - condition: state
+        entity_id: input_boolean.eco_mode
+        state: 'off'
       sequence:
       - action: ai_task.generate_data
         data:
-          instructions: 'The water filter needs replacing. Write a short,  creative
-            reminder for Josh to swap it out. Make it sound like  a high-end estate
-            manager reporting a maintenance item.  Limit to 25 words.
+          instructions: 'The water filter needs replacing. Write a short, creative
+            reminder for Josh to swap it out. Make it sound like a high-end estate
+            manager reporting a maintenance item. Limit to 25 words.
 
             '
         response_variable: water_nag
@@ -3481,12 +3042,12 @@
       sequence:
       - if:
         - condition: state
-          entity_id: switch.adaptive_lighting_kitchen
+          entity_id: switch.kitchen_adaptive_lighting
           state: 'on'
         then:
         - action: switch.turn_off
           target:
-            entity_id: switch.adaptive_lighting_kitchen
+            entity_id: switch.kitchen_adaptive_lighting
         - action: light.turn_on
           target:
             entity_id:
@@ -3499,7 +3060,7 @@
         else:
         - action: switch.turn_on
           target:
-            entity_id: switch.adaptive_lighting_kitchen
+            entity_id: switch.kitchen_adaptive_lighting
     - conditions:
       - condition: trigger
         id: Update LEDs
@@ -3550,7 +3111,7 @@
         data: {}
   mode: single
 - id: '1766015428765'
-  alias: Dining Room Lights
+  alias: Dining Room Light Control
   description: Controls smart bulbs via ZEN23 Scene Events
   triggers:
   - event_type: zwave_js_value_notification
@@ -3924,3 +3485,95 @@
       title: Garage Man Door Unlocked
       message: Devine's unlocked the door. The house has been temporarily disarmed.
   mode: single
+- id: '1775057723989'
+  alias: Nightly Climate Data to BigQuery
+  description: ''
+  triggers:
+  - at: 03:01:00
+    trigger: time
+  actions:
+  - action: shell_command.update_bigquery_climate
+  - action: notify.persistent_notification
+    data:
+      message: Climate data sync to BigQuery triggered.
+      title: Data Pipeline
+- id: '1775070658742'
+  alias: 'Climate: Master Bedroom Sleep Comfort Engine (Eco-Aware)'
+  description: Drives T6 based on Bedroom Sensor during Sleep Hours, strictly only
+    when Eco Mode is OFF
+  triggers:
+  - entity_id: sensor.bedroom_sensor_air_temperature
+    trigger: state
+  - entity_id: input_number.bedroom_target_temperature
+    trigger: state
+  - at: '22:30:00'
+    id: bedtime
+    trigger: time
+  - at: 07:00:00
+    id: morning
+    trigger: time
+  - entity_id: input_boolean.eco_mode
+    to: 'off'
+    id: eco_deactivated
+    trigger: state
+  actions:
+  - variables:
+      actual: '{{ states(''sensor.bedroom_sensor_air_temperature'') | float(68) }}'
+      target: '{{ states(''input_number.bedroom_target_temperature'') | float(63)
+        }}'
+      is_sleep_time: '{{ (now().hour == 22 and now().minute >= 30) or (now().hour
+        > 22) or (now().hour < 7) }}'
+      eco_active: '{{ is_state(''input_boolean.eco_mode'', ''on'') }}'
+  - choose:
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: trigger
+          id: bedtime
+        - condition: trigger
+          id: eco_deactivated
+      - condition: template
+        value_template: '{{ not eco_active }}'
+      sequence:
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.bedroom_target_temperature
+        data:
+          value: 63
+    - conditions:
+      - condition: template
+        value_template: "{{ is_sleep_time and not eco_active and actual > (target
+          + 0.5) and \n   is_state('climate.t6_pro_downstairs', 'cool') }}\n"
+      sequence:
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.t6_pro_downstairs
+        data:
+          temperature: 60
+    - conditions:
+      - condition: template
+        value_template: "{{ is_sleep_time and not eco_active and actual < (target
+          - 0.5) and \n   is_state('climate.t6_pro_downstairs', 'heat') }}\n"
+      sequence:
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.t6_pro_downstairs
+        data:
+          temperature: 72
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: trigger
+          id: morning
+        - condition: template
+          value_template: '{{ is_sleep_time and actual <= (target + 0.2) and actual
+            >= (target - 0.2) }}'
+        - condition: template
+          value_template: '{{ eco_active }}'
+      sequence:
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.t6_pro_downstairs
+        data:
+          temperature: 68
+  mode: restart

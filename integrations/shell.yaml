@@ -1,3 +1,5 @@
 ---
 shell_command:
   clear_daily_camera_log: 'echo "" > /media/snapshots/daily_camera_log.txt'
+
+  update_bigquery_climate: "docker start ha_bq_exporter"
