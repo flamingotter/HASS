@@ -3492,15 +3492,17 @@
   - at: 03:01:00
     trigger: time
   actions:
-  - action: shell_command.update_bigquery_climate
+  - action: button.press
+    target:
+      entity_id: button.docker_ha_bq_exporter_restart
   - action: notify.persistent_notification
     data:
       message: Climate data sync to BigQuery triggered.
       title: Data Pipeline
 - id: '1775070658742'
-  alias: 'Climate: Master Bedroom Sleep Comfort Engine (Eco-Aware)'
-  description: Drives T6 based on Bedroom Sensor during Sleep Hours, strictly only
-    when Eco Mode is OFF
+  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v2.2)'
+  description: Optimized mesh traffic, threshold-based release, and fixed daytime
+    manual override.
   triggers:
   - entity_id: sensor.bedroom_sensor_air_temperature
     trigger: state
@@ -3519,21 +3521,41 @@
   actions:
   - variables:
       actual: '{{ states(''sensor.bedroom_sensor_air_temperature'') | float(68) }}'
-      target: '{{ states(''input_number.bedroom_target_temperature'') | float(63)
+      user_target: '{{ states(''input_number.bedroom_target_temperature'') | float(63)
         }}'
+      t6_target: '{{ state_attr(''climate.t6_pro_downstairs'', ''temperature'') |
+        float(68) }}'
       is_sleep_time: '{{ (now().hour == 22 and now().minute >= 30) or (now().hour
         > 22) or (now().hour < 7) }}'
       eco_active: '{{ is_state(''input_boolean.eco_mode'', ''on'') }}'
   - choose:
     - conditions:
+      - condition: template
+        value_template: '{{ eco_active }}'
+      sequence:
+      - stop: Eco Mode Active. Automation suspended.
+    - conditions:
+      - condition: or
+        conditions:
+        - condition: trigger
+          id: morning
+        - condition: template
+          value_template: '{{ trigger.id == ''eco_deactivated'' and not is_sleep_time
+            }}'
+      sequence:
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.t6_pro_downstairs
+        data:
+          temperature: 68
+    - conditions:
       - condition: or
         conditions:
         - condition: trigger
           id: bedtime
-        - condition: trigger
-          id: eco_deactivated
-      - condition: template
-        value_template: '{{ not eco_active }}'
+        - condition: template
+          value_template: '{{ trigger.id == ''eco_deactivated'' and is_sleep_time
+            }}'
       sequence:
       - action: input_number.set_value
         target:
@@ -3542,38 +3564,35 @@
           value: 63
     - conditions:
       - condition: template
-        value_template: "{{ is_sleep_time and not eco_active and actual > (target
-          + 0.5) and \n   is_state('climate.t6_pro_downstairs', 'cool') }}\n"
+        value_template: '{{ is_sleep_time }}'
       sequence:
-      - action: climate.set_temperature
-        target:
-          entity_id: climate.t6_pro_downstairs
-        data:
-          temperature: 60
-    - conditions:
-      - condition: template
-        value_template: "{{ is_sleep_time and not eco_active and actual < (target
-          - 0.5) and \n   is_state('climate.t6_pro_downstairs', 'heat') }}\n"
-      sequence:
-      - action: climate.set_temperature
-        target:
-          entity_id: climate.t6_pro_downstairs
-        data:
-          temperature: 72
-    - conditions:
-      - condition: or
-        conditions:
-        - condition: trigger
-          id: morning
-        - condition: template
-          value_template: '{{ is_sleep_time and actual <= (target + 0.2) and actual
-            >= (target - 0.2) }}'
-        - condition: template
-          value_template: '{{ eco_active }}'
-      sequence:
-      - action: climate.set_temperature
-        target:
-          entity_id: climate.t6_pro_downstairs
-        data:
-          temperature: 68
+      - choose:
+        - conditions:
+          - condition: template
+            value_template: '{{ actual > (user_target + 0.5) and t6_target != 60 }}'
+          sequence:
+          - action: climate.set_temperature
+            target:
+              entity_id: climate.t6_pro_downstairs
+            data:
+              temperature: 60
+        - conditions:
+          - condition: template
+            value_template: '{{ actual < (user_target - 0.5) and t6_target != 72 }}'
+          sequence:
+          - action: climate.set_temperature
+            target:
+              entity_id: climate.t6_pro_downstairs
+            data:
+              temperature: 72
+        - conditions:
+          - condition: template
+            value_template: "{{ (actual <= user_target and t6_target == 60) or \n
+              \  (actual >= user_target and t6_target == 72) }}\n"
+          sequence:
+          - action: climate.set_temperature
+            target:
+              entity_id: climate.t6_pro_downstairs
+            data:
+              temperature: '{{ user_target }}'
   mode: restart

@@ -1,0 +1,10 @@
+---
+monitor_docker:
+  name: Docker
+  url: http://127.0.0.1:2375
+  buttonenabled: True
+  containers:
+    - ha_bq_exporter
+  monitored_conditions:
+    - state
+    - status
