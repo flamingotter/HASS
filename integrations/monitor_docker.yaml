@@ -1,10 +1,11 @@
 ---
 monitor_docker:
-  name: Docker
-  url: http://127.0.0.1:2375
-  buttonenabled: True
-  containers:
-    - ha_bq_exporter
-  monitored_conditions:
-    - state
-    - status
+  - name: Docker
+    url: http://127.0.0.1:2375
+    buttonenabled: True
+    # Remove it from 'containers' and put it in 'containers_exclude'
+    containers_exclude:
+      - ha_bq_exporter
+    monitored_conditions:
+      - state
+      - status
