@@ -1,7 +1,24 @@
-- binary_sensor:
-    - name: "MBR Pre-Cooling Active"
-      unique_id: mbr_precool_active
-      state: >
+---
+binary_sensor:
+  - name: "MBR Pre-Cooling Active"
+    unique_id: mbr_precool_active
+    state: >
+      {% set bedtime = today_at('22:30:00') %}
+      {% set rate = states('input_number.observed_cooling_rate') | float(20) %}
+      {% set target = states('input_number.bedroom_target_temperature') | float(64) %}
+      {% set actual = states('sensor.bedroom_sensor_air_temperature') | float(67.3) %}
+      {% set outdoor = states('sensor.weather_station_temperature_outdoor') | float(50) %}
+      {% set delta = actual - target %}
+      {% set heat_factor = 1.0 + ([0, outdoor - 75]|max * 0.02) %}
+      {% set lead_min = (delta * rate * heat_factor) | round(0) %}
+      {% set start_ts = as_timestamp(bedtime) - (lead_min * 60) %}
+      
+      {% set is_sleep_window = (now().hour == 22 and now().minute >= 30) or (now().hour > 22) or (now().hour < 7) %}
+      {% set is_precool_window = as_timestamp(now()) >= start_ts and as_timestamp(now()) < as_timestamp(bedtime) %}
+      
+      {{ is_precool_window and not is_sleep_window and actual > target }}
+    attributes:
+      precool_start_time: >
         {% set bedtime = today_at('22:30:00') %}
         {% set rate = states('input_number.observed_cooling_rate') | float(20) %}
         {% set target = states('input_number.bedroom_target_temperature') | float(64) %}
@@ -10,22 +27,6 @@
         {% set delta = actual - target %}
         {% set heat_factor = 1.0 + ([0, outdoor - 75]|max * 0.02) %}
         {% set lead_min = (delta * rate * heat_factor) | round(0) %}
-        {% set start_ts = as_timestamp(bedtime) - (lead_min * 60) %}
-        
-        {% set is_sleep_window = (now().hour == 22 and now().minute >= 30) or (now().hour > 22) or (now().hour < 7) %}
-        {% set is_precool_window = as_timestamp(now()) >= start_ts and as_timestamp(now()) < as_timestamp(bedtime) %}
-        
-        {{ is_precool_window and not is_sleep_window and actual > target }}
-      attributes:
-        precool_start_time: >
-          {% set bedtime = today_at('22:30:00') %}
-          {% set rate = states('input_number.observed_cooling_rate') | float(20) %}
-          {% set target = states('input_number.bedroom_target_temperature') | float(64) %}
-          {% set actual = states('sensor.bedroom_sensor_air_temperature') | float(67.3) %}
-          {% set outdoor = states('sensor.weather_station_temperature_outdoor') | float(50) %}
-          {% set delta = actual - target %}
-          {% set heat_factor = 1.0 + ([0, outdoor - 75]|max * 0.02) %}
-          {% set lead_min = (delta * rate * heat_factor) | round(0) %}
-          {{ (as_timestamp(bedtime) - (lead_min * 60)) | timestamp_custom('%H:%M:%S') }}
-        target_temp: "{{ states('input_number.bedroom_target_temperature') }}"
-        current_temp: "{{ states('sensor.bedroom_sensor_air_temperature') }}"
+        {{ (as_timestamp(bedtime) - (lead_min * 60)) | timestamp_custom('%H:%M:%S') }}
+      target_temp: "{{ states('input_number.bedroom_target_temperature') }}"
+      current_temp: "{{ states('sensor.bedroom_sensor_air_temperature') }}"

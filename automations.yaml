@@ -3540,48 +3540,38 @@
       message: Climate data sync to BigQuery triggered.
       title: Data Pipeline
 - id: '1775070658742'
-  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v3.9)'
-  description: 'Fixed Timezone-aware start times using today_at to prevent date-flip
-    errors. v3.9: Removed is_sleep_window restriction from target-reset to allow
-    proper hand-off to sleep mode.'
+  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v4.1)'
+  description: 'Refactored to use binary_sensor.mbr_pre_cooling_active for logic decoupling.
+    v4.1: Added aliases to choose blocks and fixed sensor name.'
   triggers:
   - trigger: state
     entity_id:
+    - binary_sensor.mbr_pre_cooling_active
     - sensor.bedroom_sensor_air_temperature
-    - input_number.bedroom_target_temperature
-  - trigger: time_pattern
-    minutes: /1
   - trigger: time
     at: 07:00:00
     id: wake_up
+  - trigger: time
+    at: '22:30:00'
+    id: bedtime
   actions:
   - variables:
-      bedtime: '22:30:00'
-      rate: '{{ states(''input_number.observed_cooling_rate'') | float(20) }}'
-      target: '{{ states(''input_number.bedroom_target_temperature'') | float(64)
-        }}'
-      actual: '{{ states(''sensor.bedroom_sensor_air_temperature'') | float(67.3)
-        }}'
-      outdoor: '{{ states(''sensor.weather_station_temperature_outdoor'') | float(50)
-        }}'
-      delta: '{{ actual - target }}'
-      heat_factor: '{{ 1.0 + ([0, outdoor - 75]|max * 0.02) }}'
-      lead_min: '{{ (delta * rate * heat_factor) | round(0) }}'
-      start_ts: '{{ as_timestamp(today_at(bedtime)) - (lead_min * 60) }}'
-      is_sleep_window: '{{ (now().hour == 22 and now().minute >= 30) or (now().hour
-        > 22) or (now().hour < 7) }}'
-      is_precool_window: '{{ as_timestamp(now()) >= start_ts and as_timestamp(now())
-        < as_timestamp(today_at(bedtime)) }}'
-      t6_target: '{{ state_attr(''climate.t6_pro_downstairs'', ''temperature'') |
-        float(68) }}'
+      target: "{{ states('input_number.bedroom_target_temperature') | float(64) }}"
+      actual: "{{ states('sensor.bedroom_sensor_air_temperature') | float(67.3) }}"
+      is_sleep_window: >
+        {{ (now().hour == 22 and now().minute >= 30) or (now().hour > 22) or (now().hour < 7) }}
+      t6_target: "{{ state_attr('climate.t6_pro_downstairs', 'temperature') | float(68) }}"
+      is_precooling: "{{ is_state('binary_sensor.mbr_pre_cooling_active', 'on') }}"
   - choose:
-    - conditions:
+    - alias: "Override: Eco Mode Active"
+      conditions:
       - condition: state
         entity_id: input_boolean.eco_mode
         state: 'on'
       sequence:
       - stop: Eco Mode Active
-    - conditions:
+    - alias: "Phase 1: Wake Up (Reset to Neutral)"
+      conditions:
       - condition: trigger
         id: wake_up
       sequence:
@@ -3590,24 +3580,25 @@
           entity_id: climate.t6_pro_downstairs
         data:
           temperature: 68
-    - conditions:
+    - alias: "Phase 2: Pre-Cooling (Active HVAC Drive)"
+      conditions:
       - condition: template
-        value_template: '{{ is_precool_window and not is_sleep_window }}'
+        value_template: "{{ is_precooling and not is_sleep_window }}"
       sequence:
       - if:
         - condition: template
-          value_template: '{{ t6_target != 60 }}'
+          value_template: "{{ t6_target != 60 }}"
         then:
         - action: input_datetime.set_datetime
           target:
             entity_id: input_datetime.precool_start_time
           data:
-            datetime: '{{ now() }}'
+            datetime: "{{ now() }}"
         - action: input_number.set_value
           target:
             entity_id: input_number.precool_start_temp
           data:
-            value: '{{ actual }}'
+            value: "{{ actual }}"
         - action: climate.set_temperature
           target:
             entity_id: climate.t6_pro_downstairs
@@ -3615,58 +3606,53 @@
             temperature: 60
         - action: notify.mobile_app_josh_mobile
           data:
-            title: 'Climate: Pre-Cool Started'
-            message: 'Room is {{ actual }}F. Starting push to {{ target }}F (Lead:
-              {{ lead_min }} min).'
-    - conditions:
+            title: "Climate: Pre-Cool Started"
+            message: "Room is {{ actual }}F. Starting push to {{ target }}F (Start: {{ state_attr('binary_sensor.mbr_pre_cooling_active', 'precool_start_time') }})."
+    - alias: "Phase 3: Target Reached (Handoff & Learning)"
+      conditions:
       - condition: template
-        value_template: '{{ is_sleep_window or t6_target == 60 }}'
+        value_template: "{{ t6_target == 60 and actual <= target }}"
       sequence:
-      - choose:
-        - conditions:
-          - condition: template
-            value_template: '{{ actual <= target and t6_target == 60 }}'
-          sequence:
-          - variables:
-              start_val: '{{ states(''input_datetime.precool_start_time'') }}'
-              duration: '{{ (as_timestamp(now()) - as_timestamp(start_val)) / 60 }}'
-              drop: '{{ states(''input_number.precool_start_temp'')|float - actual
-                }}'
-              valid_data: '{{ duration < 300 and drop > 0.5 }}'
-              obs_rate: '{{ (duration / drop) if valid_data else rate }}'
-              new_rate: '{{ (rate * 0.7) + (obs_rate * 0.3) }}'
-          - if:
-            - condition: template
-              value_template: '{{ valid_data }}'
-            then:
-            - action: input_number.set_value
-              target:
-                entity_id: input_number.observed_cooling_rate
-              data:
-                value: '{{ new_rate | round(2) | clamp(10, 45) }}'
-          - action: climate.set_temperature
-            target:
-              entity_id: climate.t6_pro_downstairs
-            data:
-              temperature: '{{ target }}'
-        - conditions:
-          - condition: template
-            value_template: '{{ is_sleep_window and actual > (target + 0.5) and t6_target
-              != 60 }}'
-          sequence:
-          - action: climate.set_temperature
-            target:
-              entity_id: climate.t6_pro_downstairs
-            data:
-              temperature: 60
-        - conditions:
-          - condition: template
-            value_template: '{{ is_sleep_window and actual < (target - 0.5) and t6_target
-              != 72 }}'
-          sequence:
-          - action: climate.set_temperature
-            target:
-              entity_id: climate.t6_pro_downstairs
-            data:
-              temperature: 72
+      - variables:
+          rate: "{{ states('input_number.observed_cooling_rate') | float(20) }}"
+          start_val: "{{ states('input_datetime.precool_start_time') }}"
+          duration: "{{ (as_timestamp(now()) - as_timestamp(start_val)) / 60 }}"
+          drop: "{{ states('input_number.precool_start_temp')|float - actual }}"
+          valid_data: "{{ duration < 300 and drop > 0.5 }}"
+          obs_rate: "{{ (duration / drop) if valid_data else rate }}"
+          new_rate: "{{ (rate * 0.7) + (obs_rate * 0.3) }}"
+      - if:
+        - condition: template
+          value_template: "{{ valid_data }}"
+        then:
+        - action: input_number.set_value
+          target:
+            entity_id: input_number.observed_cooling_rate
+          data:
+            value: "{{ new_rate | round(2) | clamp(10, 44) }}"
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.t6_pro_downstairs
+        data:
+          temperature: "{{ target }}"
+    - alias: "Phase 4: Sleep Window (Keep Cool)"
+      conditions:
+      - condition: template
+        value_template: "{{ is_sleep_window and actual > (target + 0.5) and t6_target != 60 }}"
+      sequence:
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.t6_pro_downstairs
+        data:
+          temperature: 60
+    - alias: "Phase 5: Sleep Window (Prevent Over-Cooling)"
+      conditions:
+      - condition: template
+        value_template: "{{ is_sleep_window and actual < (target - 0.5) and t6_target != 72 }}"
+      sequence:
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.t6_pro_downstairs
+        data:
+          temperature: 72
   mode: restart
