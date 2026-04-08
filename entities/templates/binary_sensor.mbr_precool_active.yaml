@@ -3,7 +3,10 @@ binary_sensor:
   - name: "MBR Pre-Cooling Active"
     unique_id: mbr_precool_active
     state: >
-      {% set bedtime_str = states('input_datetime.bedroom_bedtime') | default('22:30:00') %}
+      {% set bedtime_str = states('input_datetime.bedroom_bedtime') %}
+      {% if bedtime_str in ['unknown', 'unavailable', 'None'] %}
+        {% set bedtime_str = '22:30:00' %}
+      {% endif %}
       {% set bedtime = today_at(bedtime_str) %}
       {% set target = states('input_number.bedroom_target_temperature') | float(68) %}
       {% set actual = states('sensor.bedroom_sensor_air_temperature') | float(target) %}
@@ -13,16 +16,19 @@ binary_sensor:
       {% set delta = actual - target %}
       {% set heat_factor = 1.0 + ([0, outdoor - 75]|max * 0.02) %}
       {% set lead_min = (delta * rate * heat_factor) | round(0) %}
-      {% set start_ts = as_timestamp(bedtime) - (lead_min * 60) %}
+      {% set start_ts = as_timestamp(bedtime, 0) - (lead_min * 60) %}
       
       {% set is_sleep_window = now() >= bedtime or now().hour < 7 %}
-      {% set is_precool_window = as_timestamp(now()) >= start_ts and now() < bedtime %}
+      {% set is_precool_window = as_timestamp(now(), 0) >= start_ts and now() < bedtime %}
       {% set is_cooling_mode = is_state('climate.t6_pro_downstairs', 'cool') %}
       
       {{ is_precool_window and not is_sleep_window and actual > target and is_cooling_mode }}
     attributes:
       precool_start_time: >
-        {% set bedtime_str = states('input_datetime.bedroom_bedtime') | default('22:30:00') %}
+        {% set bedtime_str = states('input_datetime.bedroom_bedtime') %}
+        {% if bedtime_str in ['unknown', 'unavailable', 'None'] %}
+          {% set bedtime_str = '22:30:00' %}
+        {% endif %}
         {% set bedtime = today_at(bedtime_str) %}
         {% set target = states('input_number.bedroom_target_temperature') | float(68) %}
         {% set actual = states('sensor.bedroom_sensor_air_temperature') | float(target) %}
@@ -31,7 +37,7 @@ binary_sensor:
         {% set delta = actual - target %}
         {% set heat_factor = 1.0 + ([0, outdoor - 75]|max * 0.02) %}
         {% set lead_min = (delta * rate * heat_factor) | round(0) %}
-        {{ (as_timestamp(bedtime) - (lead_min * 60)) | timestamp_custom('%H:%M:%S') }}
+        {{ (as_timestamp(bedtime, 0) - (lead_min * 60)) | timestamp_custom('%H:%M:%S') }}
       target_temp: "{{ states('input_number.bedroom_target_temperature') }}"
       current_temp: "{{ states('sensor.bedroom_sensor_air_temperature') }}"
       hvac_mode: "{{ states('climate.t6_pro_downstairs') }}"

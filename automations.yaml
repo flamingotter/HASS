@@ -3540,8 +3540,8 @@
       message: Climate data sync to BigQuery triggered.
       title: Data Pipeline
 - id: '1775070658742'
-  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v4.5)'
-  description: 'v4.5: Decoupled logic with MBR Pre-Cooling sensor. Added Reboot & Eco-mode triggers, plus dynamic bedtime control via UI.'
+  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v4.6)'
+  description: 'v4.6: Robust datetime handling to prevent TypeError when sensor states are unknown.'
   triggers:
   - trigger: state
     entity_id:
@@ -3566,7 +3566,9 @@
   - variables:
       target: "{{ states('input_number.bedroom_target_temperature') | float(68) }}"
       actual: "{{ states('sensor.bedroom_sensor_air_temperature') | float(target) }}"
-      bedtime_str: "{{ states('input_datetime.bedroom_bedtime') | default('22:30:00') }}"
+      bedtime_str: >
+        {% set b = states('input_datetime.bedroom_bedtime') %}
+        {{ b if b not in ['unknown', 'unavailable', 'None'] else '22:30:00' }}
       bedtime_time: "{{ today_at(bedtime_str) }}"
       is_sleep_window: "{{ now() >= bedtime_time or now().hour < 7 }}"
       t6_target: "{{ state_attr('climate.t6_pro_downstairs', 'temperature') | float(68) }}"
@@ -3672,4 +3674,5 @@
           entity_id: climate.t6_pro_downstairs
         data:
           temperature: 72
+
   mode: restart
