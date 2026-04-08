@@ -3,11 +3,10 @@ binary_sensor:
   - name: "MBR Pre-Cooling Active"
     unique_id: mbr_precool_active
     state: >
-      {% set bedtime_str = states('input_datetime.bedroom_bedtime') %}
-      {% if bedtime_str in ['unknown', 'unavailable', 'None'] %}
-        {% set bedtime_str = '22:30:00' %}
-      {% endif %}
+      {% set b = states('input_datetime.bedroom_bedtime') %}
+      {% set bedtime_str = b if b not in ['unknown', 'unavailable', 'None'] else '22:30:00' %}
       {% set bedtime = today_at(bedtime_str) %}
+      
       {% set target = states('input_number.bedroom_target_temperature') | float(68) %}
       {% set actual = states('sensor.bedroom_sensor_air_temperature') | float(target) %}
       {% set outdoor = states('sensor.weather_station_temperature_outdoor') | float(70) %}
@@ -25,10 +24,8 @@ binary_sensor:
       {{ is_precool_window and not is_sleep_window and actual > target and is_cooling_mode }}
     attributes:
       precool_start_time: >
-        {% set bedtime_str = states('input_datetime.bedroom_bedtime') %}
-        {% if bedtime_str in ['unknown', 'unavailable', 'None'] %}
-          {% set bedtime_str = '22:30:00' %}
-        {% endif %}
+        {% set b = states('input_datetime.bedroom_bedtime') %}
+        {% set bedtime_str = b if b not in ['unknown', 'unavailable', 'None'] else '22:30:00' %}
         {% set bedtime = today_at(bedtime_str) %}
         {% set target = states('input_number.bedroom_target_temperature') | float(68) %}
         {% set actual = states('sensor.bedroom_sensor_air_temperature') | float(target) %}

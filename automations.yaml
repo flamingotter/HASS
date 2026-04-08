@@ -3540,8 +3540,8 @@
       message: Climate data sync to BigQuery triggered.
       title: Data Pipeline
 - id: '1775070658742'
-  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v4.6)'
-  description: 'v4.6: Robust datetime handling to prevent TypeError when sensor states are unknown.'
+  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v4.7)'
+  description: 'v4.7: Consistently handle datetime objects in a single block to prevent TypeError comparisons with strings.'
   triggers:
   - trigger: state
     entity_id:
@@ -3566,11 +3566,10 @@
   - variables:
       target: "{{ states('input_number.bedroom_target_temperature') | float(68) }}"
       actual: "{{ states('sensor.bedroom_sensor_air_temperature') | float(target) }}"
-      bedtime_str: >
+      is_sleep_window: >
         {% set b = states('input_datetime.bedroom_bedtime') %}
-        {{ b if b not in ['unknown', 'unavailable', 'None'] else '22:30:00' }}
-      bedtime_time: "{{ today_at(bedtime_str) }}"
-      is_sleep_window: "{{ now() >= bedtime_time or now().hour < 7 }}"
+        {% set bedtime_str = b if b not in ['unknown', 'unavailable', 'None'] else '22:30:00' %}
+        {{ now() >= today_at(bedtime_str) or now().hour < 7 }}
       t6_target: "{{ state_attr('climate.t6_pro_downstairs', 'temperature') | float(68) }}"
       is_precooling: "{{ is_state('binary_sensor.mbr_pre_cooling_active', 'on') }}"
   - choose:
@@ -3674,5 +3673,5 @@
           entity_id: climate.t6_pro_downstairs
         data:
           temperature: 72
-
   mode: restart
+
