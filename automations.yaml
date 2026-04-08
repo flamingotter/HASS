@@ -3540,26 +3540,35 @@
       message: Climate data sync to BigQuery triggered.
       title: Data Pipeline
 - id: '1775070658742'
-  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v4.1)'
-  description: 'Refactored to use binary_sensor.mbr_pre_cooling_active for logic decoupling.
-    v4.1: Added aliases to choose blocks and fixed sensor name.'
+  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v4.5)'
+  description: 'v4.5: Decoupled logic with MBR Pre-Cooling sensor. Added Reboot & Eco-mode triggers, plus dynamic bedtime control via UI.'
   triggers:
   - trigger: state
     entity_id:
     - binary_sensor.mbr_pre_cooling_active
     - sensor.bedroom_sensor_air_temperature
+    - climate.t6_pro_downstairs
+    - input_boolean.eco_mode
   - trigger: time
     at: 07:00:00
     id: wake_up
   - trigger: time
-    at: '22:30:00'
+    at: input_datetime.bedroom_bedtime
     id: bedtime
+  - trigger: homeassistant
+    event: start
+    id: boot
+  conditions:
+  - condition: state
+    entity_id: climate.t6_pro_downstairs
+    state: cool
   actions:
   - variables:
-      target: "{{ states('input_number.bedroom_target_temperature') | float(64) }}"
-      actual: "{{ states('sensor.bedroom_sensor_air_temperature') | float(67.3) }}"
-      is_sleep_window: >
-        {{ (now().hour == 22 and now().minute >= 30) or (now().hour > 22) or (now().hour < 7) }}
+      target: "{{ states('input_number.bedroom_target_temperature') | float(68) }}"
+      actual: "{{ states('sensor.bedroom_sensor_air_temperature') | float(target) }}"
+      bedtime_str: "{{ states('input_datetime.bedroom_bedtime') | default('22:30:00') }}"
+      bedtime_time: "{{ today_at(bedtime_str) }}"
+      is_sleep_window: "{{ now() >= bedtime_time or now().hour < 7 }}"
       t6_target: "{{ state_attr('climate.t6_pro_downstairs', 'temperature') | float(68) }}"
       is_precooling: "{{ is_state('binary_sensor.mbr_pre_cooling_active', 'on') }}"
   - choose:
@@ -3608,28 +3617,36 @@
           data:
             title: "Climate: Pre-Cool Started"
             message: "Room is {{ actual }}F. Starting push to {{ target }}F (Start: {{ state_attr('binary_sensor.mbr_pre_cooling_active', 'precool_start_time') }})."
-    - alias: "Phase 3: Target Reached (Handoff & Learning)"
+    - alias: "Phase 3: Pre-Cooling Complete (Handoff & Learning)"
       conditions:
-      - condition: template
-        value_template: "{{ t6_target == 60 and actual <= target }}"
+      - or:
+        - condition: template
+          value_template: "{{ t6_target == 60 and actual <= target }}"
+        - condition: trigger
+          id: bedtime
       sequence:
-      - variables:
-          rate: "{{ states('input_number.observed_cooling_rate') | float(20) }}"
-          start_val: "{{ states('input_datetime.precool_start_time') }}"
-          duration: "{{ (as_timestamp(now()) - as_timestamp(start_val)) / 60 }}"
-          drop: "{{ states('input_number.precool_start_temp')|float - actual }}"
-          valid_data: "{{ duration < 300 and drop > 0.5 }}"
-          obs_rate: "{{ (duration / drop) if valid_data else rate }}"
-          new_rate: "{{ (rate * 0.7) + (obs_rate * 0.3) }}"
       - if:
         - condition: template
-          value_template: "{{ valid_data }}"
+          alias: "Update Learning Rate if Target Met"
+          value_template: "{{ t6_target == 60 and actual <= target }}"
         then:
-        - action: input_number.set_value
-          target:
-            entity_id: input_number.observed_cooling_rate
-          data:
-            value: "{{ new_rate | round(2) | clamp(10, 44) }}"
+        - variables:
+            rate: "{{ states('input_number.observed_cooling_rate') | float(20) }}"
+            start_val: "{{ states('input_datetime.precool_start_time') }}"
+            duration: "{{ (as_timestamp(now(), 0) - as_timestamp(start_val, 0)) / 60 }}"
+            drop: "{{ states('input_number.precool_start_temp')|float(actual) - actual }}"
+            valid_data: "{{ duration > 0 and duration < 300 and drop > 0.5 }}"
+            obs_rate: "{{ (duration / drop) if valid_data else rate }}"
+            new_rate: "{{ (rate * 0.7) + (obs_rate * 0.3) }}"
+        - if:
+          - condition: template
+            value_template: "{{ valid_data }}"
+          then:
+          - action: input_number.set_value
+            target:
+              entity_id: input_number.observed_cooling_rate
+            data:
+              value: "{{ new_rate | round(2) | clamp(10, 44) }}"
       - action: climate.set_temperature
         target:
           entity_id: climate.t6_pro_downstairs
