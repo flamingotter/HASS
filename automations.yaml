@@ -1437,18 +1437,21 @@
         id: feed_time
       sequence:
       - action: scene.create
+        continue_on_error: true
         metadata: {}
         data:
           scene_id: last_alexa_volume
           snapshot_entities:
           - media_player.counter
       - action: media_player.volume_set
+        continue_on_error: true
         metadata: {}
         target:
           entity_id: media_player.counter
         data:
           volume_level: 0.5
       - action: media_player.play_media
+        continue_on_error: true
         metadata: {}
         target:
           entity_id: media_player.counter
@@ -1475,6 +1478,7 @@
           seconds: 2
           milliseconds: 0
       - action: notify.alexa_media
+        continue_on_error: true
         metadata: {}
         data:
           message: '{{ (gen_text | default({})).data | default(''It is time to feed
@@ -1493,6 +1497,7 @@
             - action: feed_passon
               title: Ask Other
       - action: scene.turn_on
+        continue_on_error: true
         metadata: {}
         target:
           entity_id: scene.last_alexa_volume
@@ -3294,6 +3299,7 @@
       trigger: state
       to:
       - 'off'
+    timeout: 01:00:00
   - target:
       entity_id: switch.front_yard_lights
     action: switch.turn_off
@@ -3325,6 +3331,7 @@
       for:
         minutes: 2
       trigger: state
+    timeout: 01:00:00
   - target:
       entity_id: switch.backyard_lights
     action: switch.turn_off
@@ -3352,6 +3359,7 @@
       for:
         minutes: 2
       trigger: state
+    timeout: 01:00:00
   - target:
       entity_id: switch.garage_spot_light
     action: switch.turn_off
