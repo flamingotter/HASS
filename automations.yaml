@@ -1197,6 +1197,7 @@
         state: 'off'
       sequence:
       - action: ai_task.generate_data
+        continue_on_error: true
         data:
           instructions: 'The HVAC filter needs replacing to maintain air quality and
             system efficiency. Write a short, creative reminder for Josh. Make it
@@ -1208,7 +1209,7 @@
       - action: notify.mobile_app_josh_mobile
         data:
           title: 'Maintenance Alert: HVAC'
-          message: '{{ hvac_nag[''data''] }}'
+          message: '{{ (hvac_nag | default({})).data | default(''The HVAC filter needs replacing to maintain air quality and system efficiency.'') }}'
           data:
             tag: hvac-reminder
             actions:
@@ -1363,11 +1364,12 @@
             "The trash isn''t going to take itself out."'
         response_variable: generated_content
         action: ai_task.generate_data
+        continue_on_error: true
       - delay:
           seconds: 2
       - data:
           title: Trash and Recycling
-          message: '{{ generated_content[''data''] }}'
+          message: '{{ (generated_content | default({})).data | default(''The trash isn''''t going to take itself out.'') }}'
           data:
             tag: trash-notify
             actions:
@@ -1457,7 +1459,9 @@
           minutes: 0
           seconds: 2
           milliseconds: 0
+        enabled: false
       - action: ai_task.generate_data
+        continue_on_error: true
         data:
           task_name: Feed Cats
           instructions: 'Demanding but short: It is time to feed the cats. Max 25
@@ -1471,12 +1475,14 @@
       - action: notify.alexa_media
         metadata: {}
         data:
-          message: '{{ gen_text[''data''] }}'
+          message: '{{ (gen_text | default({})).data | default(''It is time to feed
+            the cats.'') }}'
           target: media_player.counter
       - action: notify.all_devices
         data:
           title: Feeding Mission
-          message: '{{ gen_text[''data''] }}'
+          message: '{{ (gen_text | default({})).data | default(''It is time to feed
+            the cats.'') }}'
           data:
             tag: pets-notify
             actions:
@@ -1528,6 +1534,7 @@
           }}'
       sequence:
       - action: ai_task.generate_data
+        continue_on_error: true
         data:
           task_name: Feed Cats Nag
           instructions: 'The user swiped away the cat feeding notification without  completing
@@ -1538,7 +1545,7 @@
       - action: notify.mobile_app_josh_mobile
         data:
           title: Feeding Required
-          message: '{{ nag_text[''data''] }}'
+          message: '{{ (nag_text | default({})).data | default(''The cats are still hungry! Please feed them.'') }}'
           data:
             tag: pets-notify
             sticky: true
@@ -1712,6 +1719,7 @@
         target:
           entity_id: scene.cleaning_before
       - action: ai_task.generate_data
+        continue_on_error: true
         data:
           instructions: 'The user just finished cleaning. Write a high-energy,  hilarious,
             and extremely enthusiastic congratulatory message.  Use some ''Army-style''
@@ -1721,13 +1729,14 @@
         response_variable: clean_complete_ai
       - action: notify.alexa_media
         data:
-          message: '{{ clean_complete_ai[''data''] }}'
+          message: '{{ (clean_complete_ai | default({})).data | default(''Cleaning mission complete! Outstanding work!'') }}'
           target: '{{ states.sensor.last_alexa.state }}'
     - conditions:
       - condition: trigger
         id: remind
       sequence:
       - action: ai_task.generate_data
+        continue_on_error: true
         data:
           instructions: 'The house is still in ''Cleaning Mode''. Write a short,  slightly
             annoying but helpful reminder asking if they are done.  Limit to 20 words.
@@ -1737,7 +1746,7 @@
       - action: notify.all_devices
         data:
           title: Cleaning Mode
-          message: '{{ cleaning_nag[''data''] }}'
+          message: '{{ (cleaning_nag | default({})).data | default(''The house is still in Cleaning Mode. Are you done?'') }}'
           data:
             tag: cleaning-warning
             actions:
@@ -2163,6 +2172,7 @@
         state: 'off'
       sequence:
       - action: ai_task.generate_data
+        continue_on_error: true
         data:
           instructions: 'The monthly generator test is due. Write a short, authoritative
             "Mission Readiness" style reminder for Josh. Focus on ensuring  backup
@@ -2173,7 +2183,7 @@
       - action: notify.mobile_app_josh_mobile
         data:
           title: 'Readiness Alert: Generator'
-          message: '{{ gen_nag[''data''] }}'
+          message: '{{ (gen_nag | default({})).data | default(''The monthly generator test is due. Ensure backup power is mission-capable.'') }}'
           data:
             tag: gen-reminder
             actions:
@@ -2863,6 +2873,7 @@
         state: 'off'
       sequence:
       - action: ai_task.generate_data
+        continue_on_error: true
         data:
           instructions: 'The water filter needs replacing. Write a short, creative
             reminder for Josh to swap it out. Make it sound like a high-end estate
@@ -2873,7 +2884,7 @@
       - action: notify.mobile_app_josh_mobile
         data:
           title: 'Maintenance Alert: Water'
-          message: '{{ water_nag[''data''] }}'
+          message: '{{ (water_nag | default({})).data | default(''The water filter needs replacing. Please swap it out when possible.'') }}'
           data:
             tag: water-reminder
             actions:
@@ -3402,34 +3413,35 @@
       - media_content_id: media-source://media_source/local/snapshots/porch/dropoff.mp4
         media_content_type: video/mp4
     response_variable: gemini_report
+    action: ai_task.generate_data
+    continue_on_error: true
   - action: notify.send_message
     target:
       entity_id: notify.daily_camera_log
     data:
-      message: '{{ now().strftime(''%I:%M %p'') }} - Front Porch: {{ gemini_report.data
-        }}'
+      message: '{{ now().strftime(''%I:%M %p'') }} - Front Porch: {{ (gemini_report | default({})).data | default(''[ALERT] Video analysis failed.'') }}'
   - action: notify.send_message
     target:
       entity_id:
       - notify.porch_history
     data:
       message: '"{{ now().strftime(''%Y-%m-%d'') }}","{{ now().strftime(''%H:%M:%S'')
-        }}","{{ gemini_report.data.split('']'')[0] ~ '']'' }}","{{ gemini_report.data
+        }}","{{ ((gemini_report | default({})).data | default(''[ALERT]'')).split('']'')[0] ~ '']'' }}","{{ ((gemini_report | default({})).data | default(''Video analysis failed.''))
         | replace(''"'', ''""'') }}"
 
         '
   - if:
     - condition: template
-      value_template: '{{ ''[ALERT]'' in gemini_report.data }}'
+      value_template: '{{ ''[ALERT]'' in (gemini_report | default({})).data | default(''[ALERT]'') }}'
     then:
     - action: notify.persistent_notification
       data:
         title: Porch Intel (Full Report)
-        message: '{{ gemini_report.data | replace(''[ALERT] '', '''') }}'
+        message: '{{ ((gemini_report | default({})).data | default('''')) | replace(''[ALERT] '', '''') }}'
     - action: notify.mobile_app_josh_mobile
       data:
         title: Porch Intel
-        message: '{{ gemini_report.data | replace(''[ALERT] '', '''') | truncate(150,
+        message: '{{ ((gemini_report | default({})).data | default(''Video analysis failed.'')) | replace(''[ALERT] '', '''') | truncate(150,
           true, ''...'') }}'
     - if:
       - condition: state
@@ -3450,6 +3462,7 @@
     trigger: time
   actions:
   - action: ai_task.generate_data
+    continue_on_error: true
     data:
       entity_id: ai_task.google_ai_task
       task_name: Daily Security Briefing
@@ -3470,7 +3483,7 @@
       title: Security Briefing - {{ now().strftime('%b %d, %Y') }}
       message: Please view this email in an HTML-compatible client.
       data:
-        html: '{{ evening_rollup.data }}'
+        html: '{{ (evening_rollup | default({})).data | default(''<h3>The daily security briefing could not be generated at this time.</h3>'') }}'
 - id: '1772743146418'
   alias: System - Cameras - Clear Daily Log
   description: ''
@@ -3541,7 +3554,8 @@
       title: Data Pipeline
 - id: '1775070658742'
   alias: 'Climate: Master Bedroom Sleep Comfort Engine (v4.7)'
-  description: 'v4.7: Consistently handle datetime objects in a single block to prevent TypeError comparisons with strings.'
+  description: 'v4.7: Consistently handle datetime objects in a single block to prevent
+    TypeError comparisons with strings.'
   triggers:
   - trigger: state
     entity_id:
@@ -3564,23 +3578,28 @@
     state: cool
   actions:
   - variables:
-      target: "{{ states('input_number.bedroom_target_temperature') | float(68) }}"
-      actual: "{{ states('sensor.bedroom_sensor_air_temperature') | float(target) }}"
-      is_sleep_window: >
-        {% set b = states('input_datetime.bedroom_bedtime') %}
-        {% set bedtime_str = b if b not in ['unknown', 'unavailable', 'None'] else '22:30:00' %}
-        {{ now() >= today_at(bedtime_str) or now().hour < 7 }}
-      t6_target: "{{ state_attr('climate.t6_pro_downstairs', 'temperature') | float(68) }}"
-      is_precooling: "{{ is_state('binary_sensor.mbr_pre_cooling_active', 'on') }}"
+      target: '{{ states(''input_number.bedroom_target_temperature'') | float(68)
+        }}'
+      actual: '{{ states(''sensor.bedroom_sensor_air_temperature'') | float(target)
+        }}'
+      is_sleep_window: '{% set b = states(''input_datetime.bedroom_bedtime'') %} {%
+        set bedtime_str = b if b not in [''unknown'', ''unavailable'', ''None''] else
+        ''22:30:00'' %} {{ now() >= today_at(bedtime_str) or now().hour < 7 }}
+
+        '
+      t6_target: '{{ state_attr(''climate.t6_pro_downstairs'', ''temperature'') |
+        float(68) }}'
+      is_precooling: '{{ is_state(''binary_sensor.mbr_pre_cooling_active'', ''on'')
+        }}'
   - choose:
-    - alias: "Override: Eco Mode Active"
+    - alias: 'Override: Eco Mode Active'
       conditions:
       - condition: state
         entity_id: input_boolean.eco_mode
         state: 'on'
       sequence:
       - stop: Eco Mode Active
-    - alias: "Phase 1: Wake Up (Reset to Neutral)"
+    - alias: 'Phase 1: Wake Up (Reset to Neutral)'
       conditions:
       - condition: trigger
         id: wake_up
@@ -3590,25 +3609,25 @@
           entity_id: climate.t6_pro_downstairs
         data:
           temperature: 68
-    - alias: "Phase 2: Pre-Cooling (Active HVAC Drive)"
+    - alias: 'Phase 2: Pre-Cooling (Active HVAC Drive)'
       conditions:
       - condition: template
-        value_template: "{{ is_precooling and not is_sleep_window }}"
+        value_template: '{{ is_precooling and not is_sleep_window }}'
       sequence:
       - if:
         - condition: template
-          value_template: "{{ t6_target != 60 }}"
+          value_template: '{{ t6_target != 60 }}'
         then:
         - action: input_datetime.set_datetime
           target:
             entity_id: input_datetime.precool_start_time
           data:
-            datetime: "{{ now() }}"
+            datetime: '{{ now() }}'
         - action: input_number.set_value
           target:
             entity_id: input_number.precool_start_temp
           data:
-            value: "{{ actual }}"
+            value: '{{ actual }}'
         - action: climate.set_temperature
           target:
             entity_id: climate.t6_pro_downstairs
@@ -3616,57 +3635,63 @@
             temperature: 60
         - action: notify.mobile_app_josh_mobile
           data:
-            title: "Climate: Pre-Cool Started"
-            message: "Room is {{ actual }}F. Starting push to {{ target }}F (Start: {{ state_attr('binary_sensor.mbr_pre_cooling_active', 'precool_start_time') }})."
-    - alias: "Phase 3: Pre-Cooling Complete (Handoff & Learning)"
+            title: 'Climate: Pre-Cool Started'
+            message: 'Room is {{ actual }}F. Starting push to {{ target }}F (Start:
+              {{ state_attr(''binary_sensor.mbr_pre_cooling_active'', ''precool_start_time'')
+              }}).'
+    - alias: 'Phase 3: Pre-Cooling Complete (Handoff & Learning)'
       conditions:
       - or:
         - condition: template
-          value_template: "{{ t6_target == 60 and actual <= target }}"
+          value_template: '{{ t6_target == 60 and actual <= target }}'
         - condition: trigger
           id: bedtime
       sequence:
       - if:
         - condition: template
-          alias: "Update Learning Rate if Target Met"
-          value_template: "{{ t6_target == 60 and actual <= target }}"
+          alias: Update Learning Rate if Target Met
+          value_template: '{{ t6_target == 60 and actual <= target }}'
         then:
         - variables:
-            rate: "{{ states('input_number.observed_cooling_rate') | float(20) }}"
-            start_val: "{{ states('input_datetime.precool_start_time') }}"
-            duration: "{{ (as_timestamp(now(), 0) - as_timestamp(start_val, 0)) / 60 }}"
-            drop: "{{ states('input_number.precool_start_temp')|float(actual) - actual }}"
-            valid_data: "{{ duration > 0 and duration < 300 and drop > 0.5 }}"
-            obs_rate: "{{ (duration / drop) if valid_data else rate }}"
-            new_rate: "{{ (rate * 0.7) + (obs_rate * 0.3) }}"
+            rate: '{{ states(''input_number.observed_cooling_rate'') | float(20) }}'
+            start_val: '{{ states(''input_datetime.precool_start_time'') }}'
+            duration: '{{ (as_timestamp(now(), 0) - as_timestamp(start_val, 0)) /
+              60 }}'
+            drop: '{{ states(''input_number.precool_start_temp'')|float(actual) -
+              actual }}'
+            valid_data: '{{ duration > 0 and duration < 300 and drop > 0.5 }}'
+            obs_rate: '{{ (duration / drop) if valid_data else rate }}'
+            new_rate: '{{ (rate * 0.7) + (obs_rate * 0.3) }}'
         - if:
           - condition: template
-            value_template: "{{ valid_data }}"
+            value_template: '{{ valid_data }}'
           then:
           - action: input_number.set_value
             target:
               entity_id: input_number.observed_cooling_rate
             data:
-              value: "{{ new_rate | round(2) | clamp(10, 44) }}"
+              value: '{{ new_rate | round(2) | clamp(10, 44) }}'
       - action: climate.set_temperature
         target:
           entity_id: climate.t6_pro_downstairs
         data:
-          temperature: "{{ target }}"
-    - alias: "Phase 4: Sleep Window (Keep Cool)"
+          temperature: '{{ target }}'
+    - alias: 'Phase 4: Sleep Window (Keep Cool)'
       conditions:
       - condition: template
-        value_template: "{{ is_sleep_window and actual > (target + 0.5) and t6_target != 60 }}"
+        value_template: '{{ is_sleep_window and actual > (target + 0.5) and t6_target
+          != 60 }}'
       sequence:
       - action: climate.set_temperature
         target:
           entity_id: climate.t6_pro_downstairs
         data:
           temperature: 60
-    - alias: "Phase 5: Sleep Window (Prevent Over-Cooling)"
+    - alias: 'Phase 5: Sleep Window (Prevent Over-Cooling)'
       conditions:
       - condition: template
-        value_template: "{{ is_sleep_window and actual < (target - 0.5) and t6_target != 72 }}"
+        value_template: '{{ is_sleep_window and actual < (target - 0.5) and t6_target
+          != 72 }}'
       sequence:
       - action: climate.set_temperature
         target:
@@ -3674,4 +3699,3 @@
         data:
           temperature: 72
   mode: restart
-

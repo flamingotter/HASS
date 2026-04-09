@@ -105,6 +105,7 @@ genai_response_to_actionable_notification:
       MJ: notify.mobile_app_mj_pixel_8_pro
   sequence:
   - action: ai_task.generate_data
+    continue_on_error: true
     data:
       prompt: 'Rewrite this in a creative way prompting {{ msg_target }} to do the
         task, limit to about 35 words: The cats are not going away. They still need
@@ -119,7 +120,7 @@ genai_response_to_actionable_notification:
     data_template:
       notify_target: '{{ targets.get(msg_target, ''unknown'') }}'
       title: test message
-      message: '{{ generated_content[''text''] }}'
+      message: '{{ (generated_content | default({})).text | default(''The cats are not going away. They still need to be fed.'') }}'
       notify_tag: test_tag
       notify_action_1: done
       notify_action_1_title: Done
@@ -158,6 +159,7 @@ camera_parlor_snapshot_ai_notification:
       entity_id:
       - camera.dining_room_inside_medium_resolution_channel
   - action: ai_task.generate_data
+    continue_on_error: true
     data:
       prompt: Count how many unique people and or animals are present. If you see
         no obvious causes of motion, reply with "No Obvious Motion Detected." Your
@@ -169,14 +171,14 @@ camera_parlor_snapshot_ai_notification:
     response_variable: generated_content
   - if:
     - condition: template
-      value_template: '{{ ''No Obvious Motion Detected.'' in generated_content.text
-        }}'
+      value_template: '{{ ''No Obvious Motion Detected.'' in (generated_content | default({})).text
+        | default(''No Obvious Motion Detected.'') }}'
     then:
     - stop: ''
     else:
     - action: notify.mobile_app_josh_mobile
       data:
-        message: '{{generated_content[''text''] }}'
+        message: '{{ (generated_content | default({})).text | default(''Motion detected in parlor.'') }}'
         title: Parlor Motion Detected
         data:
           image: /local/tmp/snapshots/parlor/parlor_snapshot2.jpg
@@ -211,6 +213,7 @@ camera_kitchen_snapshot_ai_notification:
     target:
       entity_id: camera.kitchen_inside
   - action: ai_task.generate_data
+    continue_on_error: true
     data:
       prompt: Count how many unique people and or animals are present. If you see
         no obvious causes of motion, reply with "No Obvious Motion Detected." Your
@@ -222,14 +225,14 @@ camera_kitchen_snapshot_ai_notification:
     response_variable: generated_content
   - if:
     - condition: template
-      value_template: '{{ ''No Obvious Motion Detected.'' in generated_content.text
-        }}'
+      value_template: '{{ ''No Obvious Motion Detected.'' in (generated_content | default({})).text
+        | default(''No Obvious Motion Detected.'') }}'
     then:
     - stop: ''
     else:
     - action: notify.mobile_app_josh_mobile
       data:
-        message: '{{generated_content[''text''] }}'
+        message: '{{ (generated_content | default({})).text | default(''Motion detected in kitchen.'') }}'
         title: Kitchen Motion Detected
         data:
           image: /local/tmp/snapshots/kitchen/kitchen_snapshot2.jpg
@@ -255,6 +258,7 @@ locate_cats_snapshot_ai_notification_duplicate:
     target:
       entity_id: camera.garage_inside
   - action: ai_task.generate_data
+    continue_on_error: true
     data:
       prompt: Determine form the images where cats are visable, with a brief description
         of the location. Look specifically for orange cats and black cats. Use the
@@ -268,14 +272,14 @@ locate_cats_snapshot_ai_notification_duplicate:
     response_variable: generated_content
   - if:
     - condition: template
-      value_template: '{{ ''No Obvious Cats Detected.'' in generated_content.text
-        }}'
+      value_template: '{{ ''No Obvious Cats Detected.'' in (generated_content | default({})).text
+        | default(''No Obvious Cats Detected.'') }}'
     then:
     - stop: ''
     else:
     - action: notify.mobile_app_josh_mobile
       data:
-        message: '{{generated_content[''text''] }}'
+        message: '{{ (generated_content | default({})).text | default(''Cats detected in house.'') }}'
         title: Locating Cats
   description: ''
   icon: mdi:cctv
@@ -454,6 +458,7 @@ welcome_home_ai_debrief:
   mode: single
   sequence:
   - action: ai_task.generate_data
+    continue_on_error: true
     data:
       instructions: "{% set josh_home = states('input_select.josh_status') in ['Home',
         'Just Arrived'] %} {% set mj_home = states('input_select.mj_status') in ['Home',
@@ -489,7 +494,7 @@ welcome_home_ai_debrief:
       entity_id: media_player.counter
   - action: notify.alexa_media_counter
     data:
-      message: '{{ ai_greeting[''data''] }}'
+      message: '{{ (ai_greeting | default({})).data | default(''Welcome home! The house is secure and the cats are waiting for you.'') }}'
       target: media_player.counter
   - delay:
       hours: 0
