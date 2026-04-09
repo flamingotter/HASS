@@ -1114,17 +1114,9 @@
   - entity_id:
     - binary_sensor.motion_indoors_garage_motion_light
     trigger: state
-    to:
-    - 'on'
+    to: 'on'
     id: t01
     alias: t01 - Motion Detected
-  - alias: t02 - Light Changes to Off
-    trigger: state
-    entity_id:
-    - switch.garage_lights
-    to:
-    - 'off'
-    id: t02
   conditions: []
   actions:
   - choose:
@@ -1138,26 +1130,53 @@
           conditions:
           - condition: state
             entity_id: lock.garage_man_lock
-            state:
-            - locked
+            state: locked
           - condition: state
             entity_id: alarm_control_panel.home_alarm
-            state:
-            - disarmed
+            state: disarmed
+          - condition: state
+            entity_id: binary_sensor.garage_man_door
+            state: 'off'
         then:
         - action: lock.unlock
           target:
             entity_id: lock.garage_man_lock
         enabled: true
-    - conditions:
-      - condition: trigger
-        id:
-        - t02
-      sequence:
-      - action: lock.lock
-        target:
-          entity_id: lock.garage_man_lock
   mode: restart
+- id: '1772745600000'
+  alias: 'Garage: Man Door - Smart Auto-Lock'
+  description: Locks the garage man door after 5 minutes of no motion and door being closed.
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.motion_indoors_garage_motion_light
+    to: 'off'
+    for:
+      minutes: 5
+  - trigger: state
+    entity_id: binary_sensor.garage_man_door
+    to: 'off'
+    for:
+      minutes: 5
+  - trigger: state
+    entity_id: lock.garage_man_lock
+    to: unlocked
+    for:
+      minutes: 5
+  conditions:
+  - condition: state
+    entity_id: lock.garage_man_lock
+    state: unlocked
+  - condition: state
+    entity_id: binary_sensor.garage_man_door
+    state: 'off'
+  - condition: state
+    entity_id: binary_sensor.motion_indoors_garage_motion_light
+    state: 'off'
+  actions:
+  - action: lock.lock
+    target:
+      entity_id: lock.garage_man_lock
+  mode: single
 - id: '1724525664627'
   alias: 'Notify: HVAC Filter Maintenance'
   description: Manages HVAC filter lifecycle with AI reminders and Eco-Aware logic.
