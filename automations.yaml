@@ -1145,7 +1145,8 @@
   mode: restart
 - id: '1772745600000'
   alias: 'Garage: Man Door - Smart Auto-Lock'
-  description: Locks the garage man door after 5 minutes of no motion and door being closed.
+  description: Locks the garage man door after 5 minutes of no motion and door being
+    closed.
   triggers:
   - trigger: state
     entity_id: binary_sensor.motion_indoors_garage_motion_light
@@ -3250,14 +3251,18 @@
   - trigger: state
     entity_id:
     - binary_sensor.garage_man_door
+    - binary_sensor.front_door
     to: 'on'
     id: instant_announce
+    alias: When a Door changes to Open
   - trigger: state
     entity_id:
     - binary_sensor.garage_man_door
+    - binary_sensor.front_door
     to: 'on'
     for: 00:03:00
     id: long_open_alert
+    alias: When a Door is Open for >3 Minutes
   actions:
   - choose:
     - conditions:
