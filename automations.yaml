@@ -3247,6 +3247,14 @@
 - id: '1772286703556'
   alias: Door Security & Safety
   description: Instant entry announcements + 3-minute cat-safety alerts
+  variables:
+    door_map:
+      binary_sensor.front_door:
+        instant: 31
+        long: 28
+      binary_sensor.garage_man_door:
+        instant: 30
+        long: 29
   triggers:
   - trigger: state
     entity_id:
@@ -3269,10 +3277,11 @@
       - condition: trigger
         id: instant_announce
       sequence:
-      - action: notify.alexa_media
+      - action: siren.turn_on
+        target:
+          entity_id: siren.downstairs_siren_chime_play_tone
         data:
-          message: '{{ state_attr(trigger.entity_id, ''friendly_name'') }} opened'
-          target: media_player.counter
+          tone: '{{ door_map[trigger.entity_id].instant | default(1) }}'
       - wait_for_trigger:
         - trigger: template
           value_template: '{{ false }}'
@@ -3281,22 +3290,15 @@
       - condition: trigger
         id: long_open_alert
       sequence:
+      - action: siren.turn_on
+        target:
+          entity_id: siren.downstairs_siren_chime_play_tone
+        data:
+          tone: '{{ door_map[trigger.entity_id].long | default(1) }}'
       - action: notify.all_devices
         data:
           title: Door Open
           message: The {{ state_attr(trigger.entity_id, 'friendly_name') }} is Open!
-      - action: notify.alexa_media
-        data:
-          message: Attention! The {{ state_attr(trigger.entity_id, 'friendly_name')
-            }} has been open for three minutes!
-          data:
-            type: announce
-          target:
-          - media_player.counter
-          - media_player.living_room
-          - media_player.bedroom
-          - media_player.garage
-          - media_player.dining_room
   mode: parallel
   max: 10
 - id: '1772634026962'
