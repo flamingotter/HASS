@@ -131,6 +131,7 @@ camera_parlor_snapshot_ai_notification:
   alias: Camera - Parlor - Snapshot, AI & Notification
   sequence:
   - action: camera.snapshot
+    continue_on_error: true
     data:
       filename: ./www/tmp/snapshots/parlor/parlor_snapshot1.jpg
     target:
@@ -142,6 +143,7 @@ camera_parlor_snapshot_ai_notification:
       seconds: 0
       milliseconds: 500
   - action: camera.snapshot
+    continue_on_error: true
     data:
       filename: ./www/tmp/snapshots/parlor/parlor_snapshot1.jpg
     target:
@@ -153,6 +155,7 @@ camera_parlor_snapshot_ai_notification:
       seconds: 0
       milliseconds: 500
   - action: camera.snapshot
+    continue_on_error: true
     data:
       filename: ./www/tmp/snapshots/parlor/parlor_snapshot1.jpg
     target:
@@ -188,6 +191,7 @@ camera_kitchen_snapshot_ai_notification:
   alias: Camera - Kitchen - Snapshot, AI & Notification
   sequence:
   - action: camera.snapshot
+    continue_on_error: true
     data:
       filename: ./www/tmp/snapshots/kitchen/kitchen_snapshot1.jpg
     target:
@@ -198,6 +202,7 @@ camera_kitchen_snapshot_ai_notification:
       seconds: 0
       milliseconds: 500
   - action: camera.snapshot
+    continue_on_error: true
     data:
       filename: ./www/tmp/snapshots/kitchen/kitchen_snapshot2.jpg
     target:
@@ -208,6 +213,7 @@ camera_kitchen_snapshot_ai_notification:
       seconds: 0
       milliseconds: 500
   - action: camera.snapshot
+    continue_on_error: true
     data:
       filename: ./www/tmp/snapshots/kitchen/kitchen_snapshot3.jpg
     target:
@@ -242,17 +248,20 @@ locate_cats_snapshot_ai_notification_duplicate:
   alias: Locate Cats - Snapshot, AI & Notification (Duplicate)
   sequence:
   - action: camera.snapshot
+    continue_on_error: true
     data:
       filename: ./www/tmp/snapshots/all/kitchen_snapshot1.jpg
     target:
       entity_id:
       - camera.kitchen_inside
   - action: camera.snapshot
+    continue_on_error: true
     data:
       filename: ./www/tmp/snapshots/all/parlor_snapshot1.jpg
     target:
       entity_id: camera.parlor_inside
   - action: camera.snapshot
+    continue_on_error: true
     data:
       filename: ./www/tmp/snapshots/all/garage_snapshot1.jpg
     target:
@@ -417,6 +426,7 @@ bedtime_charging_check:
           data:
             type: tts
         action: notify.alexa_media
+        continue_on_error: true
       - wait_for_trigger:
         - entity_id:
           - sensor.josh_mobile_battery_state
@@ -489,11 +499,13 @@ welcome_home_ai_debrief:
     continue_on_timeout: true
     timeout: 00:15:00
   - action: media_player.volume_set
+    continue_on_error: true
     data:
       volume_level: 0.5
     target:
       entity_id: media_player.counter
   - action: notify.alexa_media_counter
+    continue_on_error: true
     data:
       message: '{{ (ai_greeting | default({})).data | default(''Welcome home! The house is secure and the cats are waiting for you.'') }}'
       target: media_player.counter
@@ -503,6 +515,7 @@ welcome_home_ai_debrief:
       seconds: 15
       milliseconds: 0
   - action: media_player.volume_set
+    continue_on_error: true
     data:
       volume_level: 0.3
     target:
