@@ -2134,138 +2134,85 @@
         }}
       title: watchtower notify
   mode: single
-- id: '1751050325495'
-  alias: 'Notify Beer Fridge Alert '
-  description: ''
+- id: 'appliance_alert_engine'
+  alias: 'System: Appliance Alert Engine'
+  description: Unified engine for monitoring appliance power consumption and performance.
+  variables:
+    appliance_map:
+      sensor.beer_fridge_electric_consumption_w:
+        name: "Beer Fridge"
+        switch: switch.beer_fridge
+        tag: "beer01-notify"
+        off_action: "beer01-off"
+      sensor.freezer_electric_consumption_w:
+        name: "Freezer"
+        switch: switch.freezer
+        tag: "frzr01-notify"
+        off_action: "frzr01-off"
   triggers:
   - trigger: numeric_state
     entity_id:
     - sensor.beer_fridge_electric_consumption_w
+    - sensor.freezer_electric_consumption_w
     for:
       hours: 3
-      minutes: 0
-      seconds: 0
     below: 10
-    id: below 10
+    id: stalled
   - trigger: numeric_state
     entity_id:
     - sensor.beer_fridge_electric_consumption_w
-    for:
-      hours: 5
-      minutes: 0
-      seconds: 0
-    above: 10
-    id: above 10
-  - trigger: event
-    event_type: mobile_app_notification_action
-    id: action
-    event_data:
-      tag: beer01-notify
-      action_1_key: beer01-off
-  conditions: []
-  actions:
-  - choose:
-    - conditions:
-      - condition: trigger
-        id:
-        - below 10
-      sequence:
-      - action: script.activate_mobile_actionable_notification
-        data_template:
-          notify_target: notify.mobile_app_josh_mobile
-          message: Beer Fridge ain't run in 3 hours!
-          title: BEER FRIDGE ALERT
-          notify_tag: beer_fridge
-        alias: Send ain't run msg
-    - conditions:
-      - condition: trigger
-        id:
-        - above 10
-      sequence:
-      - action: script.activate_mobile_actionable_notification
-        data_template:
-          notify_target: notify.mobile_app_josh_mobile
-          message: Beer Fridge has been running for > 5hrs!
-          title: BEER FRIDGE ALERT
-          notify_tag: beer01-notify
-          notify_action_1: beer01-off
-          notify_action_1_title: Turn Off
-        alias: Send been running too long msg
-    - conditions:
-      - condition: trigger
-        id:
-        - action
-      sequence:
-      - action: switch.turn_off
-        target:
-          entity_id: switch.beer_fridge
-  mode: parallel
-  max: 10
-- id: '1751052706469'
-  alias: Notify Freezer Alerts
-  description: ''
-  triggers:
-  - trigger: numeric_state
-    entity_id:
-    - sensor.freezer_electric_consumption_w
-    for:
-      hours: 3
-      minutes: 0
-      seconds: 0
-    below: 10
-    id: below 10
-  - trigger: numeric_state
-    entity_id:
     - sensor.freezer_electric_consumption_w
     for:
       hours: 5
-      minutes: 0
-      seconds: 0
     above: 10
-    id: above 10
+    id: overrunning
   - trigger: event
     event_type: mobile_app_notification_action
-    id: action
-    event_data:
-      tag: frzr01-notify
-      action_1_key: frzr01-off
-  conditions: []
+    id: remote_off
   actions:
+  - variables:
+      # Determine which appliance triggered based on sensor or action key
+      appliance_sensor: >
+        {% if trigger.id == 'remote_off' %}
+          {% if trigger.event.data.action == 'beer01-off' %} sensor.beer_fridge_electric_consumption_w
+          {% elif trigger.event.data.action == 'frzr01-off' %} sensor.freezer_electric_consumption_w
+          {% endif %}
+        {% else %}
+          {{ trigger.entity_id }}
+        {% endif %}
+      config: "{{ appliance_map[appliance_sensor.strip()] }}"
   - choose:
     - conditions:
       - condition: trigger
-        id:
-        - below 10
+        id: stalled
       sequence:
       - action: script.activate_mobile_actionable_notification
-        data_template:
+        data:
           notify_target: notify.mobile_app_josh_mobile
-          message: Freezer ain't run in 3 hours!
-          title: FREEZER ALERT
-          notify_tag: frzr01-notify
-        alias: Send ain't run msg
+          title: "{{ config.name | upper }} ALERT"
+          message: "{{ config.name }} hasn't run in 3 hours!"
+          notify_tag: "{{ config.tag }}"
     - conditions:
       - condition: trigger
-        id:
-        - above 10
+        id: overrunning
       sequence:
       - action: script.activate_mobile_actionable_notification
-        data_template:
+        data:
           notify_target: notify.mobile_app_josh_mobile
-          message: Freezer has been running for > 5hrs!
-          title: FREEZER ALERT
-          notify_tag: frzr01-notify
-          notify_action_1: frzr01-off
+          title: "{{ config.name | upper }} ALERT"
+          message: "{{ config.name }} has been running for > 5hrs!"
+          notify_tag: "{{ config.tag }}"
+          notify_action_1: "{{ config.off_action }}"
           notify_action_1_title: Turn Off
-        alias: Send been running too long msg
     - conditions:
       - condition: trigger
-        id:
-        - action
+        id: remote_off
+      - condition: template
+        value_template: "{{ config.off_action is defined }}"
       sequence:
       - action: switch.turn_off
         target:
-          entity_id: switch.freezer
+          entity_id: "{{ config.switch }}"
   mode: parallel
   max: 10
 - id: '1751911826375'
