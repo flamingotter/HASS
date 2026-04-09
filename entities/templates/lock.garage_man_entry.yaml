@@ -2,7 +2,7 @@
 lock:
   - name: "Garage Man Entry"
     unique_id: garage_man_entry
-    state: "{{ states('lock.garage_man_lock') }}"
+    state: "{{ 'unlocked' if is_state('lock.garage_man_lock', 'unlocked') else 'locked' }}"
     lock:
       action: lock.lock
       target:

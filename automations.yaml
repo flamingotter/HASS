@@ -1260,6 +1260,7 @@
           - action: ai_task.generate_data
             continue_on_error: true
             data:
+              task_name: "{{ repeat.item.name }} Nag"
               instructions: "{{ repeat.item.instructions }}"
             response_variable: nag_content
           - action: notify.mobile_app_josh_mobile
@@ -1286,11 +1287,16 @@
             {% elif action == 'hvac_done' %} timer.timer_hvac_filter
             {% elif action == 'water_done' %} timer.water_filter
             {% elif action == 'gen_done' %} timer.generator_test
+            {% else %} none
             {% endif %}
-      - action: script.system_log_maintenance_task
-        data:
-          task_name: "{{ task_map[task.strip()].name }}"
-          timer_entity: "{{ task.strip() }}"
+      - if:
+        - condition: template
+          value_template: "{{ task != none }}"
+        then:
+        - action: script.system_log_maintenance_task
+          data:
+            task_name: "{{ task_map[task.strip()].name }}"
+            timer_entity: "{{ task.strip() }}"
     - conditions:
       - condition: trigger
         id: snooze
@@ -1301,12 +1307,17 @@
             {% if action == 'hvac_snooze' %} timer.timer_hvac_filter
             {% elif action == 'water_snooze' %} timer.water_filter
             {% elif action == 'gen_snooze' %} timer.generator_test
+            {% else %} none
             {% endif %}
-      - action: timer.start
-        data:
-          duration: "24:00:00"
-        target:
-          entity_id: "{{ task.strip() }}"
+      - if:
+        - condition: template
+          value_template: "{{ task != none }}"
+        then:
+        - action: timer.start
+          data:
+            duration: "24:00:00"
+          target:
+            entity_id: "{{ task.strip() }}"
   mode: parallel
   max: 10
 - id: '1724690161012'
@@ -2178,9 +2189,11 @@
           {% elif trigger.event.data.action == 'frzr01-off' %} sensor.freezer_electric_consumption_w
           {% endif %}
         {% else %}
-          {{ trigger.entity_id }}
+          {{ trigger.entity_id | default('') }}
         {% endif %}
-      config: "{{ appliance_map[appliance_sensor.strip()] }}"
+      config: "{{ appliance_map.get(appliance_sensor.strip(), {}) }}"
+  - condition: template
+    value_template: "{{ config.name is defined }}"
   - choose:
     - conditions:
       - condition: trigger
@@ -2915,7 +2928,7 @@
       - action: script.update_kitchen_zen35_leds
       - delay: 00:00:05
       - action: script.update_kitchen_zen35_leds
-  mode: parallel
+  mode: restart
 - id: '1765936000477'
   alias: Outdoor lights
   description: ''

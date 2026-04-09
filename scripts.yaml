@@ -294,7 +294,7 @@ locate_cats_snapshot_ai_notification_duplicate:
   icon: mdi:cctv
 update_kitchen_zen35_leds:
   alias: Update Kitchen ZEN35 LEDs
-  mode: parallel
+  mode: restart
   sequence:
   - delay: 00:00:01
   - variables:
