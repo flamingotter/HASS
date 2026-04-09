@@ -6,6 +6,11 @@ monitor_docker:
     # Remove it from 'containers' and put it in 'containers_exclude'
     containers_exclude:
       - ha_bq_exporter
+      - ddclient
+      - dozzle
+      - esphome
+      - caac3031419e_ddclient
+      - 32f950c7c3e3_dozzle
     monitored_conditions:
       - state
       - status

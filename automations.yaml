@@ -1209,7 +1209,8 @@
       - action: notify.mobile_app_josh_mobile
         data:
           title: 'Maintenance Alert: HVAC'
-          message: '{{ (hvac_nag | default({})).data | default(''The HVAC filter needs replacing to maintain air quality and system efficiency.'') }}'
+          message: '{{ (hvac_nag | default({})).data | default(''The HVAC filter needs
+            replacing to maintain air quality and system efficiency.'') }}'
           data:
             tag: hvac-reminder
             actions:
@@ -1369,7 +1370,8 @@
           seconds: 2
       - data:
           title: Trash and Recycling
-          message: '{{ (generated_content | default({})).data | default(''The trash isn''''t going to take itself out.'') }}'
+          message: '{{ (generated_content | default({})).data | default(''The trash
+            isn''''t going to take itself out.'') }}'
           data:
             tag: trash-notify
             actions:
@@ -1545,7 +1547,8 @@
       - action: notify.mobile_app_josh_mobile
         data:
           title: Feeding Required
-          message: '{{ (nag_text | default({})).data | default(''The cats are still hungry! Please feed them.'') }}'
+          message: '{{ (nag_text | default({})).data | default(''The cats are still
+            hungry! Please feed them.'') }}'
           data:
             tag: pets-notify
             sticky: true
@@ -1729,7 +1732,8 @@
         response_variable: clean_complete_ai
       - action: notify.alexa_media
         data:
-          message: '{{ (clean_complete_ai | default({})).data | default(''Cleaning mission complete! Outstanding work!'') }}'
+          message: '{{ (clean_complete_ai | default({})).data | default(''Cleaning
+            mission complete! Outstanding work!'') }}'
           target: '{{ states.sensor.last_alexa.state }}'
     - conditions:
       - condition: trigger
@@ -1746,7 +1750,8 @@
       - action: notify.all_devices
         data:
           title: Cleaning Mode
-          message: '{{ (cleaning_nag | default({})).data | default(''The house is still in Cleaning Mode. Are you done?'') }}'
+          message: '{{ (cleaning_nag | default({})).data | default(''The house is
+            still in Cleaning Mode. Are you done?'') }}'
           data:
             tag: cleaning-warning
             actions:
@@ -2183,7 +2188,8 @@
       - action: notify.mobile_app_josh_mobile
         data:
           title: 'Readiness Alert: Generator'
-          message: '{{ (gen_nag | default({})).data | default(''The monthly generator test is due. Ensure backup power is mission-capable.'') }}'
+          message: '{{ (gen_nag | default({})).data | default(''The monthly generator
+            test is due. Ensure backup power is mission-capable.'') }}'
           data:
             tag: gen-reminder
             actions:
@@ -2884,7 +2890,8 @@
       - action: notify.mobile_app_josh_mobile
         data:
           title: 'Maintenance Alert: Water'
-          message: '{{ (water_nag | default({})).data | default(''The water filter needs replacing. Please swap it out when possible.'') }}'
+          message: '{{ (water_nag | default({})).data | default(''The water filter
+            needs replacing. Please swap it out when possible.'') }}'
           data:
             tag: water-reminder
             actions:
@@ -3116,10 +3123,11 @@
       - condition: trigger
         id: Update LEDs
       sequence:
+      - delay: 00:00:01
       - action: script.update_kitchen_zen35_leds
       - delay: 00:00:05
       - action: script.update_kitchen_zen35_leds
-  mode: restart
+  mode: parallel
 - id: '1765936000477'
   alias: Outdoor lights
   description: ''
@@ -3388,9 +3396,9 @@
       entity_id: ai_task.google_ai_task
       task_name: Porch Video Analysis
       instructions: 'Attachment 1 and 2 are reference photos of the residents, MJ
-        and Josh. Notice their distinctive arm tattoos. The remaining video attachments
-        are current security footage. Ignore any vehicles or people in the distance.
-        Compare the person in the footage to the reference photos.
+        and Josh. The remaining video attachments are current security footage. Ignore
+        any vehicles or people in the distance. Compare the person in the footage
+        to the reference photos.
 
         RULE 1: If the person in the footage is a visual match for Josh or MJ, start
         your response with the exact tag: [RESIDENT] RULE 2: If the person is a guest
@@ -3399,7 +3407,7 @@
         start your response with: [ALERT]
 
         After the tag, provide a concise summary in under 50 words: - Person: [Details]
-        - Package/Action: [What they left, or if they went inside] - Intent: [Delivery,
+        - Package-Action: [What they left, or if they went inside] - Intent: [Delivery,
         Visitor, Solicitor, or Resident]
 
         '
@@ -3413,36 +3421,40 @@
       - media_content_id: media-source://media_source/local/snapshots/porch/dropoff.mp4
         media_content_type: video/mp4
     response_variable: gemini_report
-    action: ai_task.generate_data
     continue_on_error: true
   - action: notify.send_message
     target:
       entity_id: notify.daily_camera_log
     data:
-      message: '{{ now().strftime(''%I:%M %p'') }} - Front Porch: {{ (gemini_report | default({})).data | default(''[ALERT] Video analysis failed.'') }}'
+      message: '{{ now().strftime(''%I:%M %p'') }} - Front Porch: {{ (gemini_report
+        | default({})).data | default(''[ALERT] Video analysis failed.'') }}'
   - action: notify.send_message
     target:
       entity_id:
       - notify.porch_history
     data:
       message: '"{{ now().strftime(''%Y-%m-%d'') }}","{{ now().strftime(''%H:%M:%S'')
-        }}","{{ ((gemini_report | default({})).data | default(''[ALERT]'')).split('']'')[0] ~ '']'' }}","{{ ((gemini_report | default({})).data | default(''Video analysis failed.''))
-        | replace(''"'', ''""'') }}"
+        }}","{{ ((gemini_report | default({})).data | default(''[ALERT]'')).split('']'')[0]
+        ~ '']'' }}","{{ ((gemini_report | default({})).data | default(''Video analysis
+        failed.'')) | replace(''"'', ''""'') }}"
 
         '
   - if:
     - condition: template
-      value_template: '{{ ''[ALERT]'' in (gemini_report | default({})).data | default(''[ALERT]'') }}'
+      value_template: '{{ ''[ALERT]'' in (gemini_report | default({})).data | default(''[ALERT]'')
+        }}'
     then:
     - action: notify.persistent_notification
       data:
         title: Porch Intel (Full Report)
-        message: '{{ ((gemini_report | default({})).data | default('''')) | replace(''[ALERT] '', '''') }}'
+        message: '{{ ((gemini_report | default({})).data | default('''')) | replace(''[ALERT]
+          '', '''') }}'
     - action: notify.mobile_app_josh_mobile
       data:
         title: Porch Intel
-        message: '{{ ((gemini_report | default({})).data | default(''Video analysis failed.'')) | replace(''[ALERT] '', '''') | truncate(150,
-          true, ''...'') }}'
+        message: '{{ ((gemini_report | default({})).data | default(''Video analysis
+          failed.'')) | replace(''[ALERT] '', '''') | truncate(150, true, ''...'')
+          }}'
     - if:
       - condition: state
         entity_id: alarm_control_panel.home_alarm
@@ -3483,7 +3495,8 @@
       title: Security Briefing - {{ now().strftime('%b %d, %Y') }}
       message: Please view this email in an HTML-compatible client.
       data:
-        html: '{{ (evening_rollup | default({})).data | default(''<h3>The daily security briefing could not be generated at this time.</h3>'') }}'
+        html: '{{ (evening_rollup | default({})).data | default(''<h3>The daily security
+          briefing could not be generated at this time.</h3>'') }}'
 - id: '1772743146418'
   alias: System - Cameras - Clear Daily Log
   description: ''
