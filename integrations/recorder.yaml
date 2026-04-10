@@ -2,7 +2,7 @@
 ###what goes into database
 recorder:  
   db_url: !secret ha_mariadb
-  purge_keep_days: 60 
+  purge_keep_days: 30 
   exclude:
     domains:
       - sun

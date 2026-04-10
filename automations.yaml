@@ -31,7 +31,7 @@
       - action: camera.snapshot
         data:
           entity_id: '{{ repeat.item }}'
-          filename: www/tmp/timelapse/{{ repeat.item.split('.')[1] }}/{{ repeat.item.split('.')[1]
+          filename: /media/timelapse/{{ repeat.item.split('.')[1] }}/{{ repeat.item.split('.')[1]
             }}_{{ now().strftime('%Y%m%d_%H%M') }}.jpg
   mode: single
 - id: '1717271470147'
@@ -1280,8 +1280,8 @@
       sequence:
       - variables:
           task: >
-            {% set tag = trigger.event.data.tag_id if trigger.trigger == 'tag' else none %}
-            {% set action = trigger.event.data.action if trigger.trigger == 'event' else none %}
+            {% set tag = trigger.event.data.tag_id if trigger.platform == 'tag' else none %}
+            {% set action = trigger.event.data.action if trigger.platform == 'event' else none %}
             {% if tag == '1e923fae-efb1-40c4-8c45-b5ab3f8beb78' %} timer.timer_hvac_filter
             {% elif tag == '95e7dd1a-71d0-4af9-a813-a9974de3cf87' %} timer.generator_test
             {% elif action == 'hvac_done' %} timer.timer_hvac_filter
@@ -1303,7 +1303,7 @@
       sequence:
       - variables:
           task: >
-            {% set action = trigger.event.data.action %}
+            {% set action = trigger.event.data.action if trigger.platform == 'event' else none %}
             {% if action == 'hvac_snooze' %} timer.timer_hvac_filter
             {% elif action == 'water_snooze' %} timer.water_filter
             {% elif action == 'gen_snooze' %} timer.generator_test
