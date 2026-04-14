@@ -8,32 +8,40 @@ binary_sensor:
       {% set bedtime = today_at(bedtime_str) %}
       
       {% set target = states('input_number.bedroom_target_temperature') | float(68) %}
-      {% set actual = states('sensor.bedroom_sensor_air_temperature') | float(target) %}
+      {% set indoor = states('sensor.bedroom_sensor_air_temperature') | float(target) %}
       {% set outdoor = states('sensor.weather_station_temperature_outdoor') | float(70) %}
-      {% set rate = states('input_number.observed_cooling_rate') | float(20) %}
+      {% set solar = states('sensor.weather_station_irradiance') | float(0) %}
       
-      {% set delta = actual - target %}
-      {% set heat_factor = 1.0 + ([0, outdoor - 75]|max * 0.02) %}
-      {% set lead_min = (delta * rate * heat_factor) | round(0) %}
+      {# Physics-Based Predictive Logic based on April 14 Measurements #}
+      {% set base_rate = 22 %} {# Measured steady-state minutes per degree #}
+      {% set delta = indoor - target %}
+      
+      {# Penalties for real-time heat load #}
+      {% set heat_penalty = [0, (outdoor - indoor) * 2.0]|max %} {# Add 2 mins per degree of outdoor/indoor delta #}
+      {% set solar_penalty = 20 if solar > 400 else 0 %} {# Add 20 mins if sun load is high #}
+      
+      {% set lead_min = (delta * base_rate) + heat_penalty + solar_penalty %}
       {% set start_ts = as_timestamp(bedtime, 0) - (lead_min * 60) %}
       
       {% set is_sleep_window = now() >= bedtime or now().hour < 7 %}
       {% set is_precool_window = as_timestamp(now(), 0) >= start_ts and now() < bedtime %}
       {% set is_cooling_mode = is_state('climate.t6_pro_downstairs', 'cool') %}
       
-      {{ is_precool_window and not is_sleep_window and actual > target and is_cooling_mode }}
+      {{ is_precool_window and not is_sleep_window and indoor > target and is_cooling_mode }}
     attributes:
       precool_start_time: >
         {% set b = states('input_datetime.bedroom_bedtime') %}
         {% set bedtime_str = b if b not in ['unknown', 'unavailable', 'None'] else '22:30:00' %}
         {% set bedtime = today_at(bedtime_str) %}
         {% set target = states('input_number.bedroom_target_temperature') | float(68) %}
-        {% set actual = states('sensor.bedroom_sensor_air_temperature') | float(target) %}
+        {% set indoor = states('sensor.bedroom_sensor_air_temperature') | float(target) %}
         {% set outdoor = states('sensor.weather_station_temperature_outdoor') | float(70) %}
-        {% set rate = states('input_number.observed_cooling_rate') | float(20) %}
-        {% set delta = actual - target %}
-        {% set heat_factor = 1.0 + ([0, outdoor - 75]|max * 0.02) %}
-        {% set lead_min = (delta * rate * heat_factor) | round(0) %}
+        {% set solar = states('sensor.weather_station_irradiance') | float(0) %}
+        {% set base_rate = 22 %}
+        {% set delta = indoor - target %}
+        {% set heat_penalty = [0, (outdoor - indoor) * 2.0]|max %}
+        {% set solar_penalty = 20 if solar > 400 else 0 %}
+        {% set lead_min = (delta * base_rate) + heat_penalty + solar_penalty %}
         {{ (as_timestamp(bedtime, 0) - (lead_min * 60)) | timestamp_custom('%H:%M:%S') }}
       target_temp: "{{ states('input_number.bedroom_target_temperature') }}"
       current_temp: "{{ states('sensor.bedroom_sensor_air_temperature') }}"

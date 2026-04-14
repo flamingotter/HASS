@@ -1178,32 +1178,40 @@
     target:
       entity_id: lock.garage_man_lock
   mode: single
-- id: 'system_maintenance_engine'
+- id: system_maintenance_engine
   alias: 'System: Maintenance Engine'
-  description: Scalable engine for filters and generator tests. Triggers on timer finish or return home.
+  description: Scalable engine for filters and generator tests. Triggers on timer
+    finish or return home.
   variables:
     task_map:
       timer.timer_hvac_filter:
-        name: "HVAC Filter"
-        instructions: "The HVAC filter needs replacing to maintain air quality and system efficiency. Write a short, creative reminder for Josh. Make it sound like a high-end estate manager reporting a necessary maintenance item. Limit to 25 words."
-        tag: "hvac-reminder"
-        action_done: "hvac_done"
-        action_snooze: "hvac_snooze"
-        reset_tag: "1e923fae-efb1-40c4-8c45-b5ab3f8beb78"
+        name: HVAC Filter
+        instructions: The HVAC filter needs replacing to maintain air quality and
+          system efficiency. Write a short, creative reminder for Josh. Make it sound
+          like a high-end estate manager reporting a necessary maintenance item. Limit
+          to 25 words.
+        tag: hvac-reminder
+        action_done: hvac_done
+        action_snooze: hvac_snooze
+        reset_tag: 1e923fae-efb1-40c4-8c45-b5ab3f8beb78
       timer.water_filter:
-        name: "Water Filter"
-        instructions: "The water filter needs replacing. Write a short, creative reminder for Josh to swap it out. Make it sound like a high-end estate manager reporting a maintenance item. Limit to 25 words."
-        tag: "water-reminder"
-        action_done: "water_done"
-        action_snooze: "water_snooze"
-        reset_tag: "1e923fae-efb1-40c4-8c45-b5ab3f8beb78"
+        name: Water Filter
+        instructions: The water filter needs replacing. Write a short, creative reminder
+          for Josh to swap it out. Make it sound like a high-end estate manager reporting
+          a maintenance item. Limit to 25 words.
+        tag: water-reminder
+        action_done: water_done
+        action_snooze: water_snooze
+        reset_tag: 1e923fae-efb1-40c4-8c45-b5ab3f8beb78
       timer.generator_test:
-        name: "Generator Test"
-        instructions: "The monthly generator test is due. Write a short, authoritative 'Mission Readiness' style reminder for Josh. Focus on ensuring backup power is mission-capable. Limit to 25 words."
-        tag: "gen-reminder"
-        action_done: "gen_done"
-        action_snooze: "gen_snooze"
-        reset_tag: "95e7dd1a-71d0-4af9-a813-a9974de3cf87"
+        name: Generator Test
+        instructions: The monthly generator test is due. Write a short, authoritative
+          'Mission Readiness' style reminder for Josh. Focus on ensuring backup power
+          is mission-capable. Limit to 25 words.
+        tag: gen-reminder
+        action_done: gen_done
+        action_snooze: gen_snooze
+        reset_tag: 95e7dd1a-71d0-4af9-a813-a9974de3cf87
   triggers:
   - trigger: event
     event_type: timer.finished
@@ -1242,82 +1250,79 @@
       - condition: trigger
         id: remind
       - condition: template
-        value_template: >
-          {% set home = states('input_select.josh_status') in ['Home', 'Just Arrived'] %}
-          {{ home and (is_state('timer.timer_hvac_filter', 'idle') or is_state('timer.water_filter', 'idle') or is_state('timer.generator_test', 'idle')) }}
+        value_template: '{% set home = states(''input_select.josh_status'') in [''Home'',
+          ''Just Arrived''] %} {{ home and (is_state(''timer.timer_hvac_filter'',
+          ''idle'') or is_state(''timer.water_filter'', ''idle'') or is_state(''timer.generator_test'',
+          ''idle'')) }}
+
+          '
       sequence:
       - repeat:
-          for_each: >
-            {% set tasks = task_map.items() | list %}
-            {% set to_notify = namespace(items=[]) %}
-            {% for timer_id, data in tasks %}
-              {% if is_state(timer_id, 'idle') %}
-                {% set to_notify.items = to_notify.items + [dict(timer=timer_id, **data)] %}
-              {% endif %}
-            {% endfor %}
-            {{ to_notify.items }}
+          for_each: "{% set tasks = task_map.items() | list %} {% set to_notify =
+            namespace(items=[]) %} {% for timer_id, data in tasks %}\n  {% if is_state(timer_id,
+            'idle') %}\n    {% set to_notify.items = to_notify.items + [dict(timer=timer_id,
+            **data)] %}\n  {% endif %}\n{% endfor %} {{ to_notify.items }}\n"
           sequence:
           - action: ai_task.generate_data
             continue_on_error: true
             data:
-              task_name: "{{ repeat.item.name }} Nag"
-              instructions: "{{ repeat.item.instructions }}"
+              task_name: '{{ repeat.item.name }} Nag'
+              instructions: '{{ repeat.item.instructions }}'
             response_variable: nag_content
           - action: notify.mobile_app_josh_mobile
             data:
-              title: "Maintenance Alert: {{ repeat.item.name }}"
-              message: "{{ (nag_content | default({})).data | default('Maintenance is due for ' ~ repeat.item.name) }}"
+              title: 'Maintenance Alert: {{ repeat.item.name }}'
+              message: '{{ (nag_content | default({})).data | default(''Maintenance
+                is due for '' ~ repeat.item.name) }}'
               data:
-                tag: "{{ repeat.item.tag }}"
+                tag: '{{ repeat.item.tag }}'
                 actions:
-                - action: "{{ repeat.item.action_done }}"
+                - action: '{{ repeat.item.action_done }}'
                   title: Done
-                - action: "{{ repeat.item.action_snooze }}"
+                - action: '{{ repeat.item.action_snooze }}'
                   title: Snooze 24h
     - conditions:
       - condition: trigger
         id: reset
       sequence:
       - variables:
-          task: >
-            {% set tag = trigger.event.data.tag_id if trigger.platform == 'tag' else none %}
-            {% set action = trigger.event.data.action if trigger.platform == 'event' else none %}
-            {% if tag == '1e923fae-efb1-40c4-8c45-b5ab3f8beb78' %} timer.timer_hvac_filter
-            {% elif tag == '95e7dd1a-71d0-4af9-a813-a9974de3cf87' %} timer.generator_test
-            {% elif action == 'hvac_done' %} timer.timer_hvac_filter
-            {% elif action == 'water_done' %} timer.water_filter
-            {% elif action == 'gen_done' %} timer.generator_test
-            {% else %} none
-            {% endif %}
+          task: '{% set tag = trigger.event.data.tag_id if trigger.platform == ''tag''
+            else none %} {% set action = trigger.event.data.action if trigger.platform
+            == ''event'' else none %} {% if tag == ''1e923fae-efb1-40c4-8c45-b5ab3f8beb78''
+            %} timer.timer_hvac_filter {% elif tag == ''95e7dd1a-71d0-4af9-a813-a9974de3cf87''
+            %} timer.generator_test {% elif action == ''hvac_done'' %} timer.timer_hvac_filter
+            {% elif action == ''water_done'' %} timer.water_filter {% elif action
+            == ''gen_done'' %} timer.generator_test {% else %} none {% endif %}
+
+            '
       - if:
         - condition: template
-          value_template: "{{ task != none }}"
+          value_template: '{{ task != none }}'
         then:
         - action: script.system_log_maintenance_task
           data:
-            task_name: "{{ task_map[task.strip()].name }}"
-            timer_entity: "{{ task.strip() }}"
+            task_name: '{{ task_map[task.strip()].name }}'
+            timer_entity: '{{ task.strip() }}'
     - conditions:
       - condition: trigger
         id: snooze
       sequence:
       - variables:
-          task: >
-            {% set action = trigger.event.data.action if trigger.platform == 'event' else none %}
-            {% if action == 'hvac_snooze' %} timer.timer_hvac_filter
-            {% elif action == 'water_snooze' %} timer.water_filter
-            {% elif action == 'gen_snooze' %} timer.generator_test
-            {% else %} none
-            {% endif %}
+          task: '{% set action = trigger.event.data.action if trigger.platform ==
+            ''event'' else none %} {% if action == ''hvac_snooze'' %} timer.timer_hvac_filter
+            {% elif action == ''water_snooze'' %} timer.water_filter {% elif action
+            == ''gen_snooze'' %} timer.generator_test {% else %} none {% endif %}
+
+            '
       - if:
         - condition: template
-          value_template: "{{ task != none }}"
+          value_template: '{{ task != none }}'
         then:
         - action: timer.start
           data:
-            duration: "24:00:00"
+            duration: '24:00:00'
           target:
-            entity_id: "{{ task.strip() }}"
+            entity_id: '{{ task.strip() }}'
   mode: parallel
   max: 10
 - id: '1724690161012'
@@ -1921,9 +1926,10 @@
             title: Ignore
     alias: cleared
   mode: single
-- id: 'person_status_synchronizer'
+- id: person_status_synchronizer
   alias: 'Person: Status Synchronizer'
-  description: Unified engine for person status transitions (Home, Just Arrived, Just Left, Away, Extended Away).
+  description: Unified engine for person status transitions (Home, Just Arrived, Just
+    Left, Away, Extended Away).
   variables:
     person_map:
       person.josh: input_select.josh_status
@@ -1985,7 +1991,7 @@
       - condition: trigger
         id: device_tracker_home
       - condition: template
-        value_template: "{{ is_state(target_select, 'Just Left') }}"
+        value_template: '{{ is_state(target_select, ''Just Left'') }}'
       sequence:
       - action: input_select.select_option
         target:
@@ -2145,21 +2151,21 @@
         }}
       title: watchtower notify
   mode: single
-- id: 'appliance_alert_engine'
+- id: appliance_alert_engine
   alias: 'System: Appliance Alert Engine'
   description: Unified engine for monitoring appliance power consumption and performance.
   variables:
     appliance_map:
       sensor.beer_fridge_electric_consumption_w:
-        name: "Beer Fridge"
+        name: Beer Fridge
         switch: switch.beer_fridge
-        tag: "beer01-notify"
-        off_action: "beer01-off"
+        tag: beer01-notify
+        off_action: beer01-off
       sensor.freezer_electric_consumption_w:
-        name: "Freezer"
+        name: Freezer
         switch: switch.freezer
-        tag: "frzr01-notify"
-        off_action: "frzr01-off"
+        tag: frzr01-notify
+        off_action: frzr01-off
   triggers:
   - trigger: numeric_state
     entity_id:
@@ -2182,18 +2188,13 @@
     id: remote_off
   actions:
   - variables:
-      # Determine which appliance triggered based on sensor or action key
-      appliance_sensor: >
-        {% if trigger.id == 'remote_off' %}
-          {% if trigger.event.data.action == 'beer01-off' %} sensor.beer_fridge_electric_consumption_w
-          {% elif trigger.event.data.action == 'frzr01-off' %} sensor.freezer_electric_consumption_w
-          {% endif %}
-        {% else %}
-          {{ trigger.entity_id | default('') }}
-        {% endif %}
-      config: "{{ appliance_map.get(appliance_sensor.strip(), {}) }}"
+      appliance_sensor: "{% if trigger.id == 'remote_off' %}\n  {% if trigger.event.data.action
+        == 'beer01-off' %} sensor.beer_fridge_electric_consumption_w\n  {% elif trigger.event.data.action
+        == 'frzr01-off' %} sensor.freezer_electric_consumption_w\n  {% endif %}\n{%
+        else %}\n  {{ trigger.entity_id | default('') }}\n{% endif %}\n"
+      config: '{{ appliance_map.get(appliance_sensor.strip(), {}) }}'
   - condition: template
-    value_template: "{{ config.name is defined }}"
+    value_template: '{{ config.name is defined }}'
   - choose:
     - conditions:
       - condition: trigger
@@ -2202,9 +2203,9 @@
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.mobile_app_josh_mobile
-          title: "{{ config.name | upper }} ALERT"
-          message: "{{ config.name }} hasn't run in 3 hours!"
-          notify_tag: "{{ config.tag }}"
+          title: '{{ config.name | upper }} ALERT'
+          message: '{{ config.name }} hasn''t run in 3 hours!'
+          notify_tag: '{{ config.tag }}'
     - conditions:
       - condition: trigger
         id: overrunning
@@ -2212,20 +2213,20 @@
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.mobile_app_josh_mobile
-          title: "{{ config.name | upper }} ALERT"
-          message: "{{ config.name }} has been running for > 5hrs!"
-          notify_tag: "{{ config.tag }}"
-          notify_action_1: "{{ config.off_action }}"
+          title: '{{ config.name | upper }} ALERT'
+          message: '{{ config.name }} has been running for > 5hrs!'
+          notify_tag: '{{ config.tag }}'
+          notify_action_1: '{{ config.off_action }}'
           notify_action_1_title: Turn Off
     - conditions:
       - condition: trigger
         id: remote_off
       - condition: template
-        value_template: "{{ config.off_action is defined }}"
+        value_template: '{{ config.off_action is defined }}'
       sequence:
       - action: switch.turn_off
         target:
-          entity_id: "{{ config.switch }}"
+          entity_id: '{{ config.switch }}'
   mode: parallel
   max: 10
 - id: '1751911826375'
@@ -3044,7 +3045,7 @@
   - delay: 00:10:00
   mode: single
   max_exceeded: silent
-- id: 'outdoor_motion_lighting_engine'
+- id: outdoor_motion_lighting_engine
   alias: 'Lighting: Outdoor Motion Presence'
   description: Scalable engine for outdoor lights based on AI/Motion detection.
   variables:
@@ -3081,7 +3082,7 @@
       entity_id: '{{ target_switch }}'
   - wait_for_trigger:
     - trigger: template
-      value_template: "{{ is_state(clear_sensor, 'off') }}"
+      value_template: '{{ is_state(clear_sensor, ''off'') }}'
       for:
         minutes: 2
     timeout: 01:00:00
@@ -3242,12 +3243,6 @@
 - id: '1773788016200'
   alias: 'Door Security: Safety & Armed Alerts'
   description: Immediate alerts if armed + 3-minute siren alerts for open doors.
-  variables:
-    door_map:
-      binary_sensor.front_door:
-        long: 28
-      binary_sensor.garage_man_door:
-        long: 29
   triggers:
   - trigger: state
     entity_id:
@@ -3259,8 +3254,13 @@
     entity_id:
     - binary_sensor.garage_man_door
     - binary_sensor.front_door
-    to: 'on'
-    for: 00:03:00
+    - binary_sensor.pantry_door
+    to:
+    - 'on'
+    for:
+      hours: 0
+      minutes: 3
+      seconds: 0
     id: long_open
   actions:
   - choose:
@@ -3275,8 +3275,9 @@
       sequence:
       - action: notify.mobile_app_josh_mobile
         data:
-          title: "⚠️ SECURITY ALERT"
-          message: "The {{ state_attr(trigger.entity_id, 'friendly_name') }} was opened while ARMED!"
+          title: ⚠️ SECURITY ALERT
+          message: The {{ state_attr(trigger.entity_id, 'friendly_name') }} was opened
+            while ARMED!
           data:
             priority: high
     - conditions:
@@ -3292,6 +3293,14 @@
         data:
           title: Door Open
           message: The {{ state_attr(trigger.entity_id, 'friendly_name') }} is Open!
+  variables:
+    door_map:
+      binary_sensor.front_door:
+        long: 28
+      binary_sensor.garage_man_door:
+        long: 29
+      binary_sensor.pantry_door:
+        long: 34
   mode: parallel
   max: 10
 - id: '1773858634897'
@@ -3333,9 +3342,10 @@
       message: Climate data sync to BigQuery triggered.
       title: Data Pipeline
 - id: '1775070658742'
-  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v4.7)'
-  description: 'v4.7: Consistently handle datetime objects in a single block to prevent
-    TypeError comparisons with strings.'
+  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v4.8)'
+  description: 'v4.8: Transitioned to a physics-based predictive model using measured
+    cooling rates (22 min/deg base), outdoor thermal delta, and solar irradiance
+    to calculate precise start times.'
   triggers:
   - trigger: state
     entity_id:
@@ -3413,13 +3423,13 @@
             entity_id: climate.t6_pro_downstairs
           data:
             temperature: 60
-        - action: notify.mobile_app_josh_mobile
-          data:
-            title: 'Climate: Pre-Cool Started'
-            message: 'Room is {{ actual }}F. Starting push to {{ target }}F (Start:
-              {{ state_attr(''binary_sensor.mbr_pre_cooling_active'', ''precool_start_time'')
-              }}).'
-    - alias: 'Phase 3: Pre-Cooling Complete (Handoff & Learning)'
+      - action: notify.mobile_app_josh_mobile
+        data:
+          title: 'Climate: Pre-Cool Started'
+          message: 'Room is {{ actual }}F. Starting push to {{ target }}F (Start:
+            {{ state_attr(''binary_sensor.mbr_pre_cooling_active'', ''precool_start_time'')
+            }}).'
+    - alias: 'Phase 3: Pre-Cooling Complete (Handoff)'
       conditions:
       - or:
         - condition: template
@@ -3427,30 +3437,6 @@
         - condition: trigger
           id: bedtime
       sequence:
-      - if:
-        - condition: template
-          alias: Update Learning Rate if Target Met
-          value_template: '{{ t6_target == 60 and actual <= target }}'
-        then:
-        - variables:
-            rate: '{{ states(''input_number.observed_cooling_rate'') | float(20) }}'
-            start_val: '{{ states(''input_datetime.precool_start_time'') }}'
-            duration: '{{ (as_timestamp(now(), 0) - as_timestamp(start_val, 0)) /
-              60 }}'
-            drop: '{{ states(''input_number.precool_start_temp'')|float(actual) -
-              actual }}'
-            valid_data: '{{ duration > 0 and duration < 300 and drop > 0.5 }}'
-            obs_rate: '{{ (duration / drop) if valid_data else rate }}'
-            new_rate: '{{ (rate * 0.7) + (obs_rate * 0.3) }}'
-        - if:
-          - condition: template
-            value_template: '{{ valid_data }}'
-          then:
-          - action: input_number.set_value
-            target:
-              entity_id: input_number.observed_cooling_rate
-            data:
-              value: '{{ new_rate | round(2) | clamp(10, 44) }}'
       - action: climate.set_temperature
         target:
           entity_id: climate.t6_pro_downstairs
