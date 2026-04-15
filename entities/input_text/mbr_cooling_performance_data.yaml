@@ -1,0 +1,5 @@
+---
+mbr_cooling_performance_data:
+  name: "MBR Cooling Performance Repository"
+  initial: '{"70": 20, "75": 22, "80": 25, "85": 28, "90": 32}'
+  max: 255

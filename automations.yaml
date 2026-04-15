@@ -3342,10 +3342,10 @@
       message: Climate data sync to BigQuery triggered.
       title: Data Pipeline
 - id: '1775070658742'
-  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v4.8)'
-  description: 'v4.8: Transitioned to a physics-based predictive model using measured
-    cooling rates (22 min/deg base), outdoor thermal delta, and solar irradiance
-    to calculate precise start times.'
+  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v5.0)'
+  description: 'v5.0: Truly Data-Driven Precooling. Uses a JSON performance repository
+    (input_text) to lookup rates by outdoor temp. Includes a pre-flight validation
+    check to skip AC if natural cooling is sufficient.'
   triggers:
   - trigger: state
     entity_id:
@@ -3399,37 +3399,42 @@
           entity_id: climate.t6_pro_downstairs
         data:
           temperature: 68
-    - alias: 'Phase 2: Pre-Cooling (Active HVAC Drive)'
+    - alias: 'Phase 2: Pre-Cooling (Validation & Start)'
       conditions:
       - condition: template
-        value_template: '{{ is_precooling and not is_sleep_window }}'
+        value_template: '{{ is_precooling and not is_sleep_window and t6_target != 60 }}'
       sequence:
+      - variables:
+          velocity: '{{ states(''sensor.bedroom_cooling_velocity'') | float(0) }}'
+          mins_to_bedtime: '{{ (as_timestamp(today_at(states(''input_datetime.bedroom_bedtime'')), 0) - as_timestamp(now(), 0)) / 60 }}'
+          needed_drop: '{{ actual - target }}'
+          natural_drop_potential: '{{ (velocity * -1) * (mins_to_bedtime / 60) }}'
+          is_natural_cooling_sufficient: '{{ velocity < -0.3 and natural_drop_potential >= needed_drop }}'
       - if:
         - condition: template
-          value_template: '{{ t6_target != 60 }}'
+          value_template: '{{ is_natural_cooling_sufficient }}'
         then:
-        - action: input_datetime.set_datetime
-          target:
-            entity_id: input_datetime.precool_start_time
-          data:
-            datetime: '{{ now() }}'
-        - action: input_number.set_value
-          target:
-            entity_id: input_number.precool_start_temp
-          data:
-            value: '{{ actual }}'
-        - action: climate.set_temperature
-          target:
-            entity_id: climate.t6_pro_downstairs
-          data:
-            temperature: 60
+        - stop: Natural cooling is sufficient. Skipping AC push.
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.precool_start_time
+        data:
+          datetime: '{{ now() }}'
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.precool_start_temp
+        data:
+          value: '{{ actual }}'
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.t6_pro_downstairs
+        data:
+          temperature: 60
       - action: notify.mobile_app_josh_mobile
         data:
-          title: 'Climate: Pre-Cool Started'
-          message: 'Room is {{ actual }}F. Starting push to {{ target }}F (Start:
-            {{ state_attr(''binary_sensor.mbr_pre_cooling_active'', ''precool_start_time'')
-            }}).'
-    - alias: 'Phase 3: Pre-Cooling Complete (Handoff)'
+          title: 'Climate: Pre-Cool Started (Data-Driven)'
+          message: 'Room is {{ actual }}F. Target {{ target }}F. Expected rate: {{ state_attr(''binary_sensor.mbr_pre_cooling_active'', ''observed_rate_used'') }} min/deg.'
+    - alias: 'Phase 3: Pre-Cooling Complete (Handoff & Learning)'
       conditions:
       - or:
         - condition: template
@@ -3437,6 +3442,33 @@
         - condition: trigger
           id: bedtime
       sequence:
+      - if:
+        - condition: template
+          alias: Update Performance Repository if Target Met
+          value_template: '{{ t6_target == 60 and actual <= target }}'
+        then:
+        - variables:
+            start_val: '{{ states(''input_datetime.precool_start_time'') }}'
+            duration: '{{ (as_timestamp(now(), 0) - as_timestamp(start_val, 0)) / 60 }}'
+            drop: '{{ states(''input_number.precool_start_temp'')|float(actual) - actual }}'
+            valid_session: '{{ duration > 20 and duration < 300 and drop > 1.0 }}'
+            obs_rate: '{{ (duration / drop) | round(1) }}'
+            outdoor: '{{ states(''sensor.weather_station_temperature_outdoor'') | float(70) }}'
+            lookup_key: '{{ ((outdoor / 5) | round(0) * 5) | string }}'
+        - if:
+          - condition: template
+            value_template: '{{ valid_session and obs_rate < 45 }}'
+          then:
+          - action: input_text.set_value
+            target:
+              entity_id: input_text.mbr_cooling_performance_data
+            data:
+              value: >
+                {% set repo = states('input_text.mbr_cooling_performance_data') | from_json %}
+                {% set old_rate = repo.get(lookup_key, obs_rate) | float %}
+                {% set new_rate = ((old_rate * 0.7) + (obs_rate * 0.3)) | round(1) %}
+                {% set new_repo = dict(repo, **{lookup_key: new_rate}) %}
+                {{ new_repo | to_json }}
       - action: climate.set_temperature
         target:
           entity_id: climate.t6_pro_downstairs
