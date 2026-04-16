@@ -472,6 +472,8 @@ welcome_home_ai_debrief:
   alias: Welcome Home AI Debrief
   mode: single
   sequence:
+  - delay:
+      seconds: 15
   - action: ai_task.generate_data
     continue_on_error: true
     data:
