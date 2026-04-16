@@ -3048,23 +3048,13 @@
 - id: outdoor_motion_lighting_engine
   alias: 'Lighting: Outdoor Motion Presence'
   description: Scalable engine for outdoor lights based on AI/Motion detection.
-  variables:
-    light_map:
-      binary_sensor.front_porch_ptz_person_detected:
-        switch: switch.front_yard_lights
-        motion_clear: binary_sensor.front_porch_ptz_object_detected
-      binary_sensor.patio_left_person_detected:
-        switch: switch.backyard_lights
-        motion_clear: binary_sensor.motion_outdoors_patio_left
-      binary_sensor.driveway_outside_person_detected:
-        switch: switch.garage_spot_light
-        motion_clear: binary_sensor.motion_outdoors_driveway
   triggers:
   - trigger: state
     entity_id:
     - binary_sensor.front_porch_ptz_person_detected
     - binary_sensor.patio_left_person_detected
     - binary_sensor.driveway_outside_person_detected
+    - binary_sensor.driveway_ptz_person_detected
     to: 'on'
   conditions:
   - condition: state
@@ -3089,6 +3079,20 @@
   - action: switch.turn_off
     target:
       entity_id: '{{ target_switch }}'
+  variables:
+    light_map:
+      binary_sensor.front_porch_ptz_person_detected:
+        switch: switch.front_yard_lights
+        motion_clear: binary_sensor.front_porch_ptz_object_detected
+      binary_sensor.patio_left_person_detected:
+        switch: switch.backyard_lights
+        motion_clear: binary_sensor.motion_outdoors_patio_left
+      binary_sensor.driveway_outside_person_detected:
+        switch: switch.garage_spot_light
+        motion_clear: binary_sensor.motion_outdoors_driveway
+      binary_sensor.driveway_ptz_person_detected:
+        switch: switch.garage_spot_light
+        motion_clear: binary_sensor.driveway_ptz_person_detected
   mode: parallel
   max: 10
 - id: '1772728212323'
@@ -3408,14 +3412,17 @@
     - alias: 'Phase 2: Pre-Cooling (Validation & Start)'
       conditions:
       - condition: template
-        value_template: '{{ is_precooling and not is_sleep_window and t6_target != 60 }}'
+        value_template: '{{ is_precooling and not is_sleep_window and t6_target !=
+          60 }}'
       sequence:
       - variables:
           velocity: '{{ states(''sensor.bedroom_cooling_velocity'') | float(0) }}'
-          mins_to_bedtime: '{{ (as_timestamp(today_at(states(''input_datetime.bedroom_bedtime'')), 0) - as_timestamp(now(), 0)) / 60 }}'
+          mins_to_bedtime: '{{ (as_timestamp(today_at(states(''input_datetime.bedroom_bedtime'')),
+            0) - as_timestamp(now(), 0)) / 60 }}'
           needed_drop: '{{ actual - target }}'
           natural_drop_potential: '{{ (velocity * -1) * (mins_to_bedtime / 60) }}'
-          is_natural_cooling_sufficient: '{{ velocity < -0.3 and natural_drop_potential >= needed_drop }}'
+          is_natural_cooling_sufficient: '{{ velocity < -0.3 and natural_drop_potential
+            >= needed_drop }}'
       - if:
         - condition: template
           value_template: '{{ is_natural_cooling_sufficient }}'
@@ -3425,7 +3432,8 @@
             entity_id: '{{ log_entity }}'
           data:
             message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }},PHASE_2_VALIDATION,Indoor:
-              {{ actual }},Target: {{ target }},NaturalDrop: {{ natural_drop_potential | round(2) }},RESULT: SKIPPED (Natural Cooling Sufficient)'
+              {{ actual }},Target: {{ target }},NaturalDrop: {{ natural_drop_potential
+              | round(2) }},RESULT: SKIPPED (Natural Cooling Sufficient)'
         - stop: Natural cooling is sufficient. Skipping AC push.
       - action: input_datetime.set_datetime
         target:
@@ -3445,13 +3453,16 @@
       - action: notify.mobile_app_josh_mobile
         data:
           title: 'Climate: Pre-Cool Started (Data-Driven)'
-          message: 'Starting push to {{ target }}F. Expected rate: {{ state_attr(''binary_sensor.mbr_pre_cooling_active'', ''observed_rate_used'') }} min/deg. Room is {{ actual }}F.'
+          message: 'Starting push to {{ target }}F. Expected rate: {{ state_attr(''binary_sensor.mbr_pre_cooling_active'',
+            ''observed_rate_used'') }} min/deg. Room is {{ actual }}F.'
       - action: notify.send_message
         target:
           entity_id: '{{ log_entity }}'
         data:
           message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }},PHASE_2_START,Indoor:
-            {{ actual }},Target: {{ target }},Outdoor: {{ states(''sensor.weather_station_temperature_outdoor'') }},ExpectedRate: {{ state_attr(''binary_sensor.mbr_pre_cooling_active'', ''observed_rate_used'') }}'
+            {{ actual }},Target: {{ target }},Outdoor: {{ states(''sensor.weather_station_temperature_outdoor'')
+            }},ExpectedRate: {{ state_attr(''binary_sensor.mbr_pre_cooling_active'',
+            ''observed_rate_used'') }}'
     - alias: 'Phase 3: Pre-Cooling Complete (Handoff & Learning)'
       conditions:
       - or:
@@ -3467,23 +3478,28 @@
         then:
         - variables:
             start_val: '{{ states(''input_datetime.precool_start_time'') }}'
-            duration: '{{ (as_timestamp(now(), 0) - as_timestamp(start_val, 0)) / 60 }}'
-            drop: '{{ states(''input_number.precool_start_temp'')|float(actual) - actual }}'
+            duration: '{{ (as_timestamp(now(), 0) - as_timestamp(start_val, 0)) /
+              60 }}'
+            drop: '{{ states(''input_number.precool_start_temp'')|float(actual) -
+              actual }}'
             valid_session: '{{ duration > 15 and duration < 300 and drop > 0.5 }}'
             obs_rate: '{{ (duration / drop) | round(1) }}'
-            outdoor: '{{ states(''sensor.weather_station_temperature_outdoor'') | float(70) }}'
+            outdoor: '{{ states(''sensor.weather_station_temperature_outdoor'') |
+              float(70) }}'
             lookup_key: '{{ ((outdoor / 5) | round(0) * 5) | int | string }}'
         - if:
           - condition: template
             value_template: '{{ valid_session and obs_rate < 45 }}'
           then:
           - variables:
-              repo_update: >
-                {% set repo = states('input_text.mbr_cooling_performance_data') | from_json %}
-                {% set old_rate = repo.get(lookup_key, obs_rate) | float %}
-                {% set new_rate = ((old_rate * 0.7) + (obs_rate * 0.3)) | round(1) %}
-                {% set _ = repo.update({lookup_key: new_rate}) %}
-                {{ repo | to_json }}
+              repo_update: '{% set repo = states(''input_text.mbr_cooling_performance_data'')
+                | from_json %} {% set old_rate = repo.get(lookup_key, obs_rate) |
+                float %} {% set new_rate = ((old_rate * 0.7) + (obs_rate * 0.3)) |
+                round(1) %} {% set new_entry = ''{"'' ~ lookup_key ~ ''": '' ~ new_rate
+                ~ ''}'' %} {% set new_repo = dict(repo, **(new_entry | from_json))
+                %} {{ new_repo | to_json }}
+
+                '
           - action: input_text.set_value
             target:
               entity_id: input_text.mbr_cooling_performance_data
@@ -3499,7 +3515,8 @@
               entity_id: '{{ log_entity }}'
             data:
               message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }},PHASE_3_LEARNED,Duration:
-                {{ duration | round(0) }},Drop: {{ drop | round(1) }},ActualRate: {{ obs_rate }},Outdoor: {{ outdoor }},Bin: {{ lookup_key }}'
+                {{ duration | round(0) }},Drop: {{ drop | round(1) }},ActualRate:
+                {{ obs_rate }},Outdoor: {{ outdoor }},Bin: {{ lookup_key }}'
       - action: climate.set_temperature
         target:
           entity_id: climate.t6_pro_downstairs
