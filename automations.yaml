@@ -3111,35 +3111,49 @@
     entity_id: input_boolean.camera_alerts
     state: 'on'
   - condition: template
-    value_template: '{# If it has never triggered before, or if the time since last
-      trigger is > 300 seconds, evaluate as True #} {{ this.attributes.last_triggered
-      == None or (now() - this.attributes.last_triggered).total_seconds() > 300 }}
+    value_template: '{# Increase cooldown to 10 minutes (600s) to save quota #} {{
+      this.attributes.last_triggered == None or (now() - this.attributes.last_triggered).total_seconds()
+      > 600 }}
 
       '
   actions:
   - parallel:
     - action: camera.record
       target:
-        entity_id: camera.front_porch_ptz_high_resolution_channel
+        entity_id: camera.front_ptz_medium_resolution_channel
       data:
         duration: 12
         lookback: 3
         filename: /media/snapshots/porch/approach.mp4
-    - action: camera.record
-      target:
-        entity_id: camera.doorbell_outside_high_resolution_channel
-      data:
-        duration: 12
-        lookback: 3
-        filename: /media/snapshots/porch/dropoff.mp4
+    - sequence:
+      - action: camera.snapshot
+        target:
+          entity_id: camera.doorbell_outside_medium_resolution_channel
+        data:
+          filename: /media/snapshots/porch/doorbell_t0.jpg
+      - delay:
+          seconds: 1
+      - action: camera.snapshot
+        target:
+          entity_id: camera.doorbell_outside_medium_resolution_channel
+        data:
+          filename: /media/snapshots/porch/doorbell_t1.jpg
+      - delay:
+          seconds: 2
+      - action: camera.snapshot
+        target:
+          entity_id: camera.doorbell_outside_medium_resolution_channel
+        data:
+          filename: /media/snapshots/porch/doorbell_t3.jpg
   - action: ai_task.generate_data
     data:
       entity_id: ai_task.google_ai_task
       task_name: Porch Video Analysis
       instructions: 'Attachment 1 and 2 are reference photos of the residents, MJ
-        and Josh. The remaining video attachments are current security footage. Ignore
-        any vehicles or people in the distance. Compare the person in the footage
-        to the reference photos.
+        and Josh. Attachment 3 is a video from the porch PTZ. Attachments 4, 5, and
+        6 are sequential snapshots from the doorbell (T=0s, T=1s, T=3s). Ignore any
+        vehicles or people in the distance. Compare the person in the footage to the
+        reference photos.
 
         RULE 1: If the person in the footage is a visual match for Josh or MJ, start
         your response with the exact tag: [RESIDENT] RULE 2: If the person is a guest
@@ -3159,8 +3173,12 @@
         media_content_type: image/jpeg
       - media_content_id: media-source://media_source/local/snapshots/porch/approach.mp4
         media_content_type: video/mp4
-      - media_content_id: media-source://media_source/local/snapshots/porch/dropoff.mp4
-        media_content_type: video/mp4
+      - media_content_id: media-source://media_source/local/snapshots/porch/doorbell_t0.jpg
+        media_content_type: image/jpeg
+      - media_content_id: media-source://media_source/local/snapshots/porch/doorbell_t1.jpg
+        media_content_type: image/jpeg
+      - media_content_id: media-source://media_source/local/snapshots/porch/doorbell_t3.jpg
+        media_content_type: image/jpeg
     response_variable: gemini_report
     continue_on_error: true
   - action: notify.send_message
