@@ -15,7 +15,7 @@ binary_sensor:
       {% set performance_data = states('input_text.mbr_cooling_performance_data') | from_json %}
       
       {# Round outdoor temp to nearest 5 for lookup #}
-      {% set lookup_key = ((outdoor / 5) | round(0) * 5) | string %}
+      {% set lookup_key = ((outdoor / 5) | round(0) * 5) | int | string %}
       
       {# Get rate from history, or default to 25 if not learned yet #}
       {% set base_rate = performance_data.get(lookup_key, 25) | float %}
@@ -38,7 +38,7 @@ binary_sensor:
         {% set indoor = states('sensor.bedroom_sensor_air_temperature') | float(target) %}
         {% set outdoor = states('sensor.weather_station_temperature_outdoor') | float(70) %}
         {% set performance_data = states('input_text.mbr_cooling_performance_data') | from_json %}
-        {% set lookup_key = ((outdoor / 5) | round(0) * 5) | string %}
+        {% set lookup_key = ((outdoor / 5) | round(0) * 5) | int | string %}
         {% set base_rate = performance_data.get(lookup_key, 25) | float %}
         {% set delta = [0, indoor - target]|max %}
         {% set lead_min = (delta * base_rate) %}
@@ -46,7 +46,7 @@ binary_sensor:
       observed_rate_used: >
         {% set outdoor = states('sensor.weather_station_temperature_outdoor') | float(70) %}
         {% set performance_data = states('input_text.mbr_cooling_performance_data') | from_json %}
-        {% set lookup_key = ((outdoor / 5) | round(0) * 5) | string %}
+        {% set lookup_key = ((outdoor / 5) | round(0) * 5) | int | string %}
         {{ performance_data.get(lookup_key, 25) }}
       target_temp: "{{ states('input_number.bedroom_target_temperature') }}"
       current_temp: "{{ states('sensor.bedroom_sensor_air_temperature') }}"

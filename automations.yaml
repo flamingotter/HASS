@@ -3472,7 +3472,7 @@
             valid_session: '{{ duration > 15 and duration < 300 and drop > 0.5 }}'
             obs_rate: '{{ (duration / drop) | round(1) }}'
             outdoor: '{{ states(''sensor.weather_station_temperature_outdoor'') | float(70) }}'
-            lookup_key: '{{ ((outdoor / 5) | round(0) * 5) | string }}'
+            lookup_key: '{{ ((outdoor / 5) | round(0) * 5) | int | string }}'
         - if:
           - condition: template
             value_template: '{{ valid_session and obs_rate < 45 }}'
@@ -3482,8 +3482,8 @@
                 {% set repo = states('input_text.mbr_cooling_performance_data') | from_json %}
                 {% set old_rate = repo.get(lookup_key, obs_rate) | float %}
                 {% set new_rate = ((old_rate * 0.7) + (obs_rate * 0.3)) | round(1) %}
-                {% set new_repo = dict(repo, **{lookup_key: new_rate}) %}
-                {{ new_repo | to_json }}
+                {% set _ = repo.update({lookup_key: new_rate}) %}
+                {{ repo | to_json }}
           - action: input_text.set_value
             target:
               entity_id: input_text.mbr_cooling_performance_data
