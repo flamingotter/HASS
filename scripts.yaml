@@ -120,7 +120,8 @@ genai_response_to_actionable_notification:
     data_template:
       notify_target: '{{ targets.get(msg_target, ''unknown'') }}'
       title: test message
-      message: '{{ (generated_content | default({})).text | default(''The cats are not going away. They still need to be fed.'') }}'
+      message: '{{ (generated_content | default({})).text | default(''The cats are
+        not going away. They still need to be fed.'') }}'
       notify_tag: test_tag
       notify_action_1: done
       notify_action_1_title: Done
@@ -174,14 +175,15 @@ camera_parlor_snapshot_ai_notification:
     response_variable: generated_content
   - if:
     - condition: template
-      value_template: '{{ ''No Obvious Motion Detected.'' in (generated_content | default({})).text
-        | default(''No Obvious Motion Detected.'') }}'
+      value_template: '{{ ''No Obvious Motion Detected.'' in (generated_content |
+        default({})).text | default(''No Obvious Motion Detected.'') }}'
     then:
     - stop: ''
     else:
     - action: notify.mobile_app_josh_mobile
       data:
-        message: '{{ (generated_content | default({})).text | default(''Motion detected in parlor.'') }}'
+        message: '{{ (generated_content | default({})).text | default(''Motion detected
+          in parlor.'') }}'
         title: Parlor Motion Detected
         data:
           image: /local/tmp/snapshots/parlor/parlor_snapshot2.jpg
@@ -231,14 +233,15 @@ camera_kitchen_snapshot_ai_notification:
     response_variable: generated_content
   - if:
     - condition: template
-      value_template: '{{ ''No Obvious Motion Detected.'' in (generated_content | default({})).text
-        | default(''No Obvious Motion Detected.'') }}'
+      value_template: '{{ ''No Obvious Motion Detected.'' in (generated_content |
+        default({})).text | default(''No Obvious Motion Detected.'') }}'
     then:
     - stop: ''
     else:
     - action: notify.mobile_app_josh_mobile
       data:
-        message: '{{ (generated_content | default({})).text | default(''Motion detected in kitchen.'') }}'
+        message: '{{ (generated_content | default({})).text | default(''Motion detected
+          in kitchen.'') }}'
         title: Kitchen Motion Detected
         data:
           image: /local/tmp/snapshots/kitchen/kitchen_snapshot2.jpg
@@ -288,7 +291,8 @@ locate_cats_snapshot_ai_notification_duplicate:
     else:
     - action: notify.mobile_app_josh_mobile
       data:
-        message: '{{ (generated_content | default({})).text | default(''Cats detected in house.'') }}'
+        message: '{{ (generated_content | default({})).text | default(''Cats detected
+          in house.'') }}'
         title: Locating Cats
   description: ''
   icon: mdi:cctv
@@ -483,12 +487,13 @@ welcome_home_ai_debrief:
         empty.\" if is_state('input_boolean.porch_visitor_while_away', 'on') else
         \"\" %}\n{# This picks a random way to refer to the pets to keep it fresh
         #} {% set cat_prompt = [\n  \"Include a cute observation about one specific
-        cat chosen from: Battle Cat, Josie, or Custard.\",\n  \"Include a funny observation
-        about two of their cats (choose two from: Battle Cat, Josie, and Custard).\",\n
-        \ \"Include a brief, chaotic update on all three cats: Battle Cat, Josie,
-        and Custard.\",\n  \"Refer to the cats generally as 'the cats' or 'the felines'
-        without using their specific names.\"\n] | random %}\nWrite a short, creative
-        {{ time_of_day }} welcome home message for {{ person }}.  {% if is_vacation
+        cat chosen from: Battle Cat (he/him), Josie(she/her), or Custard(she/her).\",\n
+        \ \"Include a funny observation about two of their cats choose two from: Battle
+        Cat (he/him), Josie(she/her), or Custard(she/her).\",\n  \"Include a brief,
+        chaotic update on all three cats: Battle Cat (he/him), Josie(she/her), or
+        Custard(she/her).\",\n  \"Refer to the cats generally as 'the cats' or 'the
+        felines' without using their specific names.\"\n] | random %}\nWrite a short,
+        creative {{ time_of_day }} welcome home message for {{ person }}.  {% if is_vacation
         %}Mention they are returning from a long trip and the Home is secure.{% endif
         %} {{ cat_prompt }} {{ visitor_status }}  Limit the entire response to 35
         words."
@@ -507,7 +512,8 @@ welcome_home_ai_debrief:
   - action: notify.alexa_media_counter
     continue_on_error: true
     data:
-      message: '{{ (ai_greeting | default({})).data | default(''Welcome home! The house is secure and the cats are waiting for you.'') }}'
+      message: '{{ (ai_greeting | default({})).data | default(''Welcome home! The
+        house is secure and the cats are waiting for you.'') }}'
       target: media_player.counter
   - delay:
       hours: 0
