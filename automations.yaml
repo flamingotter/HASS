@@ -3366,9 +3366,8 @@
       message: Climate data sync to BigQuery triggered.
       title: Data Pipeline
 - id: '1775070658742'
-  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v5.1)'
-  description: 'v5.1: Added detailed CSV logging to /media/maintenance/climate_control_log.csv
-    and verbose notifications for testing. Truly Data-Driven Precooling.'
+  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v5.2)'
+  description: 'v5.2: Changed mode to queued and reordered actions to prevent restart cancellation of logs. Truly Data-Driven Precooling.'
   triggers:
   - trigger: state
     entity_id:
