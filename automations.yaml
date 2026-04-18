@@ -3366,8 +3366,9 @@
       message: Climate data sync to BigQuery triggered.
       title: Data Pipeline
 - id: '1775070658742'
-  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v5.2)'
-  description: 'v5.2: Changed mode to queued and reordered actions to prevent restart cancellation of logs. Truly Data-Driven Precooling.'
+  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v5.3)'
+  description: 'v5.3: Implemented Gentle Remote Sensing (wider deadband, dynamic targets)
+    for Phases 4 and 5 to eliminate HVAC short-cycling during the Sleep Window.'
   triggers:
   - trigger: state
     entity_id:
@@ -3550,35 +3551,35 @@
     - alias: 'Phase 4: Sleep Window (Keep Cool)'
       conditions:
       - condition: template
-        value_template: '{{ is_sleep_window and actual > (target + 0.5) and t6_target
-          != 60 }}'
+        value_template: '{{ is_sleep_window and actual >= (target + 1.0) and t6_target
+          != (target - 2.0) }}'
       sequence:
       - action: notify.send_message
         target:
           entity_id: '{{ log_entity }}'
         data:
           message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }},PHASE_4_KEEP_COOL,Indoor:
-            {{ actual }},Pushing back to 60F'
+            {{ actual }},Pushing back to {{ target - 2.0 }}F'
       - action: climate.set_temperature
         target:
           entity_id: climate.t6_pro_downstairs
         data:
-          temperature: 60
+          temperature: '{{ target - 2.0 }}'
     - alias: 'Phase 5: Sleep Window (Prevent Over-Cooling)'
       conditions:
       - condition: template
-        value_template: '{{ is_sleep_window and actual < (target - 0.5) and t6_target
-          != 72 }}'
+        value_template: '{{ is_sleep_window and actual <= (target - 1.0) and t6_target
+          != (target + 2.0) }}'
       sequence:
       - action: notify.send_message
         target:
           entity_id: '{{ log_entity }}'
         data:
           message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }},PHASE_5_PREVENT_OVERCOOL,Indoor:
-            {{ actual }},Letting room warm to 72F'
+            {{ actual }},Letting room warm to {{ target + 2.0 }}F'
       - action: climate.set_temperature
         target:
           entity_id: climate.t6_pro_downstairs
         data:
-          temperature: 72
+          temperature: '{{ target + 2.0 }}'
   mode: queued
