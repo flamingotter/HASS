@@ -3366,9 +3366,9 @@
       message: Climate data sync to BigQuery triggered.
       title: Data Pipeline
 - id: '1775070658742'
-  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v5.3)'
-  description: 'v5.3: Implemented Gentle Remote Sensing (wider deadband, dynamic targets)
-    for Phases 4 and 5 to eliminate HVAC short-cycling during the Sleep Window.'
+  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v5.4)'
+  description: 'v5.4: Restricted learning to the initial evening push (before midnight)
+    to prevent repository skew from maintenance cycles.'
   triggers:
   - trigger: state
     entity_id:
@@ -3493,20 +3493,17 @@
       sequence:
       - if:
         - condition: template
-          alias: Update Performance Repository if Target Met
-          value_template: '{{ t6_target == 60 and actual <= target }}'
+          alias: Update Performance Repository if Target Met and Time is Correct
+          value_template: '{{ t6_target == 60 and actual <= target and now().hour >= 18 }}'
         then:
         - variables:
             start_val: '{{ states(''input_datetime.precool_start_time'') }}'
-            duration: '{{ (as_timestamp(now(), 0) - as_timestamp(start_val, 0)) /
-              60 }}'
-            drop: '{{ states(''input_number.precool_start_temp'')|float(actual) -
-              actual }}'
+            duration: '{{ (as_timestamp(now(), 0) - as_timestamp(start_val, 0)) / 60 }}'
+            drop: '{{ states(''input_number.precool_start_temp'')|float(actual) - actual }}'
             valid_session: '{{ duration > 15 and duration < 300 and drop > 0.5 }}'
             obs_rate: '{{ (duration / drop) | round(1) }}'
-            outdoor: '{{ states(''sensor.weather_station_temperature_outdoor'') |
-              float(70) }}'
-            lookup_key: '{{ ((outdoor / 5) | round(0) * 5) | int | string }}'
+            outdoor: '{{ states(''sensor.weather_station_temperature_outdoor'') | float(70) }}'
+            lookup_key: '{{ ((outdoor / 5) | round(0) * 5) | string }}'
         - if:
           - condition: template
             value_template: '{{ valid_session and obs_rate < 45 }}'
