@@ -28,7 +28,12 @@ binary_sensor:
       {% set is_precool_window = as_timestamp(now(), 0) >= start_ts and now() < bedtime %}
       {% set is_cooling_mode = is_state('climate.t6_pro_downstairs', 'cool') %}
       
-      {{ is_precool_window and not is_sleep_window and indoor > target and is_cooling_mode }}
+      {# v5.5 Deadband: Once target is hit, require a +1.0F rise to trigger another precool cycle #}
+      {% set last_start = states('input_datetime.precool_start_time') %}
+      {% set already_ran_today = as_timestamp(last_start, 0) > start_ts %}
+      {% set activation_threshold = target + 1.0 if already_ran_today else target %}
+      
+      {{ is_precool_window and not is_sleep_window and indoor > activation_threshold and is_cooling_mode }}
     attributes:
       precool_start_time: >
         {% set b = states('input_datetime.bedroom_bedtime') %}

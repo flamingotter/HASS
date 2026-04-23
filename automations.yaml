@@ -2972,39 +2972,101 @@
         data: {}
   mode: single
 - id: '1766015428765'
-  alias: 'Light Control: Dining Room (ZEN74 Sync)'
-  description: Syncs state and brightness between the ZEN74 toggles and the smart
-    bulbs. Works for single tap, double tap, and hold-to-dim.
+  alias: 'Light Control: Dining Room (v2.0)'
+  description: Instant LIFX control for two Zooz ZEN74 switches with Double Tap and
+    Dimming
   triggers:
-  - trigger: state
-    entity_id:
-    - light.dining_switch_01
-    - light.dining_switch_02
-  conditions:
-  - condition: template
-    value_template: '{{ trigger.to_state.state != trigger.from_state.state or 
-      trigger.to_state.attributes.brightness != trigger.from_state.attributes.brightness }}'
+  - event_type: zwave_js_value_notification
+    event_data:
+      property_key: '001'
+    id: top
+    trigger: event
+  - event_type: zwave_js_value_notification
+    event_data:
+      property_key: '002'
+    id: bottom
+    trigger: event
   actions:
-  - variables:
-      brightness: '{{ trigger.to_state.attributes.brightness | default(0) }}'
-  - if:
-    - condition: template
-      value_template: '{{ trigger.to_state.state == ''on'' }}'
-    then:
-    - action: light.turn_on
-      target:
-        entity_id: light.dining
-      data:
-        brightness: '{{ brightness }}'
-        transition: 0.2
-    else:
-    - action: light.turn_off
-      target:
-        entity_id: light.dining
-      data:
-        transition: 0.5
-  mode: parallel
-  max: 10
+  - condition: template
+    value_template: "{{ trigger.event.data.device_id in [\n  'c125586b93f269297aa55b3247f9d054',\n
+      \ '961b9d5943f96a6021fbf5392265d48c'\n] }}\n"
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.event.data.value == ''KeyPressed2x'' and trigger.id
+          == ''top'' }}'
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: light.dining
+        data:
+          brightness_pct: 100
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.event.data.value == ''KeyPressed2x'' and trigger.id
+          == ''bottom'' }}'
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: light.dining
+        data:
+          brightness_pct: 50
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.event.data.value == ''KeyPressed'' and trigger.id
+          == ''top'' }}'
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: light.dining
+        data:
+          brightness_pct: 100
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.event.data.value == ''KeyPressed'' and trigger.id
+          == ''bottom'' }}'
+      sequence:
+      - action: light.turn_off
+        target:
+          entity_id: light.dining
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.event.data.value == ''KeyHeldDown'' and trigger.id
+          == ''top'' }}'
+      sequence:
+      - repeat:
+          while:
+          - condition: template
+            value_template: '{{ true }}'
+          sequence:
+          - action: light.turn_on
+            target:
+              entity_id: light.dining
+            data:
+              brightness_step_pct: 10
+          - delay: '00:00:00.3'
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.event.data.value == ''KeyHeldDown'' and trigger.id
+          == ''bottom'' }}'
+      sequence:
+      - repeat:
+          while:
+          - condition: template
+            value_template: '{{ true }}'
+          sequence:
+          - action: light.turn_on
+            target:
+              entity_id: light.dining
+            data:
+              brightness_step_pct: -10
+          - delay: '00:00:00.3'
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.event.data.value == ''KeyReleased'' }}'
+      sequence:
+      - stop: Button released
+  mode: restart
 - id: '1772286703556'
   alias: 'Door Security: Entry Chimes (Throttled)'
   description: Plays siren tone once every 10 minutes when a door opens.
@@ -3350,9 +3412,8 @@
       message: Climate data sync to BigQuery triggered.
       title: Data Pipeline
 - id: '1775070658742'
-  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v5.4)'
-  description: 'v5.4: Restricted learning to the initial evening push (before midnight)
-    to prevent repository skew from maintenance cycles.'
+  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v5.5)'
+  description: 'v5.5: Added a +1.0F deadband to the precool binary sensor to prevent pre-bedtime yo-yo short-cycling if the target is met early.'
   triggers:
   - trigger: state
     entity_id:
@@ -3569,38 +3630,13 @@
           temperature: '{{ target + 2.0 }}'
   mode: queued
 - id: '1776622737956'
-  alias: Pantry Light/Door
-  description: ''
+  alias: Pantry Light/Door (v2.0)
+  description: Turns pantry light on/off based on door sensor.
   triggers:
   - trigger: state
-    entity_id:
-    - binary_sensor.pantry_door
-    to:
-    - 'on'
-    id: pantry_open
-  - trigger: state
-    entity_id:
-    - binary_sensor.pantry_door
-    to:
-    - 'off'
-    id: pantry_closed
-  conditions: []
+    entity_id: binary_sensor.pantry_door
   actions:
-  - choose:
-    - conditions:
-      - condition: trigger
-        id:
-        - pantry_open
-      sequence:
-      - action: switch.turn_on
-        metadata: {}
-        data: {}
-    - conditions:
-      - condition: trigger
-        id:
-        - pantry_closed
-      sequence:
-      - action: switch.turn_off
-        metadata: {}
-        data: {}
+  - action: switch.turn_{{ trigger.to_state.state }}
+    target:
+      entity_id: switch.z_wave_plus_on_off_toggle_switch
   mode: single
