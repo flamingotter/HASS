@@ -3144,8 +3144,9 @@
   mode: parallel
   max: 10
 - id: '1772728212323'
-  alias: 'Security: Front Porch - AI Video Analysis'
-  description: ''
+  alias: 'Security: Front Porch - AI Video Analysis (v1.1)'
+  description: 'v1.1: Context-aware identity check. Residents are ignored if delivering
+    packages or wearing uniforms, preventing night-time false positives.'
   triggers:
   - trigger: state
     entity_id: binary_sensor.front_porch_ptz_person_detected
@@ -3201,11 +3202,19 @@
         vehicles or people in the distance. Compare the person in the footage to the
         reference photos.
 
-        RULE 1: If the person in the footage is a visual match for Josh or MJ, start
-        your response with the exact tag: [RESIDENT] RULE 2: If the person is a guest
-        who is let inside the house or walks through the front door, start your response
-        with: [ENTERED] RULE 3: For all other visitors, deliveries, or solicitors,
-        start your response with: [ALERT]
+        CRITICAL LOGIC: Residents do not deliver packages or wear delivery uniforms.
+        If the person leaves a package, takes a photo of a package, or is wearing
+        a delivery uniform (Amazon, UPS, FedEx, USPS), they are NEVER a resident,
+        regardless of physical resemblance.
+
+        RULE 1: If the person is a visual match for Josh or MJ AND does not leave
+        a package, start your response with: [RESIDENT]
+
+        RULE 2: If the person is a guest who is let inside the house or walks through
+        the front door, start your response with: [ENTERED]
+
+        RULE 3: For all other visitors, deliveries, or solicitors, start your response
+        with: [ALERT]
 
         After the tag, provide a concise summary in under 50 words: - Person: [Details]
         - Package-Action: [What they left, or if they went inside] - Intent: [Delivery,
