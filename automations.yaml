@@ -2508,79 +2508,6 @@
           level: warning
           message: device id= "{{ device_id }}" and cleared= "{{ cleared }}"
   mode: single
-- id: '1752168379671'
-  alias: Motion Hall
-  description: ''
-  triggers:
-  - alias: motion
-    entity_id:
-    - binary_sensor.motion_hall_01
-    to: 'on'
-    id: motion
-    trigger: state
-  - event_type: timer.finished
-    event_data:
-      entity_id: timer.timer_hall
-    id: t02
-    trigger: event
-  conditions:
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: alarm_control_panel.home_alarm
-      state: disarmed
-    - condition: state
-      entity_id: input_boolean.motion_lockout
-      state: 'off'
-  actions:
-  - alias: Turn on and start timer
-    if:
-    - condition: trigger
-      id:
-      - motion
-    then:
-    - if:
-      - condition: state
-        entity_id: light.hall_lights
-        state: 'on'
-      then:
-      - data:
-          duration: 00:02:00
-        action: timer.start
-        target:
-          entity_id: timer.timer_hall
-      else:
-      - parallel:
-        - data:
-            duration: 00:02:00
-          action: timer.start
-          target:
-            entity_id: timer.timer_hall
-        - action: light.turn_on
-          data:
-            transition: 0.5
-            brightness_pct: 50
-          target:
-            entity_id: light.hall_lights
-  - if:
-    - condition: trigger
-      id:
-      - t02
-    - condition: state
-      entity_id: input_boolean.cleaning
-      state: 'off'
-    - condition: not
-      conditions:
-      - condition: state
-        entity_id: sensor.last_motion_indoors
-        state: Hall
-    then:
-    - action: light.turn_off
-      data:
-        transition: 0.5
-      target:
-        entity_id: light.hall_lights
-  mode: restart
 - id: '1752169679107'
   alias: Motion Bedroom
   description: ''
@@ -3421,8 +3348,8 @@
       message: Climate data sync to BigQuery triggered.
       title: Data Pipeline
 - id: '1775070658742'
-  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v5.5)'
-  description: 'v5.5: Added a +1.0F deadband to the precool binary sensor to prevent pre-bedtime yo-yo short-cycling if the target is met early.'
+  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v5.6)'
+  description: 'v5.6: Added failsafe logic for unreliable bedroom temperature sensors. If the sensor goes unavailable, the system falls back to the T6 thermostat reading to prevent premature handoffs.'
   triggers:
   - trigger: state
     entity_id:
@@ -3447,8 +3374,10 @@
   - variables:
       target: '{{ states(''input_number.bedroom_target_temperature'') | float(68)
         }}'
-      actual: '{{ states(''sensor.bedroom_sensor_air_temperature'') | float(target)
-        }}'
+      actual: >
+        {% set bdr = states('sensor.bedroom_sensor_air_temperature') %}
+        {% set t6 = state_attr('climate.t6_pro_downstairs', 'current_temperature') %}
+        {{ bdr | float(t6 | float(72)) }}
       is_sleep_window: '{% set b = states(''input_datetime.bedroom_bedtime'') %} {%
         set bedtime_str = b if b not in [''unknown'', ''unavailable'', ''None''] else
         ''22:30:00'' %} {{ now() >= today_at(bedtime_str) or now().hour < 7 }}
@@ -3649,3 +3578,82 @@
     target:
       entity_id: switch.z_wave_plus_on_off_toggle_switch
   mode: single
+- id: '1776974854675'
+  alias: Motion Hall
+  description: ''
+  triggers:
+  - alias: motion
+    entity_id:
+    - binary_sensor.motion_indoors_hall_motion_detection
+    to:
+    - 'on'
+    id: motion
+    trigger: state
+  - event_type: timer.finished
+    event_data:
+      entity_id: timer.timer_hall
+    id: t02
+    trigger: event
+  conditions:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.home_alarm
+      state: disarmed
+    - condition: state
+      entity_id: input_boolean.motion_lockout
+      state: 'off'
+  actions:
+  - alias: Turn on and start timer
+    if:
+    - condition: trigger
+      id:
+      - motion
+    then:
+    - if:
+      - condition: state
+        state:
+        - 'on'
+        entity_id: light.hall_light
+      then:
+      - metadata: {}
+        data: {}
+        action: timer.start
+        target:
+          entity_id:
+          - timer.timer_hall
+      else:
+      - parallel:
+        - metadata: {}
+          data: {}
+          action: timer.start
+          target:
+            entity_id:
+            - timer.timer_hall
+        - action: light.turn_on
+          metadata: {}
+          data:
+            transition: 0.5
+          target:
+            entity_id: light.hall_light
+  - if:
+    - condition: trigger
+      id:
+      - t02
+    - condition: state
+      entity_id: input_boolean.cleaning
+      state: 'off'
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: sensor.last_motion_indoors
+        state:
+        - Hall
+    then:
+    - action: light.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id:
+        - light.hall_light
+  mode: restart
