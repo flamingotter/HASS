@@ -1,0 +1,4 @@
+---
+hall_timer_dummy:
+  name: "Hall Timer Dummy Switch"
+  icon: mdi:piston

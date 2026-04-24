@@ -2676,7 +2676,7 @@
       - light.masonic_lamp
   mode: single
 - id: '1762105854595'
-  alias: 'Kitchen Controller - All Devices & LED Sync (v3.0)'
+  alias: Kitchen Controller - All Devices & LED Sync (v3.0)
   description: 'v3.0: 4-Way Sync for 3x ZEN35 devices. Restricted state triggers to
     ignore Adaptive Lighting attribute changes, preventing excessive once-per-minute
     script execution.'
@@ -3084,9 +3084,8 @@
   mode: parallel
   max: 10
 - id: '1772728212323'
-  alias: 'Security: Front Porch - AI Video Analysis (v1.1)'
-  description: 'v1.1: Context-aware identity check. Residents are ignored if delivering
-    packages or wearing uniforms, preventing night-time false positives.'
+  alias: 'Security: Front Porch - AI Video Analysis (v1.2)'
+  description: 'v1.1: Context-aware identity check. increased snapshot delays +1 sec'
   triggers:
   - trigger: state
     entity_id: binary_sensor.front_porch_ptz_person_detected
@@ -3113,20 +3112,25 @@
         lookback: 3
         filename: /media/snapshots/porch/approach.mp4
     - sequence:
-      - action: camera.snapshot
-        target:
-          entity_id: camera.doorbell_outside_medium_resolution_channel
-        data:
-          filename: /media/snapshots/porch/doorbell_t0.jpg
       - delay:
           seconds: 1
       - action: camera.snapshot
         target:
           entity_id: camera.doorbell_outside_medium_resolution_channel
         data:
-          filename: /media/snapshots/porch/doorbell_t1.jpg
+          filename: /media/snapshots/porch/doorbell_t0.jpg
       - delay:
           seconds: 2
+      - action: camera.snapshot
+        target:
+          entity_id: camera.doorbell_outside_medium_resolution_channel
+        data:
+          filename: /media/snapshots/porch/doorbell_t1.jpg
+      - delay:
+          hours: 0
+          minutes: 0
+          seconds: 3
+          milliseconds: 0
       - action: camera.snapshot
         target:
           entity_id: camera.doorbell_outside_medium_resolution_channel
@@ -3638,10 +3642,12 @@
         target:
           entity_id:
           - timer.timer_hall
-      else:
+        data:
+          duration: '{{ state_attr(''climate.hall_timer'', ''temperature'') | int(5) * 60 }}'
       - parallel:
         - metadata: {}
-          data: {}
+          data:
+            duration: '{{ state_attr(''climate.hall_timer'', ''temperature'') | int(5) * 60 }}'
           action: timer.start
           target:
             entity_id:

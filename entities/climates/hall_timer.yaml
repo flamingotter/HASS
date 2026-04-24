@@ -1,0 +1,11 @@
+---
+platform: generic_thermostat
+name: "Hall Timer"
+unique_id: hall_timer_climate
+heater: input_boolean.hall_timer_dummy
+target_sensor: sensor.bedroom_sensor_air_temperature
+min_temp: 1
+max_temp: 30
+target_temp: 5
+precision: 1
+ac_mode: false
