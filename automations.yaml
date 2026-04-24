@@ -2676,9 +2676,10 @@
       - light.masonic_lamp
   mode: single
 - id: '1762105854595'
-  alias: Kitchen Controller - All Devices & LED Sync
-  description: 4-Way Sync for 3x ZEN35 devices. Centralized logic for Button 1 (Island),
-    Button 2 (Scenes), Button 3 (Adaptive), and Button 5 (Big Kitchen).
+  alias: 'Kitchen Controller - All Devices & LED Sync (v3.0)'
+  description: 'v3.0: 4-Way Sync for 3x ZEN35 devices. Restricted state triggers to
+    ignore Adaptive Lighting attribute changes, preventing excessive once-per-minute
+    script execution.'
   triggers:
   - alias: 'Button 1: Island (Device 1)'
     trigger: event
