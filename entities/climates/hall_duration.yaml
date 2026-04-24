@@ -1,7 +1,7 @@
 ---
 platform: generic_thermostat
-name: "Hall Timer"
-unique_id: hall_timer_climate
+name: "Hall Duration"
+unique_id: hall_duration_climate
 heater: input_boolean.hall_timer_dummy
 target_sensor: sensor.bedroom_sensor_air_temperature
 min_temp: 1

@@ -3643,11 +3643,11 @@
           entity_id:
           - timer.timer_hall
         data:
-          duration: '{{ state_attr(''climate.hall_timer'', ''temperature'') | int(5) * 60 }}'
+          duration: '{{ state_attr(''climate.hall_duration'', ''temperature'') | int(5) * 60 }}'
       - parallel:
         - metadata: {}
           data:
-            duration: '{{ state_attr(''climate.hall_timer'', ''temperature'') | int(5) * 60 }}'
+            duration: '{{ state_attr(''climate.hall_duration'', ''temperature'') | int(5) * 60 }}'
           action: timer.start
           target:
             entity_id:
