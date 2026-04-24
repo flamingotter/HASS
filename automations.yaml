@@ -3637,7 +3637,6 @@
         entity_id: light.hall_light
       then:
       - metadata: {}
-        data: {}
         action: timer.start
         target:
           entity_id:
