@@ -2779,10 +2779,22 @@
   - alias: 'State Change: Big Kitchen'
     trigger: state
     entity_id: light.big_kitchen_lights
+    from:
+    - 'off'
+    - 'on'
+    to:
+    - 'off'
+    - 'on'
     id: Update LEDs
   - alias: 'State Change: Island'
     trigger: state
     entity_id: light.island
+    from:
+    - 'off'
+    - 'on'
+    to:
+    - 'off'
+    - 'on'
     id: Update LEDs
   actions:
   - choose:
@@ -3349,7 +3361,9 @@
       title: Data Pipeline
 - id: '1775070658742'
   alias: 'Climate: Master Bedroom Sleep Comfort Engine (v5.6)'
-  description: 'v5.6: Added failsafe logic for unreliable bedroom temperature sensors. If the sensor goes unavailable, the system falls back to the T6 thermostat reading to prevent premature handoffs.'
+  description: 'v5.6: Added failsafe logic for unreliable bedroom temperature sensors.
+    If the sensor goes unavailable, the system falls back to the T6 thermostat reading
+    to prevent premature handoffs.'
   triggers:
   - trigger: state
     entity_id:
@@ -3374,10 +3388,11 @@
   - variables:
       target: '{{ states(''input_number.bedroom_target_temperature'') | float(68)
         }}'
-      actual: >
-        {% set bdr = states('sensor.bedroom_sensor_air_temperature') %}
-        {% set t6 = state_attr('climate.t6_pro_downstairs', 'current_temperature') %}
-        {{ bdr | float(t6 | float(72)) }}
+      actual: '{% set bdr = states(''sensor.bedroom_sensor_air_temperature'') %} {%
+        set t6 = state_attr(''climate.t6_pro_downstairs'', ''current_temperature'')
+        %} {{ bdr | float(t6 | float(72)) }}
+
+        '
       is_sleep_window: '{% set b = states(''input_datetime.bedroom_bedtime'') %} {%
         set bedtime_str = b if b not in [''unknown'', ''unavailable'', ''None''] else
         ''22:30:00'' %} {{ now() >= today_at(bedtime_str) or now().hour < 7 }}
@@ -3579,7 +3594,7 @@
       entity_id: switch.z_wave_plus_on_off_toggle_switch
   mode: single
 - id: '1776974854675'
-  alias: Motion Hall
+  alias: Motion Hall Downstairs
   description: ''
   triggers:
   - alias: motion
