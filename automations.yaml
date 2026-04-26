@@ -1184,39 +1184,9 @@
       entity_id: lock.garage_man_lock
   mode: single
 - id: system_maintenance_engine
-  alias: 'System: Maintenance Engine'
-  description: Scalable engine for filters and generator tests. Triggers on timer
-    finish or return home.
-  variables:
-    task_map:
-      timer.timer_hvac_filter:
-        name: HVAC Filter
-        instructions: The HVAC filter needs replacing to maintain air quality and
-          system efficiency. Write a short, creative reminder for Josh. Make it sound
-          like a high-end estate manager reporting a necessary maintenance item. Limit
-          to 25 words.
-        tag: hvac-reminder
-        action_done: hvac_done
-        action_snooze: hvac_snooze
-        reset_tag: 1e923fae-efb1-40c4-8c45-b5ab3f8beb78
-      timer.water_filter:
-        name: Water Filter
-        instructions: The water filter needs replacing. Write a short, creative reminder
-          for Josh to swap it out. Make it sound like a high-end estate manager reporting
-          a maintenance item. Limit to 25 words.
-        tag: water-reminder
-        action_done: water_done
-        action_snooze: water_snooze
-        reset_tag: 1e923fae-efb1-40c4-8c45-b5ab3f8beb78
-      timer.generator_test:
-        name: Generator Test
-        instructions: The monthly generator test is due. Write a short, authoritative
-          'Mission Readiness' style reminder for Josh. Focus on ensuring backup power
-          is mission-capable. Limit to 25 words.
-        tag: gen-reminder
-        action_done: gen_done
-        action_snooze: gen_snooze
-        reset_tag: 95e7dd1a-71d0-4af9-a813-a9974de3cf87
+  alias: 'System: Maintenance Engine (v2.0)'
+  description: v2.0 Dynamic Engine. Auto-discovers any timer.maintenance_* entity.
+    Triggers on expiry, arrival, swipe, or button actions.
   triggers:
   - trigger: event
     event_type: timer.finished
@@ -1228,115 +1198,101 @@
     - Home
     - Just Arrived
     id: remind
+  - trigger: event
+    event_type: mobile_app_notification_cleared
+    id: remind
+  - trigger: event
+    event_type: mobile_app_notification_action
+    id: action_handler
   - trigger: tag
     tag_id:
     - 1e923fae-efb1-40c4-8c45-b5ab3f8beb78
     - 95e7dd1a-71d0-4af9-a813-a9974de3cf87
     id: reset
-  - trigger: event
-    event_type: mobile_app_notification_action
-    event_data:
-      action:
-      - hvac_done
-      - water_done
-      - gen_done
-    id: reset
-  - trigger: event
-    event_type: mobile_app_notification_action
-    event_data:
-      action:
-      - hvac_snooze
-      - water_snooze
-      - gen_snooze
-    id: snooze
   actions:
+  - variables:
+      all_maint_timers: >
+        {{ states.timer | selectattr('entity_id', 'search', '^timer.maintenance_') | map(attribute='entity_id') | list }}
+      idle_maint_timers: >
+        {{ states.timer | selectattr('entity_id', 'search', '^timer.maintenance_') | selectattr('state', 'eq', 'idle') | map(attribute='entity_id') | list }}
   - choose:
     - conditions:
       - condition: trigger
         id: remind
       - condition: template
-        value_template: '{% set home = states(''input_select.josh_status'') in [''Home'',
-          ''Just Arrived''] %} {{ home and (is_state(''timer.timer_hvac_filter'',
-          ''idle'') or is_state(''timer.water_filter'', ''idle'') or is_state(''timer.generator_test'',
-          ''idle'')) }}
-
-          '
+        value_template: >
+          {% set is_maint = trigger.event.data.entity_id in all_maint_timers if trigger.platform == 'event' and trigger.event.event_type == 'timer.finished' else true %}
+          {% set is_swipe = trigger.event.data.tag in all_maint_timers if trigger.platform == 'event' and trigger.event.event_type == 'mobile_app_notification_cleared' else true %}
+          {% set home = states('input_select.josh_status') in ['Home', 'Just Arrived'] %}
+          {{ home and is_maint and is_swipe and idle_maint_timers | length > 0 }}
       sequence:
       - repeat:
-          for_each: "{% set tasks = task_map.items() | list %} {% set to_notify =
-            namespace(items=[]) %} {% for timer_id, data in tasks %}\n  {% if is_state(timer_id,
-            'idle') %}\n    {% set to_notify.items = to_notify.items + [dict(timer=timer_id,
-            **data)] %}\n  {% endif %}\n{% endfor %} {{ to_notify.items }}\n"
+          for_each: "{{ idle_maint_timers }}"
           sequence:
+          - variables:
+              t_name: "{{ state_attr(repeat.item, 'friendly_name') | replace('Maintenance ', '') | replace(' Timer', '') }}"
           - action: ai_task.generate_data
             continue_on_error: true
             data:
-              task_name: '{{ repeat.item.name }} Nag'
-              instructions: '{{ repeat.item.instructions }}'
+              task_name: '{{ t_name }} Nag'
+              instructions: >
+                The maintenance task "{{ t_name }}" is due. Write a short, creative reminder for Josh. 
+                Make it sound like a high-end estate manager reporting a necessary maintenance item. Limit to 25 words.
             response_variable: nag_content
           - action: notify.mobile_app_josh_mobile
             data:
-              title: 'Maintenance Alert: {{ repeat.item.name }}'
-              message: '{{ (nag_content | default({})).data | default(''Maintenance
-                is due for '' ~ repeat.item.name) }}'
+              title: 'Maintenance Alert: {{ t_name }}'
+              message: '{{ (nag_content | default({})).data | default("Maintenance is due for " ~ t_name) }}'
               data:
-                tag: '{{ repeat.item.tag }}'
+                tag: '{{ repeat.item }}'
                 actions:
-                - action: '{{ repeat.item.action_done }}'
+                - action: '{{ repeat.item }}_done'
                   title: Done
-                - action: '{{ repeat.item.action_snooze }}'
+                - action: '{{ repeat.item }}_snooze'
                   title: Snooze 24h
+    - conditions:
+      - condition: trigger
+        id: action_handler
+      sequence:
+      - variables:
+          raw_action: "{{ trigger.event.data.action }}"
+          target_timer: "{{ raw_action | replace('_done', '') | replace('_snooze', '') }}"
+          is_done: "{{ '_done' in raw_action }}"
+          is_snooze: "{{ '_snooze' in raw_action }}"
+      - if:
+        - condition: template
+          value_template: "{{ target_timer in all_maint_timers }}"
+        then:
+        - choose:
+          - conditions: "{{ is_done }}"
+            sequence:
+            - action: script.system_log_maintenance_task
+              data:
+                timer_entity: "{{ target_timer }}"
+          - conditions: "{{ is_snooze }}"
+            sequence:
+            - action: timer.start
+              data:
+                duration: '24:00:00'
+              target:
+                entity_id: "{{ target_timer }}"
     - conditions:
       - condition: trigger
         id: reset
       sequence:
       - variables:
           task_entity: >
-            {% set tag = trigger.event.data.tag_id if trigger.platform == 'tag' else none %}
-            {% set action = trigger.event.data.action if trigger.platform == 'event' else none %}
-            {% if tag == '1e923fae-efb1-40c4-8c45-b5ab3f8beb78' %}timer.timer_hvac_filter
-            {% elif tag == '95e7dd1a-71d0-4af9-a813-a9974de3cf87' %}timer.generator_test
-            {% elif action == 'hvac_done' %}timer.timer_hvac_filter
-            {% elif action == 'water_done' %}timer.water_filter
-            {% elif action == 'gen_done' %}timer.generator_test
+            {% set tag = trigger.event.data.tag_id %}
+            {% if tag == '1e923fae-efb1-40c4-8c45-b5ab3f8beb78' %}timer.maintenance_hvac_filter
+            {% elif tag == '95e7dd1a-71d0-4af9-a813-a9974de3cf87' %}timer.maintenance_generator_test
             {% else %}none{% endif %}
-          task_name: >
-            {% set tag = trigger.event.data.tag_id if trigger.platform == 'tag' else none %}
-            {% set action = trigger.event.data.action if trigger.platform == 'event' else none %}
-            {% if tag == '1e923fae-efb1-40c4-8c45-b5ab3f8beb78' %}HVAC Filter
-            {% elif tag == '95e7dd1a-71d0-4af9-a813-a9974de3cf87' %}Generator Test
-            {% elif action == 'hvac_done' %}HVAC Filter
-            {% elif action == 'water_done' %}Water Filter
-            {% elif action == 'gen_done' %}Generator Test
-            {% else %}Unknown Task{% endif %}
       - if:
         - condition: template
-          value_template: '{{ task_entity != ''none'' }}'
+          value_template: "{{ task_entity != 'none' }}"
         then:
         - action: script.system_log_maintenance_task
           data:
-            task_name: '{{ task_name }}'
-            timer_entity: '{{ task_entity }}'
-    - conditions:
-      - condition: trigger
-        id: snooze
-      sequence:
-      - variables:
-          task_entity: >
-            {% set action = trigger.event.data.action if trigger.platform == 'event' else none %}
-            {% if action == 'hvac_snooze' %}timer.timer_hvac_filter
-            {% elif action == 'water_snooze' %}timer.water_filter
-            {% elif action == 'gen_snooze' %}timer.generator_test
-            {% else %}none{% endif %}
-      - if:
-        - condition: template
-          value_template: '{{ task_entity != ''none'' }}'
-        then:
-        - action: timer.start
-          data:
-            duration: '24:00:00'
-          target:
-            entity_id: '{{ task_entity }}'
+            timer_entity: "{{ task_entity }}"
   mode: parallel
   max: 10
 - id: '1724690161012'
