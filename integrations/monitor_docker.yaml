@@ -4,11 +4,23 @@ monitor_docker:
     url: http://127.0.0.1:2375
     buttonenabled: True
     containers_exclude:
-      - ha_bq_exporter
+      - authelia
+      - docker-housekeeper
+      - influxdb
+      - mass
+      - nodered
+      - oww
+      - socket-proxy
+      - traefik
+      - zwave_js
       - mqtt
       - ddclient
       - dozzle
       - esphome
+      - mariadb
+      - hass
+      - portainer
+      - watchtower_update
       - caac3031419e_ddclient
       - 32f950c7c3e3_dozzle
     monitored_conditions:

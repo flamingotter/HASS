@@ -449,8 +449,8 @@ fix_zooz_smart_bulb_mode:
   sequence:
   - repeat:
       for_each:
-      - entity: switch.dining_room_switch_01
-      - entity: switch.dining_room_switch_02
+      - entity: light.dining_switch_01
+      - entity: light.dining_switch_02
       sequence:
       - target:
           entity_id: '{{ repeat.item.entity }}'
@@ -569,19 +569,19 @@ log_generator_test:
   - action: script.system_log_maintenance_task
     data:
       task_name: Generator Test
-      timer_entity: timer.generator_test
+      timer_entity: timer.maintenance_generator_test
 log_hvac_maintenance:
   alias: Log HVAC Maintenance
   sequence:
   - action: script.system_log_maintenance_task
     data:
       task_name: HVAC Filter
-      timer_entity: timer.timer_hvac_filter
+      timer_entity: timer.maintenance_hvac_filter
 log_water_maintenance:
   alias: Log Water Filter Maintenance
   sequence:
   - action: script.system_log_maintenance_task
     data:
       task_name: Water Filter
-      timer_entity: timer.water_filter
+      timer_entity: timer.maintenance_water_filter
   description: ''
