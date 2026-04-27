@@ -45,3 +45,4 @@ ip_bans.yaml
 GEMINI.md
 HA.code-workspace
 watchman_report.txt
+bq_venv/
