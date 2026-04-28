@@ -2998,12 +2998,6 @@
 - id: '1772286703556'
   alias: 'Door Security: Entry Chimes (Throttled)'
   description: Plays siren tone once every 10 minutes when a door opens.
-  variables:
-    door_map:
-      binary_sensor.front_door:
-        instant: 31
-      binary_sensor.garage_man_door:
-        instant: 30
   triggers:
   - trigger: state
     entity_id:
@@ -3017,6 +3011,12 @@
     data:
       tone: '{{ door_map[trigger.entity_id].instant | default(1) }}'
   - delay: 00:10:00
+  variables:
+    door_map:
+      binary_sensor.front_door:
+        instant: 7
+      binary_sensor.garage_man_door:
+        instant: 6
   mode: single
   max_exceeded: silent
 - id: outdoor_motion_lighting_engine
@@ -3307,11 +3307,11 @@
   variables:
     door_map:
       binary_sensor.front_door:
-        long: 28
+        long: 4
       binary_sensor.garage_man_door:
-        long: 29
+        long: 5
       binary_sensor.pantry_door:
-        long: 34
+        long: 1
   mode: parallel
   max: 10
 - id: '1773858634897'
@@ -3665,3 +3665,23 @@
         entity_id:
         - light.hall_light
   mode: restart
+- id: hvac_health_alert
+  alias: 'System: HVAC Health Alert'
+  description: Monitors the BigQuery AI health check and alerts if the AC loses efficiency.
+  triggers:
+  - trigger: state
+    entity_id: sensor.hvac_health_status
+    to:
+    - Degraded
+    - Critical
+  conditions: []
+  actions:
+  - action: notify.mobile_app_josh_mobile
+    data:
+      title: "⚠️ HVAC Alert: {{ trigger.to_state.state }}"
+      message: >
+        Your AC efficiency has dropped by {{ state_attr('sensor.hvac_health_status', 'degradation_pct') }}%. 
+        It is taking {{ state_attr('sensor.hvac_health_status', 'recent_rate') }} minutes to cool 1 degree, 
+        compared to your baseline of {{ state_attr('sensor.hvac_health_status', 'baseline_rate') }} minutes.
+        Please check the filter or condenser coils.
+  mode: single
