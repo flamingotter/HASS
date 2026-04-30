@@ -1,13 +1,2 @@
 ---
-command_line:
-  - sensor:
-      name: "HVAC Health Status"
-      unique_id: hvac_health_status
-      command: "source bq_venv/bin/activate && python3 hvac_health_check.py"
-      value_template: "{{ value_json.status | title }}"
-      json_attributes:
-        - degradation_pct
-        - baseline_rate
-        - recent_rate
-        - check_time
-      scan_interval: 86400 # Runs once a day
+command_line: !include_dir_merge_list ../entities/command_line
