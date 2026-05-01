@@ -102,8 +102,8 @@
     - input_select.office_scene_select
   condition: []
   action:
-  - service: scene.turn_on
-    data_template:
+  - action: scene.turn_on
+    data:
       entity_id: scene.{{trigger.to_state.state}}
       transition: 2
   mode: single
@@ -247,7 +247,7 @@
   - sequence:
     - action: alarm_control_panel.alarm_disarm
       data:
-        code: '1977'
+        code: '!secret alarm_panel_code'
       target:
         entity_id: alarm_control_panel.home_alarm
     - target:
@@ -3332,7 +3332,7 @@
     target:
       entity_id: alarm_control_panel.home_alarm
     data:
-      code: '1977'
+      code: '!secret alarm_panel_code'
   - action: notify.mobile_app_josh_mobile
     data:
       title: Garage Man Door Unlocked
@@ -3353,7 +3353,7 @@
       message: Climate data sync to BigQuery triggered.
       title: Data Pipeline
 - id: '1775070658742'
-  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v5.7)'
+  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v5.8)'
   description: 'v5.6: Added failsafe logic for unreliable bedroom temperature sensors.
     If the sensor goes unavailable, the system falls back to the T6 thermostat reading
     to prevent premature handoffs.'
@@ -3494,8 +3494,9 @@
               60 }}'
             drop: '{{ states(''input_number.precool_start_temp'')|float(actual) -
               actual }}'
-            valid_session: '{{ duration > 15 and duration < 300 and drop > 0.5 }}'
-            obs_rate: '{{ (duration / drop) | round(1) }}'
+            valid_drop: '{{ drop > 0.5 }}'
+            valid_session: '{{ duration > 15 and duration < 300 and valid_drop }}'
+            obs_rate: '{{ (duration / [drop, 0.1]|max) | round(1) }}'
             outdoor: '{{ states(''sensor.weather_station_temperature_outdoor'') |
               float(70) }}'
             lookup_key: '{{ ((outdoor / 5) | round(0) * 5) | string }}'
@@ -3678,11 +3679,12 @@
   actions:
   - action: notify.mobile_app_josh_mobile
     data:
-      title: "⚠️ HVAC Alert: {{ trigger.to_state.state }}"
-      message: >
-        Your AC efficiency has dropped by {{ state_attr('sensor.hvac_health_status', 'degradation_pct') }}%. 
-        It is taking {{ state_attr('sensor.hvac_health_status', 'recent_rate') }} minutes to cool 1 degree, 
-        compared to your baseline of {{ state_attr('sensor.hvac_health_status', 'baseline_rate') }} minutes.
+      title: '⚠️ HVAC Alert: {{ trigger.to_state.state }}'
+      message: 'Your AC efficiency has dropped by {{ state_attr(''sensor.hvac_health_status'',
+        ''degradation_pct'') }}%.  It is taking {{ state_attr(''sensor.hvac_health_status'',
+        ''recent_rate'') }} minutes to cool 1 degree,  compared to your baseline of
+        {{ state_attr(''sensor.hvac_health_status'', ''baseline_rate'') }} minutes.
         Please check the filter or condenser coils.
-  mode: single
 
+        '
+  mode: single

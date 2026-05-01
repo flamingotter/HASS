@@ -15,12 +15,12 @@ activate_alexa_actionable_notification:
       description: Set true if you want to suppress 'okay' confirmation
       example: 'true'
   sequence:
-  - data_template:
+  - data:
       entity_id: input_text.alexa_actionable_notification
       value: '{"text": "{{ text }}", "event": "{{ event_id }}", "suppress_confirmation":
         "{{ suppress_confirmation }}"}'
     action: input_text.set_value
-  - data_template:
+  - data:
       entity_id: '{{ alexa_device }}'
       media_content_type: skill
       media_content_id: amzn1.ask.skill.c2564a56-c75d-451e-9a04-6349756d92c9
@@ -117,7 +117,7 @@ genai_response_to_actionable_notification:
       seconds: 2
       milliseconds: 0
   - action: script.activate_mobile_actionable_notification
-    data_template:
+    data:
       notify_target: '{{ targets.get(msg_target, ''unknown'') }}'
       title: test message
       message: '{{ (generated_content | default({})).text | default(''The cats are
