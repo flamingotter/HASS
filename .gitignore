@@ -13,6 +13,8 @@ custom_components/
 *.conf
 *.json
 *.py
+!bin/*.py
+!tools/*.py
 *.db-shm
 *.db-wal
 *.red
