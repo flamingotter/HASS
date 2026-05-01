@@ -1533,9 +1533,8 @@
         target:
           entity_id: media_player.counter
         data:
-          media:
-            media_content_id: amzn_sfx_rooster_crow_01
-            media_content_type: sound
+          media_content_id: amzn_sfx_rooster_crow_01
+          media_content_type: sound
       - delay:
           hours: 0
           minutes: 0
@@ -3688,3 +3687,4 @@
 
         '
   mode: single
+e
