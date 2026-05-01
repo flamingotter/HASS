@@ -6,7 +6,7 @@
     tag_id: reading_mode
   condition: []
   action:
-  - service: input_boolean.toggle
+  - action: input_boolean.toggle
     target:
       entity_id: input_boolean.reading_mode
   mode: single
@@ -466,7 +466,7 @@
         id:
         - t01
       sequence:
-      - service: fan.set_percentage
+      - action: fan.set_percentage
         data:
           percentage: 30
         target:
@@ -476,7 +476,7 @@
         id:
         - t02
       sequence:
-      - service: fan.set_percentage
+      - action: fan.set_percentage
         data:
           percentage: 40
         target:
@@ -486,7 +486,7 @@
         id:
         - t03
       sequence:
-      - service: fan.set_percentage
+      - action: fan.set_percentage
         data:
           percentage: 50
         target:
@@ -496,7 +496,7 @@
         id:
         - t04
       sequence:
-      - service: fan.set_percentage
+      - action: fan.set_percentage
         data:
           percentage: 70
         target:
@@ -506,7 +506,7 @@
         id:
         - t05
       sequence:
-      - service: fan.set_percentage
+      - action: fan.set_percentage
         data:
           percentage: 80
         target:
@@ -516,7 +516,7 @@
         id:
         - t06
       sequence:
-      - service: fan.set_percentage
+      - action: fan.set_percentage
         data:
           percentage: 100
         target:
@@ -527,7 +527,7 @@
         id:
         - t07
       sequence:
-      - service: fan.set_percentage
+      - action: fan.set_percentage
         data:
           percentage: 0
         target:
@@ -558,7 +558,7 @@
         id:
         - t01
       sequence:
-      - service: light.turn_on
+      - action: light.turn_on
         target:
           entity_id: light.bambu_p1s_chamber_light
       alias: Turn on Chamber Light
@@ -567,7 +567,7 @@
         id:
         - t02
       sequence:
-      - service: light.turn_off
+      - action: light.turn_off
         target:
           entity_id:
           - light.bambu_p1s_chamber_light
@@ -3353,7 +3353,7 @@
       message: Climate data sync to BigQuery triggered.
       title: Data Pipeline
 - id: '1775070658742'
-  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v5.6)'
+  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v5.7)'
   description: 'v5.6: Added failsafe logic for unreliable bedroom temperature sensors.
     If the sensor goes unavailable, the system falls back to the T6 thermostat reading
     to prevent premature handoffs.'
@@ -3424,7 +3424,7 @@
       conditions:
       - condition: template
         value_template: '{{ is_precooling and not is_sleep_window and t6_target !=
-          60 }}'
+          60 and actual > target }}'
       sequence:
       - variables:
           velocity: '{{ states(''sensor.bedroom_cooling_velocity'') | float(0) }}'
@@ -3685,3 +3685,4 @@
         compared to your baseline of {{ state_attr('sensor.hvac_health_status', 'baseline_rate') }} minutes.
         Please check the filter or condenser coils.
   mode: single
+
