@@ -3352,8 +3352,8 @@
       message: Climate data sync to BigQuery triggered.
       title: Data Pipeline
 - id: '1775070658742'
-  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v6.0)'
-  description: 'v6.0: Hardened against sensor jitter. Added 2-minute "Delay-on-Make" for Phase 2 and 5-minute minimum run time for Phase 3.'
+  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v6.1)'
+  description: 'v6.1: Hardened against sensor jitter and fixed timezone-dependent learning logic.'
   triggers:
   - trigger: state
     entity_id:
@@ -3497,9 +3497,11 @@
         - stop: Minimum run time not met. Continuing push to prevent short-cycle.
       - if:
         - condition: template
-          alias: Update Performance Repository if Target Met and Time is Correct
-          value_template: '{{ t6_target == 60 and actual <= target and now().hour
-            >= 18 }}'
+          alias: Update Performance Repository if Target Met and within 4h of bedtime
+          value_template: >
+            {% set b = states('input_datetime.bedroom_bedtime') %}
+            {% set bedtime = today_at(b if b not in ['unknown', 'unavailable', 'None'] else '22:30:00') %}
+            {{ t6_target == 60 and actual <= target and (now() > bedtime - timedelta(hours=4)) }}
         then:
         - variables:
             # Re-calculating for accuracy in learning block
