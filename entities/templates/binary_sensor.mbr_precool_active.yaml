@@ -38,7 +38,11 @@ binary_sensor:
       {% set already_ran_today = as_timestamp(last_start, 0) > start_ts %}
       {% set activation_threshold = target + 1.0 if already_ran_today else target %}
       
-      {{ is_precool_window and not is_sleep_window and indoor > activation_threshold and is_cooling_mode }}
+      {# v6.2 Latching: If already ON, stay ON until target is reached. This prevents jitter from resetting the start clock. #}
+      {% set current_state = this.state | default('off') %}
+      {% set threshold = target if current_state == 'on' else activation_threshold %}
+      
+      {{ is_precool_window and not is_sleep_window and indoor > threshold and is_cooling_mode }}
     attributes:
       precool_start_time: >
         {% set b = states('input_datetime.bedroom_bedtime') %}
