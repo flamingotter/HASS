@@ -11,7 +11,7 @@ binary_sensor:
       
       {# Spike Guard & Failsafe: Use bedroom sensor but cap it at 3F above the thermostat. If bedroom sensor fails, fallback to thermostat temp. #}
       {% set t6_temp = state_attr('climate.t6_pro_downstairs', 'current_temperature') | float(72) %}
-      {% set bdr_raw = states('sensor.bedroom_sensor_air_temperature') | float(t6_temp) %}
+      {% set bdr_raw = states('sensor.bedroom_temperature_smoothed') | float(t6_temp) %}
       {% set indoor = [bdr_raw, t6_temp + 3.0]|min %}
       
       {% set outdoor = states('sensor.weather_station_temperature_outdoor') | float(70) %}
@@ -50,7 +50,7 @@ binary_sensor:
         {% set bedtime = today_at(bedtime_str) %}
         {% set target = states('input_number.bedroom_target_temperature') | float(68) %}
         {% set t6_temp = state_attr('climate.t6_pro_downstairs', 'current_temperature') | float(72) %}
-        {% set bdr_raw = states('sensor.bedroom_sensor_air_temperature') | float(t6_temp) %}
+        {% set bdr_raw = states('sensor.bedroom_temperature_smoothed') | float(t6_temp) %}
         {% set indoor = [bdr_raw, t6_temp + 3.0]|min %}
         {% set outdoor = states('sensor.weather_station_temperature_outdoor') | float(70) %}
         {% set performance_data = states('input_text.mbr_cooling_performance_data') | from_json %}
@@ -65,6 +65,6 @@ binary_sensor:
         {% set lookup_key = ((outdoor / 5) | round(0) * 5) | int | string %}
         {{ performance_data.get(lookup_key, 25) }}
       target_temp: "{{ states('input_number.bedroom_target_temperature') }}"
-      current_temp: "{{ states('sensor.bedroom_sensor_air_temperature') }}"
+      current_temp: "{{ states('sensor.bedroom_temperature_smoothed') }}"
       hvac_mode: "{{ states('climate.t6_pro_downstairs') }}"
       bedtime_setting: "{{ states('input_datetime.bedroom_bedtime') }}"

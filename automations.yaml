@@ -247,7 +247,7 @@
   - sequence:
     - action: alarm_control_panel.alarm_disarm
       data:
-        code: '!secret alarm_panel_code'
+        code: '1977'
       target:
         entity_id: alarm_control_panel.home_alarm
     - target:
@@ -3331,7 +3331,7 @@
     target:
       entity_id: alarm_control_panel.home_alarm
     data:
-      code: '!secret alarm_panel_code'
+      code: '1977'
   - action: notify.mobile_app_josh_mobile
     data:
       title: Garage Man Door Unlocked
@@ -3352,13 +3352,13 @@
       message: Climate data sync to BigQuery triggered.
       title: Data Pipeline
 - id: '1775070658742'
-  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v6.1)'
-  description: 'v6.1: Hardened against sensor jitter and fixed timezone-dependent learning logic.'
+  alias: 'Climate: Master Bedroom Sleep Comfort Engine (v6.3)'
+  description: 'v6.3: Switched to sensor.bedroom_temperature_smoothed to eliminate jitter-induced logic resets.'
   triggers:
   - trigger: state
     entity_id:
     - binary_sensor.mbr_pre_cooling_active
-    - sensor.bedroom_sensor_air_temperature
+    - sensor.bedroom_temperature_smoothed
     - climate.t6_pro_downstairs
     - input_boolean.eco_mode
   - trigger: time
@@ -3378,11 +3378,9 @@
   - variables:
       target: '{{ states(''input_number.bedroom_target_temperature'') | float(68)
         }}'
-      actual: '{% set bdr = states(''sensor.bedroom_sensor_air_temperature'') %} {%
+      actual: '{% set bdr = states(''sensor.bedroom_temperature_smoothed'') %} {%
         set t6 = state_attr(''climate.t6_pro_downstairs'', ''current_temperature'')
-        %} {{ bdr | float(t6 | float(72)) }}
-
-        '
+        %} {{ bdr | float(t6 | float(72)) }}'
       is_sleep_window: '{% set b = states(''input_datetime.bedroom_bedtime'') %} {%
         set bedtime_str = b if b not in [''unknown'', ''unavailable'', ''None''] else
         ''22:30:00'' %} {{ now() >= today_at(bedtime_str) or now().hour < 7 }}
@@ -3420,11 +3418,14 @@
     - alias: 'Phase 2: Pre-Cooling (Validation & Start)'
       conditions:
       - condition: template
-        value_template: '{{ is_precooling and not is_sleep_window and t6_target != 60 and actual > (target + 0.5) }}'
+        value_template: '{{ is_precooling and not is_sleep_window and t6_target !=
+          60 and actual > (target + 0.5) }}'
       sequence:
       - delay: 00:02:00
       - variables:
-          actual_now: '{% set bdr = states(''sensor.bedroom_sensor_air_temperature'') %} {% set t6 = state_attr(''climate.t6_pro_downstairs'', ''current_temperature'') %} {{ bdr | float(t6 | float(72)) }}'
+          actual_now: '{% set bdr = states(''sensor.bedroom_sensor_air_temperature'')
+            %} {% set t6 = state_attr(''climate.t6_pro_downstairs'', ''current_temperature'')
+            %} {{ bdr | float(t6 | float(72)) }}'
       - if:
         - condition: template
           value_template: '{{ actual_now <= target }}'
@@ -3488,7 +3489,8 @@
       sequence:
       - variables:
           start_val: '{{ states(''input_datetime.precool_start_time'') }}'
-          duration: '{{ (as_timestamp(now(), 0) - as_timestamp(start_val, 0)) / 60 }}'
+          duration: '{{ (as_timestamp(now(), 0) - as_timestamp(start_val, 0)) / 60
+            }}'
       - if:
         - condition: template
           alias: Minimum Run Time Check (5 minutes)
@@ -3498,13 +3500,14 @@
       - if:
         - condition: template
           alias: Update Performance Repository if Target Met and within 4h of bedtime
-          value_template: >
-            {% set b = states('input_datetime.bedroom_bedtime') %}
-            {% set bedtime = today_at(b if b not in ['unknown', 'unavailable', 'None'] else '22:30:00') %}
-            {{ t6_target == 60 and actual <= target and (now() > bedtime - timedelta(hours=4)) }}
+          value_template: '{% set b = states(''input_datetime.bedroom_bedtime'') %}
+            {% set bedtime = today_at(b if b not in [''unknown'', ''unavailable'',
+            ''None''] else ''22:30:00'') %} {{ t6_target == 60 and actual <= target
+            and (now() > bedtime - timedelta(hours=4)) }}
+
+            '
         then:
         - variables:
-            # Re-calculating for accuracy in learning block
             start_val: '{{ states(''input_datetime.precool_start_time'') }}'
             duration: '{{ (as_timestamp(now(), 0) - as_timestamp(start_val, 0)) /
               60 }}'
