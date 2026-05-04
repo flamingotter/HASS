@@ -3756,12 +3756,10 @@
 
             '
         response_variable: strategist_advice
-      - action: notify.alexa_media
+      - action: notify.mobile_app_josh_mobile
         data:
-          message: '{{ strategist_advice.raw_text }}'
-          target: media_player.bedroom
-          data:
-            type: tts
+          title: "Climate Strategy"
+          message: "{{ strategist_advice.raw_text }}"
     - alias: 'Phase 1: Wake Up (Reset to Neutral)'
       conditions:
       - condition: trigger
