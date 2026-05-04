@@ -1,50 +1,52 @@
-# Climate Engine & BigQuery Analysis Summary
+# The Master Bedroom Sleep Comfort Engine: Evolution & Architecture
 
-This document summarizes the state of the **Master Bedroom Sleep Comfort Engine (v6.3)** and the integrated **BigQuery HVAC Analytics** as of May 3, 2026.
+This document tracks the history, rationale, and current state of the MBR Climate Engine. It is intended to provide context for future engineering sessions.
 
-## 1. Master Bedroom Comfort Engine (v6.3)
-The system uses a data-driven "Pre-Cooling" window to ensure the bedroom reaches a target temperature exactly at bedtime. 
-
-### Key Hardening & Logic (v5.8 - v6.3):
-- **Jitter Protection:** The engine now uses `sensor.bedroom_temperature_smoothed` (5-minute moving average) and a 2-minute **"Delay-on-Make"** validation in Phase 2 to ensure cooling only starts on persistent temperature rises.
-- **Latching (v6.2):** The `binary_sensor.mbr_precool_active` uses latching logic. Once a cooling cycle starts, it remains "ON" until the target is reached, preventing sensor noise from resetting the start-time clock mid-run.
-- **Short-Cycle Prevention:** Added a **5-minute minimum run time** in Phase 3 to protect the compressor from rapid cycling.
-- **Timezone-Independent Learning:** The learning logic was updated to use a 4-hour window relative to `input_datetime.bedroom_bedtime`, resolving a bug where UTC-based Measure-and-Learn events were being skipped.
-- **Hysteresis:** A 0.5°F trigger hysteresis prevents the system from "ping-ponging" when the temperature is hovering exactly at the target.
+## 1. The Core Purpose (The "Why")
+The engine's goal is to ensure the Master Bedroom reaches a precise sleep temperature (e.g., 64°F) exactly at bedtime, while minimizing AC runtime and protecting equipment. This is achieved by calculating a dynamic "Start Time" based on real-world cooling rates tied to outdoor temperature bins.
 
 ---
 
-## 2. BigQuery Analysis Environment
-Following the Home Assistant 2026.4.4 upgrade, the analysis environment was modernized to support **Python 3.14.2**.
-
-### Environment Organization:
-1. **VENV:** `bq_venv/` (Recreated May 2026 with Python 3.14).
-2. **Operational Scripts (`bin/`):** Contains `hvac_health_check.py` which runs daily.
-3. **Research Tools (`tools/`):** Cold storage for calibration scripts (e.g., `thermal_decay_analysis.py`).
-4. **Credentials:** Absolute path mapping used for `/config/bigquery_credentials.json` to ensure container-wide compatibility.
+## 2. Phase I: The Data-Driven Foundation (v1.0 - v5.6)
+**Key Milestone:** Establishing the "Night-Optimized" Performance Repository.
+- **Architecture:** The system began using `input_text.mbr_cooling_performance_data` to store cooling rates (min/deg) for 5-degree outdoor temperature bins.
+- **The Solar Penalty:** Analysis of BigQuery data revealed that the structure cools ~20% slower during the day.
+- **The Heat Soak:** Measuring confirmed that at 8:00 PM, the attic "radiates" heat, making cooling harder than earlier in the afternoon.
+- **The 60°F Rule:** A hard setpoint of 60°F was used during the "push" to ensure consistent cooling velocity for learning.
 
 ---
 
-## 3. The Performance Repository (Night-Optimized)
-The `input_text.mbr_cooling_performance_data` repository now stores learned cooling rates. The `initial:` YAML value has been removed to allow for persistent state restoration across restarts.
-
-### Current Performance String (Verified 5/3):
-```json
-{"45":20.1, "50":8.6, "55":18.0, "60":26.8, "65":34.4, "70":17.2, "75":55.0, "80":62.0, "85":70.0, "90":80.0}
-```
-*Note: The **50 Bin** (8.6) and **55 Bin** (18.0) were recently calibrated to fix "early start" errors.*
-
----
-
-## 4. HVAC Health & Anomaly Detection
-### Baseline Performance (Verified 5/1):
-- **Status:** Healthy
-- **Degradation:** -26.1% (Efficiency **Improved**).
-- **Baseline Rate:** 40.01 min/deg.
-- **Recent Rate:** 29.57 min/deg.
+## 3. Phase II: Physical Hardening (v5.8 - v6.3)
+**Key Milestone:** Overcoming sensor jitter and real-world race conditions.
+- **The Jitter Problem:** High-frequency fluctuations in the bedroom sensor were causing "ping-pong" cycles (AC turning off/on in sub-60-second windows).
+- **Hardening Solutions:**
+    - **Smoothing (v6.3):** Integrated `sensor.bedroom_temperature_smoothed` (5-min moving average) to filter noise.
+    - **Latching (v6.2):** Once a cycle starts, it remains "ON" until the target is reached, regardless of temporary sensor bounces.
+    - **Validation (v6.0):** Added a 2-minute "Delay-on-Make" to ensure the high temp is persistent before triggering the compressor.
+    - **Short-Cycle Prevention:** Enforced a 5-minute minimum run time for compressor health.
+- **Timezone Correction (v6.1):** Fixed a bug where UTC-based Measure-and-Learn events were being ignored because they fell outside a hardcoded "Local Hour" window.
 
 ---
 
-## 5. Maintenance Notes
-- **Smoothing:** If temperature response feels "laggy," reduce the moving average window in the `sensor.bedroom_temperature_smoothed` UI settings.
-- **Manual Calibration:** If the system consistently starts too early/late for a specific outdoor temperature, manually adjust that bin in the performance string via Developer Tools.
+## 4. Phase III: The Intelligence Era (v7.0 Pilot)
+**Key Milestone:** Moving from "Math-Only" to "Heuristic Reasoning" using AI.
+- **The Strategy:** Version 7.0 introduced the `ai_task` (LLM) engine as a logic co-processor to handle nuance that math templates struggle with.
+- **Free Cooling Strategist:** At 7:00 PM, the AI analyzes the forecast. If the outdoors is $\ge$ 3°F cooler, it suggests opening the patio door to achieve "Free Cooling," potentially saving ~20% AC runtime.
+- **Comfort Optimizer:** The AI evaluates humidity. If >55%, it automatically lowers the sleep target by 1°F to prioritize dehumidification (Comfort Index) over raw temperature.
+- **The Auditor:** A "Self-Healing" gate for the repository. The AI reviews every cooling session's duration/drop. If the math looks like an anomaly (e.g., cooling 1 degree in 1 minute), the AI blocks the update to prevent repository corruption.
+
+---
+
+## 5. Integrated Analytics & Health
+- **BigQuery Pipeline:** All HVAC actions and temperature changes are streamed to GCP for long-term trend analysis.
+- **HVAC Health Check:** A daily script (`hvac_health_check.py`) compares the last 7 days of performance to a 45-day baseline. This acts as a "Check Engine" light for dirty filters or refrigerant loss.
+- **Current Baseline (Verified 5/1/26):**
+    - **Baseline:** 40.01 min/deg
+    - **Recent:** 29.57 min/deg (Efficiency **Improved** due to recent optimizations).
+
+---
+
+## 6. Current Configuration (As of May 4, 2026)
+- **Active Version:** v7.0 Pilot (v6.3 held in reserve).
+- **Core Repository:** `{"45":20.1, "50":21.0, "55":18.0, "60":26.8, "65":34.4, "70":17.2, "75":55.0, "80":62.0, "85":70.0, "90":80.0}`
+- **Persistence:** YAML `initial` values removed; state is managed via `restore_state` and learned measurements.
