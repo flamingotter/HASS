@@ -1643,9 +1643,8 @@
     josh_device_id: d818035824cf47ea
     mj_device_id: 0aa560faf0e8784c
 - id: '1724794143393'
-  alias: 'Presence: Enhanced Eco Mode Manager'
-  description: Handles Eco Mode timers, extensions via actionable notifications, and
-    climate resets
+  alias: 'Presence: Enhanced Eco Mode Manager (v7.1)'
+  description: Handles Eco Mode timers, extensions via AI parsing, and proximity-based deactivation.
   triggers:
   - event_type: timer.finished
     event_data:
@@ -1669,6 +1668,12 @@
       tag: eco-finish
     id: notification_cleared
     trigger: event
+  - platform: numeric_state
+    entity_id: 
+    - sensor.home_josh_distance
+    - sensor.home_mj_distance
+    below: 264000
+    id: proximity_reset
   actions:
   - choose:
     - conditions:
@@ -1694,14 +1699,24 @@
             - action: eco_normal
               title: Return to Normal
             - action: REPLY
-              title: Add Days
+              title: Add Days (e.g. '3' or 'until Sunday')
     - conditions:
       - condition: trigger
         id: extend_eco
       sequence:
+      - action: ai_task.generate_data
+        data:
+          task_name: Eco Mode Timer Parser
+          instructions: >
+            The user wants to extend Eco Mode. Their reply was: "{{ trigger.event.data.reply_text }}".
+            Convert this into a number of DAYS from now. 
+            If they just gave a number, return that number.
+            If they gave a day of the week, calculate days until that day.
+            Return ONLY the integer number of days.
+        response_variable: extension_days
       - variables:
-          days: '{{ trigger.event.data.reply_text | int(1) }}'
-          seconds: '{{ (trigger.event.data.reply_text | int(1)) * 86400 }}'
+          days: "{{ (extension_days.data | int(1)) if (extension_days.data | is_number) else 1 }}"
+          seconds: "{{ ((extension_days.data | int(1)) if (extension_days.data | is_number) else 1) * 86400 }}"
       - action: timer.start
         data:
           duration: '{{ seconds }}'
@@ -1710,12 +1725,16 @@
       - action: notify.mobile_app_josh_mobile
         data:
           title: Eco Mode Extended
-          message: Eco Mode will remain active for {{ days }} more days.
+          message: "AI Parser: '{{ trigger.event.data.reply_text }}' interpreted as {{ days }} days. Eco Mode will remain active."
           data:
             tag: eco-finish
     - conditions:
-      - condition: trigger
-        id: deactivate_eco
+      - condition: or
+        conditions:
+        - condition: trigger
+          id: deactivate_eco
+        - condition: trigger
+          id: proximity_reset
       sequence:
       - action: input_boolean.turn_off
         target:
@@ -1731,7 +1750,7 @@
       - action: notify.mobile_app_josh_mobile
         data:
           title: Welcome Home
-          message: Eco Mode deactivated. Thermostat set to 68°F.
+          message: "Eco Mode deactivated ({{ 'Manual' if trigger.id == 'deactivate_eco' else 'Proximity' }}). Thermostat set to 68°F."
           data:
             tag: eco-finish
   mode: restart
@@ -2025,6 +2044,15 @@
           entity_id: '{{ target_select }}'
         data:
           option: Away
+    - conditions:
+      - condition: trigger
+        id: distance_away
+      sequence:
+      - action: input_select.select_option
+        target:
+          entity_id: "{{ 'input_select.josh_status' if trigger.entity_id == 'sensor.home_josh_distance' else 'input_select.mj_status' }}"
+        data:
+          option: Extended Away
     default:
     - condition: trigger
       id: input_select_wait_away
