@@ -1741,8 +1741,15 @@
         conditions:
         - condition: trigger
           id: deactivate_eco
-        - condition: trigger
-          id: proximity_reset
+        - and:
+          - condition: trigger
+            id: proximity_reset
+          - condition: numeric_state
+            entity_id: sensor.home_josh_distance
+            below: 264000
+          - condition: numeric_state
+            entity_id: sensor.home_mj_distance
+            below: 264000
       sequence:
       - action: input_boolean.turn_off
         target:
