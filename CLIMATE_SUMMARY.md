@@ -46,7 +46,19 @@ The engine's goal is to ensure the Master Bedroom reaches a precise sleep temper
 
 ---
 
-## 6. Current Configuration (As of May 4, 2026)
-- **Active Version:** v7.0 Pilot (v6.3 held in reserve).
+## 7. Phase IV: Global Presence & Conservation (v7.1)
+**Key Milestone:** Bridging the gap between long-distance travel and home-state intelligence.
+- **The 500-Mile Rule (v7.1):** Upgraded the `Person: Status Synchronizer` to treat any distance >500 miles as an immediate "Extended Away" event. This bypasses the traditional 24-hour clock, allowing Eco Mode to engage the moment you cross the state line.
+- **Unified Voice Consolidation:** Centralized all Eco Mode messaging into a single "Manager" automation. Removed redundant notifications from the Alarm system to ensure a consistent interaction style and reliable notification tagging (`eco-finish`).
+- **AI Extension Parser:** Integrated a natural language processor into the notification flow. Users can now reply with "until Sunday" or "a few more days," and the AI converts this into a precise second-based timer.
+- **Pet-Friendly Seasonal Targets:** Established a conservation baseline that protects the home's permanent residents (the cats):
+    - **Heating Season:** 66°F
+    - **Cooling Season:** 74°F
+- **Proximity-Based Recovery:** Implemented a 50-mile "Homebound" trigger. If **both** Josh and MJ enter this radius, the system automatically releases Eco Mode, allowing the T6 Pro to begin its 6-degree recovery pull before they arrive.
+
+---
+
+## 8. Current Configuration (As of May 5, 2026)
+- **Active Version:** v7.1 (Presence-Aware AI Mode).
 - **Core Repository:** `{"45":20.1, "50":21.0, "55":18.0, "60":26.8, "65":34.4, "70":17.2, "75":55.0, "80":62.0, "85":70.0, "90":80.0}`
 - **Persistence:** YAML `initial` values removed; state is managed via `restore_state` and learned measurements.
