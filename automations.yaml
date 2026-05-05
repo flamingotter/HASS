@@ -3704,6 +3704,22 @@
         entity_id:
         - light.hall_light
   mode: restart
+- id: hvac_health_alert
+  alias: 'System: HVAC Health Alert'
+  description: Monitors the BigQuery AI health check and alerts if the AC loses efficiency.
+  triggers:
+  - trigger: state
+    entity_id: sensor.hvac_health_status
+    to:
+    - Degraded
+    - Critical
+  conditions: []
+  actions:
+  - action: notify.mobile_app_josh_mobile
+    data:
+      title: '⚠️ HVAC Alert: {{ trigger.to_state.state }}'
+      message: "Your AC efficiency has dropped by {{ state_attr('sensor.hvac_health_status', 'degradation_pct') }}%. It is taking {{ state_attr('sensor.hvac_health_status', 'recent_rate') }} minutes to cool 1 degree, compared to your baseline of {{ state_attr('sensor.hvac_health_status', 'baseline_rate') }} minutes. Please check the filter or condenser coils."
+  mode: single
 - id: ai_climate_mbr_v7_0
   alias: 'AI Enabled Climate: Master Bedroom Sleep Comfort Engine (v7.0)'
   description: 'v7.0 Pilot: Pilot testing AI-driven free cooling advice, humidity-adjusted
