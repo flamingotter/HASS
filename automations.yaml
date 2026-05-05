@@ -771,18 +771,6 @@
           - action: alarm_control_panel.alarm_arm_vacation
             target:
               entity_id: alarm_control_panel.home_alarm
-          - action: notify.mobile_app_josh_mobile
-            data:
-              title: Armed Vacation / Eco Mode
-              message: Home is set to Armed Vacation. Eco Mode Activated. Set number
-                of days until return to normal.
-              data:
-                tag: eco-activate
-                actions:
-                - action: REPLY
-                  title: Set Days to Normal
-                - action: eco-ignore
-                  title: Ignore
           alias: Armed Vacation
       alias: When triggered by person status, set alarm panel mode.
     - conditions:
@@ -1674,8 +1662,28 @@
     - sensor.home_mj_distance
     below: 264000
     id: proximity_reset
+  - platform: state
+    entity_id: input_boolean.eco_mode
+    to: 'on'
+    id: eco_activated
   actions:
   - choose:
+    - conditions:
+      - condition: trigger
+        id: eco_activated
+      sequence:
+      - action: notify.mobile_app_josh_mobile
+        data:
+          title: Eco Mode Activated
+          message: Home is in Vacation mode. How many days should I set the timer for? (e.g. '3' or 'until Sunday')
+          data:
+            tag: eco-finish
+            persistent: true
+            actions:
+            - action: REPLY
+              title: Set Timer
+            - action: eco_normal
+              title: Return to Normal
     - conditions:
       - condition: or
         conditions:
@@ -1986,6 +1994,12 @@
     for:
       hours: 24
     id: input_select_wait_away
+  - platform: numeric_state
+    entity_id:
+    - sensor.home_josh_distance
+    - sensor.home_mj_distance
+    above: 2640000
+    id: distance_away
   condition:
   - condition: template
     value_template: '{{ trigger.to_state.state != trigger.from_state.state }}'
