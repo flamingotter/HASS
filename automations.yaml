@@ -3071,8 +3071,8 @@
   mode: parallel
   max: 10
 - id: '1772728212323'
-  alias: 'Security: Front Porch - AI Video Analysis (v1.2)'
-  description: 'v1.1: Context-aware identity check. increased snapshot delays +1 sec'
+  alias: 'Security: Front Porch - AI Video Analysis (v1.3)'
+  description: 'v1.3: Context-aware identity check. increased snapshot delays +1 sec'
   triggers:
   - trigger: state
     entity_id: binary_sensor.front_porch_ptz_person_detected
@@ -3129,29 +3129,47 @@
       task_name: Porch Video Analysis
       instructions: 'Attachment 1 and 2 are reference photos of the residents, MJ
         and Josh. Attachment 3 is a video from the porch PTZ. Attachments 4, 5, and
-        6 are sequential snapshots from the doorbell (T=0s, T=1s, T=3s). Ignore any
-        vehicles or people in the distance. Compare the person in the footage to the
-        reference photos.
+        6 are sequential snapshots from the doorbell (T=0s, T=1s, T=3s). If there
+        is a vehicle parked in the driveway (upper right of the frame) in Attachment
+        3, use that to determine the delivery service (Amazon, UPS, USPS, Fedex, etc)
+        if it is a normal passenger vehicle or unmarked truck/van ignore it. Compare
+        the person in the footage to the reference photos.
 
-        CRITICAL LOGIC: Residents do not deliver packages or wear delivery uniforms.
-        If the person leaves a package, takes a photo of a package, or is wearing
-        a delivery uniform (Amazon, UPS, FedEx, USPS), they are NEVER a resident,
-        regardless of physical resemblance.
 
-        RULE 1: If the person is a visual match for Josh or MJ AND does not leave
-        a package, start your response with: [RESIDENT]
+        CRITICAL LOGIC:
+
+        Residents do not deliver packages or wear delivery uniforms. If the person
+        leaves a package, takes a photo of a package, or is wearing a delivery uniform
+        (Amazon, UPS, FedEx, USPS), they are NEVER a resident, regardless of physical
+        resemblance.
+
+
+        Visual Marker for Josh: Be advised that Josh often wears a large straw-type
+        hat when doing yard work, which may partially obscure his face in the reference
+        photos.
+
+
+        RULE 1: If the person is a visual match for Josh or MJ (or matches the Josh
+        visual marker: straw hat, work clothes, no package) AND does not leave a package,
+        start your response with: [RESIDENT]
+
 
         RULE 2: If the person is a guest who is let inside the house or walks through
         the front door, start your response with: [ENTERED]
 
+
         RULE 3: For all other visitors, deliveries, or solicitors, start your response
         with: [ALERT]
 
-        After the tag, provide a concise summary in under 50 words: - Person: [Details]
-        - Package-Action: [What they left, or if they went inside] - Intent: [Delivery,
-        Visitor, Solicitor, or Resident]
 
-        '
+        After the tag, provide a concise summary in under 50 words:
+
+
+        Person: [Details]
+
+        Package-Action: [What they left, or if they went inside]
+
+        Intent: [Delivery, Visitor, Solicitor, or Resident]'
       attachments:
       - media_content_id: media-source://media_source/local/snapshots/reference/mj.jpg
         media_content_type: image/jpeg
@@ -3752,14 +3770,14 @@
             }}F)  and the bedroom temperature ({{ actual }}F).  If the outdoor temperature
             is at least 3 degrees cooler than the bedroom, suggest opening the screened
             patio door. Mention estimated savings of ~20% AC runtime. Keep response
-            under 40 words.
+            under 20 words.
 
             '
         response_variable: strategist_advice
       - action: notify.mobile_app_josh_mobile
         data:
           title: "Climate Strategy"
-          message: "{{ strategist_advice.raw_text }}"
+          message: "{{ strategist_advice.data }}"
     - alias: 'Phase 1: Wake Up (Reset to Neutral)'
       conditions:
       - condition: trigger
@@ -3793,7 +3811,7 @@
             '
         response_variable: comfort_target
       - variables:
-          ai_target: '{{ comfort_target.raw_text | float(target) }}'
+          ai_target: '{{ comfort_target.data | float(target) }}'
       - delay: 00:02:00
       - variables:
           actual_now: '{% set bdr = states(''sensor.bedroom_temperature_smoothed'')
@@ -3868,7 +3886,7 @@
           response_variable: audit_result
         - if:
           - condition: template
-            value_template: '{{ ''VALID'' in audit_result.raw_text }}'
+            value_template: '{{ ''VALID'' in audit_result.data }}'
           then:
           - variables:
               outdoor: '{{ states(''sensor.weather_station_temperature_outdoor'')
