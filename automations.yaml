@@ -1672,10 +1672,21 @@
       - condition: trigger
         id: eco_activated
       sequence:
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.t6_pro_downstairs
+        data:
+          temperature: >
+            {% if is_state('climate.t6_pro_downstairs', 'cool') %} 74
+            {% elif is_state('climate.t6_pro_downstairs', 'heat') %} 66
+            {% else %} 70
+            {% endif %}
       - action: notify.mobile_app_josh_mobile
         data:
           title: Eco Mode Activated
-          message: Home is in Vacation mode. How many days should I set the timer for? (e.g. '3' or 'until Sunday')
+          message: >
+            Home is in Vacation mode. T6 Pro set to {{ state_attr('climate.t6_pro_downstairs', 'temperature') }}°F. 
+            How many days should I set the timer for? (e.g. '3' or 'until Sunday')
           data:
             tag: eco-finish
             persistent: true
