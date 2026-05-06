@@ -27,6 +27,9 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
     - **Nightly Climate Data:** Reference `button.docker_ha_bq_exporter_restart` is valid (entity only appears when container runs).
 - [x] **Script Modernization:** All scripts in `scripts.yaml` updated to `action:` syntax and AI attributes corrected from `.text` to `.data`. (Completed May 6, 2026)
 
-## 5. Future AI Enhancements
+## 5. Future AI & Occupancy Enhancements
+- [ ] **Vision-Based Occupancy Pilot:** Develop a "Master Occupancy Verifier" script using ROVER-02 (and future cameras) to perform human-presence checks before dousing lights.
+    - *Goal:* Filter out "Cat Noise" and prevent turn-offs on stationary humans.
+- [ ] **Multi-Modal Strategy:** Research a hybrid approach for non-camera rooms (e.g., combining PIR with appliance states or interactive signifiers).
 - [ ] **Vision AI Expansion:** Explore using the parlor/kitchen vision pattern for more complex occupancy sensing (e.g., distinguishing between owners and guests).
 - [ ] **Natural Language Control:** Expand the `ai_task` timer parser to handle more complex scheduling requests via actionable notifications.
