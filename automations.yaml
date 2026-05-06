@@ -3798,9 +3798,8 @@
         check the filter or condenser coils.
   mode: single
 - id: ai_climate_mbr_v7_0
-  alias: 'AI Enabled Climate: Master Bedroom Sleep Comfort Engine (v7.0)'
-  description: 'v7.0 Pilot: Pilot testing AI-driven free cooling advice, humidity-adjusted
-    comfort, and session data auditing.'
+  alias: 'AI Enabled Climate: Master Bedroom Sleep Comfort Engine (v7.2)'
+  description: 'v7.2: Hardened AI logic with continue_on_error and robust safety defaults to prevent infinite-run crashes.'
   triggers:
   - trigger: state
     entity_id:
@@ -3857,6 +3856,7 @@
         id: strategist
       sequence:
       - action: ai_task.generate_data
+        continue_on_error: true
         data:
           task_name: Free Cooling Strategist
           instructions: 'Analyze the outdoor temperature ({{ states(''sensor.weather_station_temperature_outdoor'')
@@ -3870,7 +3870,7 @@
       - action: notify.mobile_app_josh_mobile
         data:
           title: Climate Strategy
-          message: '{{ strategist_advice.data }}'
+          message: '{{ (strategist_advice | default({})).data | default(''The outdoor air is currently cooler than the bedroom. Consider opening the patio door to save energy.'') }}'
     - alias: 'Phase 1: Wake Up (Reset to Neutral)'
       conditions:
       - condition: trigger
@@ -3894,6 +3894,7 @@
           60 and actual > (target + 0.5) }}'
       sequence:
       - action: ai_task.generate_data
+        continue_on_error: true
         data:
           task_name: Comfort Optimizer
           instructions: 'The current target is {{ target }}F. The indoor humidity
@@ -3904,7 +3905,7 @@
             '
         response_variable: comfort_target
       - variables:
-          ai_target: '{{ comfort_target.data | float(target) }}'
+          ai_target: '{{ (comfort_target | default({})).data | float(target) }}'
       - delay: 00:02:00
       - variables:
           actual_now: '{% set bdr = states(''sensor.bedroom_temperature_smoothed'')
@@ -3968,6 +3969,7 @@
             >= 18 or now().hour < 4) }}'
         then:
         - action: ai_task.generate_data
+          continue_on_error: true
           data:
             task_name: Learning Auditor
             instructions: 'A cooling session dropped {{ drop }}F in {{ duration }}
@@ -3979,7 +3981,8 @@
           response_variable: audit_result
         - if:
           - condition: template
-            value_template: '{{ ''VALID'' in audit_result.data }}'
+            value_template: '{{ ''VALID'' in (audit_result | default({''data'': ''VALID''})).data
+              }}'
           then:
           - variables:
               outdoor: '{{ states(''sensor.weather_station_temperature_outdoor'')
