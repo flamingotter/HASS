@@ -1,5 +1,4 @@
 ---
 mbr_cooling_performance_data:
   name: "MBR Cooling Performance Repository"
-  initial: '{"45": 20.1, "50": 32.6, "55": 18.0, "60": 26.8, "65": 34.4, "70": 17.2, "75": 55.0, "80": 62.0, "85": 70.0, "90": 80.0}'
   max: 255
