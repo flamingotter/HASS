@@ -6,7 +6,7 @@
 ## 1. Documentation Map
 - **[ARCHITECTURE.md](ARCHITECTURE.md):** Core logic engines, state machines, and cross-automation dependencies.
 - **[CLIMATE_SUMMARY.md](CLIMATE_SUMMARY.md):** Historical evolution and detailed technical breakdown of the MBR Sleep Comfort Engine.
-- **[ROADMAP.md](ROADMAP.md):** Active goals, pending fixes, and planned feature expansions.
+- **[ROADMAP.md](ROADMAP.md):** Active projects, pending infrastructure fixes, and planned feature expansions.
 
 ## 2. Primary Rules & Standards
 - **Modern Syntax:** Always use `template:` integration, `action:` instead of `service:`, and `data:` for all templated values.
@@ -42,6 +42,7 @@
 - **Climate Engine (v7.2):** 
     - Hardened AI mode with logical Auditor and physical Swing Cap.
     - **Eco Mode Targets:** 66°F (Heat) / 74°F (Cool) for pet comfort.
+- **Maintenance:** Dynamic discovery of `timer.maintenance_*` entities. Logged to `maintenance_log.csv`.
 
 ## 6. Operational Focus
 - **Primary Goal:** Transition Climate Engine to v7.x stable while maintaining physical safety.
