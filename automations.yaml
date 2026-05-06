@@ -3063,14 +3063,8 @@
         with: [ALERT]
 
 
-        After the tag, provide a concise summary in under 50 words:
-
-
-        Person: [Details]
-
-        Package-Action: [What they left, or if they went inside]
-
-        Intent: [Delivery, Visitor, Solicitor, or Resident]'
+        OUTPUT FORMAT: Provide a SINGLE LINE response. No bullet points, no newlines, no markdown. 
+        Format: [TAG] Person: [Details]. Action: [What they did]. Intent: [Delivery/Visitor/Resident].'
       attachments:
       - media_content_id: media-source://media_source/local/snapshots/reference/mj.jpg
         media_content_type: image/jpeg
@@ -3097,12 +3091,11 @@
       entity_id:
       - notify.porch_history
     data:
-      message: '"{{ now().strftime(''%Y-%m-%d'') }}","{{ now().strftime(''%H:%M:%S'')
-        }}","{{ ((gemini_report | default({})).data | default(''[ALERT]'')).split('']'')[0]
-        ~ '']'' }}","{{ ((gemini_report | default({})).data | default(''Video analysis
-        failed.'')) | replace(''"'', ''""'') }}"
-
-        '
+      message: >
+        {% set report = (gemini_report | default({})).data | default('[ALERT] Video analysis failed.') %}
+        {% set tag = report.split(']')[0] ~ ']' if ']' in report else '[ERROR]' %}
+        {% set content = report.replace(tag, '').strip() %}
+        "{{ now().strftime('%Y-%m-%d') }}","{{ now().strftime('%H:%M:%S') }}","{{ tag }}","{{ content | replace('"', '""') }}"
   - if:
     - condition: template
       value_template: '{{ ''[ALERT]'' in (gemini_report | default({})).data | default(''[ALERT]'')
@@ -3111,14 +3104,17 @@
     - action: notify.persistent_notification
       data:
         title: Porch Intel (Full Report)
-        message: '{{ ((gemini_report | default({})).data | default('''')) | replace(''[ALERT]
-          '', '''') }}'
+        message: >
+          {% set report = (gemini_report | default({})).data | default('') %}
+          {% set tag = report.split(']')[0] ~ ']' if ']' in report else '[ALERT]' %}
+          {{ report.replace(tag, '').strip() }}
     - action: notify.mobile_app_josh_mobile
       data:
         title: Porch Intel
-        message: '{{ ((gemini_report | default({})).data | default(''Video analysis
-          failed.'')) | replace(''[ALERT] '', '''') | truncate(150, true, ''...'')
-          }}'
+        message: >
+          {% set report = (gemini_report | default({})).data | default('Video analysis failed.') %}
+          {% set tag = report.split(']')[0] ~ ']' if ']' in report else '[ALERT]' %}
+          {{ report.replace(tag, '').strip() | truncate(150, true, '...') }}
     - if:
       - condition: state
         entity_id: alarm_control_panel.home_alarm
