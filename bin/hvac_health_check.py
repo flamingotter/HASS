@@ -3,7 +3,10 @@ import json
 from google.cloud import bigquery
 from datetime import datetime
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/config/bigquery_credentials.json"
+if os.path.exists("bigquery_credentials.json"):
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = os.path.abspath("bigquery_credentials.json")
+else:
+    os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = "/config/bigquery_credentials.json"
 client = bigquery.Client()
 
 query = """
