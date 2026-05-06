@@ -58,7 +58,15 @@ The engine's goal is to ensure the Master Bedroom reaches a precise sleep temper
 
 ---
 
-## 8. Current Configuration (As of May 5, 2026)
-- **Active Version:** v7.1 (Presence-Aware AI Mode).
-- **Core Repository:** `{"45":20.1, "50":21.0, "55":18.0, "60":26.8, "65":34.4, "70":17.2, "75":55.0, "80":62.0, "85":70.0, "90":80.0}`
+## 8. Phase V: Operational Hardening (v7.2)
+**Key Milestone:** Decoupling intelligence from physical safety.
+- **Fail-Safe Architecture:** Implemented `continue_on_error: true` across all AI strategic tasks. The LLM is now a "consultant," not a "blocker." If the AI fails to respond, the system falls back to baseline targets, ensuring critical actions (like the AC handoff) always occur.
+- **Data Armor (The Swing Cap):** Added a physical constraint to the repository learning logic. Even if a session passes the AI Auditor, bin updates are capped at a maximum shift of ±5 minutes per night to prevent repository corruption from extreme outliers.
+- **Critical Template Fix:** Resolved a Jinja2 `TypeError` regarding dynamic dictionary keys that previously caused automation crashes and AC overshoots during the handoff phase.
+
+---
+
+## 9. Current Configuration (As of May 6, 2026)
+- **Active Version:** v7.2 (Hardened AI Mode).
+- **Core Repository:** `{"45":20.1, "50":21.0, "55":18.0, "60":26.8, "65":34.4, "70":17.5, "75":55.0, "80":50.0, "85":70.0, "90":80.0}` (Note: Bin 80 re-baselined to 50.0).
 - **Persistence:** YAML `initial` values removed; state is managed via `restore_state` and learned measurements.
