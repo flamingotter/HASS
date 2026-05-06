@@ -3991,7 +3991,14 @@
               repo: '{{ states(''input_text.mbr_cooling_performance_data'') | from_json
                 }}'
               old_rate: '{{ repo.get(lookup_key, obs_rate) | float }}'
-              new_rate: '{{ ((old_rate * 0.7) + (obs_rate * 0.3)) | round(1) }}'
+              weighted_rate: '{{ ((old_rate * 0.7) + (obs_rate * 0.3)) | round(1) }}'
+              new_rate: >
+                {% set diff = weighted_rate - old_rate %}
+                {% set cap = 5.0 %}
+                {% if diff > cap %} {{ (old_rate + cap) | round(1) }}
+                {% elif diff < (cap * -1) %} {{ (old_rate - cap) | round(1) }}
+                {% else %} {{ weighted_rate }}
+                {% endif %}
               new_repo: >
                 {% set new_entry = {lookup_key: new_rate} %}
                 {{ dict(repo, **new_entry) | to_json }}
