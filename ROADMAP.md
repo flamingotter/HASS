@@ -25,7 +25,7 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 - [ ] **Automations Audit - Bit Rot:** 
     - **Entertainment Automations:** Reference `light.masonic_lamp` and `light.parlor_light`. Currently **Disabled/In Stasis**.
     - **Nightly Climate Data:** Reference `button.docker_ha_bq_exporter_restart` is valid (entity only appears when container runs).
-- [ ] **Script Modernization:** Ensure all scripts in `scripts.yaml` use the `action:` syntax for consistency with HA 2026.4.
+- [x] **Script Modernization:** All scripts in `scripts.yaml` updated to `action:` syntax and AI attributes corrected from `.text` to `.data`. (Completed May 6, 2026)
 
 ## 5. Future AI Enhancements
 - [ ] **Vision AI Expansion:** Explore using the parlor/kitchen vision pattern for more complex occupancy sensing (e.g., distinguishing between owners and guests).

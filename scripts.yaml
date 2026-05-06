@@ -120,7 +120,7 @@ genai_response_to_actionable_notification:
     data:
       notify_target: '{{ targets.get(msg_target, ''unknown'') }}'
       title: test message
-      message: '{{ (generated_content | default({})).text | default(''The cats are
+      message: '{{ (generated_content | default({})).data | default(''The cats are
         not going away. They still need to be fed.'') }}'
       notify_tag: test_tag
       notify_action_1: done
@@ -176,13 +176,13 @@ camera_parlor_snapshot_ai_notification:
   - if:
     - condition: template
       value_template: '{{ ''No Obvious Motion Detected.'' in (generated_content |
-        default({})).text | default(''No Obvious Motion Detected.'') }}'
+        default({})).data | default(''No Obvious Motion Detected.'') }}'
     then:
     - stop: ''
     else:
     - action: notify.mobile_app_josh_mobile
       data:
-        message: '{{ (generated_content | default({})).text | default(''Motion detected
+        message: '{{ (generated_content | default({})).data | default(''Motion detected
           in parlor.'') }}'
         title: Parlor Motion Detected
         data:
@@ -234,13 +234,13 @@ camera_kitchen_snapshot_ai_notification:
   - if:
     - condition: template
       value_template: '{{ ''No Obvious Motion Detected.'' in (generated_content |
-        default({})).text | default(''No Obvious Motion Detected.'') }}'
+        default({})).data | default(''No Obvious Motion Detected.'') }}'
     then:
     - stop: ''
     else:
     - action: notify.mobile_app_josh_mobile
       data:
-        message: '{{ (generated_content | default({})).text | default(''Motion detected
+        message: '{{ (generated_content | default({})).data | default(''Motion detected
           in kitchen.'') }}'
         title: Kitchen Motion Detected
         data:
@@ -284,14 +284,14 @@ locate_cats_snapshot_ai_notification_duplicate:
     response_variable: generated_content
   - if:
     - condition: template
-      value_template: '{{ ''No Obvious Cats Detected.'' in (generated_content | default({})).text
+      value_template: '{{ ''No Obvious Cats Detected.'' in (generated_content | default({})).data
         | default(''No Obvious Cats Detected.'') }}'
     then:
     - stop: ''
     else:
     - action: notify.mobile_app_josh_mobile
       data:
-        message: '{{ (generated_content | default({})).text | default(''Cats detected
+        message: '{{ (generated_content | default({})).data | default(''Cats detected
           in house.'') }}'
         title: Locating Cats
   description: ''
