@@ -1632,7 +1632,8 @@
     mj_device_id: 0aa560faf0e8784c
 - id: '1724794143393'
   alias: 'Presence: Enhanced Eco Mode Manager (v7.1)'
-  description: Handles Eco Mode timers, extensions via AI parsing, and proximity-based deactivation.
+  description: Handles Eco Mode timers, extensions via AI parsing, and proximity-based
+    deactivation.
   triggers:
   - event_type: timer.finished
     event_data:
@@ -1657,7 +1658,7 @@
     id: notification_cleared
     trigger: event
   - platform: numeric_state
-    entity_id: 
+    entity_id:
     - sensor.home_josh_distance
     - sensor.home_mj_distance
     below: 264000
@@ -1676,17 +1677,19 @@
         target:
           entity_id: climate.t6_pro_downstairs
         data:
-          temperature: >
-            {% if is_state('climate.t6_pro_downstairs', 'cool') %} 74
-            {% elif is_state('climate.t6_pro_downstairs', 'heat') %} 66
-            {% else %} 70
-            {% endif %}
+          temperature: '{% if is_state(''climate.t6_pro_downstairs'', ''cool'') %}
+            74 {% elif is_state(''climate.t6_pro_downstairs'', ''heat'') %} 66 {%
+            else %} 70 {% endif %}
+
+            '
       - action: notify.mobile_app_josh_mobile
         data:
           title: Eco Mode Activated
-          message: >
-            Home is in Vacation mode. T6 Pro set to {{ state_attr('climate.t6_pro_downstairs', 'temperature') }}°F. 
-            How many days should I set the timer for? (e.g. '3' or 'until Sunday')
+          message: 'Home is in Vacation mode. T6 Pro set to {{ state_attr(''climate.t6_pro_downstairs'',
+            ''temperature'') }}°F.  How many days should I set the timer for? (e.g.
+            ''3'' or ''until Sunday'')
+
+            '
           data:
             tag: eco-finish
             persistent: true
@@ -1726,16 +1729,18 @@
       - action: ai_task.generate_data
         data:
           task_name: Eco Mode Timer Parser
-          instructions: >
-            The user wants to extend Eco Mode. Their reply was: "{{ trigger.event.data.reply_text }}".
-            Convert this into a number of DAYS from now. 
-            If they just gave a number, return that number.
-            If they gave a day of the week, calculate days until that day.
-            Return ONLY the integer number of days.
+          instructions: 'The user wants to extend Eco Mode. Their reply was: "{{ trigger.event.data.reply_text
+            }}". Convert this into a number of DAYS from now.  If they just gave a
+            number, return that number. If they gave a day of the week, calculate
+            days until that day. Return ONLY the integer number of days.
+
+            '
         response_variable: extension_days
       - variables:
-          days: "{{ (extension_days.data | int(1)) if (extension_days.data | is_number) else 1 }}"
-          seconds: "{{ ((extension_days.data | int(1)) if (extension_days.data | is_number) else 1) * 86400 }}"
+          days: '{{ (extension_days.data | int(1)) if (extension_days.data | is_number)
+            else 1 }}'
+          seconds: '{{ ((extension_days.data | int(1)) if (extension_days.data | is_number)
+            else 1) * 86400 }}'
       - action: timer.start
         data:
           duration: '{{ seconds }}'
@@ -1744,7 +1749,8 @@
       - action: notify.mobile_app_josh_mobile
         data:
           title: Eco Mode Extended
-          message: "AI Parser: '{{ trigger.event.data.reply_text }}' interpreted as {{ days }} days. Eco Mode will remain active."
+          message: 'AI Parser: ''{{ trigger.event.data.reply_text }}'' interpreted
+            as {{ days }} days. Eco Mode will remain active.'
           data:
             tag: eco-finish
     - conditions:
@@ -1776,7 +1782,8 @@
       - action: notify.mobile_app_josh_mobile
         data:
           title: Welcome Home
-          message: "Eco Mode deactivated ({{ 'Manual' if trigger.id == 'deactivate_eco' else 'Proximity' }}). Thermostat set to 68°F."
+          message: Eco Mode deactivated ({{ 'Manual' if trigger.id == 'deactivate_eco'
+            else 'Proximity' }}). Thermostat set to 68°F.
           data:
             tag: eco-finish
   mode: restart
@@ -2082,7 +2089,8 @@
       sequence:
       - action: input_select.select_option
         target:
-          entity_id: "{{ 'input_select.josh_status' if trigger.entity_id == 'sensor.home_josh_distance' else 'input_select.mj_status' }}"
+          entity_id: '{{ ''input_select.josh_status'' if trigger.entity_id == ''sensor.home_josh_distance''
+            else ''input_select.mj_status'' }}'
         data:
           option: Extended Away
     default:
@@ -3062,7 +3070,10 @@
     entity_id:
     - binary_sensor.garage_man_door
     - binary_sensor.front_door
-    to: 'on'
+    - binary_sensor.bedroom
+    - binary_sensor.bedroom_door
+    to:
+    - 'on'
   actions:
   - action: siren.turn_on
     target:
@@ -3076,6 +3087,8 @@
         instant: 7
       binary_sensor.garage_man_door:
         instant: 6
+      binary_sensor.bedroom_door:
+        instant: 9
   mode: single
   max_exceeded: silent
 - id: outdoor_motion_lighting_engine
@@ -3683,7 +3696,7 @@
   actions:
   - action: switch.turn_{{ trigger.to_state.state }}
     target:
-      entity_id: switch.z_wave_plus_on_off_toggle_switch
+      entity_id: switch.pantry_light
   mode: single
 - id: '1776974854675'
   alias: Motion Hall Downstairs
@@ -3778,7 +3791,11 @@
   - action: notify.mobile_app_josh_mobile
     data:
       title: '⚠️ HVAC Alert: {{ trigger.to_state.state }}'
-      message: "Your AC efficiency has dropped by {{ state_attr('sensor.hvac_health_status', 'degradation_pct') }}%. It is taking {{ state_attr('sensor.hvac_health_status', 'recent_rate') }} minutes to cool 1 degree, compared to your baseline of {{ state_attr('sensor.hvac_health_status', 'baseline_rate') }} minutes. Please check the filter or condenser coils."
+      message: Your AC efficiency has dropped by {{ state_attr('sensor.hvac_health_status',
+        'degradation_pct') }}%. It is taking {{ state_attr('sensor.hvac_health_status',
+        'recent_rate') }} minutes to cool 1 degree, compared to your baseline of {{
+        state_attr('sensor.hvac_health_status', 'baseline_rate') }} minutes. Please
+        check the filter or condenser coils.
   mode: single
 - id: ai_climate_mbr_v7_0
   alias: 'AI Enabled Climate: Master Bedroom Sleep Comfort Engine (v7.0)'
@@ -3852,8 +3869,8 @@
         response_variable: strategist_advice
       - action: notify.mobile_app_josh_mobile
         data:
-          title: "Climate Strategy"
-          message: "{{ strategist_advice.data }}"
+          title: Climate Strategy
+          message: '{{ strategist_advice.data }}'
     - alias: 'Phase 1: Wake Up (Reset to Neutral)'
       conditions:
       - condition: trigger
@@ -3972,7 +3989,9 @@
                 }}'
               old_rate: '{{ repo.get(lookup_key, obs_rate) | float }}'
               new_rate: '{{ ((old_rate * 0.7) + (obs_rate * 0.3)) | round(1) }}'
-              new_repo: '{{ dict(repo, **{lookup_key: new_rate}) | to_json }}'
+              new_repo: >
+                {% set new_entry = {lookup_key: new_rate} %}
+                {{ dict(repo, **new_entry) | to_json }}
           - action: input_text.set_value
             target:
               entity_id: input_text.mbr_cooling_performance_data
