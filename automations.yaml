@@ -890,103 +890,74 @@
   max: 15
 - id: '1724440692522'
   alias: Motion Kitchen
-  description: ''
+  description: Handles kitchen and dining lighting based on motion and occupancy timers.
   triggers:
-  - alias: motion
-    entity_id:
-    - binary_sensor.motion_indoors_kitchen
+  - trigger: state
+    entity_id: binary_sensor.motion_indoors_kitchen
     to: 'on'
     id: motion
-    trigger: state
-  - event_type: timer.finished
+  - trigger: event
+    event_type: timer.finished
     event_data:
       entity_id: timer.timer_kitchen
     id: t02
-    trigger: event
   conditions:
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: alarm_control_panel.home_alarm
-      state: disarmed
-    - condition: state
-      entity_id: input_boolean.motion_lockout
-      state: 'off'
+  - condition: state
+    entity_id: alarm_control_panel.home_alarm
+    state: disarmed
+  - condition: state
+    entity_id: input_boolean.motion_lockout
+    state: 'off'
   actions:
-  - alias: Turn on and start timer
-    if:
-    - condition: trigger
-      id:
-      - motion
-    then:
-    - if:
-      - condition: state
-        state: 'on'
-        entity_id: light.kitchen_light
-      then:
-      - metadata: {}
-        data: {}
-        action: timer.start
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: motion
+      sequence:
+      - action: timer.start
         target:
           entity_id: timer.timer_kitchen
-      else:
       - if:
-        - condition: and
-          conditions:
-          - condition: state
-            entity_id: media_player.samsung_65
-            state: 'on'
-        then: []
-        enabled: false
-      - parallel:
-        - metadata: {}
-          data: {}
-          action: timer.start
-          target:
-            entity_id: timer.timer_kitchen
-        - action: light.turn_on
-          metadata: {}
-          data:
-            transition: 0.5
-            color_temp_kelvin: 4500
-            brightness_pct: 100
-          target:
-            entity_id:
-            - light.island
-            - light.big_kitchen_lights
-            - light.dining
-        - action: light.turn_on
-          metadata: {}
-          data:
-            rgb_color:
-            - 137
-            - 41
-            - 255
-            brightness_pct: 100
-            transition: 2
-          target:
-            entity_id: light.spot_light
-  - if:
-    - condition: trigger
-      id:
-      - t02
-    - condition: state
-      entity_id: input_boolean.cleaning
-      state: 'off'
-    - condition: not
-      conditions:
+        - condition: state
+          entity_id: light.kitchen_light
+          state: 'off'
+        then:
+        - parallel:
+          - action: light.turn_on
+            data:
+              transition: 0.5
+              color_temp_kelvin: 4500
+              brightness_pct: 100
+            target:
+              entity_id:
+              - light.island
+              - light.big_kitchen_lights
+              - light.dining
+          - action: light.turn_on
+            data:
+              rgb_color: [137, 41, 255]
+              brightness_pct: 100
+              transition: 2
+            target:
+              entity_id: light.spot_light
+    - conditions:
+      - condition: trigger
+        id: t02
       - condition: state
-        entity_id: sensor.last_motion_indoors
-        state: Kitchen
-    then:
-    - action: light.turn_off
-      metadata: {}
-      data: {}
-      target:
-        entity_id:
-        - light.island
-        - light.big_kitchen_lights
-        - light.dining
+        entity_id: input_boolean.cleaning
+        state: 'off'
+      - condition: not
+        conditions:
+        - condition: state
+          entity_id: sensor.last_motion_indoors
+          state: Kitchen
+      sequence:
+      - action: light.turn_off
+        target:
+          entity_id:
+          - light.island
+          - light.big_kitchen_lights
+          - light.dining
   mode: restart
 - id: '1724445299299'
   alias: Motion Office
@@ -1631,7 +1602,7 @@
     josh_device_id: d818035824cf47ea
     mj_device_id: 0aa560faf0e8784c
 - id: '1724794143393'
-  alias: 'Presence: Enhanced Eco Mode Manager (v7.1)'
+  alias: 'Climate: Enhanced Eco Mode Manager (v7.1)'
   description: Handles Eco Mode timers, extensions via AI parsing, and proximity-based
     deactivation.
   triggers:
@@ -1657,16 +1628,16 @@
       tag: eco-finish
     id: notification_cleared
     trigger: event
-  - platform: numeric_state
-    entity_id:
+  - entity_id:
     - sensor.home_josh_distance
     - sensor.home_mj_distance
     below: 264000
     id: proximity_reset
-  - platform: state
-    entity_id: input_boolean.eco_mode
+    trigger: numeric_state
+  - entity_id: input_boolean.eco_mode
     to: 'on'
     id: eco_activated
+    trigger: state
   actions:
   - choose:
     - conditions:
@@ -2284,149 +2255,6 @@
           entity_id: '{{ config.switch }}'
   mode: parallel
   max: 10
-- id: '1751911826375'
-  alias: Motion Boudoir
-  description: ''
-  triggers:
-  - alias: Motion
-    entity_id:
-    - binary_sensor.boudoir_sensor_motion_detection
-    to: 'on'
-    id: Motion
-    trigger: state
-  - event_type: timer.finished
-    event_data:
-      entity_id: timer.timer_boudoir
-    id: Timer
-    trigger: event
-    alias: Timer
-  conditions:
-  - condition: state
-    entity_id: input_boolean.motion_lockout
-    state: 'off'
-  actions:
-  - choose:
-    - conditions:
-      - condition: trigger
-        id:
-        - Motion
-      sequence:
-      - choose:
-        - conditions:
-          - condition: state
-            entity_id: alarm_control_panel.home_alarm
-            state: disarmed
-          sequence:
-          - if:
-            - condition: sun
-              before: sunset
-            then:
-            - if:
-              - condition: state
-                state: 'on'
-                entity_id: light.boudoir
-              then:
-              - data:
-                  duration: 00:10:00
-                action: timer.start
-                target:
-                  entity_id: timer.timer_boudoir
-              else:
-              - parallel:
-                - data:
-                    duration: 00:10:00
-                  action: timer.start
-                  target:
-                    entity_id: timer.timer_boudoir
-                - action: light.turn_on
-                  data:
-                    transition: 0.5
-                    color_temp_kelvin: 4500
-                    brightness_pct: 100
-                  target:
-                    entity_id:
-                    - light.boudoir_light
-                    - light.boudoir_lamps
-                    - light.boudoir_fairy_lights
-            else:
-            - if:
-              - condition: state
-                state: 'on'
-                entity_id: light.boudoir
-              then:
-              - data:
-                  duration: 00:10:00
-                action: timer.start
-                target:
-                  entity_id: timer.timer_boudoir
-              else:
-              - parallel:
-                - data:
-                    duration: 00:10:00
-                  action: timer.start
-                  target:
-                    entity_id: timer.timer_boudoir
-                - action: light.turn_on
-                  data:
-                    transition: 0.5
-                    color_temp_kelvin: 4500
-                    brightness_pct: 100
-                  target:
-                    entity_id:
-                    - light.boudoir_fairy_lights
-        - conditions:
-          - condition: state
-            entity_id: alarm_control_panel.home_alarm
-            state: armed_night
-          sequence:
-          - if:
-            - condition: trigger
-              id:
-              - motion
-            then:
-            - if:
-              - condition: state
-                state: 'on'
-                entity_id: switch.boudoir_fairy_lights
-              then:
-              - data:
-                  duration: 00:05:00
-                action: timer.start
-                target:
-                  entity_id: timer.timer_boudoir
-              else:
-              - parallel:
-                - data:
-                    duration: 00:05:00
-                  action: timer.start
-                  target:
-                    entity_id: timer.timer_boudoir
-                - action: light.turn_on
-                  target:
-                    entity_id: light.boudoir_fairy_lights
-          alias: If Home Alarm Is Armed Night
-    - conditions:
-      - condition: trigger
-        id:
-        - Timer
-      sequence:
-      - if:
-        - condition: state
-          entity_id: input_boolean.cleaning
-          state: 'off'
-        - condition: not
-          conditions:
-          - condition: state
-            entity_id: sensor.last_motion_indoors
-            state: Boudoir
-        then:
-        - action: light.turn_off
-          target:
-            entity_id:
-            - light.boudoir_light
-            - light.boudoir_lamps
-            - light.boudoir_fairy_lights
-  mode: restart
 - id: '1752157984119'
   alias: Notify Shuttle Bay
   description: ''
@@ -3349,7 +3177,9 @@
     entity_id:
     - binary_sensor.garage_man_door
     - binary_sensor.front_door
-    to: 'on'
+    - binary_sensor.bedroom_door
+    to:
+    - 'on'
     id: door_opened
   - trigger: state
     entity_id:
@@ -3778,7 +3608,7 @@
         - light.hall_light
   mode: restart
 - id: hvac_health_alert
-  alias: 'System: HVAC Health Alert'
+  alias: 'Climate: HVAC Health Alert'
   description: Monitors the BigQuery AI health check and alerts if the AC loses efficiency.
   triggers:
   - trigger: state
@@ -3799,7 +3629,8 @@
   mode: single
 - id: ai_climate_mbr_v7_0
   alias: 'AI Enabled Climate: Master Bedroom Sleep Comfort Engine (v7.2)'
-  description: 'v7.2: Hardened AI logic with continue_on_error and robust safety defaults to prevent infinite-run crashes.'
+  description: 'v7.2: Hardened AI logic with continue_on_error and robust safety defaults
+    to prevent infinite-run crashes.'
   triggers:
   - trigger: state
     entity_id:
@@ -3870,7 +3701,9 @@
       - action: notify.mobile_app_josh_mobile
         data:
           title: Climate Strategy
-          message: '{{ (strategist_advice | default({})).data | default(''The outdoor air is currently cooler than the bedroom. Consider opening the patio door to save energy.'') }}'
+          message: '{{ (strategist_advice | default({})).data | default(''The outdoor
+            air is currently cooler than the bedroom. Consider opening the patio door
+            to save energy.'') }}'
     - alias: 'Phase 1: Wake Up (Reset to Neutral)'
       conditions:
       - condition: trigger
@@ -3991,17 +3824,18 @@
               repo: '{{ states(''input_text.mbr_cooling_performance_data'') | from_json
                 }}'
               old_rate: '{{ repo.get(lookup_key, obs_rate) | float }}'
-              weighted_rate: '{{ ((old_rate * 0.7) + (obs_rate * 0.3)) | round(1) }}'
-              new_rate: >
-                {% set diff = weighted_rate - old_rate %}
-                {% set cap = 5.0 %}
-                {% if diff > cap %} {{ (old_rate + cap) | round(1) }}
-                {% elif diff < (cap * -1) %} {{ (old_rate - cap) | round(1) }}
-                {% else %} {{ weighted_rate }}
-                {% endif %}
-              new_repo: >
-                {% set new_entry = {lookup_key: new_rate} %}
-                {{ dict(repo, **new_entry) | to_json }}
+              weighted_rate: '{{ ((old_rate * 0.7) + (obs_rate * 0.3)) | round(1)
+                }}'
+              new_rate: '{% set diff = weighted_rate - old_rate %} {% set cap = 5.0
+                %} {% if diff > cap %} {{ (old_rate + cap) | round(1) }} {% elif diff
+                < (cap * -1) %} {{ (old_rate - cap) | round(1) }} {% else %} {{ weighted_rate
+                }} {% endif %}
+
+                '
+              new_repo: '{% set new_entry = {lookup_key: new_rate} %} {{ dict(repo,
+                **new_entry) | to_json }}
+
+                '
           - action: input_text.set_value
             target:
               entity_id: input_text.mbr_cooling_performance_data
@@ -4064,3 +3898,244 @@
         data:
           temperature: '{{ target + 2.0 }}'
   mode: queued
+- id: '1778077516701'
+  alias: Motion Babe Cave
+  description: ''
+  triggers:
+  - alias: motion
+    entity_id:
+    - binary_sensor.motion_indoors_babe_cave
+    to:
+    - 'on'
+    id: motion
+    trigger: state
+  - event_type: timer.finished
+    event_data:
+      entity_id: timer.timer_bab_cave
+    id: t02
+    trigger: event
+  conditions:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.home_alarm
+      state: disarmed
+    - condition: state
+      entity_id: input_boolean.motion_lockout
+      state: 'off'
+  actions:
+  - alias: Turn on and start timer
+    if:
+    - condition: trigger
+      id:
+      - motion
+    then:
+    - if:
+      - condition: state
+        state:
+        - 'on'
+        entity_id: light.masonic_lamp
+      then:
+      - metadata: {}
+        data: {}
+        action: timer.start
+        target:
+          entity_id: timer.timer_bab_cave
+      else:
+      - parallel:
+        - metadata: {}
+          data: {}
+          action: timer.start
+          target:
+            entity_id: timer.timer_bab_cave
+        - action: light.turn_on
+          metadata: {}
+          data:
+            transition: 0.5
+            rgb_color:
+            - 215
+            - 150
+            - 255
+          target:
+            entity_id: light.masonic_lamp
+  - if:
+    - condition: trigger
+      id:
+      - t02
+    - condition: state
+      entity_id: input_boolean.cleaning
+      state: 'off'
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: sensor.last_motion_indoors
+        state:
+        - Babe Cabe
+    then:
+    - action: light.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id: light.masonic_lamp
+  mode: restart
+- id: '1778077545508'
+  alias: Motion Babe Cave
+  description: ''
+  triggers:
+  - alias: motion
+    entity_id:
+    - binary_sensor.motion_indoors_babe_cave
+    to:
+    - 'on'
+    id: motion
+    trigger: state
+  - event_type: timer.finished
+    event_data:
+      entity_id: timer.timer_bab_cave
+    id: t02
+    trigger: event
+  conditions:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.home_alarm
+      state: disarmed
+    - condition: state
+      entity_id: input_boolean.motion_lockout
+      state: 'off'
+  actions:
+  - alias: Turn on and start timer
+    if:
+    - condition: trigger
+      id:
+      - motion
+    then:
+    - if:
+      - condition: state
+        state:
+        - 'on'
+        entity_id: light.masonic_lamp
+      then:
+      - metadata: {}
+        data: {}
+        action: timer.start
+        target:
+          entity_id: timer.timer_bab_cave
+      else:
+      - parallel:
+        - metadata: {}
+          data: {}
+          action: timer.start
+          target:
+            entity_id: timer.timer_bab_cave
+        - action: light.turn_on
+          metadata: {}
+          data:
+            transition: 0.5
+            rgb_color:
+            - 215
+            - 150
+            - 255
+          target:
+            entity_id: light.masonic_lamp
+  - if:
+    - condition: trigger
+      id:
+      - t02
+    - condition: state
+      entity_id: input_boolean.cleaning
+      state: 'off'
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: sensor.last_motion_indoors
+        state:
+        - Babe Cabe
+    then:
+    - action: light.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id: light.masonic_lamp
+  mode: restart
+- id: '1778077597598'
+  alias: Motion Babe Cave
+  description: ''
+  triggers:
+  - alias: motion
+    entity_id:
+    - binary_sensor.motion_indoors_babe_cave
+    to:
+    - 'on'
+    id: motion
+    trigger: state
+  - event_type: timer.finished
+    event_data:
+      entity_id: timer.timer_babe_cave
+    id: t02
+    trigger: event
+  conditions:
+  - condition: and
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.home_alarm
+      state: disarmed
+    - condition: state
+      entity_id: input_boolean.motion_lockout
+      state: 'off'
+  actions:
+  - alias: Turn on and start timer
+    if:
+    - condition: trigger
+      id:
+      - motion
+    then:
+    - if:
+      - condition: state
+        state:
+        - 'on'
+        entity_id: light.masonic_lamp
+      then:
+      - metadata: {}
+        data: {}
+        action: timer.start
+        target:
+          entity_id: timer.timer_bab_cave
+      else:
+      - parallel:
+        - metadata: {}
+          data: {}
+          action: timer.start
+          target:
+            entity_id: timer.timer_bab_cave
+        - action: light.turn_on
+          metadata: {}
+          data:
+            transition: 0.5
+            rgb_color:
+            - 171
+            - 35
+            - 255
+          target:
+            entity_id: light.masonic_lamp
+  - if:
+    - condition: trigger
+      id:
+      - t02
+    - condition: state
+      entity_id: input_boolean.cleaning
+      state: 'off'
+    - condition: not
+      conditions:
+      - condition: state
+        entity_id: sensor.last_motion_indoors
+        state:
+        - Babe Cave
+    then:
+    - action: light.turn_off
+      metadata: {}
+      data: {}
+      target:
+        entity_id:
+        - light.masonic_lamp
+  mode: restart
