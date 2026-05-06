@@ -1,7 +1,8 @@
 # Home Assistant Lab Context
 - **Structure:** Modular Package-based config in `integrations/` and `entities/`.
 - **Environment:** Docker container on Debian host. Python 3.14.2.
-- **BigQuery:** Analytics environment in `bq_venv/`. Credentials at `/config/bigquery_credentials.json`.
+- **Paths:** Internal container path is `/config/`. External host path is `/data/brick1/docker_data/appdata/hub/hass/`.
+- **BigQuery:** Analytics environment in `bq_venv/` (rebuilt inside container May 6, 2026). Credentials at `/config/bigquery_credentials.json`.
 
 ## 1. Documentation Map
 - **[ARCHITECTURE.md](ARCHITECTURE.md):** Core logic engines, state machines, and cross-automation dependencies.
