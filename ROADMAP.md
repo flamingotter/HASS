@@ -26,6 +26,9 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
     - **Entertainment Automations:** Reference `light.masonic_lamp` and `light.parlor_light`. Currently **Disabled/In Stasis**.
     - **Nightly Climate Data:** Reference `button.docker_ha_bq_exporter_restart` is valid (entity only appears when container runs).
 - [x] **Script Modernization:** All scripts in `scripts.yaml` updated to `action:` syntax and AI attributes corrected from `.text` to `.data`. (Completed May 6, 2026)
+- [x] **NFC Unification:** Implemented `System: NFC Tag Manager` as a centralized switchboard for physical tags. (Completed May 7, 2026)
+- [x] **Labeling Strategy:** Established AI-specific labeling scheme (`ai_engine`, `ai_vision`, `ai_persona`) for dynamic logic control. (Completed May 7, 2026)
+- [ ] **System Integrity:** Build a "Critical Heartbeat" sensor using the `critical` label to monitor essential infrastructure (Freezer, Networking, Z-Wave).
 
 ## 5. Future AI & Occupancy Enhancements
 - [ ] **Vision-Based Occupancy Pilot:** Develop a "Master Occupancy Verifier" script using ROVER-02 (and future cameras) to perform human-presence checks before dousing lights.

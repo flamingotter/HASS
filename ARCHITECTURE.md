@@ -70,7 +70,13 @@ A high-precision engine designed to reach sleep temperature exactly at bedtime.
 
 ---
 
-## 5. Vision AI Pattern
-Used for parlor/kitchen motion and cat locating.
-- **Flow:** `camera.snapshot` (3 frames) -> `ai_task` (Image Analysis) -> `notify` (with latest frame).
-- **Logic:** Stops execution if the AI returns "No Obvious Motion Detected" to prevent notification fatigue.
+## 6. Physical Interface Layer (NFC)
+The system uses physical NFC tags to bridge the gap between the physical and digital home.
+
+### **The Hub:** `System: NFC Tag Manager`
+- **Logic:** Variable-based "Switchboard" (`tag_map`) that maps unique `tag_id`s to actions and entities.
+- **Handling:** Uses robust ID detection to capture both direct `tag_id` and event-based payloads.
+- **Standard Tags:** Handles simple toggles for infrastructure like `garage` (Shuttle Bay) and `cam_alerts` (Camera Alerts).
+
+### **Delegated Authority:**
+For tags requiring complex logic or identification (e.g., `trash_done`), authority is delegated to the specialized automation (e.g., `Notify: Trash Day`). This prevents race conditions and ensures specific metadata like `device_id` is preserved for person-specific notifications.

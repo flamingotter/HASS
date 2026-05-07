@@ -39,10 +39,9 @@
   description: Unified engine for processing physical NFC tags (Garage, Mower, etc.)
   triggers:
   - trigger: tag
-    tag_id:
-    - cam_alerts
-    - garage
-    - b6ac1acd-4dfb-4940-8c10-d4cb717f61c1
+    tag_id: cam_alerts
+  - trigger: tag
+    tag_id: garage
   conditions:
   - condition: template
     value_template: '{{ config is not none }}'
@@ -50,16 +49,12 @@
   - action: '{{ config.action }}'
     target:
       entity_id: '{{ config.entity }}'
-  - if:
-    - condition: template
-      value_template: '{{ scanned_id != "trash_done" }}'
-    then:
-    - action: notify.mobile_app_josh_mobile
+  - action: notify.mobile_app_josh_mobile
+    data:
+      title: NFC Tag Scanned
+      message: '{{ scanned_id | replace("_", " ") | title }} has been toggled.'
       data:
-        title: NFC Tag Scanned
-        message: '{{ scanned_id | replace("_", " ") | title }} has been toggled.'
-        data:
-          tag: nfc-tag-notification
+        tag: nfc-tag-notification
   mode: single
   variables:
     tag_map:
@@ -69,9 +64,6 @@
       cam_alerts:
         action: input_boolean.toggle
         entity: input_boolean.camera_alerts
-      trash_done:
-        action: input_boolean.turn_off
-        entity: input_boolean.trash_reminder
     scanned_id: "{% if trigger.tag_id is defined %}\n  {{ trigger.tag_id }}\n{% else
       %}\n  {{ trigger.event.data.tag_id }}\n{% endif %}\n"
     config: '{{ tag_map.get(scanned_id|trim) }}'
@@ -1372,28 +1364,21 @@
       - target:
           entity_id: input_boolean.trash_reminder
         action: input_boolean.turn_off
+      - variables:
+          scanned_device: '{{ trigger.device_id | default(trigger.event.data.device_id)
+            | default(''unknown'') }}'
       - choose:
         - conditions:
-          - or:
-            - condition: template
-              value_template: '{{ trigger.id == ''trash_done'' and trigger.event.data.device_id
-                == josh_device_id }}'
-            - condition: template
-              value_template: '{{ trigger.id == ''trash_tag_scanned'' and trigger.event.data.device_id
-                == josh_device_id }}'
+          - condition: template
+            value_template: '{{ scanned_device == josh_device_id }}'
           sequence:
           - data:
               title: Trash and Recycling
               message: Josh Completed
             action: notify.mobile_app_mj_pixel_8_pro
         - conditions:
-          - or:
-            - condition: template
-              value_template: '{{ trigger.id == ''trash_done'' and trigger.event.data.device_id
-                == mj_device_id }}'
-            - condition: template
-              value_template: '{{ trigger.id == ''trash_tag_scanned'' and trigger.event.data.device_id
-                == mj_device_id }}'
+          - condition: template
+            value_template: '{{ scanned_device == mj_device_id }}'
           sequence:
           - data:
               title: Trash and Recycling
