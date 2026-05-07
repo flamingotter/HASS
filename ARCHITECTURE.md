@@ -79,4 +79,19 @@ The system uses physical NFC tags to bridge the gap between the physical and dig
 - **Standard Tags:** Handles simple toggles for infrastructure like `garage` (Shuttle Bay) and `cam_alerts` (Camera Alerts).
 
 ### **Delegated Authority:**
-For tags requiring complex logic or identification (e.g., `trash_done`), authority is delegated to the specialized automation (e.g., `Notify: Trash Day`). This prevents race conditions and ensures specific metadata like `device_id` is preserved for person-specific notifications.
+For tags requiring complex logic or identification (e.g., `trash_done`), authority is delegated to the specialized automation (e.g., `Notify: Trash Day`). This prevents race conditions and ensures specific metadata like `device_id` and `user_id` are preserved for person-specific notifications.
+
+---
+
+## 7. Logic Organization (Labels)
+The system uses a tiered labeling strategy to transition from hardcoded entity lists to dynamic, metadata-driven logic.
+
+### **AI Hierarchy (Active)**
+- **`ai_engine`**: Core infrastructure logic (e.g., Climate MBR v7.2, Eco Mode).
+- **`ai_vision`**: Image and video analysis tasks (e.g., Porch AI, Locate Cats).
+- **`ai_persona`**: Creative messaging, "nags," and personality-driven alerts (e.g., Feed Pets, Trash Nag).
+
+### **System Integrity (Planned/Proposed)**
+- **`critical`**: High-signal infrastructure (Networking, Freezer, Z-Wave).
+- **`maintenance`**: Upkeep tasks and sensors (Filters, BigQuery sync).
+- **`seasonal`**: Temporary hardware to be excluded from off-season audits.

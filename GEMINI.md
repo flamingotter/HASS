@@ -35,6 +35,13 @@
     - `trash-notify`: Weekly curb reminders.
     - `cleaning-warning`: Occupancy nag for Cleaning Mode.
     - `arm-guests`: Verification for arming with house guests present.
+- **Labels:**
+    - `ai_engine`: Core persistent logic (Climate, Eco Mode).
+    - `ai_vision`: Image and video processing tasks.
+    - `ai_persona`: Creative messaging and personality-driven alerts.
+- **System Constants:**
+    - **Alexa Skill ID:** `amzn1.ask.skill.c2564a56-c75d-451e-9a04-6349756d92c9`
+    - **NFC:** Unified manager handles `garage`, `cam_alerts`. `trash_done` is delegated to Trash automation.
 
 ## 5. Current System State (As of May 6, 2026)
 - **Presence Engine:** 
