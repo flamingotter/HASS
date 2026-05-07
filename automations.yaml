@@ -50,12 +50,16 @@
   - action: '{{ config.action }}'
     target:
       entity_id: '{{ config.entity }}'
-  - action: notify.mobile_app_josh_mobile
-    data:
-      title: NFC Tag Scanned
-      message: '{{ scanned_id | replace("_", " ") | title }} has been toggled.'
+  - if:
+    - condition: template
+      value_template: '{{ scanned_id != "trash_done" }}'
+    then:
+    - action: notify.mobile_app_josh_mobile
       data:
-        tag: nfc-tag-notification
+        title: NFC Tag Scanned
+        message: '{{ scanned_id | replace("_", " ") | title }} has been toggled.'
+        data:
+          tag: nfc-tag-notification
   mode: single
   variables:
     tag_map:
@@ -1330,14 +1334,17 @@
     id: trash_cleared
     trigger: event
     alias: Cleared
+  - trigger: tag
+    tag_id: trash_done
+    id: trash_tag_scanned
   actions:
   - choose:
     - conditions:
-      - condition: trigger
-        id: trash_time
       - condition: state
         entity_id: binary_sensor.trash_day
         state: 'on'
+      - condition: trigger
+        id: trash_time
       sequence:
       - target:
           entity_id: input_boolean.trash_reminder
@@ -1356,27 +1363,37 @@
               title: Delay 24hr
         action: notify.all_devices
     - conditions:
-      - condition: trigger
-        id:
-        - trash_done
+      - or:
+        - condition: trigger
+          id: trash_done
+        - condition: trigger
+          id: trash_tag_scanned
       sequence:
       - target:
           entity_id: input_boolean.trash_reminder
         action: input_boolean.turn_off
       - choose:
         - conditions:
-          - condition: template
-            value_template: '{{ trigger.id == ''trash_done'' and trigger.event.data.device_id
-              == josh_device_id }}'
+          - or:
+            - condition: template
+              value_template: '{{ trigger.id == ''trash_done'' and trigger.event.data.device_id
+                == josh_device_id }}'
+            - condition: template
+              value_template: '{{ trigger.id == ''trash_tag_scanned'' and trigger.event.data.device_id
+                == josh_device_id }}'
           sequence:
           - data:
               title: Trash and Recycling
               message: Josh Completed
             action: notify.mobile_app_mj_pixel_8_pro
         - conditions:
-          - condition: template
-            value_template: '{{ trigger.id == ''trash_done'' and trigger.event.data.device_id
-              == mj_device_id }}'
+          - or:
+            - condition: template
+              value_template: '{{ trigger.id == ''trash_done'' and trigger.event.data.device_id
+                == mj_device_id }}'
+            - condition: template
+              value_template: '{{ trigger.id == ''trash_tag_scanned'' and trigger.event.data.device_id
+                == mj_device_id }}'
           sequence:
           - data:
               title: Trash and Recycling
