@@ -33,3 +33,10 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 - [ ] **Multi-Modal Strategy:** Research a hybrid approach for non-camera rooms (e.g., combining PIR with appliance states or interactive signifiers).
 - [ ] **Vision AI Expansion:** Explore using the parlor/kitchen vision pattern for more complex occupancy sensing (e.g., distinguishing between owners and guests).
 - [ ] **Natural Language Control:** Expand the `ai_task` timer parser to handle more complex scheduling requests via actionable notifications.
+
+## 6. Legacy Device Bridging (Broadlink RF/IR)
+- [ ] **Office Mini-Split Integration:** Use Broadlink RM4 Mini + SmartIR to convert the "dumb" MrCool unit into a `climate` entity.
+    - *Logic:* Link to `sensor.office_temperature` for state feedback.
+    - *Goal:* Integrate with Eco Mode and Office occupancy.
+- [ ] **RF Infrastructure:** Deploy Broadlink RM4 Pro to bridge non-smart RF devices (fans/blinds) into the MBR v7.x logic.
+- [ ] **Maintenance Audit:** Transition battery monitoring to the native 2026.5 Maintenance Dashboard.
