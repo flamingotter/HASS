@@ -37,28 +37,12 @@
 - id: '1717271470147'
   alias: 'System: NFC Tag Manager'
   description: Unified engine for processing physical NFC tags (Garage, Mower, etc.)
-  mode: single
-  variables:
-    tag_map:
-      garage:
-        action: cover.toggle
-        entity: cover.shuttle_bay
-      cam_alerts:
-        action: input_boolean.toggle
-        entity: input_boolean.camera_alerts
-    # Try both common trigger structures for tags
-    scanned_id: >
-      {% if trigger.tag_id is defined %}
-        {{ trigger.tag_id }}
-      {% else %}
-        {{ trigger.event.data.tag_id }}
-      {% endif %}
-    config: '{{ tag_map.get(scanned_id|trim) }}'
   triggers:
   - trigger: tag
     tag_id:
     - cam_alerts
     - garage
+    - b6ac1acd-4dfb-4940-8c10-d4cb717f61c1
   conditions:
   - condition: template
     value_template: '{{ config is not none }}'
@@ -72,6 +56,21 @@
       message: '{{ scanned_id | replace("_", " ") | title }} has been toggled.'
       data:
         tag: nfc-tag-notification
+  mode: single
+  variables:
+    tag_map:
+      garage:
+        action: cover.toggle
+        entity: cover.shuttle_bay
+      cam_alerts:
+        action: input_boolean.toggle
+        entity: input_boolean.camera_alerts
+      trash_done:
+        action: input_boolean.turn_off
+        entity: input_boolean.trash_reminder
+    scanned_id: "{% if trigger.tag_id is defined %}\n  {{ trigger.tag_id }}\n{% else
+      %}\n  {{ trigger.event.data.tag_id }}\n{% endif %}\n"
+    config: '{{ tag_map.get(scanned_id|trim) }}'
 - id: '1717274816399'
   alias: On Air
   description: ''
@@ -1331,10 +1330,6 @@
     id: trash_cleared
     trigger: event
     alias: Cleared
-  - tag_id: b6ac1acd-4dfb-4940-8c10-d4cb717f61c1
-    id: trash_tag_scanned
-    trigger: tag
-    alias: Tag Scan
   actions:
   - choose:
     - conditions:
@@ -1364,7 +1359,6 @@
       - condition: trigger
         id:
         - trash_done
-        - trash_tag_scanned
       sequence:
       - target:
           entity_id: input_boolean.trash_reminder
