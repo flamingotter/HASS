@@ -35,18 +35,43 @@
             }}_{{ now().strftime('%Y%m%d_%H%M') }}.jpg
   mode: single
 - id: '1717271470147'
-  alias: 'Entry: Shuttle Bay Door'
-  description: Open/Close the garage door
-  triggers:
-  - tag_id: garage
-    trigger: tag
-  conditions: []
-  actions:
-  - action: cover.toggle
-    target:
-      entity_id:
-      - cover.shuttle_bay
+  alias: 'System: NFC Tag Manager'
+  description: Unified engine for processing physical NFC tags (Garage, Mower, etc.)
   mode: single
+  variables:
+    tag_map:
+      garage:
+        action: cover.toggle
+        entity: cover.shuttle_bay
+      cam_alerts:
+        action: input_boolean.toggle
+        entity: input_boolean.camera_alerts
+    # Try both common trigger structures for tags
+    scanned_id: >
+      {% if trigger.tag_id is defined %}
+        {{ trigger.tag_id }}
+      {% else %}
+        {{ trigger.event.data.tag_id }}
+      {% endif %}
+    config: '{{ tag_map.get(scanned_id|trim) }}'
+  triggers:
+  - trigger: tag
+    tag_id:
+    - cam_alerts
+    - garage
+  conditions:
+  - condition: template
+    value_template: '{{ config is not none }}'
+  actions:
+  - action: '{{ config.action }}'
+    target:
+      entity_id: '{{ config.entity }}'
+  - action: notify.mobile_app_josh_mobile
+    data:
+      title: NFC Tag Scanned
+      message: '{{ scanned_id | replace("_", " ") | title }} has been toggled.'
+      data:
+        tag: nfc-tag-notification
 - id: '1717274816399'
   alias: On Air
   description: ''
@@ -935,7 +960,10 @@
               - light.dining
           - action: light.turn_on
             data:
-              rgb_color: [137, 41, 255]
+              rgb_color:
+              - 137
+              - 41
+              - 255
               brightness_pct: 100
               transition: 2
             target:
@@ -1602,7 +1630,7 @@
     josh_device_id: d818035824cf47ea
     mj_device_id: 0aa560faf0e8784c
 - id: '1724794143393'
-  alias: 'Climate: Enhanced Eco Mode Manager (v7.1)'
+  alias: 'Climate: Enhanced Eco Mode Manager (v2.0)'
   description: Handles Eco Mode timers, extensions via AI parsing, and proximity-based
     deactivation.
   triggers:
@@ -2117,32 +2145,6 @@
   - action: input_boolean.turn_on
     target:
       entity_id: input_boolean.bedtime
-  mode: single
-- id: '1734030058026'
-  alias: Parlor - Snapshot on Motion
-  description: ''
-  triggers:
-  - trigger: state
-    entity_id:
-    - binary_sensor.g3_instant_motion
-    to:
-    - 'on'
-  conditions: []
-  actions:
-  - action: script.camera_parlor_snapshot_ai_notification
-  mode: single
-- id: '1734033803185'
-  alias: AI - Kitchen - Snapshot on Motion
-  description: ''
-  triggers:
-  - type: motion
-    device_id: 3781f2e6149311eb8b9c692e1c03a073
-    entity_id: bcc86af7384d451a107b7ff078ed15f5
-    domain: binary_sensor
-    trigger: device
-  conditions: []
-  actions:
-  - action: script.camera_kitchen_snapshot_ai_notification
   mode: single
 - id: '1734037840009'
   alias: AI - Locate Cats
@@ -3063,8 +3065,9 @@
         with: [ALERT]
 
 
-        OUTPUT FORMAT: Provide a SINGLE LINE response. No bullet points, no newlines, no markdown. 
-        Format: [TAG] Person: [Details]. Action: [What they did]. Intent: [Delivery/Visitor/Resident].'
+        OUTPUT FORMAT: Provide a SINGLE LINE response. No bullet points, no newlines,
+        no markdown. Format: [TAG] Person: [Details]. Action: [What they did]. Intent:
+        [Delivery/Visitor/Resident].'
       attachments:
       - media_content_id: media-source://media_source/local/snapshots/reference/mj.jpg
         media_content_type: image/jpeg
@@ -3091,11 +3094,13 @@
       entity_id:
       - notify.porch_history
     data:
-      message: >
-        {% set report = (gemini_report | default({})).data | default('[ALERT] Video analysis failed.') %}
-        {% set tag = report.split(']')[0] ~ ']' if ']' in report else '[ERROR]' %}
-        {% set content = report.replace(tag, '').strip() %}
-        "{{ now().strftime('%Y-%m-%d') }}","{{ now().strftime('%H:%M:%S') }}","{{ tag }}","{{ content | replace('"', '""') }}"
+      message: '{% set report = (gemini_report | default({})).data | default(''[ALERT]
+        Video analysis failed.'') %} {% set tag = report.split('']'')[0] ~ '']'' if
+        '']'' in report else ''[ERROR]'' %} {% set content = report.replace(tag, '''').strip()
+        %} "{{ now().strftime(''%Y-%m-%d'') }}","{{ now().strftime(''%H:%M:%S'') }}","{{
+        tag }}","{{ content | replace(''"'', ''""'') }}"
+
+        '
   - if:
     - condition: template
       value_template: '{{ ''[ALERT]'' in (gemini_report | default({})).data | default(''[ALERT]'')
@@ -3104,17 +3109,20 @@
     - action: notify.persistent_notification
       data:
         title: Porch Intel (Full Report)
-        message: >
-          {% set report = (gemini_report | default({})).data | default('') %}
-          {% set tag = report.split(']')[0] ~ ']' if ']' in report else '[ALERT]' %}
-          {{ report.replace(tag, '').strip() }}
+        message: '{% set report = (gemini_report | default({})).data | default('''')
+          %} {% set tag = report.split('']'')[0] ~ '']'' if '']'' in report else ''[ALERT]''
+          %} {{ report.replace(tag, '''').strip() }}
+
+          '
     - action: notify.mobile_app_josh_mobile
       data:
         title: Porch Intel
-        message: >
-          {% set report = (gemini_report | default({})).data | default('Video analysis failed.') %}
-          {% set tag = report.split(']')[0] ~ ']' if ']' in report else '[ALERT]' %}
-          {{ report.replace(tag, '').strip() | truncate(150, true, '...') }}
+        message: '{% set report = (gemini_report | default({})).data | default(''Video
+          analysis failed.'') %} {% set tag = report.split('']'')[0] ~ '']'' if '']''
+          in report else ''[ALERT]'' %} {{ report.replace(tag, '''').strip() | truncate(150,
+          true, ''...'') }}
+
+          '
     - if:
       - condition: state
         entity_id: alarm_control_panel.home_alarm
@@ -3822,14 +3830,17 @@
               old_rate: '{{ repo.get(lookup_key, obs_rate) | float }}'
               weighted_rate: '{{ ((old_rate * 0.7) + (obs_rate * 0.3)) | round(1)
                 }}'
-              new_rate: >
-                {% set diff = weighted_rate - old_rate %}
-                {% set cap = 5.0 %}
-                {% if diff > cap %}{{ (old_rate + cap) | round(1) }}{% elif diff < (cap * -1) %}{{ (old_rate - cap) | round(1) }}{% else %}{{ weighted_rate }}{% endif %}
-              new_repo: >
-                {% set new_entry = {lookup_key: new_rate|float} %}
-                {% set merged = dict(repo.items() | list + new_entry.items() | list) %}
-                {{ merged | to_json }}
+              new_rate: '{% set diff = weighted_rate - old_rate %} {% set cap = 5.0
+                %} {% if diff > cap %}{{ (old_rate + cap) | round(1) }}{% elif diff
+                < (cap * -1) %}{{ (old_rate - cap) | round(1) }}{% else %}{{ weighted_rate
+                }}{% endif %}
+
+                '
+              new_repo: '{% set new_entry = {lookup_key: new_rate|float} %} {% set
+                merged = dict(repo.items() | list + new_entry.items() | list) %} {{
+                merged | to_json }}
+
+                '
           - action: input_text.set_value
             target:
               entity_id: input_text.mbr_cooling_performance_data
@@ -3892,166 +3903,6 @@
         data:
           temperature: '{{ target + 2.0 }}'
   mode: queued
-- id: '1778077516701'
-  alias: Motion Babe Cave
-  description: ''
-  triggers:
-  - alias: motion
-    entity_id:
-    - binary_sensor.motion_indoors_babe_cave
-    to:
-    - 'on'
-    id: motion
-    trigger: state
-  - event_type: timer.finished
-    event_data:
-      entity_id: timer.timer_bab_cave
-    id: t02
-    trigger: event
-  conditions:
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: alarm_control_panel.home_alarm
-      state: disarmed
-    - condition: state
-      entity_id: input_boolean.motion_lockout
-      state: 'off'
-  actions:
-  - alias: Turn on and start timer
-    if:
-    - condition: trigger
-      id:
-      - motion
-    then:
-    - if:
-      - condition: state
-        state:
-        - 'on'
-        entity_id: light.masonic_lamp
-      then:
-      - metadata: {}
-        data: {}
-        action: timer.start
-        target:
-          entity_id: timer.timer_bab_cave
-      else:
-      - parallel:
-        - metadata: {}
-          data: {}
-          action: timer.start
-          target:
-            entity_id: timer.timer_bab_cave
-        - action: light.turn_on
-          metadata: {}
-          data:
-            transition: 0.5
-            rgb_color:
-            - 215
-            - 150
-            - 255
-          target:
-            entity_id: light.masonic_lamp
-  - if:
-    - condition: trigger
-      id:
-      - t02
-    - condition: state
-      entity_id: input_boolean.cleaning
-      state: 'off'
-    - condition: not
-      conditions:
-      - condition: state
-        entity_id: sensor.last_motion_indoors
-        state:
-        - Babe Cabe
-    then:
-    - action: light.turn_off
-      metadata: {}
-      data: {}
-      target:
-        entity_id: light.masonic_lamp
-  mode: restart
-- id: '1778077545508'
-  alias: Motion Babe Cave
-  description: ''
-  triggers:
-  - alias: motion
-    entity_id:
-    - binary_sensor.motion_indoors_babe_cave
-    to:
-    - 'on'
-    id: motion
-    trigger: state
-  - event_type: timer.finished
-    event_data:
-      entity_id: timer.timer_bab_cave
-    id: t02
-    trigger: event
-  conditions:
-  - condition: and
-    conditions:
-    - condition: state
-      entity_id: alarm_control_panel.home_alarm
-      state: disarmed
-    - condition: state
-      entity_id: input_boolean.motion_lockout
-      state: 'off'
-  actions:
-  - alias: Turn on and start timer
-    if:
-    - condition: trigger
-      id:
-      - motion
-    then:
-    - if:
-      - condition: state
-        state:
-        - 'on'
-        entity_id: light.masonic_lamp
-      then:
-      - metadata: {}
-        data: {}
-        action: timer.start
-        target:
-          entity_id: timer.timer_bab_cave
-      else:
-      - parallel:
-        - metadata: {}
-          data: {}
-          action: timer.start
-          target:
-            entity_id: timer.timer_bab_cave
-        - action: light.turn_on
-          metadata: {}
-          data:
-            transition: 0.5
-            rgb_color:
-            - 215
-            - 150
-            - 255
-          target:
-            entity_id: light.masonic_lamp
-  - if:
-    - condition: trigger
-      id:
-      - t02
-    - condition: state
-      entity_id: input_boolean.cleaning
-      state: 'off'
-    - condition: not
-      conditions:
-      - condition: state
-        entity_id: sensor.last_motion_indoors
-        state:
-        - Babe Cabe
-    then:
-    - action: light.turn_off
-      metadata: {}
-      data: {}
-      target:
-        entity_id: light.masonic_lamp
-  mode: restart
 - id: '1778077597598'
   alias: Motion Babe Cave
   description: ''
