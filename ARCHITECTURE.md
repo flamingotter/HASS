@@ -83,15 +83,14 @@ For tags requiring complex logic or identification (e.g., `trash_done`), authori
 
 ---
 
-## 7. Logic Organization (Labels)
-The system uses a tiered labeling strategy to transition from hardcoded entity lists to dynamic, metadata-driven logic.
+## 8. System Monitoring (Admin Baseline)
+The `dashboard-admin` serves as the authoritative "Single Pane of Glass" for system health and logic integrity.
 
-### **AI Hierarchy (Active)**
-- **`ai_engine`**: Core infrastructure logic (e.g., Climate MBR v7.2, Eco Mode).
-- **`ai_vision`**: Image and video analysis tasks (e.g., Porch AI, Locate Cats).
-- **`ai_persona`**: Creative messaging, "nags," and personality-driven alerts (e.g., Feed Pets, Trash Nag).
+### **Baseline Sections**
+- **System Health:** Tracks `sensor.system_health_summary`, HA Uptime, and real-time log Error/Warning counts.
+- **Climate Control:** Aggregates MBR smoothed vs. raw data, pre-cooling schedule attributes, and the Bin Performance repository.
+- **Engine Heartbeat:** Monitors the `last_triggered` status of all core AI and maintenance automations.
+- **Hardware & Vitals:** High-signal tracking of security hardware (Shuttle Bay, Alarm).
 
-### **System Integrity (Planned/Proposed)**
-- **`critical`**: High-signal infrastructure (Networking, Freezer, Z-Wave).
-- **`maintenance`**: Upkeep tasks and sensors (Filters, BigQuery sync).
-- **`seasonal`**: Temporary hardware to be excluded from off-season audits.
+### **Maintenance Workflow**
+Critical infrastructure monitoring is driven by the `critical` label. Any entity tagged as `critical` that enters an `unavailable`, `unknown`, or `off` state will immediately trigger a "Critical Issue" status in the Health Summary.
