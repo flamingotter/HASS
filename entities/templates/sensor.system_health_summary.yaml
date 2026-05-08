@@ -1,0 +1,29 @@
+---
+sensor:
+  - name: "System Health Summary"
+    unique_id: system_health_summary
+    state: >
+      {% set errors = states('sensor.log_error_count') | int(0) %}
+      {% set critical_offline = label_entities('critical') | expand | selectattr('state', 'in', ['unavailable', 'unknown', 'off']) | list | count %}
+      {% if critical_offline > 0 %}
+        Critical Issue
+      {% elif errors > 20 %}
+        Log Flooding
+      {% else %}
+        Healthy
+      {% endif %}
+    icon: >
+      {% if is_state('sensor.system_health_summary', 'Healthy') %}
+        mdi:heart-pulse
+      {% else %}
+        mdi:heart-broken
+      {% endif %}
+    attributes:
+      log_errors: "{{ states('sensor.log_error_count') }}"
+      log_warnings: "{{ states('sensor.log_warning_count') }}"
+      critical_offline_count: "{{ label_entities('critical') | expand | selectattr('state', 'in', ['unavailable', 'unknown', 'off']) | list | count }}"
+      critical_offline_entities: >
+        {{ label_entities('critical') | expand 
+           | selectattr('state', 'in', ['unavailable', 'unknown', 'off']) 
+           | map(attribute='entity_id') | list | join(', ') }}
+      uptime: "{{ states('sensor.ha_uptime') }}"

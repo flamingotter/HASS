@@ -28,7 +28,10 @@ activate_alexa_actionable_notification:
   mode: single
 activate_mobile_actionable_notification:
   alias: activate_mobile_actionable_notification
-  description: Activates an actionable notification on a mobile device
+  description: Activates an actionable notification on a mobile device. Acts as a
+    template helper. Instead of writing out the complex nested data structure in every
+    automation, you just pass simple fields (title, message, action_id) to this script.
+    It keeps your Appliance Alert Engine much cleaner and easier to read.
   fields:
     notify_target:
       description: The mobile device(s) that you want to target the notification
@@ -90,163 +93,6 @@ activate_mobile_actionable_notification:
         - action: '{{ notify_action_2 }}'
           title: '{{ notify_action_2_title }}'
   mode: single
-genai_response_to_actionable_notification:
-  alias: GenAI Response to Actionable Notification
-  fields:
-    msg_target:
-      description: The Name of the user the the message is targeting
-      example: Josh
-    msg_prompt:
-      description: This prompt that is sent to gen ai to return the message.
-      example: Josh
-  variables:
-    targets:
-      Josh: notify.mobile_app_josh_mobile
-      MJ: notify.mobile_app_mj_pixel_8_pro
-  sequence:
-  - action: ai_task.generate_data
-    continue_on_error: true
-    data:
-      prompt: 'Rewrite this in a creative way prompting {{ msg_target }} to do the
-        task, limit to about 35 words: The cats are not going away. They still need
-        to be fed.'
-    response_variable: generated_content
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 2
-      milliseconds: 0
-  - action: script.activate_mobile_actionable_notification
-    data:
-      notify_target: '{{ targets.get(msg_target, ''unknown'') }}'
-      title: test message
-      message: '{{ (generated_content | default({})).data | default(''The cats are
-        not going away. They still need to be fed.'') }}'
-      notify_tag: test_tag
-      notify_action_1: done
-      notify_action_1_title: Done
-      notify_action_2: pass
-      notify_action_2_title: Pass
-  description: ''
-camera_parlor_snapshot_ai_notification:
-  alias: Camera - Parlor - Snapshot, AI & Notification
-  sequence:
-  - action: camera.snapshot
-    continue_on_error: true
-    data:
-      filename: ./www/tmp/snapshots/parlor/parlor_snapshot1.jpg
-    target:
-      entity_id:
-      - camera.dining_room_inside_medium_resolution_channel
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 0
-      milliseconds: 500
-  - action: camera.snapshot
-    continue_on_error: true
-    data:
-      filename: ./www/tmp/snapshots/parlor/parlor_snapshot1.jpg
-    target:
-      entity_id:
-      - camera.dining_room_inside_medium_resolution_channel
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 0
-      milliseconds: 500
-  - action: camera.snapshot
-    continue_on_error: true
-    data:
-      filename: ./www/tmp/snapshots/parlor/parlor_snapshot1.jpg
-    target:
-      entity_id:
-      - camera.dining_room_inside_medium_resolution_channel
-  - action: ai_task.generate_data
-    continue_on_error: true
-    data:
-      prompt: Count how many unique people and or animals are present. If you see
-        no obvious causes of motion, reply with "No Obvious Motion Detected." Your
-        message needs to be short enough to fit in a phone notification.
-      image_filename:
-      - ./www/tmp/snapshots/parlor/parlor_snapshot1.jpg
-      - ./www/tmp/snapshots/parlor/parlor_snapshot2.jpg
-      - ./www/tmp/snapshots/parlor/parlor_snapshot3.jpg
-    response_variable: generated_content
-  - if:
-    - condition: template
-      value_template: '{{ ''No Obvious Motion Detected.'' in (generated_content |
-        default({})).data | default(''No Obvious Motion Detected.'') }}'
-    then:
-    - stop: ''
-    else:
-    - action: notify.mobile_app_josh_mobile
-      data:
-        message: '{{ (generated_content | default({})).data | default(''Motion detected
-          in parlor.'') }}'
-        title: Parlor Motion Detected
-        data:
-          image: /local/tmp/snapshots/parlor/parlor_snapshot2.jpg
-  description: ''
-  icon: mdi:cctv
-camera_kitchen_snapshot_ai_notification:
-  alias: Camera - Kitchen - Snapshot, AI & Notification
-  sequence:
-  - action: camera.snapshot
-    continue_on_error: true
-    data:
-      filename: ./www/tmp/snapshots/kitchen/kitchen_snapshot1.jpg
-    target:
-      entity_id: camera.kitchen_inside
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 0
-      milliseconds: 500
-  - action: camera.snapshot
-    continue_on_error: true
-    data:
-      filename: ./www/tmp/snapshots/kitchen/kitchen_snapshot2.jpg
-    target:
-      entity_id: camera.kitchen_inside
-  - delay:
-      hours: 0
-      minutes: 0
-      seconds: 0
-      milliseconds: 500
-  - action: camera.snapshot
-    continue_on_error: true
-    data:
-      filename: ./www/tmp/snapshots/kitchen/kitchen_snapshot3.jpg
-    target:
-      entity_id: camera.kitchen_inside
-  - action: ai_task.generate_data
-    continue_on_error: true
-    data:
-      prompt: Count how many unique people and or animals are present. If you see
-        no obvious causes of motion, reply with "No Obvious Motion Detected." Your
-        message needs to be short enough to fit in a phone notification.
-      image_filename:
-      - ./www/tmp/snapshots/kitchen/kitchen_snapshot1.jpg
-      - ./www/tmp/snapshots/kitchen/kitchen_snapshot2.jpg
-      - ./www/tmp/snapshots/kitchen/kitchen_snapshot3.jpg
-    response_variable: generated_content
-  - if:
-    - condition: template
-      value_template: '{{ ''No Obvious Motion Detected.'' in (generated_content |
-        default({})).data | default(''No Obvious Motion Detected.'') }}'
-    then:
-    - stop: ''
-    else:
-    - action: notify.mobile_app_josh_mobile
-      data:
-        message: '{{ (generated_content | default({})).data | default(''Motion detected
-          in kitchen.'') }}'
-        title: Kitchen Motion Detected
-        data:
-          image: /local/tmp/snapshots/kitchen/kitchen_snapshot2.jpg
-  description: ''
-  icon: mdi:cctv
 locate_cats_snapshot_ai_notification_duplicate:
   alias: Locate Cats - Snapshot, AI & Notification (Duplicate)
   sequence:
@@ -442,32 +288,6 @@ bedtime_charging_check:
         timeout: 00:01:00
         continue_on_timeout: true
   description: ''
-fix_zooz_smart_bulb_mode:
-  alias: 'Recovery: Zooz Smart Bulb Relay Fix'
-  icon: mdi:power-restore
-  mode: single
-  sequence:
-  - repeat:
-      for_each:
-      - entity: light.dining_switch_01
-      - entity: light.dining_switch_02
-      sequence:
-      - target:
-          entity_id: '{{ repeat.item.entity }}'
-        data:
-          parameter: 11
-          value: 1
-        action: zwave_js.set_config_parameter
-      - target:
-          entity_id: '{{ repeat.item.entity }}'
-        action: switch.turn_on
-      - delay: 00:00:02
-      - target:
-          entity_id: '{{ repeat.item.entity }}'
-        data:
-          parameter: 11
-          value: 2
-        action: zwave_js.set_config_parameter
 welcome_home_ai_debrief:
   alias: Welcome Home AI Debrief
   mode: single
@@ -543,14 +363,10 @@ system_log_maintenance_task:
       target:
         entity_id: '{{ timer_entity }}'
   - variables:
-      friendly_name: >
-        {% if task_name is defined and task_name != none %}
-          {{ task_name }}
-        {% elif timer_entity is defined %}
-          {{ state_attr(timer_entity, 'friendly_name') | replace('Maintenance ', '') | replace(' Timer', '') }}
-        {% else %}
-          Unknown Task
-        {% endif %}
+      friendly_name: "{% if task_name is defined and task_name != none %}\n  {{ task_name
+        }}\n{% elif timer_entity is defined %}\n  {{ state_attr(timer_entity, 'friendly_name')
+        | replace('Maintenance ', '') | replace(' Timer', '') }}\n{% else %}\n  Unknown
+        Task\n{% endif %}\n"
   - action: notify.send_message
     target:
       entity_id: notify.maintenance_log_csv

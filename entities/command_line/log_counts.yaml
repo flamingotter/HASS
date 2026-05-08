@@ -1,0 +1,15 @@
+---
+- sensor:
+    name: "Log Error Count"
+    unique_id: log_error_count
+    command: "grep -c ' ERROR ' /config/home-assistant.log || echo 0"
+    scan_interval: 300
+    value_template: "{{ value | int }}"
+    unit_of_measurement: "errors"
+- sensor:
+    name: "Log Warning Count"
+    unique_id: log_warning_count
+    command: "grep -c ' WARNING ' /config/home-assistant.log || echo 0"
+    scan_interval: 300
+    value_template: "{{ value | int }}"
+    unit_of_measurement: "warnings"

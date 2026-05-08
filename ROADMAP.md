@@ -29,6 +29,7 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 - [x] **NFC Unification:** Implemented `System: NFC Tag Manager` as a centralized switchboard for physical tags. (Completed May 7, 2026)
 - [x] **Labeling Strategy:** Established AI-specific labeling scheme (`ai_engine`, `ai_vision`, `ai_persona`) for dynamic logic control. (Completed May 7, 2026)
 - [ ] **System Integrity:** Build a "Critical Heartbeat" sensor using the `critical` label to monitor essential infrastructure (Freezer, Networking, Z-Wave).
+- [ ] **Notification Standardization:** Refactor `Person: Status Synchronizer`, `Garage Door Monitor`, and `Maintenance Engine` to use the unified `activate_mobile_actionable_notification` script.
 
 ## 5. Future AI & Occupancy Enhancements
 - [ ] **Vision-Based Occupancy Pilot:** Develop a "Master Occupancy Verifier" script using ROVER-02 (and future cameras) to perform human-presence checks before dousing lights.
