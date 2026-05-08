@@ -3798,8 +3798,8 @@
       - if:
         - condition: template
           alias: AI Integrity Audit
-          value_template: '{{ t6_target == 60 and actual <= target and (now().hour
-            >= 18 or now().hour < 4) }}'
+          value_template: >
+            {{ (t6_target == 60 and actual <= target) or (trigger.id == 'bedtime' and is_precooling) }}
         then:
         - action: ai_task.generate_data
           continue_on_error: true
