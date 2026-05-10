@@ -1015,7 +1015,7 @@
     then:
     - if:
       - condition: state
-        entity_id: light.office_light
+        entity_id: light.office_lights
         state:
         - 'on'
       then:
@@ -1044,7 +1044,7 @@
             brightness_pct: 100
           enabled: true
           target:
-            entity_id: light.office_light
+            entity_id: light.office_lights
         - action: select.select_option
           metadata: {}
           target:
@@ -1089,7 +1089,8 @@
       target:
         entity_id:
         - light.wled_cloud
-        - light.office_light
+        - light.office_lights
+      data: {}
     - action: input_boolean.turn_off
       target:
         entity_id: input_boolean.occupied_office
@@ -3628,9 +3629,8 @@
         check the filter or condenser coils.
   mode: single
 - id: ai_climate_mbr_v7_0
-  alias: 'AI Enabled Climate: Master Bedroom Sleep Comfort Engine (v7.2)'
-  description: 'v7.2: Hardened AI logic with continue_on_error and robust safety defaults
-    to prevent infinite-run crashes.'
+  alias: 'AI Enabled Climate: Master Bedroom Sleep Comfort Engine (v7.3)'
+  description: 'v7.3: Data Armor v2 with physical reality clamps, empirical re-baselining, and maximum transparency logging.'
   triggers:
   - trigger: state
     entity_id:
@@ -3798,8 +3798,7 @@
       - if:
         - condition: template
           alias: AI Integrity Audit
-          value_template: >
-            {{ (t6_target == 60 and actual <= target) or (trigger.id == 'bedtime' and is_precooling) }}
+          value_template: '{{ (t6_target == 60 and actual <= target) or (trigger.id == ''bedtime'' and is_precooling) }}'
         then:
         - action: ai_task.generate_data
           continue_on_error: true
@@ -3808,51 +3807,57 @@
             instructions: 'A cooling session dropped {{ drop }}F in {{ duration }}
               minutes. Calculated rate: {{ obs_rate }} min/deg. Is this rate physically
               plausible for a residential AC (usually 10-40 min/deg)?  If the rate
-              is < 5 min/deg, it is likely an anomaly. Return ''VALID'' or ''ANOMALY''.
-
-              '
+              is < 5 min/deg, it is likely an anomaly. Return ''VALID'' or ''ANOMALY''.'
           response_variable: audit_result
+        - variables:
+            audit_verdict: "{{ (audit_result | default({'data': 'VALID'})).data | upper }}"
+            outdoor: "{{ states('sensor.weather_station_temperature_outdoor') | float(70) }}"
+            lookup_key: "{{ ((outdoor / 5) | round(0) * 5) | string }}"
+            repo: "{{ states('input_text.mbr_cooling_performance_data') | from_json }}"
         - if:
           - condition: template
-            value_template: '{{ ''VALID'' in (audit_result | default({''data'': ''VALID''})).data
-              }}'
+            value_template: "{{ 'VALID' in audit_verdict }}"
           then:
           - variables:
-              outdoor: '{{ states(''sensor.weather_station_temperature_outdoor'')
-                | float(70) }}'
-              lookup_key: '{{ ((outdoor / 5) | round(0) * 5) | string }}'
-              repo: '{{ states(''input_text.mbr_cooling_performance_data'') | from_json
-                }}'
-              old_rate: '{{ repo.get(lookup_key, obs_rate) | float }}'
-              weighted_rate: '{{ ((old_rate * 0.7) + (obs_rate * 0.3)) | round(1)
-                }}'
-              new_rate: '{% set diff = weighted_rate - old_rate %} {% set cap = 5.0
-                %} {% if diff > cap %}{{ (old_rate + cap) | round(1) }}{% elif diff
-                < (cap * -1) %}{{ (old_rate - cap) | round(1) }}{% else %}{{ weighted_rate
-                }}{% endif %}
-
-                '
-              new_repo: '{% set new_entry = {lookup_key: new_rate|float} %} {% set
-                merged = dict(repo.items() | list + new_entry.items() | list) %} {{
-                merged | to_json }}
-
-                '
+              old_rate: "{{ repo.get(lookup_key, obs_rate) | float }}"
+              raw_weighted: "{{ ((old_rate * 0.7) + (obs_rate * 0.3)) | round(1) }}"
+              clamped_rate: "{{ [ [raw_weighted, 10.0]|max, 45.0 ]|min }}"
+              new_rate: >
+                {% set diff = clamped_rate - old_rate %}
+                {% set cap = 5.0 %}
+                {% if diff > cap %}{{ (old_rate + cap) | round(1) }}{% elif diff < (cap * -1) %}{{ (old_rate - cap) | round(1) }}{% else %}{{ clamped_rate }}{% endif %}
+              new_repo: >
+                {% set new_entry = {lookup_key: new_rate|float} %}
+                {% set merged = dict(repo.items() | list + new_entry.items() | list) %}
+                {{ merged | to_json }}
           - action: input_text.set_value
             target:
               entity_id: input_text.mbr_cooling_performance_data
             data:
-              value: '{{ new_repo }}'
+              value: "{{ new_repo }}"
           - action: notify.mobile_app_josh_mobile
             data:
-              title: 'Climate: AI Session Learned'
-              message: 'Audit: VALID. {{ lookup_key }}F bin updated to {{ new_rate
-                }} min/deg.'
+              title: "Climate: AI Session Learned"
+              message: >
+                Audit: VALID. {{ lookup_key }}F bin updated to {{ new_rate }} min/deg.
+                Obs: {{ obs_rate }} | Old: {{ old_rate }} | Wt: {{ raw_weighted }}
+          - action: notify.send_message
+            target:
+              entity_id: "{{ log_entity }}"
+            data:
+              message: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }},PHASE_3_LEARNED,ObsRate: {{ obs_rate }},NewRate: {{ new_rate }},Bin: {{ lookup_key }},Audit: {{ audit_verdict | trim }}"
           else:
           - action: notify.mobile_app_josh_mobile
             data:
-              title: '⚠️ Climate: Data Anomaly Detected'
-              message: AI Auditor flagged measurement ({{ obs_rate }} min/deg) as
-                an anomaly. Repository update skipped.
+              title: "⚠️ Climate: Data Anomaly Detected"
+              message: >
+                AI Auditor flagged ({{ obs_rate }} min/deg) as ANOMALY.
+                Reason: {{ audit_verdict }}
+          - action: notify.send_message
+            target:
+              entity_id: "{{ log_entity }}"
+            data:
+              message: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }},PHASE_3_ANOMALY,ObsRate: {{ obs_rate }},Audit: {{ audit_verdict | trim }}"
       - action: notify.send_message
         target:
           entity_id: '{{ log_entity }}'
