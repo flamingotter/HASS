@@ -66,7 +66,19 @@ The engine's goal is to ensure the Master Bedroom reaches a precise sleep temper
 
 ---
 
-## 9. Current Configuration (As of May 6, 2026)
-- **Active Version:** v7.2 (Hardened AI Mode).
-- **Core Repository:** `{"45":20.1, "50":21.0, "55":18.0, "60":26.8, "65":34.4, "70":17.5, "75":55.0, "80":50.0, "85":70.0, "90":80.0}` (Note: Bin 80 re-baselined to 50.0).
+## 9. Phase VI: Data-Backed Authority (v7.3)
+**Key Milestone:** Re-baselining with empirical BigQuery data and implementing absolute physical safety.
+- **Empirical Re-Baseline (May 10, 2026):** Analysis of the last 30 days of actual cooling sessions revealed that previous repository data had become "polluted" (bins as high as 80 min/deg and as low as 6.6 min/deg). The entire repository was manually re-baselined using BigQuery-derived averages (ranging from 22.2 to 44.8 min/deg).
+- **Data Armor v2 (Physical Reality Clamps):** In addition to the ±5 min swing cap from v7.2, the engine now enforces **Absolute Clamps**. All learned data must fall between **10.0 and 45.0 min/deg**, regardless of AI or sensor input, ensuring the engine can never drift back into "impossible" physics.
+- **Maximum Transparency Logging:**
+    - The `climate_control_log.csv` now captures the AI Auditor's raw verdict and specific observed rates for every learning session.
+    - Mobile notifications were enhanced to include a session-specific math breakdown (Observed vs. Old vs. Weighted), providing total visibility into the engine's "thought process."
+- **The "Thermal Cliff" Discovery:** BigQuery analysis confirmed that at outdoor temperatures $\ge$ 80°F, the house warms up at 0.71°F per hour (gaining 1°F every 84 minutes), identifying a key future optimization point for high-heat offsets.
+
+---
+
+## 10. Current Configuration (As of May 10, 2026)
+- **Active Version:** v7.3 (Empirical Data Mode).
+- **Core Repository:** `{"45": 22.2, "50": 24.6, "55": 28.4, "60": 32.6, "65": 35.5, "70": 40.6, "75": 44.8, "80": 45.0, "85": 45.0}`
+- **Digital Twin Sync:** Added front/bedroom door states and occupancy selects to the BigQuery export list to begin modeling thermal gain vs. human activity.
 - **Persistence:** YAML `initial` values removed; state is managed via `restore_state` and learned measurements.

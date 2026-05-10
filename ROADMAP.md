@@ -13,9 +13,9 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
     - Physical install and entity update for `binary_sensor.bedroom_door` (replaces `binary_sensor.bedroom`).
 
 ## 2. Climate & Energy (The Sleep Engine v7.x)
-- [x] **v7.2 Pilot Phase:** Monitor the new Fail-Safe logic and Data Armor swing caps. (Deployed May 6, 2026)
-- [x] **Repository Re-baselining:** Bin 80 re-baselined to 50.0 to prevent early starts.
-- [ ] **Decommissioning:** Once v7.2 is proven stable, disable the legacy v6.3 automation in the UI to prevent logic overlaps.
+- [x] **v7.3 Release:** Implemented Data Armor v2 (physical clamps), empirical BigQuery re-baselining, and maximum transparency logging. (Deployed May 10, 2026)
+- [ ] **Thermal Decay Modeling:** Analyze the first "80F+ Day" to determine if a solar-load offset is needed for pre-cooling start times.
+- [ ] **Decommissioning:** Once v7.3 is proven stable, disable the legacy v6.3 automation in the UI to prevent logic overlaps.
 
 ## 3. Presence & Global Logic
 - [ ] **Eco Mode Validation:** Verify the first real-world 500-mile "Extended Away" trigger.
@@ -32,6 +32,7 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 - [ ] **Notification Standardization:** Refactor `Person: Status Synchronizer`, `Garage Door Monitor`, and `Maintenance Engine` to use the unified `activate_mobile_actionable_notification` script.
 
 ## 5. Future AI & Occupancy Enhancements
+- [ ] **Digital Twin Analysis:** Perform first correlation analysis (Door Open/Occupancy vs. Cooling Rate) once 7 days of new BigQuery data is collected.
 - [ ] **Vision-Based Occupancy Pilot:** Develop a "Master Occupancy Verifier" script using ROVER-02 (and future cameras) to perform human-presence checks before dousing lights.
     - *Goal:* Filter out "Cat Noise" and prevent turn-offs on stationary humans.
 - [ ] **Multi-Modal Strategy:** Research a hybrid approach for non-camera rooms (e.g., combining PIR with appliance states or interactive signifiers).
