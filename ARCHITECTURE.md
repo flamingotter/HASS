@@ -70,13 +70,19 @@ A high-precision engine designed to reach sleep temperature exactly at bedtime.
 
 ---
 
-## 6. Physical Interface Layer (NFC)
-The system uses physical NFC tags to bridge the gap between the physical and digital home.
+## 6. Physical Interface Layer
+The system uses specialized physical interfaces to bridge the gap between hardware and digital logic.
 
 ### **The Hub:** `System: NFC Tag Manager`
 - **Logic:** Variable-based "Switchboard" (`tag_map`) that maps unique `tag_id`s to actions and entities.
 - **Handling:** Uses robust ID detection to capture both direct `tag_id` and event-based payloads.
 - **Standard Tags:** Handles simple toggles for infrastructure like `garage` (Shuttle Bay) and `cam_alerts` (Camera Alerts).
+
+### **Lighting Control (Scene Mode):**
+Used for instant response in rooms with smart bulbs and Zooz toggle dimmers (ZEN24, ZEN74).
+- **Configuration:** Switch local/Z-Wave control is disabled; Central Scene mode is enabled.
+- **Flow:** `zwave_js_value_notification` -> Automation (Logic) -> `light.turn_on/off`.
+- **Rooms:** Dining Room (v2.0), Office.
 
 ### **Delegated Authority:**
 For tags requiring complex logic or identification (e.g., `trash_done`), authority is delegated to the specialized automation (e.g., `Notify: Trash Day`). This prevents race conditions and ensures specific metadata like `device_id` and `user_id` are preserved for person-specific notifications.
