@@ -66,19 +66,17 @@ The engine's goal is to ensure the Master Bedroom reaches a precise sleep temper
 
 ---
 
-## 9. Phase VI: Data-Backed Authority (v7.3)
-**Key Milestone:** Re-baselining with empirical BigQuery data and implementing absolute physical safety.
-- **Empirical Re-Baseline (May 10, 2026):** Analysis of the last 30 days of actual cooling sessions revealed that previous repository data had become "polluted" (bins as high as 80 min/deg and as low as 6.6 min/deg). The entire repository was manually re-baselined using BigQuery-derived averages (ranging from 22.2 to 44.8 min/deg).
-- **Data Armor v2 (Physical Reality Clamps):** In addition to the ±5 min swing cap from v7.2, the engine now enforces **Absolute Clamps**. All learned data must fall between **10.0 and 45.0 min/deg**, regardless of AI or sensor input, ensuring the engine can never drift back into "impossible" physics.
-- **Maximum Transparency Logging:**
-    - The `climate_control_log.csv` now captures the AI Auditor's raw verdict and specific observed rates for every learning session.
-    - Mobile notifications were enhanced to include a session-specific math breakdown (Observed vs. Old vs. Weighted), providing total visibility into the engine's "thought process."
-- **The "Thermal Cliff" Discovery:** BigQuery analysis confirmed that at outdoor temperatures $\ge$ 80°F, the house warms up at 0.71°F per hour (gaining 1°F every 84 minutes), identifying a key future optimization point for high-heat offsets.
+## 10. Phase VII: Operational Transparency (v7.4)
+**Key Milestone:** Exposing the AI's "Thought Process" and ensuring session accountability.
+- **Full-Visibility Notifications (May 11, 2026):** Overhauled the notification engine to include the AI Auditor's raw qualitative analysis in mobile alerts. This provides the user with the "why" behind every learning decision (e.g., specific reasoning for valid sessions or detected anomalies).
+- **Unconditional Reporting:** Decoupled the final session reporting from the AI Auditor's status. The system now guarantees a mobile notification and a CSV log entry for every `PHASE_3_HANDOFF`, ensuring no session completes silently, even if the AI API times out.
+- **Math Breakdown:** Exposed the internal learning math (Observed Rate vs. Repository Baseline vs. Weighted Result) directly in the user interface and notifications, enabling instant human verification of the Data Armor v2 logic.
+- **Environmental Insight:** BigQuery correlation analysis confirmed that **Outdoor Temperature** (correlation ~0.57) is the primary driver of cooling performance, while **Indoor Temperature** at session start has negligible impact (correlation ~-0.06), validating the 5-degree outdoor bin architecture.
 
 ---
 
-## 10. Current Configuration (As of May 10, 2026)
-- **Active Version:** v7.3 (Empirical Data Mode).
-- **Core Repository:** `{"45": 22.2, "50": 24.6, "55": 28.4, "60": 32.6, "65": 35.5, "70": 40.6, "75": 44.8, "80": 45.0, "85": 45.0}`
-- **Digital Twin Sync:** Added front/bedroom door states and occupancy selects to the BigQuery export list to begin modeling thermal gain vs. human activity.
-- **Persistence:** YAML `initial` values removed; state is managed via `restore_state` and learned measurements.
+## 11. Current Configuration (As of May 11, 2026)
+- **Active Version:** v7.4 (Total Transparency Mode).
+- **Core Repository:** `{"45": 22.2, "50": 24.6, "55": 28.4, "60": 32.6, "65": 35.5, "70": 40.6, "75": 44.8, "80": 35.0, "85": 45.0}` (Note: Bin 80 manually re-baselined to 35.0 based on recent session data).
+- **Digital Twin Sync:** Active export of occupancy and air-exchange sensors to BigQuery for future thermal modeling.
+- **Persistence:** YAML `initial` values removed; state managed via `restore_state` and learned measurements.

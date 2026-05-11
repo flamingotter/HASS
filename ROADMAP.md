@@ -13,9 +13,10 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
     - Physical install and entity update for `binary_sensor.bedroom_door` (replaces `binary_sensor.bedroom`).
 
 ## 2. Climate & Energy (The Sleep Engine v7.x)
-- [x] **v7.3 Release:** Implemented Data Armor v2 (physical clamps), empirical BigQuery re-baselining, and maximum transparency logging. (Deployed May 10, 2026)
+- [x] **v7.4 Release:** Implemented "Total Transparency" mode with AI qualitative analysis and unconditional session reporting. (Deployed May 11, 2026)
+- [x] **v7.3 Release:** Implemented Data Armor v2 (physical clamps), empirical BigQuery re-baselining, and maximum transparency logging. (Completed May 10, 2026)
 - [ ] **Thermal Decay Modeling:** Analyze the first "80F+ Day" to determine if a solar-load offset is needed for pre-cooling start times.
-- [ ] **Decommissioning:** Once v7.3 is proven stable, disable the legacy v6.3 automation in the UI to prevent logic overlaps.
+- [ ] **Decommissioning:** Once v7.4 is proven stable, disable the legacy v6.3 automation in the UI to prevent logic overlaps.
 
 ## 3. Presence & Global Logic
 - [ ] **Eco Mode Validation:** Verify the first real-world 500-mile "Extended Away" trigger.

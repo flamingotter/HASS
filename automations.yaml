@@ -3629,8 +3629,8 @@
         check the filter or condenser coils.
   mode: single
 - id: ai_climate_mbr_v7_0
-  alias: 'AI Enabled Climate: Master Bedroom Sleep Comfort Engine (v7.3)'
-  description: 'v7.3: Data Armor v2 with physical reality clamps, empirical re-baselining, and maximum transparency logging.'
+  alias: 'AI Enabled Climate: Master Bedroom Sleep Comfort Engine (v7.4)'
+  description: 'v7.4: Full-visibility AI Auditor with math-breakdown notifications and unconditional handoff reporting.'
   triggers:
   - trigger: state
     entity_id:
@@ -3798,7 +3798,8 @@
       - if:
         - condition: template
           alias: AI Integrity Audit
-          value_template: '{{ (t6_target == 60 and actual <= target) or (trigger.id == ''bedtime'' and is_precooling) }}'
+          value_template: >
+            {{ (t6_target == 60 and actual <= target) or (trigger.id == 'bedtime' and is_precooling) }}
         then:
         - action: ai_task.generate_data
           continue_on_error: true
@@ -3806,17 +3807,20 @@
             task_name: Learning Auditor
             instructions: 'A cooling session dropped {{ drop }}F in {{ duration }}
               minutes. Calculated rate: {{ obs_rate }} min/deg. Is this rate physically
-              plausible for a residential AC (usually 10-40 min/deg)?  If the rate
-              is < 5 min/deg, it is likely an anomaly. Return ''VALID'' or ''ANOMALY''.'
+              plausible for a residential AC (usually 10-45 min/deg)?  If the rate
+              is < 5 min/deg, it is likely an anomaly. Return your verdict starting
+              with ''VALID'' or ''ANOMALY'' followed by a one-sentence explanation.'
           response_variable: audit_result
         - variables:
-            audit_verdict: "{{ (audit_result | default({'data': 'VALID'})).data | upper }}"
-            outdoor: "{{ states('sensor.weather_station_temperature_outdoor') | float(70) }}"
+            audit_verdict: "{{ (audit_result | default({'data': 'VALID: No AI response'}
+              )).data }}"
+            outdoor: "{{ states('sensor.weather_station_temperature_outdoor') | float(70)
+              }}"
             lookup_key: "{{ ((outdoor / 5) | round(0) * 5) | string }}"
             repo: "{{ states('input_text.mbr_cooling_performance_data') | from_json }}"
         - if:
           - condition: template
-            value_template: "{{ 'VALID' in audit_verdict }}"
+            value_template: "{{ 'VALID' in audit_verdict | upper }}"
           then:
           - variables:
               old_rate: "{{ repo.get(lookup_key, obs_rate) | float }}"
@@ -3839,7 +3843,8 @@
             data:
               title: "Climate: AI Session Learned"
               message: >
-                Audit: VALID. {{ lookup_key }}F bin updated to {{ new_rate }} min/deg.
+                Analysis: {{ audit_verdict }}
+                Bin {{ lookup_key }}F -> {{ new_rate }} min/deg.
                 Obs: {{ obs_rate }} | Old: {{ old_rate }} | Wt: {{ raw_weighted }}
           - action: notify.send_message
             target:
@@ -3851,8 +3856,8 @@
             data:
               title: "⚠️ Climate: Data Anomaly Detected"
               message: >
-                AI Auditor flagged ({{ obs_rate }} min/deg) as ANOMALY.
-                Reason: {{ audit_verdict }}
+                AI Analysis: {{ audit_verdict }}
+                Observed: {{ obs_rate }} min/deg. Repository update skipped.
           - action: notify.send_message
             target:
               entity_id: "{{ log_entity }}"
@@ -3860,15 +3865,18 @@
               message: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }},PHASE_3_ANOMALY,ObsRate: {{ obs_rate }},Audit: {{ audit_verdict | trim }}"
       - action: notify.send_message
         target:
-          entity_id: '{{ log_entity }}'
+          entity_id: "{{ log_entity }}"
         data:
-          message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }},PHASE_3_HANDOFF,Indoor:
-            {{ actual }},Handing off to maintenance target {{ target }}'
+          message: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }},PHASE_3_HANDOFF,Indoor: {{ actual }},Handing off to target {{ target }}"
       - action: climate.set_temperature
         target:
           entity_id: climate.t6_pro_downstairs
         data:
-          temperature: '{{ target }}'
+          temperature: "{{ target }}"
+      - action: notify.mobile_app_josh_mobile
+        data:
+          title: "Climate: MBR Target Reached"
+          message: "Target {{ target }}F achieved. Handoff to maintenance mode complete. Session: {{ duration | round(0) }} mins."
     - alias: 'Phase 4: Sleep Window (Keep Cool)'
       conditions:
       - condition: template
@@ -3985,3 +3993,37 @@
         entity_id:
         - light.masonic_lamp
   mode: restart
+
+- id: '1778414400000'
+  alias: 'Light Control: Office Switch (ZEN24)'
+  description: Control office lights using the Zooz ZEN24 switch in scene mode.
+  triggers:
+  - event_type: zwave_js_value_notification
+    event_data:
+      property_key: '001'
+    id: top
+    trigger: event
+  - event_type: zwave_js_value_notification
+    event_data:
+      property_key: '002'
+    id: bottom
+    trigger: event
+  actions:
+  - condition: template
+    value_template: "{{ trigger.event.data.device_id == 'feb5c436b4b7088a73d571cad4175dbd' }}"
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.event.data.value == 'KeyPressed' and trigger.id == 'top' }}"
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: light.office_lights
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.event.data.value == 'KeyPressed' and trigger.id == 'bottom' }}"
+      sequence:
+      - action: light.turn_off
+        target:
+          entity_id: light.office_lights
+  mode: single
