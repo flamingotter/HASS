@@ -3994,34 +3994,34 @@
         - light.masonic_lamp
   mode: restart
 
-- id: '1778414400000'
-  alias: 'Light Control: Office Switch (ZEN24)'
-  description: Control office lights using the Zooz ZEN24 switch in scene mode.
+- id: '1778103562000'
+  alias: 'Light Control: Office'
+  description: Instant control for Office ZEN24 Toggle Dimmer in Smart Light Mode.
   triggers:
   - event_type: zwave_js_value_notification
     event_data:
+      device_id: feb5c436b4b7088a73d571cad4175dbd
       property_key: '001'
     id: top
     trigger: event
   - event_type: zwave_js_value_notification
     event_data:
+      device_id: feb5c436b4b7088a73d571cad4175dbd
       property_key: '002'
     id: bottom
     trigger: event
   actions:
-  - condition: template
-    value_template: "{{ trigger.event.data.device_id == 'feb5c436b4b7088a73d571cad4175dbd' }}"
   - choose:
     - conditions:
       - condition: template
-        value_template: "{{ trigger.event.data.value == 'KeyPressed' and trigger.id == 'top' }}"
+        value_template: '{{ trigger.event.data.value == "KeyPressed" and trigger.id == "top" }}'
       sequence:
       - action: light.turn_on
         target:
           entity_id: light.office_lights
     - conditions:
       - condition: template
-        value_template: "{{ trigger.event.data.value == 'KeyPressed' and trigger.id == 'bottom' }}"
+        value_template: '{{ trigger.event.data.value == "KeyPressed" and trigger.id == "bottom" }}'
       sequence:
       - action: light.turn_off
         target:
