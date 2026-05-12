@@ -1478,8 +1478,8 @@
     mj_device_id: 0aa560faf0e8784c
   mode: single
 - id: '1724695238002'
-  alias: 'Notify: Feed Pets'
-  description: Mission-ready feeding with discrete tags for task and status.
+  alias: 'Notify: Feed Pets (v3.0)'
+  description: Mission-ready feeding with standardized device identification and discrete tags.
   triggers:
   - at: '17:00:00'
     id: feed_time
@@ -1503,6 +1503,10 @@
     id: feed_time
     trigger: event
   actions:
+  - variables:
+      scanned_device: "{{ trigger.device_id | default(trigger.event.data.device_id) | default('unknown') }}"
+      scanned_name: "{{ 'Josh' if scanned_device == josh_device_id else 'MJ' }}"
+      target_notify: "{{ 'mobile_app_mj_pixel_8_pro' if scanned_name == 'Josh' else 'mobile_app_josh_mobile' }}"
   - choose:
     - conditions:
       - condition: trigger
@@ -1582,20 +1586,17 @@
           message: clear_notification
           data:
             tag: pets-notify
-      - action: notify.{{ 'mobile_app_mj_pixel_8_pro' if trigger.event.data.device_id
-          == josh_device_id else 'mobile_app_josh_mobile' }}
+      - action: notify.{{ target_notify }}
         data:
           title: Mission Accomplished
-          message: '{{ ''Josh'' if trigger.event.data.device_id == josh_device_id
-            else ''MJ'' }} has fed the cats.'
+          message: '{{ scanned_name }} has fed the cats.'
           data:
             tag: pets-status
     - conditions:
       - condition: trigger
         id: feed_passon
       sequence:
-      - action: notify.{{ 'mobile_app_mj_pixel_8_pro' if trigger.event.data.device_id
-          == josh_device_id else 'mobile_app_josh_mobile' }}
+      - action: notify.{{ target_notify }}
         data:
           title: Reinforcements Requested
           message: Help! The cats are winning. Can you take this one?
