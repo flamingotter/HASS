@@ -3806,14 +3806,22 @@
           alias: Minimum Run Time Check (5 minutes)
           value_template: '{{ duration < 5 and trigger.id != ''bedtime'' }}'
         then:
-        - stop: Minimum run time not met. Continuing push to prevent short-cycle.
+        - action: notify.send_message
+          target:
+            entity_id: "{{ log_entity }}"
+          data:
+            message: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }},PHASE_3_HANDOFF,Indoor: {{ actual }},Target: {{ target }},NOTE: Min run time not met - skipping audit."
+        - action: climate.set_temperature
+          target:
+            entity_id: climate.t6_pro_downstairs
+          data:
+            temperature: "{{ target }}"
+        - stop: Minimum run time not met. Handoff performed without learning.
       - if:
         - condition: template
-          alias: AI Integrity Audit
-          value_template: '{{ (t6_target == 60 and actual <= target) or (trigger.id
-            == ''bedtime'' and is_precooling) }}
-
-            '
+          alias: AI Integrity Audit & Learning Gate
+          value_template: >
+            {{ t6_target == 60 and ((actual <= target) or (trigger.id == 'bedtime' and is_precooling)) }}
         then:
         - action: ai_task.generate_data
           continue_on_error: true
