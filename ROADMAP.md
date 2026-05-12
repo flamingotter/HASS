@@ -23,14 +23,10 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 - [ ] **Proximity Testing:** Confirm both Josh and MJ entering the 50-mile radius correctly releases Eco Mode.
 
 ## 4. Maintenance & Housekeeping
-- [ ] **Automations Audit - Bit Rot:** 
-    - **Entertainment Automations:** Reference `light.masonic_lamp` and `light.parlor_light`. Currently **Disabled/In Stasis**.
-    - **Nightly Climate Data:** Reference `button.docker_ha_bq_exporter_restart` is valid (entity only appears when container runs).
-- [x] **Script Modernization:** All scripts in `scripts.yaml` updated to `action:` syntax and AI attributes corrected from `.text` to `.data`. (Completed May 6, 2026)
-- [x] **NFC Unification:** Implemented `System: NFC Tag Manager` as a centralized switchboard for physical tags. (Completed May 7, 2026)
-- [x] **Labeling Strategy:** Established AI-specific labeling scheme (`ai_engine`, `ai_vision`, `ai_persona`) for dynamic logic control. (Completed May 7, 2026)
+- [x] **Notification Standardization:** Standardized `Notify: Feed Pets (v3.0)` and `Notify: Trash Day` using the "Detective Butler" device ID pattern. (Completed May 12, 2026)
+- [x] **Climate Integrity:** Implemented "The Learning Gate" and Short-Cycle protections in MBR Engine v7.4. (Completed May 12, 2026)
 - [ ] **System Integrity:** Build a "Critical Heartbeat" sensor using the `critical` label to monitor essential infrastructure (Freezer, Networking, Z-Wave).
-- [ ] **Notification Standardization:** Refactor `Person: Status Synchronizer`, `Garage Door Monitor`, and `Maintenance Engine` to use the unified `activate_mobile_actionable_notification` script.
+- [ ] **Notification Standardization (Remaining):** Refactor `Person: Status Synchronizer`, `Garage Door Monitor`, and `Maintenance Engine` to use the unified `activate_mobile_actionable_notification` script.
 
 ## 5. Future AI & Occupancy Enhancements
 - [ ] **Digital Twin Analysis:** Perform first correlation analysis (Door Open/Occupancy vs. Cooling Rate) once 7 days of new BigQuery data is collected.

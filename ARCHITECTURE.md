@@ -83,13 +83,20 @@ Used for instant response in rooms with smart bulbs and Zooz toggle dimmers (ZEN
 - **Configuration:** Switch local/Z-Wave control is disabled; Central Scene mode is enabled.
 - **Flow:** `zwave_js_value_notification` -> Automation (Logic) -> `light.turn_on/off`.
 - **Rooms:** Dining Room (v2.0), Office.
-
-### **Delegated Authority:**
-For tags requiring complex logic or identification (e.g., `trash_done`), authority is delegated to the specialized automation (e.g., `Notify: Trash Day`). This prevents race conditions and ensures specific metadata like `device_id` and `user_id` are preserved for person-specific notifications.
+### **Notification Strategy (The Detective Butler):**
+Used in multi-user chore automations (e.g., Feed Pets v3.0, Trash Day).
+- **Logic:** Uses a consolidated `scanned_device` variable to capture IDs from both physical NFC scans (`trigger.device_id`) and notification button actions (`trigger.event.data.device_id`).
+- **Standard:** Explicitly maps IDs to names (`scanned_name`) and target notification services (`target_notify`). This ensures the "other" person is always notified correctly without fragile `else` fallbacks.
 
 ---
 
-## 8. System Monitoring (Admin Baseline)
+## 4. Climate Control (The Sleep Engine)
+...
+### **Data Integrity (The Learning Gate):**
+To ensure the performance repository remains "pure," the system implements a strict gate:
+- **Condition:** Repository updates ONLY occur if the thermostat is set to 60°F (Aggressive Push).
+- **Short-Cycle Protection:** If a session is < 5 minutes, the system performs the temperature handoff to protect comfort but skips the learning phase to protect data.
+- **Physical Clamps:** Data Armor v2 enforces an absolute range of 10.0–45.0 min/deg for all learned values.
 The `dashboard-admin` serves as the authoritative "Single Pane of Glass" for system health and logic integrity.
 
 ### **Baseline Sections**
