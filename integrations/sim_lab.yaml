@@ -291,7 +291,7 @@ script:
       - delay: 1
       - action: automation.trigger
         target:
-          entity_id: automation.sim_mbr_climate_engine
+          entity_id: automation.sim_mbr_climate_engine_digital_twin
         data:
           skip_condition: true
       - delay: 2
@@ -363,7 +363,7 @@ script:
       - delay: 1
       - action: automation.trigger
         target:
-          entity_id: automation.sim_mbr_climate_engine
+          entity_id: automation.sim_mbr_climate_engine_digital_twin
         data:
           skip_condition: true
       - delay: 2
@@ -414,7 +414,7 @@ script:
       - delay: 1
       - action: automation.trigger
         target:
-          entity_id: automation.sim_mbr_climate_engine
+          entity_id: automation.sim_mbr_climate_engine_digital_twin
         data:
           skip_condition: true
       - delay: 1
