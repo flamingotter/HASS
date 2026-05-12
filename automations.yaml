@@ -1006,6 +1006,10 @@
     - condition: state
       entity_id: input_boolean.motion_lockout
       state: 'off'
+    - condition: state
+      entity_id: input_boolean.office_lockout
+      state:
+      - 'off'
   actions:
   - alias: Turn on and start timer
     if:
@@ -1038,40 +1042,46 @@
             entity_id:
             - timer.timer_office
       else:
-      - parallel:
-        - action: light.turn_on
-          data:
-            brightness_pct: 100
-          enabled: true
-          target:
-            entity_id: light.office_lights
-        - action: select.select_option
-          metadata: {}
-          target:
-            entity_id: select.wled_cloud_preset
-          data:
-            option: Static Cloud
-        - action: input_boolean.turn_on
-          target:
-            entity_id: input_boolean.occupied_office
-        - if:
-          - condition: state
-            entity_id: binary_sensor.workday_sensor
-            state: 'on'
-          then:
-          - data:
-              duration: 01:00:00
-            action: timer.start
+      - if:
+        - condition: state
+          entity_id: input_boolean.office_lockout
+          state:
+          - 'off'
+        then:
+        - parallel:
+          - action: light.turn_on
+            data:
+              brightness_pct: 100
+            enabled: true
             target:
-              entity_id:
-              - timer.timer_office
-          else:
-          - data:
-              duration: 00:30:00
-            action: timer.start
+              entity_id: light.office_lights
+          - action: select.select_option
+            metadata: {}
             target:
-              entity_id:
-              - timer.timer_office
+              entity_id: select.wled_cloud_preset
+            data:
+              option: Static Cloud
+          - action: input_boolean.turn_on
+            target:
+              entity_id: input_boolean.occupied_office
+          - if:
+            - condition: state
+              entity_id: binary_sensor.workday_sensor
+              state: 'on'
+            then:
+            - data:
+                duration: 01:00:00
+              action: timer.start
+              target:
+                entity_id:
+                - timer.timer_office
+            else:
+            - data:
+                duration: 00:30:00
+              action: timer.start
+              target:
+                entity_id:
+                - timer.timer_office
   - if:
     - condition: trigger
       id:
@@ -1090,6 +1100,7 @@
         entity_id:
         - light.wled_cloud
         - light.office_lights
+        - light.wled_cloud_main
       data: {}
     - action: input_boolean.turn_off
       target:
@@ -3630,7 +3641,8 @@
   mode: single
 - id: ai_climate_mbr_v7_0
   alias: 'AI Enabled Climate: Master Bedroom Sleep Comfort Engine (v7.4)'
-  description: 'v7.4: Full-visibility AI Auditor with math-breakdown notifications and unconditional handoff reporting.'
+  description: 'v7.4: Full-visibility AI Auditor with math-breakdown notifications
+    and unconditional handoff reporting.'
   triggers:
   - trigger: state
     entity_id:
@@ -3783,12 +3795,12 @@
           id: bedtime
       sequence:
       - variables:
-          start_val: '{{ states(''input_datetime.precool_start_time'') }}'
-          duration: '{{ (as_timestamp(now(), 0) - as_timestamp(start_val, 0)) / 60
-            }}'
-          drop: '{{ states(''input_number.precool_start_temp'')|float(actual) - actual
-            }}'
-          obs_rate: '{{ (duration / [drop, 0.1]|max) | round(1) }}'
+          start_val: "{{ states('input_datetime.precool_start_time') }}"
+          duration: "{{ (as_timestamp(now(), 0) - as_timestamp(start_val, 0)) / 60 }}"
+          start_temp: "{{ states('input_number.precool_start_temp') | float(actual) }}"
+          current_temp: "{{ states('sensor.bedroom_temperature_smoothed') | float(actual) }}"
+          drop: "{{ start_temp - current_temp }}"
+          obs_rate: "{{ (duration / drop) | round(1) if drop > 0 else 999.0 }}"
       - if:
         - condition: template
           alias: Minimum Run Time Check (5 minutes)
@@ -3798,8 +3810,10 @@
       - if:
         - condition: template
           alias: AI Integrity Audit
-          value_template: >
-            {{ (t6_target == 60 and actual <= target) or (trigger.id == 'bedtime' and is_precooling) }}
+          value_template: '{{ (t6_target == 60 and actual <= target) or (trigger.id
+            == ''bedtime'' and is_precooling) }}
+
+            '
         then:
         - action: ai_task.generate_data
           continue_on_error: true
@@ -3812,71 +3826,82 @@
               with ''VALID'' or ''ANOMALY'' followed by a one-sentence explanation.'
           response_variable: audit_result
         - variables:
-            audit_verdict: "{{ (audit_result | default({'data': 'VALID: No AI response'}
-              )).data }}"
-            outdoor: "{{ states('sensor.weather_station_temperature_outdoor') | float(70)
-              }}"
-            lookup_key: "{{ ((outdoor / 5) | round(0) * 5) | string }}"
-            repo: "{{ states('input_text.mbr_cooling_performance_data') | from_json }}"
+            audit_verdict: '{{ (audit_result | default({''data'': ''VALID: No AI response''}
+              )).data }}'
+            outdoor: '{{ states(''sensor.weather_station_temperature_outdoor'') |
+              float(70) }}'
+            lookup_key: '{{ ((outdoor / 5) | round(0) * 5) | string }}'
+            repo: '{{ states(''input_text.mbr_cooling_performance_data'') | from_json
+              }}'
         - if:
           - condition: template
-            value_template: "{{ 'VALID' in audit_verdict | upper }}"
+            value_template: '{{ ''VALID'' in audit_verdict | upper }}'
           then:
           - variables:
-              old_rate: "{{ repo.get(lookup_key, obs_rate) | float }}"
-              raw_weighted: "{{ ((old_rate * 0.7) + (obs_rate * 0.3)) | round(1) }}"
-              clamped_rate: "{{ [ [raw_weighted, 10.0]|max, 45.0 ]|min }}"
-              new_rate: >
-                {% set diff = clamped_rate - old_rate %}
-                {% set cap = 5.0 %}
-                {% if diff > cap %}{{ (old_rate + cap) | round(1) }}{% elif diff < (cap * -1) %}{{ (old_rate - cap) | round(1) }}{% else %}{{ clamped_rate }}{% endif %}
-              new_repo: >
-                {% set new_entry = {lookup_key: new_rate|float} %}
-                {% set merged = dict(repo.items() | list + new_entry.items() | list) %}
-                {{ merged | to_json }}
+              old_rate: '{{ repo.get(lookup_key, obs_rate) | float }}'
+              raw_weighted: '{{ ((old_rate * 0.7) + (obs_rate * 0.3)) | round(1) }}'
+              clamped_rate: '{{ [ [raw_weighted, 10.0]|max, 45.0 ]|min }}'
+              new_rate: '{% set diff = clamped_rate - old_rate %} {% set cap = 5.0
+                %} {% if diff > cap %}{{ (old_rate + cap) | round(1) }}{% elif diff
+                < (cap * -1) %}{{ (old_rate - cap) | round(1) }}{% else %}{{ clamped_rate
+                }}{% endif %}
+
+                '
+              new_repo: '{% set new_entry = {lookup_key: new_rate|float} %} {% set
+                merged = dict(repo.items() | list + new_entry.items() | list) %} {{
+                merged | to_json }}
+
+                '
           - action: input_text.set_value
             target:
               entity_id: input_text.mbr_cooling_performance_data
             data:
-              value: "{{ new_repo }}"
+              value: '{{ new_repo }}'
           - action: notify.mobile_app_josh_mobile
             data:
-              title: "Climate: AI Session Learned"
-              message: >
-                Analysis: {{ audit_verdict }}
-                Bin {{ lookup_key }}F -> {{ new_rate }} min/deg.
-                Obs: {{ obs_rate }} | Old: {{ old_rate }} | Wt: {{ raw_weighted }}
+              title: 'Climate: AI Session Learned'
+              message: 'Analysis: {{ audit_verdict }} Bin {{ lookup_key }}F -> {{
+                new_rate }} min/deg. Obs: {{ obs_rate }} | Old: {{ old_rate }} | Wt:
+                {{ raw_weighted }}
+
+                '
           - action: notify.send_message
             target:
-              entity_id: "{{ log_entity }}"
+              entity_id: '{{ log_entity }}'
             data:
-              message: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }},PHASE_3_LEARNED,ObsRate: {{ obs_rate }},NewRate: {{ new_rate }},Bin: {{ lookup_key }},Audit: {{ audit_verdict | trim }}"
+              message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }},PHASE_3_LEARNED,ObsRate:
+                {{ obs_rate }},NewRate: {{ new_rate }},Bin: {{ lookup_key }},Audit:
+                {{ audit_verdict | trim }}'
           else:
           - action: notify.mobile_app_josh_mobile
             data:
-              title: "⚠️ Climate: Data Anomaly Detected"
-              message: >
-                AI Analysis: {{ audit_verdict }}
-                Observed: {{ obs_rate }} min/deg. Repository update skipped.
+              title: '⚠️ Climate: Data Anomaly Detected'
+              message: 'AI Analysis: {{ audit_verdict }} Observed: {{ obs_rate }}
+                min/deg. Repository update skipped.
+
+                '
           - action: notify.send_message
             target:
-              entity_id: "{{ log_entity }}"
+              entity_id: '{{ log_entity }}'
             data:
-              message: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }},PHASE_3_ANOMALY,ObsRate: {{ obs_rate }},Audit: {{ audit_verdict | trim }}"
+              message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }},PHASE_3_ANOMALY,ObsRate:
+                {{ obs_rate }},Audit: {{ audit_verdict | trim }}'
       - action: notify.send_message
         target:
-          entity_id: "{{ log_entity }}"
+          entity_id: '{{ log_entity }}'
         data:
-          message: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }},PHASE_3_HANDOFF,Indoor: {{ actual }},Handing off to target {{ target }}"
+          message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }},PHASE_3_HANDOFF,Indoor:
+            {{ actual }},Handing off to target {{ target }}'
       - action: climate.set_temperature
         target:
           entity_id: climate.t6_pro_downstairs
         data:
-          temperature: "{{ target }}"
+          temperature: '{{ target }}'
       - action: notify.mobile_app_josh_mobile
         data:
-          title: "Climate: MBR Target Reached"
-          message: "Target {{ target }}F achieved. Handoff to maintenance mode complete. Session: {{ duration | round(0) }} mins."
+          title: 'Climate: MBR Target Reached'
+          message: 'Target {{ target }}F achieved. Handoff to maintenance mode complete.
+            Session: {{ duration | round(0) }} mins.'
     - alias: 'Phase 4: Sleep Window (Keep Cool)'
       conditions:
       - condition: template
@@ -3993,9 +4018,8 @@
         entity_id:
         - light.masonic_lamp
   mode: restart
-
 - id: '1778103562000'
-  alias: 'Light Control: Office'
+  alias: 'Light Control: Office (v1.0)'
   description: Instant control for Office ZEN24 Toggle Dimmer in Smart Light Mode.
   triggers:
   - event_type: zwave_js_value_notification
@@ -4014,16 +4038,19 @@
   - choose:
     - conditions:
       - condition: template
-        value_template: '{{ trigger.event.data.value == "KeyPressed" and trigger.id == "top" }}'
-      sequence:
-      - action: light.turn_off
-        target:
-          entity_id: light.office_lights
-    - conditions:
-      - condition: template
-        value_template: '{{ trigger.event.data.value == "KeyPressed" and trigger.id == "bottom" }}'
+        value_template: '{{ trigger.event.data.value == "KeyPressed" and trigger.id
+          == "top" }}'
       sequence:
       - action: light.turn_on
+        target:
+          entity_id: light.office_lights
+        data: {}
+    - conditions:
+      - condition: template
+        value_template: '{{ trigger.event.data.value == "KeyPressed" and trigger.id
+          == "bottom" }}'
+      sequence:
+      - action: light.turn_off
         target:
           entity_id: light.office_lights
   mode: single
