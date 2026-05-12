@@ -102,12 +102,19 @@ To ensure the performance repository remains "pure," the system implements a str
 ## 8. System Monitoring (Admin Baseline)
 The `dashboard-admin` serves as the authoritative "Single Pane of Glass" for system health and logic integrity.
 
+### **Continuous Logic Validation (CLV)**
+The system implements a specialized "Sim Lab" (`integrations/sim_lab.yaml`) to rigorously test climate logic without physical impact.
+- **The Simulator:** Uses `sim_` virtual entities to clone the MBR Engine v7.4 logic.
+- **Stress Testing:** `script.run_climate_stress_tests` executes lethal scenarios (Flash Freeze, Bedtime Race, Extreme Clamping) to verify the AI Auditor and Data Armor.
+- **Certification:** Logic is considered "Certified" only after passing all 5 simulation scenarios.
+
 ### **Health Summary Logic (v2.0)**
 - **48h Rolling Window:** Log error/warning counts only reflect issues from the last 48 hours to ensure recent relevance.
 - **Noise Filtering:** Known frontend-only errors (e.g., `frontend.js.modern` incompatibilities) are excluded from the health counts to prevent "noise" from masking backend logic failures.
 
 ### **Baseline Sections**
 - **System Health:** Tracks `sensor.system_health_summary`, HA Uptime, and real-time log Error/Warning counts.
+- **Simulator Control:** UI-based toggles for Sim Mode and Mock AI, with one-click "Logic Certification" testing.
 - **Climate Control:** Aggregates MBR smoothed vs. raw data, pre-cooling schedule attributes, and the Bin Performance repository.
 - **Engine Heartbeat:** Monitors the `last_triggered` status of all core AI and maintenance automations.
 - **Hardware & Vitals:** High-signal tracking of security hardware (Shuttle Bay, Alarm).
