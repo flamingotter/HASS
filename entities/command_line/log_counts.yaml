@@ -1,15 +1,17 @@
 ---
 - sensor:
-    name: "Log Error Count"
+    name: "Log Error Count (48h)"
     unique_id: log_error_count
-    command: "grep -c ' ERROR ' /config/home-assistant.log || echo 0"
+    command: >
+      grep " ERROR " /config/home-assistant.log | awk -v d="$(date -d '48 hours ago' +'%Y-%m-%d %H:%M:%S')" '$1 " " $2 >= d' | grep -vc "frontend.js.modern" || echo 0
     scan_interval: 300
     value_template: "{{ value | int }}"
     unit_of_measurement: "errors"
 - sensor:
-    name: "Log Warning Count"
+    name: "Log Warning Count (48h)"
     unique_id: log_warning_count
-    command: "grep -c ' WARNING ' /config/home-assistant.log || echo 0"
+    command: >
+      grep " WARNING " /config/home-assistant.log | awk -v d="$(date -d '48 hours ago' +'%Y-%m-%d %H:%M:%S')" '$1 " " $2 >= d' | grep -vc "frontend.js.modern" || echo 0
     scan_interval: 300
     value_template: "{{ value | int }}"
     unit_of_measurement: "warnings"

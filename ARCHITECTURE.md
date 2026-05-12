@@ -97,7 +97,14 @@ To ensure the performance repository remains "pure," the system implements a str
 - **Condition:** Repository updates ONLY occur if the thermostat is set to 60°F (Aggressive Push).
 - **Short-Cycle Protection:** If a session is < 5 minutes, the system performs the temperature handoff to protect comfort but skips the learning phase to protect data.
 - **Physical Clamps:** Data Armor v2 enforces an absolute range of 10.0–45.0 min/deg for all learned values.
+---
+
+## 8. System Monitoring (Admin Baseline)
 The `dashboard-admin` serves as the authoritative "Single Pane of Glass" for system health and logic integrity.
+
+### **Health Summary Logic (v2.0)**
+- **48h Rolling Window:** Log error/warning counts only reflect issues from the last 48 hours to ensure recent relevance.
+- **Noise Filtering:** Known frontend-only errors (e.g., `frontend.js.modern` incompatibilities) are excluded from the health counts to prevent "noise" from masking backend logic failures.
 
 ### **Baseline Sections**
 - **System Health:** Tracks `sensor.system_health_summary`, HA Uptime, and real-time log Error/Warning counts.
