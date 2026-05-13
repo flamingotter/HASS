@@ -1504,12 +1504,6 @@
     id: feed_time
     trigger: event
   actions:
-  - variables:
-      scanned_device: '{{ trigger.device_id | default(trigger.event.data.device_id)
-        | default(''unknown'') }}'
-      scanned_name: '{{ ''Josh'' if scanned_device == josh_device_id else ''MJ'' }}'
-      target_notify: '{{ ''mobile_app_mj_pixel_8_pro'' if scanned_name == ''Josh''
-        else ''mobile_app_josh_mobile'' }}'
   - choose:
     - conditions:
       - condition: trigger
@@ -1584,6 +1578,13 @@
       - condition: trigger
         id: feed_done
       sequence:
+      - variables:
+          scanned_device: '{{ trigger.device_id | default(trigger.event.data.device_id)
+            | default(''unknown'') }}'
+          scanned_name: '{{ ''Josh'' if scanned_device == josh_device_id else ''MJ''
+            }}'
+          target_notify: '{{ ''mobile_app_mj_pixel_8_pro'' if scanned_name == ''Josh''
+            else ''mobile_app_josh_mobile'' }}'
       - action: notify.all_devices
         data:
           message: clear_notification
@@ -1599,6 +1600,13 @@
       - condition: trigger
         id: feed_passon
       sequence:
+      - variables:
+          scanned_device: '{{ trigger.device_id | default(trigger.event.data.device_id)
+            | default(''unknown'') }}'
+          scanned_name: '{{ ''Josh'' if scanned_device == josh_device_id else ''MJ''
+            }}'
+          target_notify: '{{ ''mobile_app_mj_pixel_8_pro'' if scanned_name == ''Josh''
+            else ''mobile_app_josh_mobile'' }}'
       - action: notify.{{ target_notify }}
         data:
           title: Reinforcements Requested
