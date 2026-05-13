@@ -1,0 +1,6 @@
+precool_start_outdoor_temp:
+  name: Precool Start Outdoor Temp
+  min: -20
+  max: 120
+  step: 0.1
+  unit_of_measurement: "°F"

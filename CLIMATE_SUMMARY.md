@@ -88,8 +88,17 @@ The engine's goal is to ensure the Master Bedroom reaches a precise sleep temper
 
 ---
 
-## 13. Current Configuration (As of May 13, 2026)
-- **Active Version:** v7.7 (Logic Certified).
+## 13. Phase IX: Repository Hardening & Environmental Averaging (v7.8)
+**Key Milestone:** Resolving type-casting duplicates and improving environmental precision.
+- **Int-Win String Pattern (May 13, 2026):** Resolved a critical repository duplication bug caused by Home Assistant's inconsistent JSON type-casting. The system now explicitly forces all keys to strings during both the `get()` lookup and the `combine` merge, ensuring that new data perfectly overwrites existing bins without creating duplicates.
+- **Global Short-Cycle Blocker:** Hardened the Phase 3 learning gate to strictly require a minimum session duration of **5 minutes** for all triggers. This prevents the engine from learning from unreliable, short-burst data (e.g., bedtime triggers that occur immediately after manual overrides).
+- **Outdoor Temperature Averaging:** Transitioned from "Point-in-Time" binning to "Session Averaging." The system now captures the outdoor temperature at Phase 2 Start and averages it with the temperature at Phase 3 Handoff. This ensures performance data is stored in the bin most representative of the actual environmental conditions during the entire cooling pull.
+- **Sim Lab Expansion:** Added two new stress test scenarios (Scenario G: Short-Cycle Block and Scenario H: Bin Averaging) to the validation suite. The Climate Engine v7.8 passed all 8 scenarios before deployment.
+
+---
+
+## 14. Current Configuration (As of May 13, 2026)
+- **Active Version:** v7.8 (Logic Certified).
 - **Core Repository:** `{"45": 22.2, "50": 24.6, "55": 28.4, "60": 32.6, "65": 35.5, "70": 40.6, "75": 44.8, "80": 35.0, "85": 45.0}` (Managed with strict string-key mapping to prevent duplicates).
-- **Validation Suite:** 6-scenario stress test active in Sim Lab.
+- **Validation Suite:** 8-scenario stress test active in Sim Lab.
 - **Persistence:** State managed via `restore_state`; string-keyed JSON repository.

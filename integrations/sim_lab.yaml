@@ -35,6 +35,12 @@ input_number:
     max: 90
     step: 0.1
     unit_of_measurement: "°F"
+  sim_precool_start_outdoor_temp:
+    name: Sim Precool Start Outdoor Temp
+    min: 30
+    max: 110
+    step: 0.1
+    unit_of_measurement: "°F"
 
 input_select:
   sim_hvac_action:
@@ -80,7 +86,6 @@ automation:
         entity_id:
           - input_boolean.sim_mbr_pre_cooling_active
           - input_number.sim_indoor_temp
-          - input_number.sim_t6_target
           - input_boolean.sim_eco_mode
       - trigger: time
         at: input_datetime.sim_bedtime
@@ -130,6 +135,11 @@ automation:
                   value: "{{ actual }}"
               - action: input_number.set_value
                 target:
+                  entity_id: input_number.sim_precool_start_outdoor_temp
+                data:
+                  value: "{{ states('input_number.sim_outdoor_temp') | float(70) }}"
+              - action: input_number.set_value
+                target:
                   entity_id: input_number.sim_t6_target
                 data:
                   value: 60
@@ -148,7 +158,7 @@ automation:
                   start_ts: "{{ state_attr('input_datetime.sim_precool_start_time', 'timestamp') | float(as_timestamp(now())) }}"
                   duration: >
                     {% set diff = (as_timestamp(now()) - start_ts) / 60 %}
-                    {{ diff if diff > 1 else 60.0 }}
+                    {{ diff | round(2) if diff > 0.01 else 0.1 }}
                   start_temp: "{{ states('input_number.sim_precool_start_temp') | float(actual) }}"
                   current_temp: "{{ states('input_number.sim_indoor_temp') | float(actual) }}"
                   drop: "{{ start_temp - current_temp }}"
@@ -167,17 +177,19 @@ automation:
               - if:
                   - condition: template
                     alias: AI Integrity Audit & Learning Gate
-                    value_template: "{{ t6_target == 60 and ((actual <= target) or (trigger.id == 'bedtime' and is_precooling)) }}"
+                    value_template: "{{ t6_target == 60 and ((actual <= target) or (trigger.id == 'bedtime' and is_precooling)) and duration >= 5 }}"
                 then:
                   - variables:
-                      audit_verdict: "VALID: MOCK"
-                      outdoor: "{{ states('input_number.sim_outdoor_temp') | float(70) }}"
-                      lookup_key: "{{ ((outdoor / 5) | round(0) * 5) | string }}"
+                      avg_outdoor: >
+                        {% set start = states('input_number.sim_precool_start_outdoor_temp') | float(70) %}
+                        {% set current = states('input_number.sim_outdoor_temp') | float(70) %}
+                        {{ ((start + current) / 2) | round(1) }}
                       repo: "{{ states('input_text.sim_mbr_repo') | from_json }}"
                   - variables:
-                      old_rate: "{{ repo[lookup_key] | float if lookup_key in repo else obs_rate }}"
-                      raw_weighted: "{{ ((old_rate * 0.7) + (obs_rate * 0.3)) | round(1) }}"
+                      lookup_key: "{{ ((avg_outdoor / 5) | round(0) | int * 5) | int }}"
                   - variables:
+                      old_rate: "{{ repo.get(lookup_key | string, obs_rate) | float }}"
+                      raw_weighted: "{{ ((old_rate * 0.7) + (obs_rate * 0.3)) | round(1) }}"
                       clamped_rate: "{{ [ [raw_weighted|float, 10.0]|max, 45.0 ]|min }}"
                   - variables:
                       new_rate: >
@@ -185,15 +197,18 @@ automation:
                         {% set cap = 5.0 %}
                         {% if diff > cap %}{{ (old_rate|float + cap) | round(1) }}{% elif diff < (cap * -1) %}{{ (old_rate|float - cap) | round(1) }}{% else %}{{ clamped_rate }}{% endif %}
                   - variables:
-                      new_repo: >
-                        {% set new_entry = {lookup_key|string: new_rate|float} %}
-                        {% set merged = dict(repo.items() | list + new_entry.items() | list) %}
-                        {{ merged | to_json }}
-                  - action: input_text.set_value
-                    target:
-                      entity_id: input_text.sim_mbr_repo
-                    data:
-                      value: "{{ new_repo }}"
+                      new_repo: "{{ (repo | combine({lookup_key | string: new_rate | float})) | to_json }}"
+                  - variables:
+                      audit_verdict: "VALID: MOCK"
+                  - if:
+                      - condition: template
+                        value_template: "{{ 'VALID' in audit_verdict | upper }}"
+                    then:
+                      - action: input_text.set_value
+                        target:
+                          entity_id: input_text.sim_mbr_repo
+                        data:
+                          value: "{{ new_repo }}"
                   - action: persistent_notification.create
                     data:
                       notification_id: "sim_result_{{ lookup_key }}"
@@ -257,7 +272,7 @@ script:
         target:
           entity_id: input_text.sim_mbr_repo
         data:
-          value: '{"45": 22.2, "50": 24.6, "55": 28.4, "60": 32.6, "65": 35.5, "70": 40.6, "75": 44.8, "80": 35.0, "85": 45.0}'
+          value: '{"45":22.2,"50":24.6,"55":28.4,"60":32.6,"65":35.5,"70":40.6,"75":44.8,"80":35.0,"85":45.0}'
       - action: input_boolean.turn_on
         target:
           entity_id: input_boolean.sim_mock_ai
@@ -279,6 +294,16 @@ script:
           message: "Starting Scenario A: Flash Freeze..."
       - action: input_number.set_value
         target:
+          entity_id: input_number.sim_precool_start_outdoor_temp
+        data:
+          value: 70
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_outdoor_temp
+        data:
+          value: 70
+      - action: input_number.set_value
+        target:
           entity_id: input_number.sim_target_temp
         data:
           value: 64
@@ -292,6 +317,7 @@ script:
           entity_id: input_number.sim_t6_target
         data:
           value: 70
+      - delay: 1
       - action: input_boolean.turn_on
         target:
           entity_id: input_boolean.sim_mbr_pre_cooling_active
@@ -301,7 +327,7 @@ script:
           entity_id: input_number.sim_indoor_temp
         data:
           value: 63.5
-      - delay: 2
+      - delay: 3
 
       # TEST SCENARIO B: Bedtime Squeeze (Race Condition)
       - action: input_boolean.turn_off
@@ -323,16 +349,22 @@ script:
           entity_id: input_number.sim_indoor_temp
         data:
           value: 64.5
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_t6_target
+        data:
+          value: 70
+      - delay: 1
       - action: input_boolean.turn_on
         target:
           entity_id: input_boolean.sim_mbr_pre_cooling_active
       - delay: 1
-      - action: automation.trigger
+      - action: input_number.set_value
         target:
-          entity_id: automation.sim_mbr_climate_engine_digital_twin
+          entity_id: input_number.sim_indoor_temp
         data:
-          skip_condition: true
-      - delay: 2
+          value: 63.5
+      - delay: 3
 
       # TEST SCENARIO C: The Perfectionist (Math & Weighting Check)
       - action: input_boolean.turn_off
@@ -361,6 +393,11 @@ script:
           value: 70
       - action: input_number.set_value
         target:
+          entity_id: input_number.sim_precool_start_outdoor_temp
+        data:
+          value: 70
+      - action: input_number.set_value
+        target:
           entity_id: input_number.sim_outdoor_temp
         data:
           value: 70
@@ -374,16 +411,13 @@ script:
           entity_id: input_number.sim_t6_target
         data:
           value: 60
-      - action: input_boolean.turn_on
-        target:
-          entity_id: input_boolean.sim_mbr_pre_cooling_active
       - delay: 1
       - action: input_number.set_value
         target:
           entity_id: input_number.sim_indoor_temp
         data:
-          value: 67
-      - delay: 2
+          value: 64.5
+      - delay: 3
 
       # TEST SCENARIO D: Strategist Race (Interference Check)
       - action: input_boolean.turn_off
@@ -395,16 +429,27 @@ script:
           notification_id: "sim_d"
           title: "Sim Lab"
           message: "Starting Scenario D: Strategist Race..."
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_indoor_temp
+        data:
+          value: 70
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_t6_target
+        data:
+          value: 70
+      - delay: 1
       - action: input_boolean.turn_on
         target:
           entity_id: input_boolean.sim_mbr_pre_cooling_active
       - delay: 1
-      - action: automation.trigger
+      - action: input_number.set_value
         target:
-          entity_id: automation.sim_mbr_climate_engine_digital_twin
+          entity_id: input_number.sim_indoor_temp
         data:
-          skip_condition: true
-      - delay: 2
+          value: 63.5
+      - delay: 3
 
       # TEST SCENARIO E: The Extreme Clamp (Data Armor Check)
       - action: input_boolean.turn_off
@@ -416,6 +461,11 @@ script:
           notification_id: "sim_e"
           title: "Sim Lab"
           message: "Starting Scenario E: Extreme Clamp (Obs Rate 1.0)..."
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_precool_start_outdoor_temp
+        data:
+          value: 70
       - action: input_number.set_value
         target:
           entity_id: input_number.sim_outdoor_temp
@@ -438,24 +488,16 @@ script:
           value: 70
       - action: input_number.set_value
         target:
-          entity_id: input_number.sim_indoor_temp
-        data:
-          value: 65
-      - action: input_number.set_value
-        target:
           entity_id: input_number.sim_t6_target
         data:
           value: 60
-      - action: input_boolean.turn_on
-        target:
-          entity_id: input_boolean.sim_mbr_pre_cooling_active
       - delay: 1
-      - action: automation.trigger
+      - action: input_number.set_value
         target:
-          entity_id: automation.sim_mbr_climate_engine_digital_twin
+          entity_id: input_number.sim_indoor_temp
         data:
-          skip_condition: true
-      - delay: 2
+          value: 65
+      - delay: 3
 
       # TEST SCENARIO F: Maintenance Visibility (Phase 4 & 5)
       - action: persistent_notification.create
@@ -474,16 +516,102 @@ script:
           entity_id: input_number.sim_indoor_temp
         data:
           value: "{{ states('input_number.sim_target_temp') | float + 1.5 }}"
-      - delay: 2
+      - delay: 3
       - action: input_number.set_value
         target:
           entity_id: input_number.sim_indoor_temp
         data:
           value: "{{ states('input_number.sim_target_temp') | float - 1.5 }}"
-      - delay: 2
+      - delay: 3
+
+      # TEST SCENARIO G: Short-Cycle Learning Blocker (Bedtime < 5 mins)
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.sim_mbr_pre_cooling_active
+      - delay: 1
+      - action: persistent_notification.create
+        data:
+          notification_id: "sim_g"
+          title: "Sim Lab"
+          message: "Starting Scenario G: Short-Cycle Blocker..."
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.sim_precool_start_time
+        data:
+          datetime: "{{ (now() - timedelta(minutes=4)) }}"
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_precool_start_temp
+        data:
+          value: 70
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_precool_start_outdoor_temp
+        data:
+          value: 65
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_outdoor_temp
+        data:
+          value: 65
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_t6_target
+        data:
+          value: 60
+      - delay: 1
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_indoor_temp
+        data:
+          value: 68
+      - delay: 3
+
+      # TEST SCENARIO H: Outdoor Temp Averaging (Bin Verification)
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.sim_mbr_pre_cooling_active
+      - delay: 1
+      - action: persistent_notification.create
+        data:
+          notification_id: "sim_h"
+          title: "Sim Lab"
+          message: "Starting Scenario H: Outdoor Averaging (Start 80, End 70 -> Bin 75)..."
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_precool_start_outdoor_temp
+        data:
+          value: 80
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_outdoor_temp
+        data:
+          value: 70
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.sim_precool_start_time
+        data:
+          datetime: "{{ (now() - timedelta(minutes=60)) }}"
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_precool_start_temp
+        data:
+          value: 70
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_t6_target
+        data:
+          value: 60
+      - delay: 1
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_indoor_temp
+        data:
+          value: 65
+      - delay: 3
 
       - action: persistent_notification.create
         data:
           notification_id: "sim_finished"
           title: "Sim Lab COMPLETE"
-          message: "All 6 scenarios executed. Check repo and result list."
+          message: "All 8 scenarios executed. Check repo and result list."

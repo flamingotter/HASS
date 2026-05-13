@@ -38,10 +38,11 @@ Eco Mode manages the home during long-term absences (Vacation).
 
 ---
 
-## 3. MBR Climate Engine (v7.2)
+## 3. MBR Climate Engine (v7.8)
 A high-precision engine designed to reach sleep temperature exactly at bedtime.
 
 - **Data Repository:** `input_text.mbr_cooling_performance_data` (JSON). Stores min/deg cooling rates in 5-degree outdoor bins.
+- **Int-Win String Pattern:** Repository keys are explicitly handled as strings during lookup and merge (`combine`) to prevent duplicate keys caused by Home Assistant's JSON type-casting.
 - **Phases:**
     1. **Wakeup:** Reset to 68°F.
     2. **Strategist (7:00 PM):** AI evaluates "Free Cooling" via patio door.
@@ -51,6 +52,8 @@ A high-precision engine designed to reach sleep temperature exactly at bedtime.
 - **Safety Layers:**
     - **Fail-Safe AI:** `continue_on_error: true` on all tasks.
     - **Data Armor:** ±5 min/deg maximum swing per learning session.
+    - **Global Short-Cycle Blocker:** Learning is strictly blocked if session duration is < 5 minutes.
+    - **Outdoor Averaging:** Bin selection is based on the average outdoor temperature between session start and handoff.
 
 ---
 
