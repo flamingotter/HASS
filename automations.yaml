@@ -3399,9 +3399,9 @@
         check the filter or condenser coils.
   mode: single
 - id: ai_climate_mbr_v7_0
-  alias: 'Climate: Sleep Comfort Engine (v7.7)'
-  description: 'v7.7: Total Transparency. Full mobile visibility for all phases and
-    AI reasoning recorded in logs.'
+  alias: 'Climate: Sleep Comfort Engine (v7.8)'
+  description: 'v7.8: Hardened Repository & Env Averaging. Full mobile visibility
+    for all phases and AI reasoning recorded in logs.'
   triggers:
   - trigger: state
     entity_id:

@@ -80,7 +80,7 @@ input_boolean:
 automation:
   - id: sim_mbr_climate_engine_digital_twin
     alias: 'Sim: MBR Climate Engine'
-    description: Isolated twin for stress testing v7.7 logic.
+    description: Isolated twin for stress testing v7.8 logic.
     triggers:
       - trigger: state
         entity_id:
