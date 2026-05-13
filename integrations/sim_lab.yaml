@@ -72,9 +72,9 @@ input_boolean:
     name: Sim Mock AI Mode
 
 automation:
-  - id: sim_mbr_climate_engine
+  - id: sim_mbr_climate_engine_digital_twin
     alias: 'Sim: MBR Climate Engine'
-    description: Isolated twin for stress testing v7.4 logic.
+    description: Isolated twin for stress testing v7.7 logic.
     triggers:
       - trigger: state
         entity_id:
@@ -108,17 +108,16 @@ automation:
                 state: 'on'
             sequence:
               - stop: Eco Mode Active
-          - alias: 'AI Strategy: Evening Free Cooling Audit'
-            conditions:
-              - condition: trigger
-                id: strategist
-            sequence:
-              - stop: AI Strategy simulated.
           - alias: 'Phase 2: Pre-Cooling (AI Adjusted Start)'
             conditions:
               - condition: template
                 value_template: "{{ is_precooling and not is_sleep_window and t6_target != 60 and actual > (target + 0.5) }}"
             sequence:
+              - action: persistent_notification.create
+                data:
+                  notification_id: "sim_phase2_start"
+                  title: "Sim: Pre-Cool Started"
+                  message: "Target: {{ target }}F. AI Reason: Standard target used. Room: {{ actual }}F."
               - action: input_datetime.set_datetime
                 target:
                   entity_id: input_datetime.sim_precool_start_time
@@ -136,21 +135,24 @@ automation:
                   value: 60
           - alias: 'Phase 3: Pre-Cooling Complete (Handoff & AI Auditor)'
             conditions:
+              - condition: template
+                alias: "Latch: Only run if currently in Agonal Push"
+                value_template: "{{ t6_target == 60 }}"
               - or:
                   - condition: template
-                    value_template: "{{ t6_target == 60 and actual <= target }}"
+                    value_template: "{{ actual <= target }}"
                   - condition: trigger
                     id: bedtime
             sequence:
               - variables:
-                  start_val: "{{ states('input_datetime.sim_precool_start_time') }}"
+                  start_ts: "{{ state_attr('input_datetime.sim_precool_start_time', 'timestamp') | float(as_timestamp(now())) }}"
                   duration: >
-                    {% set diff = (as_timestamp(now(), 0) - as_timestamp(start_val, 0)) / 60 %}
+                    {% set diff = (as_timestamp(now()) - start_ts) / 60 %}
                     {{ diff if diff > 1 else 60.0 }}
                   start_temp: "{{ states('input_number.sim_precool_start_temp') | float(actual) }}"
                   current_temp: "{{ states('input_number.sim_indoor_temp') | float(actual) }}"
                   drop: "{{ start_temp - current_temp }}"
-                  obs_rate: "{{ (duration / drop) | round(1) if drop > 0 else 999.0 }}"
+                  obs_rate: "{{ (duration / drop) | round(1) if drop > 0.1 else 999.0 }}"
               - if:
                   - condition: template
                     alias: Minimum Run Time Check
@@ -194,8 +196,9 @@ automation:
                       value: "{{ new_repo }}"
                   - action: persistent_notification.create
                     data:
+                      notification_id: "sim_result_{{ lookup_key }}"
                       title: "Sim Result"
-                      message: "Key: {{ lookup_key }} | Final Rate: {{ new_rate }}"
+                      message: "Old: {{ old_rate }} | Obs: {{ obs_rate }} | Final: {{ new_rate }} | Key: {{ lookup_key }}"
                   - if:
                       - condition: template
                         value_template: "{{ new_rate == 10.0 or new_rate == 45.0 }}"
@@ -210,6 +213,41 @@ automation:
                   entity_id: input_number.sim_t6_target
                 data:
                   value: "{{ target }}"
+              - action: persistent_notification.create
+                data:
+                  notification_id: "sim_handoff"
+                  title: "Sim: Target Reached"
+                  message: "Target {{ target }}F achieved. Session: {{ duration | round(0) }} mins."
+          - alias: 'Phase 4: Sleep Window (Keep Cool)'
+            conditions:
+              - condition: template
+                value_template: "{{ is_sleep_window and actual >= (target + 1.0) and t6_target != (target - 2.0) }}"
+            sequence:
+              - action: persistent_notification.create
+                data:
+                  notification_id: "sim_phase4_push"
+                  title: "Sim: Maintenance Push"
+                  message: "Room rose to {{ actual }}F. Pushing back to {{ target - 2.0 }}F."
+              - action: input_number.set_value
+                target:
+                  entity_id: input_number.sim_t6_target
+                data:
+                  value: "{{ target - 2.0 }}"
+          - alias: 'Phase 5: Sleep Window (Prevent Over-Cooling)'
+            conditions:
+              - condition: template
+                value_template: "{{ is_sleep_window and actual <= (target - 1.0) and t6_target != (target + 2.0) }}"
+            sequence:
+              - action: persistent_notification.create
+                data:
+                  notification_id: "sim_phase5_guard"
+                  title: "Sim: Over-Cool Guard"
+                  message: "Room dropped to {{ actual }}F. Letting warm to {{ target + 2.0 }}F."
+              - action: input_number.set_value
+                target:
+                  entity_id: input_number.sim_t6_target
+                data:
+                  value: "{{ target + 2.0 }}"
 
 script:
   run_climate_stress_tests:
@@ -417,9 +455,35 @@ script:
           entity_id: automation.sim_mbr_climate_engine_digital_twin
         data:
           skip_condition: true
+      - delay: 2
+
+      # TEST SCENARIO F: Maintenance Visibility (Phase 4 & 5)
+      - action: persistent_notification.create
+        data:
+          notification_id: "sim_f"
+          title: "Sim Lab"
+          message: "Starting Scenario F: Maintenance Visibility..."
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.sim_bedtime
+        data:
+          time: "{{ now().strftime('%H:%M:%S') }}"
       - delay: 1
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_indoor_temp
+        data:
+          value: "{{ states('input_number.sim_target_temp') | float + 1.5 }}"
+      - delay: 2
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_indoor_temp
+        data:
+          value: "{{ states('input_number.sim_target_temp') | float - 1.5 }}"
+      - delay: 2
+
       - action: persistent_notification.create
         data:
           notification_id: "sim_finished"
           title: "Sim Lab COMPLETE"
-          message: "All 5 scenarios executed. Check repo and result list."
+          message: "All 6 scenarios executed. Check repo and result list."

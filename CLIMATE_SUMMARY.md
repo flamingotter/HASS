@@ -75,8 +75,21 @@ The engine's goal is to ensure the Master Bedroom reaches a precise sleep temper
 
 ---
 
-## 11. Current Configuration (As of May 11, 2026)
-- **Active Version:** v7.4 (Total Transparency Mode).
-- **Core Repository:** `{"45": 22.2, "50": 24.6, "55": 28.4, "60": 32.6, "65": 35.5, "70": 40.6, "75": 44.8, "80": 35.0, "85": 45.0}` (Note: Bin 80 manually re-baselined to 35.0 based on recent session data).
-- **Digital Twin Sync:** Active export of occupancy and air-exchange sensors to BigQuery for future thermal modeling.
-- **Persistence:** YAML `initial` values removed; state managed via `restore_state` and learned measurements.
+## 12. Phase VIII: Logic Certification & Precision Math (v7.7)
+**Key Milestone:** Eliminating math drift and hardening the logic through simulation.
+- **Continuous Logic Validation (CLV):** Introduced a "Sim Lab" (`integrations/sim_lab.yaml`) - a digital twin environment used to run "Lethal Scenarios" (Flash Freezes, Bedtime Races). Logic is now considered "Certified" only after passing all 5 simulation tests.
+- **The Unbreakable Latch:** Moved the "Active Push" check to the absolute top of the handoff conditions. The engine is now physically unable to double-command the thermostat because it verifies the current setpoint (must be 60°F) before evaluating any other handoff triggers.
+- **Precision Math (Native Epochs):** Switched from fragile string-based time parsing to native epoch timestamps (`state_attr(..., 'timestamp')`). This eliminated a recurring 60-minute duration drift caused by timezone interpretation errors.
+- **Total Transparency (v7.7):** 
+    - **Phase 2 Mobile Visibility:** Real-time notifications when pre-cooling starts, including AI's "Comfort reasoning" and arrival estimates.
+    - **Maintenance Visibility:** Mobile alerts for nightly Phase 4 (Maintenance Push) and Phase 5 (Over-Cool Guard) actions.
+    - **Reasoning Logs:** The CSV log now captures the qualitative AI reasoning for every decision, providing a complete audit trail.
+- **Ghost Engine Exorcism:** Completely removed the retired v6.3 automation from the codebase to eliminate background logic interference.
+
+---
+
+## 13. Current Configuration (As of May 13, 2026)
+- **Active Version:** v7.7 (Logic Certified).
+- **Core Repository:** `{"45": 22.2, "50": 24.6, "55": 28.4, "60": 32.6, "65": 35.5, "70": 40.6, "75": 44.8, "80": 35.0, "85": 45.0}` (Managed with strict string-key mapping to prevent duplicates).
+- **Validation Suite:** 6-scenario stress test active in Sim Lab.
+- **Persistence:** State managed via `restore_state`; string-keyed JSON repository.

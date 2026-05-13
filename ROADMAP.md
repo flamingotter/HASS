@@ -24,7 +24,10 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 
 ## 4. Maintenance & Housekeeping
 - [x] **Notification Standardization:** Standardized `Notify: Feed Pets (v3.0)` and `Notify: Trash Day` using the "Detective Butler" device ID pattern. (Completed May 12, 2026)
-- [x] **Climate Integrity:** Implemented "The Learning Gate" and Short-Cycle protections in MBR Engine v7.4. (Completed May 12, 2026)
+- [x] **Climate Integrity:** Implemented "The Learning Gate," Short-Cycle protections, and the "Unbreakable Latch" in MBR Engine v7.7. (Completed May 13, 2026)
+- [x] **Total Transparency:** Deployed verbose mobile notifications and AI reasoning logs for all climate phases. (Completed May 13, 2026)
+- [x] **Precision Math:** Fixed 60-minute duration drift by switching to native epoch timestamps. (Completed May 13, 2026)
+- [x] **Continuous Logic Validation:** Established the "Sim Lab" for regression testing. (Completed May 13, 2026)
 - [ ] **System Integrity:** Build a "Critical Heartbeat" sensor using the `critical` label to monitor essential infrastructure (Freezer, Networking, Z-Wave).
 - [ ] **Notification Standardization (Remaining):** Refactor `Person: Status Synchronizer`, `Garage Door Monitor`, and `Maintenance Engine` to use the unified `activate_mobile_actionable_notification` script.
 

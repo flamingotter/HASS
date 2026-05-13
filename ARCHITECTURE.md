@@ -90,13 +90,16 @@ Used in multi-user chore automations (e.g., Feed Pets v3.0, Trash Day).
 
 ---
 
-## 4. Climate Control (The Sleep Engine)
-...
-### **Data Integrity (The Learning Gate):**
-To ensure the performance repository remains "pure," the system implements a strict gate:
-- **Condition:** Repository updates ONLY occur if the thermostat is set to 60°F (Aggressive Push).
-- **Short-Cycle Protection:** If a session is < 5 minutes, the system performs the temperature handoff to protect comfort but skips the learning phase to protect data.
-- **Physical Clamps:** Data Armor v2 enforces an absolute range of 10.0–45.0 min/deg for all learned values.
+### **Climate Control (The Sleep Engine)**
+High-precision nightly cooling based on outdoor temperature bins.
+- **Active Push:** Defined as the thermostat being set to 60°F.
+- **Precision Math:** All duration calculations MUST use native epoch timestamps (`state_attr(..., 'timestamp')`) to prevent 60-minute drift from string-based time parsing.
+- **Unbreakable Latch:** Phase 3 (Handoff) logic is protected by a top-level condition verifying the `Active Push` state. This prevents race conditions where multiple triggers (e.g., Target Met and Bedtime) cause double-commands.
+- **Data Integrity (The Learning Gate):**
+    - Repository updates ONLY occur if the thermostat is set to 60°F (Aggressive Push).
+    - **Short-Cycle Protection:** If a session is < 5 minutes, the system performs the temperature handoff to protect comfort but skips the learning phase.
+    - **Physical Clamps:** Data Armor v2 enforces an absolute range of 10.0–45.0 min/deg for all learned values.
+    - **JSON Mapping:** All repository keys must be explicitly mapped as strings to prevent duplicate entry bugs.
 ---
 
 ## 8. System Monitoring (Admin Baseline)
