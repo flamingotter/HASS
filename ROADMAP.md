@@ -6,7 +6,7 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 
 ## 1. Immediate Infrastructure & Hardware Fixes
 - [x] **Bluetooth Stability:** Host-level settings updated May 6, 2026. Monitoring for stability.
-- [ ] **Porch Cameras:** Finalize constant frame rate (CFR) settings on porch cameras to resolve `Errno 22` video recording errors.
+- [x] **Porch Cameras:** Diagnosed `Errno 22` video recording errors as DTS drift caused by 5s GOP interval (nMultiplier: 5). Implemented software failsafe in AI Analysis v1.5 (sequential processing + flush delay) to ensure logic continuity when stream jitter occurs. (Completed May 14, 2026)
 - [x] **BigQuery Integration:** Re-created `bq_venv`, verified `hvac_health_check.py` functionality, and hardened credentials path. (Completed May 6, 2026)
 - [ ] **Hardware Maintenance:** 
     - Re-add `light.masonic_lamp` to the network.

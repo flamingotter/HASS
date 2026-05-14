@@ -2994,8 +2994,9 @@
   mode: parallel
   max: 10
 - id: '1772728212323'
-  alias: 'Security: Front Porch - AI Video Analysis (v1.3)'
-  description: 'v1.3: Context-aware identity check. increased snapshot delays +1 sec'
+  alias: 'Security: Front Porch - AI Video Analysis (v1.5)'
+  description: 'v1.5: Sequential processing to prevent file-locking race conditions.
+    Resilient recording failsafe.'
   triggers:
   - trigger: state
     entity_id: binary_sensor.front_porch_ptz_person_detected
@@ -3013,8 +3014,10 @@
 
       '
   actions:
-  - parallel:
+  - alias: 'Data Collection: Video and Snapshots'
+    parallel:
     - action: camera.record
+      continue_on_error: true
       target:
         entity_id: camera.front_ptz_medium_resolution_channel
       data:
@@ -3046,6 +3049,9 @@
           entity_id: camera.doorbell_outside_medium_resolution_channel
         data:
           filename: /media/snapshots/porch/doorbell_t3.jpg
+  - alias: Flush Delay
+    delay:
+      seconds: 2
   - action: ai_task.generate_data
     data:
       entity_id: ai_task.google_ai_task
