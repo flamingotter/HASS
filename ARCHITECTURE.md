@@ -108,11 +108,18 @@ High-precision nightly cooling based on outdoor temperature bins.
 ## 8. System Monitoring (Admin Baseline)
 The `dashboard-admin` serves as the authoritative "Single Pane of Glass" for system health and logic integrity.
 
+### **Data Pipeline (Silent Kickoff)**
+To maintain high system stability and low log noise, the BigQuery data pipeline uses a **Silent Kickoff** architecture.
+- **Trigger:** Nightly at 3:01 AM.
+- **Execution:** `shell_command.kickoff_bq_exporter` uses `curl` to send a POST request to the local `socket-proxy`.
+- **Action:** Triggers a `restart` of the `ha_bq_exporter` container.
+- **Benefit:** Eliminates the need for continuous Docker monitoring integrations (e.g., `monitor_docker`), preventing "Server disconnected" error spam in system logs.
+
 ### **Continuous Logic Validation (CLV)**
 The system implements a specialized "Sim Lab" (`integrations/sim_lab.yaml`) to rigorously test climate logic without physical impact.
-- **The Simulator:** Uses `sim_` virtual entities to clone the MBR Engine v7.4 logic.
-- **Stress Testing:** `script.run_climate_stress_tests` executes lethal scenarios (Flash Freeze, Bedtime Race, Extreme Clamping) to verify the AI Auditor and Data Armor.
-- **Certification:** Logic is considered "Certified" only after passing all 5 simulation scenarios.
+- **The Simulator:** Uses `sim_` virtual entities to clone the MBR Engine v7.8 logic.
+- **Stress Testing:** `script.run_climate_stress_tests` executes lethal scenarios (Flash Freeze, Bedtime Race, Extreme Clamping, High Humidity) to verify the AI Auditor and Data Armor.
+- **Certification:** Logic is considered "Certified" only after passing all 9 simulation scenarios.
 
 ### **Health Summary Logic (v2.0)**
 - **48h Rolling Window:** Log error/warning counts only reflect issues from the last 48 hours to ensure recent relevance.
