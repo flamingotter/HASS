@@ -3405,9 +3405,9 @@
         check the filter or condenser coils.
   mode: single
 - id: ai_climate_mbr_v7_0
-  alias: 'Climate: Sleep Comfort Engine (v7.8)'
-  description: 'v7.8: Hardened Repository & Env Averaging. Full mobile visibility
-    for all phases and AI reasoning recorded in logs.'
+  alias: 'Climate: Sleep Comfort Engine (v7.8.3)'
+  description: 'v7.8.3: Clean-Sweep Sorting & Type Normalization. Hardened Repository
+    & Env Averaging.'
   triggers:
   - trigger: state
     entity_id:
@@ -3622,26 +3622,58 @@
           response_variable: audit_result
         - variables:
             audit_verdict: "{{ (audit_result | default({'data': 'VALID: No AI response'})).data }}"
-            avg_outdoor: >
+            avg_outdoor: >-
               {% set start = states('input_number.precool_start_outdoor_temp') | float(70) %}
               {% set current = states('sensor.weather_station_temperature_outdoor') | float(70) %}
               {{ ((start + current) / 2) | round(1) }}
-            repo: "{{ states('input_text.mbr_cooling_performance_data') | from_json }}"
+            lookup_key: >-
+              {{ ((avg_outdoor | float / 5) | round(0) | int * 5) | string | trim }}
+            new_repo_data: >-
+              {# 1. LOAD & LOOKUP (Type-Resilient) #}
+              {%- set lkey = lookup_key | string | trim -%}
+              {%- set raw = states('input_text.mbr_cooling_performance_data') | from_json -%}
+              {%- set ns = namespace(orate=obs_rate, match=false) -%}
+              {%- for k, v in raw.items() -%}
+                {%- if k|string|trim == lkey -%}
+                  {%- set ns.orate = v | float -%}
+                  {%- set ns.match = true -%}
+                {%- endif -%}
+              {%- endfor -%}
+              
+              {# 2. MATH (Data Armor v2) #}
+              {%- set rwt = ((ns.orate * 0.7) + (obs_rate * 0.3)) | round(1) -%}
+              {%- set clp = [[rwt, 10.0]|max, 45.0]|min -%}
+              {%- set df = clp - ns.orate -%}
+              {%- set cp = 5.0 -%}
+              {%- if df > cp -%}{%- set nr = (ns.orate + cp) | round(1) -%}
+              {%- elif df < (cap * -1) -%}{%- set nr = (ns.orate - cp) | round(1) -%}
+              {%- else -%}{%- set nr = clp -%}{%- endif -%}
+              
+              {# 3. CLEAN-SWEEP MERGE (List-based to force uniqueness & sorting) #}
+              {%- set ns_merge = namespace(items=[]) -%}
+              {%- for k, v in raw.items() -%}
+                {%- if k|string|trim != lkey -%}
+                  {%- set ns_merge.items = ns_merge.items + [(k|string|trim, v|float)] -%}
+                {%- endif -%}
+              {%- endfor -%}
+              {%- set ns_merge.items = ns_merge.items + [(lkey, nr|float)] -%}
+              
+              {# 4. EXPORT #}
+              {{- {
+                "new_repo": dict(ns_merge.items | sort) | to_json,
+                "old_rate": ns.orate,
+                "new_rate": nr,
+                "match": ns.match
+              } | to_json -}}
         - variables:
-            lookup_key: "{{ ((avg_outdoor / 5) | round(0) | int * 5) | int }}"
+            res: "{{ new_repo_data | from_json }}"
+            new_repo: "{{ res.new_repo }}"
+            old_rate: "{{ res.old_rate }}"
+            new_rate: "{{ res.new_rate }}"
         - if:
           - condition: template
             value_template: '{{ ''VALID'' in audit_verdict | upper }}'
           then:
-          - variables:
-              old_rate: "{{ repo.get(lookup_key | string, obs_rate) | float }}"
-              raw_weighted: "{{ ((old_rate * 0.7) + (obs_rate * 0.3)) | round(1) }}"
-              clamped_rate: "{{ [ [raw_weighted, 10.0]|max, 45.0 ]|min }}"
-              new_rate: >
-                {% set diff = clamped_rate - old_rate %}
-                {% set cap = 5.0 %}
-                {% if diff > cap %}{{ (old_rate + cap) | round(1) }}{% elif diff < (cap * -1) %}{{ (old_rate - cap) | round(1) }}{% else %}{{ clamped_rate }}{% endif %}
-              new_repo: "{{ (repo | combine({lookup_key | string: new_rate | float})) | to_json }}"
           - action: input_text.set_value
             target:
               entity_id: input_text.mbr_cooling_performance_data
@@ -3651,10 +3683,7 @@
             data:
               title: 'Climate: AI Session Learned'
               message: 'Analysis: {{ audit_verdict }} Bin {{ lookup_key }}F -> {{
-                new_rate }} min/deg. Obs: {{ obs_rate }} | Old: {{ old_rate }} | Wt:
-                {{ raw_weighted }}
-
-                '
+                new_rate }} min/deg. Obs: {{ obs_rate }} | Old: {{ old_rate }}'
           - action: notify.send_message
             target:
               entity_id: '{{ log_entity }}'

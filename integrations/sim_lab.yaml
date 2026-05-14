@@ -80,7 +80,7 @@ input_boolean:
 automation:
   - id: sim_mbr_climate_engine_digital_twin
     alias: 'Sim: MBR Climate Engine'
-    description: Isolated twin for stress testing v7.8 logic.
+    description: Isolated twin for stress testing v7.8.3 logic.
     triggers:
       - trigger: state
         entity_id:
@@ -192,24 +192,54 @@ automation:
                     value_template: "{{ t6_target == 60 and ((actual <= target) or (trigger.id == 'bedtime' and is_precooling)) and duration >= 5 }}"
                 then:
                   - variables:
-                      avg_outdoor: >
+                      avg_outdoor: >-
                         {% set start = states('input_number.sim_precool_start_outdoor_temp') | float(70) %}
                         {% set current = states('input_number.sim_outdoor_temp') | float(70) %}
                         {{ ((start + current) / 2) | round(1) }}
-                      repo: "{{ states('input_text.sim_mbr_repo') | from_json }}"
+                      lookup_key: >-
+                        {{ ((avg_outdoor | float / 5) | round(0) | int * 5) | string | trim }}
+                      new_repo_data: >-
+                        {# 1. LOAD & LOOKUP (Type-Resilient) #}
+                        {%- set lkey = lookup_key | string | trim -%}
+                        {%- set raw = states('input_text.sim_mbr_repo') | from_json -%}
+                        {%- set ns = namespace(orate=obs_rate, match=false) -%}
+                        {%- for k, v in raw.items() -%}
+                          {%- if k|string|trim == lkey -%}
+                            {%- set ns.orate = v | float -%}
+                            {%- set ns.match = true -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                        
+                        {# 2. MATH (Data Armor v2) #}
+                        {%- set rwt = ((ns.orate * 0.7) + (obs_rate * 0.3)) | round(1) -%}
+                        {%- set clp = [[rwt, 10.0]|max, 45.0]|min -%}
+                        {%- set df = clp - ns.orate -%}
+                        {%- set cp = 5.0 -%}
+                        {%- if df > cp -%}{%- set nr = (ns.orate + cp) | round(1) -%}
+                        {%- elif df < (cp * -1) -%}{%- set nr = (ns.orate - cp) | round(1) -%}
+                        {%- else -%}{%- set nr = clp -%}{%- endif -%}
+                        
+                        {# 3. CLEAN-SWEEP MERGE (List-based to force uniqueness) #}
+                        {%- set ns_merge = namespace(items=[]) -%}
+                        {%- for k, v in raw.items() -%}
+                          {%- if k|string|trim != lkey -%}
+                            {%- set ns_merge.items = ns_merge.items + [(k|string|trim, v|float)] -%}
+                          {%- endif -%}
+                        {%- endfor -%}
+                        {%- set ns_merge.items = ns_merge.items + [(lkey, nr|float)] -%}
+                        
+                        {# 4. EXPORT #}
+                        {{- {
+                          "new_repo": dict(ns_merge.items | sort) | to_json,
+                          "old_rate": ns.orate,
+                          "new_rate": nr,
+                          "match": ns.match
+                        } | to_json -}}
                   - variables:
-                      lookup_key: "{{ ((avg_outdoor / 5) | round(0) | int * 5) | int }}"
-                  - variables:
-                      old_rate: "{{ repo.get(lookup_key | string, obs_rate) | float }}"
-                      raw_weighted: "{{ ((old_rate * 0.7) + (obs_rate * 0.3)) | round(1) }}"
-                      clamped_rate: "{{ [ [raw_weighted|float, 10.0]|max, 45.0 ]|min }}"
-                  - variables:
-                      new_rate: >
-                        {% set diff = clamped_rate|float - old_rate|float %}
-                        {% set cap = 5.0 %}
-                        {% if diff > cap %}{{ (old_rate|float + cap) | round(1) }}{% elif diff < (cap * -1) %}{{ (old_rate|float - cap) | round(1) }}{% else %}{{ clamped_rate }}{% endif %}
-                  - variables:
-                      new_repo: "{{ (repo | combine({lookup_key | string: new_rate | float})) | to_json }}"
+                      res: "{{ new_repo_data | from_json }}"
+                      new_repo: "{{ res.new_repo }}"
+                      old_rate: "{{ res.old_rate }}"
+                      new_rate: "{{ res.new_rate }}"
                   - variables:
                       audit_verdict: "VALID: MOCK"
                   - if:
@@ -284,7 +314,7 @@ script:
         target:
           entity_id: input_text.sim_mbr_repo
         data:
-          value: '{"45":22.2,"50":24.6,"55":28.4,"60":32.6,"65":35.5,"70":40.6,"75":44.8,"80":35.0,"85":45.0}'
+          value: '{"45":22.2,"50":24.6,"55":28.4,"60":30.0,"65":35.5,"70":40.6,"75":44.8,"80":35.0,"85":45.0}'
       - action: input_boolean.turn_on
         target:
           entity_id: input_boolean.sim_mock_ai
@@ -664,8 +694,56 @@ script:
           value: 63
       - delay: 3
 
+      # TEST SCENARIO J: Type Mismatch Challenge (Integer Key Override)
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.sim_mbr_pre_cooling_active
+      - delay: 1
+      - action: persistent_notification.create
+        data:
+          notification_id: "sim_j"
+          title: "Sim Lab"
+          message: "Starting Scenario J: Integer Key Override (Injecting Bin 60 as INT)..."
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_precool_start_outdoor_temp
+        data:
+          value: 60
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_outdoor_temp
+        data:
+          value: 60
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_precool_start_temp
+        data:
+          value: 70
+      - action: input_datetime.set_datetime
+        target:
+          entity_id: input_datetime.sim_precool_start_time
+        data:
+          datetime: "{{ (now() - timedelta(minutes=60)) }}"
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_target_temp
+        data:
+          value: 65
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_t6_target
+        data:
+          value: 60
+      - delay: 1
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_indoor_temp
+        data:
+          value: 64
+      - delay: 3
+
       - action: persistent_notification.create
         data:
           notification_id: "sim_finished"
           title: "Sim Lab COMPLETE"
-          message: "All 9 scenarios executed. Check repo and result list."
+          message: "All 10 scenarios executed. Check repo and result list."

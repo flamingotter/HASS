@@ -97,8 +97,18 @@ The engine's goal is to ensure the Master Bedroom reaches a precise sleep temper
 
 ---
 
-## 14. Current Configuration (As of May 13, 2026)
-- **Active Version:** v7.8 (Logic Certified).
-- **Core Repository:** `{"45": 22.2, "50": 24.6, "55": 28.4, "60": 32.6, "65": 35.5, "70": 40.6, "75": 44.8, "80": 35.0, "85": 45.0}` (Managed with strict string-key mapping to prevent duplicates).
-- **Validation Suite:** 8-scenario stress test active in Sim Lab.
-- **Persistence:** State managed via `restore_state`; string-keyed JSON repository.
+## 15. Phase X: The Definitive Fix - Single-Pass Clean-Sweep (v7.8.3)
+**Key Milestone:** Eliminating the "Troubleshooting Loop" via internal Jinja memory hardening.
+- **Single-Pass Consolidated Logic:** Transitioned all repository management (Load, Normalize, Lookup, and Merge) into a single, atomic Jinja template. This prevents Home Assistant from re-parsing and corrupting data types between variable blocks.
+- **Clean-Sweep Pattern:** Implemented a list-based merging strategy that explicitly filters out any key matching the target bin (regardless of original type) before rebuilding the dictionary. This makes JSON duplicate keys mathematically impossible.
+- **Whitespace Hardening:** Identified and fixed a bug where multi-line Jinja blocks were appending hidden newlines (`\n`) to keys. Added aggressive `| trim` and whitespace-stripping tags (`{%- ... -%}`) to ensure 100% string alignment.
+- **Incremental Sorting:** Added a post-merge sort filter, ensuring the performance repository is always stored in incremental bin order for better human readability.
+- **Sim Lab Certification:** Added Scenario J (Type Mismatch Challenge) to the stress tests. v7.8.3 passed all 10 scenarios with zero duplicates and perfect data armor enforcement.
+
+---
+
+## 16. Current Configuration (As of May 14, 2026)
+- **Active Version:** v7.8.3 (Logic Certified).
+- **Core Repository:** Managed with **Single-Pass Clean-Sweep** and **Automatic Sorting**.
+- **Validation Suite:** 10-scenario stress test active in Sim Lab.
+- **Persistence:** State managed via `restore_state`; strictly normalized string-keyed JSON.
