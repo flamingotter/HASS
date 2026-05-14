@@ -3289,12 +3289,10 @@
   - at: 03:01:00
     trigger: time
   actions:
-  - action: button.press
-    target:
-      entity_id: button.docker_ha_bq_exporter_restart
+  - action: shell_command.kickoff_bq_exporter
   - action: notify.persistent_notification
     data:
-      message: Climate data sync to BigQuery triggered.
+      message: Climate data sync to BigQuery triggered via Shell Command.
       title: Data Pipeline
 - id: '1776622737956'
   alias: Pantry Light/Door (v2.0)
@@ -3510,7 +3508,7 @@
         data:
           task_name: Comfort Optimizer
           instructions: 'The current target is {{ target }}F. The indoor humidity
-            is {{ states(''sensor.humidity_mbr'') }}%. If humidity is > 55%, recommend
+            is {{ states(''sensor.bedroom_sensor_humidity'') }}%. If humidity is > 55%, recommend
             dropping target by 1 degree for ''Comfort-Adjusted'' cooling. Return your
             response in the format: [VALUE] Reasoning: [One sentence explanation].'
         response_variable: comfort_target

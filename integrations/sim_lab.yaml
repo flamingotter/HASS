@@ -118,11 +118,23 @@ automation:
               - condition: template
                 value_template: "{{ is_precooling and not is_sleep_window and t6_target != 60 and actual > (target + 0.5) }}"
             sequence:
+              - variables:
+                  sim_hum: "{{ states('input_number.sim_humidity') | float(50) }}"
+                  ai_target: "{{ (target - 1.0) if sim_hum > 55 else target }}"
+                  ai_reason: "{{ 'Indoor humidity is > 55%, dropping target for comfort.' if sim_hum > 55 else 'Standard target used.' }}"
+              - delay: 00:02:00
+              - variables:
+                  actual_now: "{{ states('input_number.sim_indoor_temp') | float(72) }}"
+              - if:
+                  - condition: template
+                    value_template: "{{ actual_now <= ai_target }}"
+                then:
+                  - stop: Sensor jitter or AI target met during validation delay.
               - action: persistent_notification.create
                 data:
                   notification_id: "sim_phase2_start"
                   title: "Sim: Pre-Cool Started"
-                  message: "Target: {{ target }}F. AI Reason: Standard target used. Room: {{ actual }}F."
+                  message: "Target: {{ ai_target }}F. AI Reason: {{ ai_reason }} Room: {{ actual }}F."
               - action: input_datetime.set_datetime
                 target:
                   entity_id: input_datetime.sim_precool_start_time
@@ -610,8 +622,50 @@ script:
           value: 65
       - delay: 3
 
+      # TEST SCENARIO I: High Humidity (Comfort Adjustment Check)
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.sim_mbr_pre_cooling_active
+      - delay: 1
+      - action: persistent_notification.create
+        data:
+          notification_id: "sim_i"
+          title: "Sim Lab"
+          message: "Starting Scenario I: High Humidity (Target 65 -> Adj 64)..."
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_humidity
+        data:
+          value: 60
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_target_temp
+        data:
+          value: 65
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_indoor_temp
+        data:
+          value: 70
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_t6_target
+        data:
+          value: 70
+      - delay: 1
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.sim_mbr_pre_cooling_active
+      - delay: 3
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.sim_indoor_temp
+        data:
+          value: 63
+      - delay: 3
+
       - action: persistent_notification.create
         data:
           notification_id: "sim_finished"
           title: "Sim Lab COMPLETE"
-          message: "All 8 scenarios executed. Check repo and result list."
+          message: "All 9 scenarios executed. Check repo and result list."
