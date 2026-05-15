@@ -7,7 +7,51 @@ The engine's goal is to ensure the Master Bedroom reaches a precise sleep temper
 
 ---
 
-## 2. Phase I: The Data-Driven Foundation (v1.0 - v5.6)
+## 2. Physical Environment & Infrastructure
+Understanding the system requires understanding the physical structure, mechanical architecture, and environmental orientation of the home.
+
+### **Home Layout & Zones**
+- **Floor 1 (Primary Living):** Designed with a clear separation between "Active Zones" and "Rest Zones."
+    - **Great Room:** A large open-concept Foyer, Dining Area, and Living Room (containing the main downstairs thermostat).
+    - **Master Suite (Rear Right):** The primary focus of the Climate Engine. It is physically buffered from the living area by a small transition hall and the Master Bath/Walk-In Closet complex. **Crucially, it possesses a dedicated return duct with an extremely short path to the air handler located in the crawl space directly beneath it.**
+    - **Guest Wing (Far Left):** A dedicated wing containing two bedrooms and a shared bath.
+    - **Service/Utility:** Laundry and Pantry areas provide a thermal/sound buffer between the Kitchen and the Garage.
+- **Floor 2 (Work & Guest Zones):**
+    - **The Office (Far Left):** Isolated at the end of a long hallway, functioning as a distinct thermal zone.
+    - **Secondary Living:** Guest bedroom and bathroom.
+    - **Bonus Room:** A large auxiliary space located over the Garage.
+
+### **HVAC Infrastructure (Three Independent Systems)**
+1.  **First Floor Central (Trane 2.5-Ton):**
+    *   **Unit:** Model 4TWR4030D1000AA (Heat Pump).
+    *   **Age:** Manufactured July 2015 (~10 years old).
+    *   **Configuration:** The outdoor condenser is on the right side of the house. The indoor air handler is situated in the **crawl space directly under the Master Suite**.
+    *   **Thermal Advantage:** The MBR's dedicated short-path return duct allows for rapid thermal response and higher air-exchange efficiency compared to the rest of the floor.
+2.  **Second Floor Central (Trane 2-Ton):**
+    *   **Unit:** Model 5TWR4024A1000AA (Heat Pump).
+    *   **Age:** Brand New (April 2025).
+    *   **Configuration:** Indoor air handler is in a second-floor hallway closet; its thermostat is in the hallway.
+3.  **Office Mini-Split (Mr. Cool 1-Ton):**
+    *   **Unit:** Dedicated split-type heat pump.
+    *   **Age:** Brand New (2025).
+    *   *Function:* Provides isolated climate control specifically for the 2nd-floor library/office, making it thermally independent.
+
+### **Thermal Dynamics & Strategy Context**
+- **The "Free Cooling" Path:** The Master Bedroom has a heavy exterior door leading directly to the **Screened Porch**. Opening this door creates a powerful thermal siphon, allowing outside air to "super-cool" the room significantly faster than the AC.
+- **Main Return Lag:** The main house return vent is in the guest wing hall, approx 30' from the air handler, creating a slower thermal response in the common areas compared to the MBR.
+- **The Staircase Chimney:** The staircase is located immediately outside the MBR door (featuring a coat closet underneath, opposite the garage entry). It acts as a natural conduit for heat rising from the first floor to the long second-floor hallway.
+- **Year-Round Target:** The MBR target remains ~64°F regardless of season, acting as a "cold-pocket" even when the rest of the home is heated.
+
+### **Environmental Orientation (Solar Load Modeling)**
+- **Geospatial:** 37.4762975, -77.8725747
+- **House Front:** 8.6° (North-Northeast).
+- **Screened Porch:** 188.6° (South-Southwest). This area experiences significant late-afternoon solar gain, directly impacting MBR "Free Cooling" viability.
+- **Garage Door:** 278.6° (West-Northwest).
+
+---
+
+
+## 3. Phase I: The Data-Driven Foundation (v1.0 - v5.6)
 **Key Milestone:** Establishing the "Night-Optimized" Performance Repository.
 - **Architecture:** The system began using `input_text.mbr_cooling_performance_data` to store cooling rates (min/deg) for 5-degree outdoor temperature bins.
 - **The Solar Penalty:** Analysis of BigQuery data revealed that the structure cools ~20% slower during the day.
@@ -107,7 +151,15 @@ The engine's goal is to ensure the Master Bedroom reaches a precise sleep temper
 
 ---
 
-## 16. Current Configuration (As of May 14, 2026)
+## 16. Future Roadmap: Phase XI - Winter Comfort Strategy
+**Conceptual Goal:** Pivot the engine from "Aggressive AC" to "Managed Free Cooling" and "Heat Guard."
+- **Winter Super-Cooling:** During heating season, the engine will prioritize opening the porch door to achieve the 64°F target. Unlike cooling season, the residents are comfortable with the room dropping **well below** the 64°F target.
+- **The Heat Guard:** The engine's primary winter job will be to prevent the HVAC from heating the MBR until it drops below a secondary safety threshold (e.g., 60°F), allowing it to remain a "cold pocket" for better sleep.
+- **Dual-Mode Repository:** Future analysis will determine if separate "Heating Season" and "Cooling Season" performance repositories are required to account for the different thermal dynamics of the porch door vs. the HVAC blower.
+
+---
+
+## 17. Current Configuration (As of May 14, 2026)
 - **Active Version:** v7.8.3 (Logic Certified).
 - **Core Repository:** Managed with **Single-Pass Clean-Sweep** and **Automatic Sorting**.
 - **Validation Suite:** 10-scenario stress test active in Sim Lab.
