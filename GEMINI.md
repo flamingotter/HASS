@@ -14,12 +14,13 @@
 - **Persistence:** Avoid `initial:` values in YAML for entities that rely on `restore_state` (e.g., input_text/numbers).
 - **Cleanup:** Ignore "missing" entities in `group.grow_shelf` or `group.echos`. Holiday entities (e.g., `light.led_tree`) are seasonal.
 - **Integrity:** Do NOT remove or modify logic marked `enabled: false`.
+- **Repository Management:** PERFORMANCE REPOS MUST use the "Single-Pass Clean-Sweep" pattern (v7.8.3+). Never pass dictionary variables between blocks; Home Assistant will re-parse and corrupt types. Perform Load, Normalize, Lookup, and Merge in a single atomic Jinja block.
 
 ## 3. Active Architectural Patterns
 - **Authority -> Reactor:** For state-heavy logic (Presence, Alarm), centralize decisions in an "Authority" automation (e.g., `Person: Status Synchronizer`). Reactor automations should watch state changes and remain simple.
 - **Fail-Safe AI:** Strategic LLM tasks (`ai_task`) must use `continue_on_error: true` and provide robust fallback defaults (`| float(target)`) to prevent system stalls.
-- **Data Armor:** Always implement physical swing caps (e.g., ±5 min) when updating repositories from live data to protect against sensor jitter.
-- **Mode-Based Lighting:** Lighting is heavily dictated by mode booleans (`onair`, `cleaning`, `reading_mode`). Always check for active overrides before changing lights.
+- **Data Armor:** Always implement physical swing caps (e.g., ±5 min) and a 5-minute minimum duration gate for all climate learning sessions.
+- **Whitespace Hardening:** Aggressively use `>-` and `{%- ... -%}` in all multi-line Jinja templates. Hidden newlines (`\n`) in variables cause string lookup failures and JSON duplication.
 
 ## 4. Global Constants & Identity
 - **Users:**
@@ -29,29 +30,13 @@
     - **Battle Cat:** (he/him)
     - **Josie:** (she/her)
     - **Custard:** (she/her)
-- **Notification Tags:**
-    - `eco-finish`: Unified tag for all Eco Mode activation and timer interactions.
-    - `pets-notify`: Daily feeding task management.
-    - `trash-notify`: Weekly curb reminders.
-    - `cleaning-warning`: Occupancy nag for Cleaning Mode.
-    - `arm-guests`: Verification for arming with house guests present.
-- **Labels:**
-    - `ai_engine`: Core persistent logic (Climate, Eco Mode).
-    - `ai_vision`: Image and video processing tasks.
-    - `ai_persona`: Creative messaging and personality-driven alerts.
-- **System Constants:**
-    - **Alexa Skill ID:** `amzn1.ask.skill.c2564a56-c75d-451e-9a04-6349756d92c9`
-    - **NFC:** Unified manager handles `garage`, `cam_alerts`. `trash_done` is delegated to Trash automation.
 
-## 5. Current System State (As of May 6, 2026)
-- **Presence Engine:** 
-    - **Extended Away:** Triggered by 24h absence OR crossing a 500-mile radius.
-    - **Homebound Reset:** Eco Mode releases only when BOTH Josh and MJ are within 50 miles.
-- **Climate Engine (v7.2):** 
-    - Hardened AI mode with logical Auditor and physical Swing Cap.
-    - **Eco Mode Targets:** 66°F (Heat) / 74°F (Cool) for pet comfort.
-- **Maintenance:** Dynamic discovery of `timer.maintenance_*` entities. Logged to `maintenance_log.csv`.
+## 5. Maintenance & Diagnostics
+- **Docker API:** Kickoff containers via `shell_command.kickoff_bq_exporter`. Do NOT use `monitor_docker`.
+- **Log Review:** Use `grep "PHASE_"` for Climate diagnostics or `grep "SIM_DATA"` for simulation results in `home-assistant.log`.
+- **Simulation First:** ALL major logic changes (Climate, Presence) MUST be verified in `integrations/sim_lab.yaml` using the stress test script before production deployment.
 
-## 6. Operational Focus
-- **Primary Goal:** Transition Climate Engine to v7.x stable while maintaining physical safety.
-- **Bit Rot:** Continually sync `automations.yaml` with current hardware realities.
+## 6. Current System State (As of May 14, 2026)
+- **Climate Engine (v7.8.3):** Logic Certified stable. Uses sorted string-keyed JSON repository.
+- **Vision Engine (v1.5):** Resilient recording with 2s flush delay to survive DTS stream drift.
+- **Startup:** Log sensor and core settings hardened; zero-warning boot.

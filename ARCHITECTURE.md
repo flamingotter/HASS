@@ -1,40 +1,24 @@
-# Home Assistant System Architecture
+# Home Assistant Lab: System Architecture
 
-This document maps the logical flow and inter-dependencies of the core automation engines in this smart home.
-
----
-
-## 1. Presence & Mode Engine (The Authority Model)
-The system uses a strict **Authority -> Reactor** architecture to prevent race conditions during person status changes.
-
-### **The Authority:** `Person: Status Synchronizer`
-- **Responsibility:** The ONLY automation permitted to change `input_select.josh_status` or `input_select.mj_status`.
-- **States:** `Home` -> `Just Left` -> `Away` -> `Extended Away`.
-- **Triggers:** 
-    - **Time:** Transitions from `Away` to `Extended Away` after 24 hours.
-    - **Distance:** Transitions immediately to `Extended Away` if distance > 500 miles (2,640,000 ft).
-    - **Debounce:** 3-minute timers on "Just Arrived" and "Just Left" to prevent GPS jitter.
-
-### **The Reactor:** `Alarm panel functions and mode actions`
-- **Responsibility:** Syncs the physical security state to the logical presence state.
-- **Logic:** 
-    - Both `Away` -> Arms Away.
-    - Both `Extended Away` -> Arms Vacation (Eco Mode).
-    - Either `Home/Just Arrived` -> Disarms Alarm.
+This document outlines the core logic engines, state machines, and cross-automation dependencies within the Home Assistant deployment.
 
 ---
 
-## 2. Eco Mode State Machine
-Eco Mode manages the home during long-term absences (Vacation).
+## 1. Core Engineering Mandates
+- **Modular Config:** The system uses `packages:` for integrations and `!include_dir_list` for entities.
+- **Explicit Types:** Jinja templates MUST explicitly cast variables (e.g., `| float`, `| int`, `| string | trim`) to prevent Home Assistant's automatic type-guessing from corrupting data.
+- **Fail-Safe AI:** Any automation relying on `ai_task` must provide local fallback defaults and use `continue_on_error: true`.
 
-- **Activation:** Triggered when the Alarm Panel enters `armed_vacation`.
-- **Manager (`v7.1`):** Centralizes all messaging and timers under `tag: eco-finish`.
-- **The Timer:** `timer.timer_eco_mode_normal` dictates the duration.
-- **AI Extension:** Uses `ai_task` to parse natural language (e.g., "until Monday") into timer seconds.
-- **Homebound Recovery:** 
-    - **Threshold:** 50 miles (264,000 ft).
-    - **Condition:** BOTH Josh and MJ must be within the radius.
-    - **Action:** Turns off `input_boolean.eco_mode`, releasing the Climate Engine to begin recovery.
+---
+
+## 2. Presence & Eco Mode
+**Authority:** `Person: Status Synchronizer`
+The system manages occupancy via a centralized "Authority" state machine.
+
+- **Eco Mode:** Triggered by `input_boolean.eco_mode`.
+    - **Activation:** Josh or MJ cross 500-mile radius OR 24-hour absence.
+    - **Deactivation:** BOTH residents cross back within 50-mile radius.
+- **Reaction:** When Eco Mode is ON, the Climate Engine switches to pet-safe targets (66°F Heat / 74°F Cool) and non-critical automations are suppressed.
 
 ---
 
@@ -42,95 +26,39 @@ Eco Mode manages the home during long-term absences (Vacation).
 A high-precision engine designed to reach sleep temperature exactly at bedtime.
 
 - **Data Repository:** `input_text.mbr_cooling_performance_data` (JSON). Stores min/deg cooling rates in 5-degree outdoor bins.
-- **Single-Pass Clean-Sweep:** Repository management uses a consolidated Jinja pattern that normalizes all keys to strings, filters out existing matches using lists, and outputs a human-readable **sorted JSON** to eliminate duplicates and type-drift.
+- **Single-Pass Clean-Sweep Pattern:** 
+    - **The Problem:** Passing dictionaries between `variables` blocks causes HA to re-parse keys (e.g., `"70"` becomes `70`), leading to JSON duplicate keys.
+    - **The Fix:** Consolidated logic (Load -> Normalize -> Lookup -> Math -> Merge) inside a single Jinja block.
+    - **Clean-Sweep:** Uses list-based merging (filtering out old keys) to ensure uniqueness.
+    - **Sorting:** Outputs a human-readable sorted JSON string.
 - **Phases:**
     1. **Wakeup:** Reset to 68°F.
     2. **Strategist (7:00 PM):** AI evaluates "Free Cooling" via patio door.
     3. **Pre-Cooling:** Aggressive push to 60°F based on bin math + AI Humidity Optimizer.
     4. **Handoff:** At target, reset T6 Pro to maintenance temp. AI Auditor validates session data.
-    5. **Sleep Window:** Maintenance loop (+/- 2°F drift protection).
-- **Safety Layers:**
-    - **Fail-Safe AI:** `continue_on_error: true` on all tasks.
-    - **Data Armor:** ±5 min/deg maximum swing per learning session.
-    - **Global Short-Cycle Blocker:** Learning is strictly blocked if session duration is < 5 minutes.
-    - **Outdoor Averaging:** Bin selection is based on the average outdoor temperature between session start and handoff.
+- **Data Armor:** A software physical-swing cap (±5 min/deg) protects the repository from sensor jitter or thermal anomalies.
 
 ---
 
-## 4. Maintenance & Notification Layer
-### **Maintenance Engine (v2.0)**
-- **Discovery:** Dynamically watches all `timer.maintenance_*` entities.
-- **Persistence:** Logs completion events to `maintenance_log.csv` via `script.system_log_maintenance_task`.
-- **Nag Logic:** Re-notifies upon arrival or notification clear if the task is still idle.
+## 4. Vision & Security Engine (v1.5)
+**Authority:** `Security: Front Porch - AI Video Analysis`
+Handles identity verification and suspicious activity detection.
 
-### **Notification Standards**
-- **Actionable:** Heavily utilizes `REPLY` and custom actions.
-- **Threaded:** Uses strict `tag` management to prevent notification clutter:
-    - `eco-finish`: Presence/Vacation.
-    - `pets-notify`: Feeding.
-    - `trash-notify`: Waste management.
-    - `cleaning-warning`: Cleaning mode persistence.
+- **Resilient Recording:** Uses `continue_on_error: true` for `camera.record` to survive DTS stream errors (caused by 5s GOP intervals found in camera hardware).
+- **Sequential Processing:** Data collection (video/snapshots) must complete and include a 2s "Flush Delay" before AI analysis begins to prevent file-locking errors.
+- **AI Context:** Uses MJ and Josh reference photos to identify residents vs. delivery personnel.
 
 ---
 
-## 6. Physical Interface Layer
-The system uses specialized physical interfaces to bridge the gap between hardware and digital logic.
-
-### **The Hub:** `System: NFC Tag Manager`
-- **Logic:** Variable-based "Switchboard" (`tag_map`) that maps unique `tag_id`s to actions and entities.
-- **Handling:** Uses robust ID detection to capture both direct `tag_id` and event-based payloads.
-- **Standard Tags:** Handles simple toggles for infrastructure like `garage` (Shuttle Bay) and `cam_alerts` (Camera Alerts).
-
-### **Lighting Control (Scene Mode):**
-Used for instant response in rooms with smart bulbs and Zooz toggle dimmers (ZEN24, ZEN74).
-- **Configuration:** Switch local/Z-Wave control is disabled; Central Scene mode is enabled.
-- **Flow:** `zwave_js_value_notification` -> Automation (Logic) -> `light.turn_on/off`.
-- **Rooms:** Dining Room (v2.0), Office.
-### **Notification Strategy (The Detective Butler):**
-Used in multi-user chore automations (e.g., Feed Pets v3.0, Trash Day).
-- **Logic:** Uses a consolidated `scanned_device` variable to capture IDs from both physical NFC scans (`trigger.device_id`) and notification button actions (`trigger.event.data.device_id`).
-- **Standard:** Explicitly maps IDs to names (`scanned_name`) and target notification services (`target_notify`). This ensures the "other" person is always notified correctly without fragile `else` fallbacks.
+## 5. Analytics & Infrastructure
+- **BigQuery Pipeline:** Data is exported to BigQuery for thermal decay and cooling velocity analysis.
+- **Docker Management:** Container control is handled via `curl` to the `socket-proxy` Docker API.
+- **Sim Lab:** A Digital Twin environment (`integrations/sim_lab.yaml`) used to stress-test logic against 10 specific scenarios (e.g., Short-Cycle, Type Mismatch, High Humidity) before deployment.
 
 ---
 
-### **Climate Control (The Sleep Engine)**
-High-precision nightly cooling based on outdoor temperature bins.
-- **Active Push:** Defined as the thermostat being set to 60°F.
-- **Precision Math:** All duration calculations MUST use native epoch timestamps (`state_attr(..., 'timestamp')`) to prevent 60-minute drift from string-based time parsing.
-- **Unbreakable Latch:** Phase 3 (Handoff) logic is protected by a top-level condition verifying the `Active Push` state. This prevents race conditions where multiple triggers (e.g., Target Met and Bedtime) cause double-commands.
-- **Data Integrity (The Learning Gate):**
-    - Repository updates ONLY occur if the thermostat is set to 60°F (Aggressive Push).
-    - **Short-Cycle Protection:** If a session is < 5 minutes, the system performs the temperature handoff to protect comfort but skips the learning phase.
-    - **Physical Clamps:** Data Armor v2 enforces an absolute range of 10.0–45.0 min/deg for all learned values.
-    - **JSON Mapping:** All repository keys must be explicitly mapped as strings to prevent duplicate entry bugs.
----
-
-## 8. System Monitoring (Admin Baseline)
-The `dashboard-admin` serves as the authoritative "Single Pane of Glass" for system health and logic integrity.
-
-### **Data Pipeline (Silent Kickoff)**
-To maintain high system stability and low log noise, the BigQuery data pipeline uses a **Silent Kickoff** architecture.
-- **Trigger:** Nightly at 3:01 AM.
-- **Execution:** `shell_command.kickoff_bq_exporter` uses `curl` to send a POST request to the local `socket-proxy`.
-- **Action:** Triggers a `restart` of the `ha_bq_exporter` container.
-- **Benefit:** Eliminates the need for continuous Docker monitoring integrations (e.g., `monitor_docker`), preventing "Server disconnected" error spam in system logs.
-
-### **Continuous Logic Validation (CLV)**
-The system implements a specialized "Sim Lab" (`integrations/sim_lab.yaml`) to rigorously test climate logic without physical impact.
-- **The Simulator:** Uses `sim_` virtual entities to clone the MBR Engine v7.8 logic.
-- **Stress Testing:** `script.run_climate_stress_tests` executes lethal scenarios (Flash Freeze, Bedtime Race, Extreme Clamping, High Humidity) to verify the AI Auditor and Data Armor.
-- **Certification:** Logic is considered "Certified" only after passing all 9 simulation scenarios.
-
-### **Health Summary Logic (v2.0)**
-- **48h Rolling Window:** Log error/warning counts only reflect issues from the last 48 hours to ensure recent relevance.
-- **Noise Filtering:** Known frontend-only errors (e.g., `frontend.js.modern` incompatibilities) are excluded from the health counts to prevent "noise" from masking backend logic failures.
-
-### **Baseline Sections**
-- **System Health:** Tracks `sensor.system_health_summary`, HA Uptime, and real-time log Error/Warning counts.
-- **Simulator Control:** UI-based toggles for Sim Mode and Mock AI, with one-click "Logic Certification" testing.
-- **Climate Control:** Aggregates MBR smoothed vs. raw data, pre-cooling schedule attributes, and the Bin Performance repository.
-- **Engine Heartbeat:** Monitors the `last_triggered` status of all core AI and maintenance automations.
-- **Hardware & Vitals:** High-signal tracking of security hardware (Shuttle Bay, Alarm).
-
-### **Maintenance Workflow**
-Critical infrastructure monitoring is driven by the `critical` label. Any entity tagged as `critical` that enters an `unavailable`, `unknown`, or `off` state will immediately trigger a "Critical Issue" status in the Health Summary.
+## 6. Diagnostic Cheat Sheet
+- **Climate Check:** `grep "PHASE_" climate_control_log.csv | tail -n 20`
+- **Simulation Validation:** `grep "SIM_DATA" home-assistant.log | tail -n 10`
+- **Docker Status:** `curl -s http://127.0.0.1:2375/containers/ha_bq_exporter/json | jq .State.Status`
+- **Config Check:** `ha core check` or `ha core restart`
