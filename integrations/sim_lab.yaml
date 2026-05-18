@@ -80,7 +80,8 @@ input_boolean:
 automation:
   - id: sim_mbr_climate_engine_digital_twin
     alias: 'Sim: MBR Climate Engine'
-    description: Isolated twin for stress testing v7.8.3 logic.
+    description: Isolated twin for stress testing v7.8.4 logic.
+    mode: restart
     triggers:
       - trigger: state
         entity_id:
@@ -166,30 +167,33 @@ automation:
                   - condition: trigger
                     id: bedtime
             sequence:
+              - action: input_number.set_value
+                target:
+                  entity_id: input_number.sim_t6_target
+                data:
+                  value: "{{ target }}"
               - variables:
                   start_ts: "{{ state_attr('input_datetime.sim_precool_start_time', 'timestamp') | float(as_timestamp(now())) }}"
-                  duration: >
-                    {% set diff = (as_timestamp(now()) - start_ts) / 60 %}
-                    {{ diff | round(2) if diff > 0.01 else 0.1 }}
+                  duration: "{{ [ (as_timestamp(now()) - start_ts) / 60, 1 ] | max }}"
                   start_temp: "{{ states('input_number.sim_precool_start_temp') | float(actual) }}"
-                  current_temp: "{{ states('input_number.sim_indoor_temp') | float(actual) }}"
+                  current_temp: "{{ actual }}"
                   drop: "{{ start_temp - current_temp }}"
                   obs_rate: "{{ (duration / drop) | round(1) if drop > 0.1 else 999.0 }}"
+              - action: persistent_notification.create
+                data:
+                  notification_id: "sim_handoff"
+                  title: "Sim: Target Reached"
+                  message: "Target {{ target }}F achieved. Handoff performed. Session: {{ duration | round(0) }} mins."
               - if:
                   - condition: template
                     alias: Minimum Run Time Check
                     value_template: "{{ duration < 5 and trigger.id != 'bedtime' }}"
                 then:
-                  - action: input_number.set_value
-                    target:
-                      entity_id: input_number.sim_t6_target
-                    data:
-                      value: "{{ target }}"
                   - stop: Minimum run time not met.
               - if:
                   - condition: template
                     alias: AI Integrity Audit & Learning Gate
-                    value_template: "{{ t6_target == 60 and ((actual <= target) or (trigger.id == 'bedtime' and is_precooling)) and duration >= 5 }}"
+                    value_template: "{{ duration >= 5 }}"
                 then:
                   - variables:
                       avg_outdoor: >-
@@ -214,9 +218,9 @@ automation:
                         {%- set rwt = ((ns.orate * 0.7) + (obs_rate * 0.3)) | round(1) -%}
                         {%- set clp = [[rwt, 10.0]|max, 45.0]|min -%}
                         {%- set df = clp - ns.orate -%}
-                        {%- set cp = 5.0 -%}
-                        {%- if df > cp -%}{%- set nr = (ns.orate + cp) | round(1) -%}
-                        {%- elif df < (cp * -1) -%}{%- set nr = (ns.orate - cp) | round(1) -%}
+                        {%- set cap = 5.0 -%}
+                        {%- if df > cap -%}{%- set nr = (ns.orate + cap) | round(1) -%}
+                        {%- elif df < (cap * -1) -%}{%- set nr = (ns.orate - cap) | round(1) -%}
                         {%- else -%}{%- set nr = clp -%}{%- endif -%}
                         
                         {# 3. CLEAN-SWEEP MERGE (List-based to force uniqueness) #}

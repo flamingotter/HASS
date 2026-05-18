@@ -3411,9 +3411,9 @@
         check the filter or condenser coils.
   mode: single
 - id: ai_climate_mbr_v7_0
-  alias: 'Climate: Sleep Comfort Engine (v7.8.3)'
-  description: 'v7.8.3: Clean-Sweep Sorting & Type Normalization. Hardened Repository
-    & Env Averaging.'
+  alias: 'Climate: Sleep Comfort Engine (v7.8.4)'
+  description: 'v7.8.4: Safety-First Hardening. Handoff prioritized before learning.
+    Mode: Restart.'
   triggers:
   - trigger: state
     entity_id:
@@ -3582,16 +3582,32 @@
         - condition: trigger
           id: bedtime
       sequence:
+      - action: notify.send_message
+        target:
+          entity_id: '{{ log_entity }}'
+        data:
+          message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }},PHASE_3_HANDOFF,Indoor:
+            {{ actual }},Handing off to target {{ target }}'
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.t6_pro_downstairs
+        data:
+          temperature: '{{ target }}'
       - variables:
           start_ts: '{{ state_attr(''input_datetime.precool_start_time'', ''timestamp'')
             | float(as_timestamp(now())) }}'
-          duration: '{{ (as_timestamp(now()) - start_ts) / 60 }}'
+          duration: '{{ [ (as_timestamp(now()) - start_ts) / 60, 1 ] | max }}'
           start_temp: '{{ states(''input_number.precool_start_temp'') | float(actual)
             }}'
           current_temp: '{{ states(''sensor.bedroom_temperature_smoothed'') | float(actual)
             }}'
           drop: '{{ start_temp - current_temp }}'
           obs_rate: '{{ (duration / drop) | round(1) if drop > 0.1 else 999.0 }}'
+      - action: notify.mobile_app_josh_mobile
+        data:
+          title: 'Climate: MBR Target Reached'
+          message: 'Target {{ target }}F achieved. Handoff to maintenance mode complete.
+            Session: {{ duration | round(0) }} mins.'
       - if:
         - condition: template
           alias: Minimum Run Time Check (5 minutes)
@@ -3601,20 +3617,13 @@
           target:
             entity_id: '{{ log_entity }}'
           data:
-            message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }},PHASE_3_HANDOFF,Indoor:
-              {{ actual }},Target: {{ target }},NOTE: Min run time not met - skipping
-              audit.'
-        - action: climate.set_temperature
-          target:
-            entity_id: climate.t6_pro_downstairs
-          data:
-            temperature: '{{ target }}'
+            message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }},PHASE_3_HANDOFF_NO_LEARN,Indoor:
+              {{ actual }},NOTE: Min run time not met ({{ duration | round(1) }}m) - skipping audit.'
         - stop: Minimum run time not met. Handoff performed without learning.
       - if:
         - condition: template
           alias: AI Integrity Audit & Learning Gate
-          value_template: '{{ t6_target == 60 and ((actual <= target) or (trigger.id
-            == ''bedtime'' and is_precooling)) and duration >= 5 }}'
+          value_template: '{{ duration >= 5 }}'
         then:
         - action: ai_task.generate_data
           continue_on_error: true
@@ -3650,9 +3659,9 @@
               {%- set rwt = ((ns.orate * 0.7) + (obs_rate * 0.3)) | round(1) -%}
               {%- set clp = [[rwt, 10.0]|max, 45.0]|min -%}
               {%- set df = clp - ns.orate -%}
-              {%- set cp = 5.0 -%}
-              {%- if df > cp -%}{%- set nr = (ns.orate + cp) | round(1) -%}
-              {%- elif df < (cap * -1) -%}{%- set nr = (ns.orate - cp) | round(1) -%}
+              {%- set cap = 5.0 -%}
+              {%- if df > cap -%}{%- set nr = (ns.orate + cap) | round(1) -%}
+              {%- elif df < (cap * -1) -%}{%- set nr = (ns.orate - cap) | round(1) -%}
               {%- else -%}{%- set nr = clp -%}{%- endif -%}
               
               {# 3. CLEAN-SWEEP MERGE (List-based to force uniqueness & sorting) #}
@@ -3711,22 +3720,6 @@
             data:
               message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }},PHASE_3_ANOMALY,ObsRate:
                 {{ obs_rate }},Audit: {{ audit_verdict | trim }}'
-      - action: notify.send_message
-        target:
-          entity_id: '{{ log_entity }}'
-        data:
-          message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }},PHASE_3_HANDOFF,Indoor:
-            {{ actual }},Handing off to target {{ target }}'
-      - action: climate.set_temperature
-        target:
-          entity_id: climate.t6_pro_downstairs
-        data:
-          temperature: '{{ target }}'
-      - action: notify.mobile_app_josh_mobile
-        data:
-          title: 'Climate: MBR Target Reached'
-          message: 'Target {{ target }}F achieved. Handoff to maintenance mode complete.
-            Session: {{ duration | round(0) }} mins.'
     - alias: 'Phase 4: Sleep Window (Keep Cool)'
       conditions:
       - condition: template
@@ -3770,7 +3763,7 @@
           entity_id: climate.t6_pro_downstairs
         data:
           temperature: '{{ target + 2.0 }}'
-  mode: queued
+  mode: restart
 - id: '1778077597598'
   alias: Motion Babe Cave
   description: ''

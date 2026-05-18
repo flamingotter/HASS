@@ -50,7 +50,6 @@ Understanding the system requires understanding the physical structure, mechanic
 
 ---
 
-
 ## 3. Phase I: The Data-Driven Foundation (v1.0 - v5.6)
 **Key Milestone:** Establishing the "Night-Optimized" Performance Repository.
 - **Architecture:** The system began using `input_text.mbr_cooling_performance_data` to store cooling rates (min/deg) for 5-degree outdoor temperature bins.
@@ -60,7 +59,7 @@ Understanding the system requires understanding the physical structure, mechanic
 
 ---
 
-## 3. Phase II: Physical Hardening (v5.8 - v6.3)
+## 4. Phase II: Physical Hardening (v5.8 - v6.3)
 **Key Milestone:** Overcoming sensor jitter and real-world race conditions.
 - **The Jitter Problem:** High-frequency fluctuations in the bedroom sensor were causing "ping-pong" cycles (AC turning off/on in sub-60-second windows).
 - **Hardening Solutions:**
@@ -72,7 +71,7 @@ Understanding the system requires understanding the physical structure, mechanic
 
 ---
 
-## 4. Phase III: The Intelligence Era (v7.0 Pilot)
+## 5. Phase III: The Intelligence Era (v7.0 Pilot)
 **Key Milestone:** Moving from "Math-Only" to "Heuristic Reasoning" using AI.
 - **The Strategy:** Version 7.0 introduced the `ai_task` (LLM) engine as a logic co-processor to handle nuance that math templates struggle with.
 - **Free Cooling Strategist:** At 7:00 PM, the AI analyzes the forecast. If the outdoors is $\ge$ 3°F cooler, it suggests opening the patio door to achieve "Free Cooling," potentially saving ~20% AC runtime.
@@ -81,7 +80,7 @@ Understanding the system requires understanding the physical structure, mechanic
 
 ---
 
-## 5. Integrated Analytics & Health
+## 6. Integrated Analytics & Health
 - **BigQuery Pipeline:** All HVAC actions and temperature changes are streamed to GCP for long-term trend analysis.
 - **HVAC Health Check:** A daily script (`hvac_health_check.py`) compares the last 7 days of performance to a 45-day baseline. This acts as a "Check Engine" light for dirty filters or refrigerant loss.
 - **Current Baseline (Verified 5/1/26):**
@@ -110,6 +109,13 @@ Understanding the system requires understanding the physical structure, mechanic
 
 ---
 
+## 9. Phase VI: Logical Integrity & Cleanup (v7.3)
+**Key Milestone:** Internal logic consistency and code maintenance.
+- **Redundant Trigger Cleanup:** Eliminated duplicate triggers in the `MBR Climate Engine` that were causing multiple AI calls for a single event.
+- **Repository Normalization:** Standardized all JSON keys to strings to ensure consistent lookups.
+
+---
+
 ## 10. Phase VII: Operational Transparency (v7.4)
 **Key Milestone:** Exposing the AI's "Thought Process" and ensuring session accountability.
 - **Full-Visibility Notifications (May 11, 2026):** Overhauled the notification engine to include the AI Auditor's raw qualitative analysis in mobile alerts. This provides the user with the "why" behind every learning decision (e.g., specific reasoning for valid sessions or detected anomalies).
@@ -119,7 +125,7 @@ Understanding the system requires understanding the physical structure, mechanic
 
 ---
 
-## 12. Phase VIII: Logic Certification & Precision Math (v7.7)
+## 11. Phase VIII: Logic Certification & Precision Math (v7.7)
 **Key Milestone:** Eliminating math drift and hardening the logic through simulation.
 - **Continuous Logic Validation (CLV):** Introduced a "Sim Lab" (`integrations/sim_lab.yaml`) - a digital twin environment used to run "Lethal Scenarios" (Flash Freezes, Bedtime Races). Logic is now considered "Certified" only after passing all 5 simulation tests.
 - **The Unbreakable Latch:** Moved the "Active Push" check to the absolute top of the handoff conditions. The engine is now physically unable to double-command the thermostat because it verifies the current setpoint (must be 60°F) before evaluating any other handoff triggers.
@@ -132,7 +138,7 @@ Understanding the system requires understanding the physical structure, mechanic
 
 ---
 
-## 13. Phase IX: Repository Hardening & Environmental Averaging (v7.8)
+## 12. Phase IX: Repository Hardening & Environmental Averaging (v7.8)
 **Key Milestone:** Resolving type-casting duplicates and improving environmental precision.
 - **Int-Win String Pattern (May 13, 2026):** Resolved a critical repository duplication bug caused by Home Assistant's inconsistent JSON type-casting. The system now explicitly forces all keys to strings during both the `get()` lookup and the `combine` merge, ensuring that new data perfectly overwrites existing bins without creating duplicates.
 - **Global Short-Cycle Blocker:** Hardened the Phase 3 learning gate to strictly require a minimum session duration of **5 minutes** for all triggers. This prevents the engine from learning from unreliable, short-burst data (e.g., bedtime triggers that occur immediately after manual overrides).
@@ -141,17 +147,29 @@ Understanding the system requires understanding the physical structure, mechanic
 
 ---
 
-## 15. Phase X: The Definitive Fix - Single-Pass Clean-Sweep (v7.8.3)
+## 13. Phase X: The Definitive Fix - Single-Pass Clean-Sweep (v7.8.3)
 **Key Milestone:** Eliminating the "Troubleshooting Loop" via internal Jinja memory hardening.
 - **Single-Pass Consolidated Logic:** Transitioned all repository management (Load, Normalize, Lookup, and Merge) into a single, atomic Jinja template. This prevents Home Assistant from re-parsing and corrupting data types between variable blocks.
 - **Clean-Sweep Pattern:** Implemented a list-based merging strategy that explicitly filters out any key matching the target bin (regardless of original type) before rebuilding the dictionary. This makes JSON duplicate keys mathematically impossible.
 - **Whitespace Hardening:** Identified and fixed a bug where multi-line Jinja blocks were appending hidden newlines (`\n`) to keys. Added aggressive `| trim` and whitespace-stripping tags (`{%- ... -%}`) to ensure 100% string alignment.
 - **Incremental Sorting:** Added a post-merge sort filter, ensuring the performance repository is always stored in incremental bin order for better human readability.
 - **Sim Lab Certification:** Added Scenario J (Type Mismatch Challenge) to the stress tests. v7.8.3 passed all 10 scenarios with zero duplicates and perfect data armor enforcement.
+- **Bug Fix (May 17, 2026):** Resolved an `UndefinedError` in the Data Armor block where the variable `cap` was incorrectly referenced as `cp` in certain branches.
 
 ---
 
-## 16. Future Roadmap: Phase XI - Winter Comfort Strategy
+## 14. Phase XI: Safety-First Hardening & Mode Normalization (v7.8.4)
+**Key Milestone:** Eliminating "Handoff Shadowing" and zombie automation queues.
+- **The "Off the Rails" Failure (May 16, 2026):** A logic crash (the `cp` typo) occurred *inside* the Phase 3 Learning block. Because the thermostat reset command was located *after* the learning logic, the crash prevented the AC from ever being reset to its maintenance target. The system remained stuck in an "Agonal Push" (60°F), causing the room to drop to 56°F until manually intervened.
+- **Safety-First Handoff:** Refactored Phase 3 to perform the `climate.set_temperature` reset to the maintenance target at the **absolute start** of the sequence. This ensures that even if the AI Auditor or repository math fails, the home remains at a safe temperature.
+- **Mode Shift (Queued -> Restart):** 
+    - **Historical Context:** `mode: queued` was originally implemented to handle AI co-processor latency (10s+), ensuring sequential processing of triggers. However, this led to "Zombie Queues" where old, invalid data could be saved after a crash/recovery.
+    - **Engineering Standard (v7.8.4):** Transitioned to `mode: restart`. When combined with the "Safety-First" handoff, this creates an "Atomic Lock." Once the thermostat is reset at the start of Phase 3, any subsequent trigger while the AI is thinking will restart the automation, find the thermostat no longer at 60°F, and immediately stop—safely preventing duplicate runs and data corruption.
+- **Math Defaults:** Hardened all duration and rate calculations with `| default` and `[..., 1]|max` filters to prevent division-by-zero or undefined variable crashes.
+
+---
+
+## 15. Future Roadmap: Phase XII - Winter Comfort Strategy
 **Conceptual Goal:** Pivot the engine from "Aggressive AC" to "Managed Free Cooling" and "Heat Guard."
 - **Winter Super-Cooling:** During heating season, the engine will prioritize opening the porch door to achieve the 64°F target. Unlike cooling season, the residents are comfortable with the room dropping **well below** the 64°F target.
 - **The Heat Guard:** The engine's primary winter job will be to prevent the HVAC from heating the MBR until it drops below a secondary safety threshold (e.g., 60°F), allowing it to remain a "cold pocket" for better sleep.
@@ -159,8 +177,9 @@ Understanding the system requires understanding the physical structure, mechanic
 
 ---
 
-## 17. Current Configuration (As of May 14, 2026)
-- **Active Version:** v7.8.3 (Logic Certified).
+## 16. Current Configuration (As of May 18, 2026)
+- **Active Version:** v7.8.4 (Logic Certified).
 - **Core Repository:** Managed with **Single-Pass Clean-Sweep** and **Automatic Sorting**.
+- **Safety Standard:** **Safety-First Handoff** (thermostat reset before learning) and **Restart Mode** active.
 - **Validation Suite:** 10-scenario stress test active in Sim Lab.
 - **Persistence:** State managed via `restore_state`; strictly normalized string-keyed JSON.

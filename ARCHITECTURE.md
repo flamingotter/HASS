@@ -22,15 +22,13 @@ The system manages occupancy via a centralized "Authority" state machine.
 
 ---
 
-## 3. MBR Climate Engine (v7.8.3)
+## 3. MBR Climate Engine (v7.8.4)
 A high-precision engine designed to reach sleep temperature exactly at bedtime.
 
 - **Data Repository:** `input_text.mbr_cooling_performance_data` (JSON). Stores min/deg cooling rates in 5-degree outdoor bins.
-- **Single-Pass Clean-Sweep Pattern:** 
-    - **The Problem:** Passing dictionaries between `variables` blocks causes HA to re-parse keys (e.g., `"70"` becomes `70`), leading to JSON duplicate keys.
-    - **The Fix:** Consolidated logic (Load -> Normalize -> Lookup -> Math -> Merge) inside a single Jinja block.
-    - **Clean-Sweep:** Uses list-based merging (filtering out old keys) to ensure uniqueness.
-    - **Sorting:** Outputs a human-readable sorted JSON string.
+- **Single-Pass Clean-Sweep Pattern:** Consolidated logic (Load -> Normalize -> Lookup -> Math -> Merge) inside a single Jinja block to eliminate duplicate keys and type-drift.
+- **Safety-First Handoff:** Thermostat reset to maintenance target occurs at the **absolute start** of Phase 3. This ensures that even if learning math or AI co-processing fails, the home remains at a safe temperature.
+- **Atomic Lock (Mode: Restart):** The automation uses `mode: restart`. Because the thermostat is reset first, any subsequent trigger while the AI is thinking will restart the automation, find the state no longer matches the "Agonal Push" requirement, and stop safely—preventing duplicate runs.
 - **Phases:**
     1. **Wakeup:** Reset to 68°F.
     2. **Strategist (7:00 PM):** AI evaluates "Free Cooling" via patio door.
