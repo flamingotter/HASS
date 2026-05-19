@@ -1,6 +1,7 @@
 # Home Assistant Lab: System Architecture
 
-This document outlines the core logic engines, state machines, and cross-automation dependencies within the Home Assistant deployment.
+## System Mission
+The **Home Assistant Lab** is a production-grade, whole-home automation ecosystem engineered for extreme environmental precision, AI-augmented reasoning, and comprehensive infrastructure resilience. By synthesizing high-frequency sensor data, cloud-scale analytics (BigQuery), and local AI co-processing, the system transforms a standard residence into a reactive, data-driven environment that prioritizes resident comfort, physical safety, and operational transparency.
 
 ---
 

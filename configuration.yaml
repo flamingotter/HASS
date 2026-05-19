@@ -8,6 +8,3 @@ homeassistant:
     - "www/tmp/snapshots/parlor"
     - "/media/snapshots"
     - "/media/maintenance"
-
-  media_dirs:
-    media: "/media"
