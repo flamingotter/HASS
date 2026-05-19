@@ -85,7 +85,7 @@
       data:
         scene_id: before_onair
         snapshot_entities:
-        - light.office_light
+        - light.office_lights
         - light.spot_light
     - delay:
         seconds: 1
@@ -2920,7 +2920,6 @@
     entity_id:
     - binary_sensor.garage_man_door
     - binary_sensor.front_door
-    - binary_sensor.bedroom
     - binary_sensor.bedroom_door
     to:
     - 'on'
@@ -3013,6 +3012,7 @@
       > 600 }}
 
       '
+    enabled: false
   actions:
   - alias: 'Data Collection: Video and Snapshots'
     parallel:
@@ -3514,9 +3514,9 @@
         data:
           task_name: Comfort Optimizer
           instructions: 'The current target is {{ target }}F. The indoor humidity
-            is {{ states(''sensor.bedroom_sensor_humidity'') }}%. If humidity is > 55%, recommend
-            dropping target by 1 degree for ''Comfort-Adjusted'' cooling. Return your
-            response in the format: [VALUE] Reasoning: [One sentence explanation].'
+            is {{ states(''sensor.bedroom_sensor_humidity'') }}%. If humidity is >
+            55%, recommend dropping target by 1 degree for ''Comfort-Adjusted'' cooling.
+            Return your response in the format: [VALUE] Reasoning: [One sentence explanation].'
         response_variable: comfort_target
       - variables:
           ai_raw: '{{ (comfort_target | default({})).data | default(target|string)
@@ -3551,7 +3551,8 @@
         target:
           entity_id: input_number.precool_start_outdoor_temp
         data:
-          value: "{{ states('sensor.weather_station_temperature_outdoor') | float(70) }}"
+          value: '{{ states(''sensor.weather_station_temperature_outdoor'') | float(70)
+            }}'
       - action: notify.mobile_app_josh_mobile
         data:
           title: 'Climate: Pre-Cool Started'
@@ -3618,7 +3619,8 @@
             entity_id: '{{ log_entity }}'
           data:
             message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }},PHASE_3_HANDOFF_NO_LEARN,Indoor:
-              {{ actual }},NOTE: Min run time not met ({{ duration | round(1) }}m) - skipping audit.'
+              {{ actual }},NOTE: Min run time not met ({{ duration | round(1) }}m)
+              - skipping audit.'
         - stop: Minimum run time not met. Handoff performed without learning.
       - if:
         - condition: template
@@ -3636,55 +3638,37 @@
               with ''VALID'' or ''ANOMALY'' followed by a one-sentence explanation.'
           response_variable: audit_result
         - variables:
-            audit_verdict: "{{ (audit_result | default({'data': 'VALID: No AI response'})).data }}"
-            avg_outdoor: >-
-              {% set start = states('input_number.precool_start_outdoor_temp') | float(70) %}
-              {% set current = states('sensor.weather_station_temperature_outdoor') | float(70) %}
-              {{ ((start + current) / 2) | round(1) }}
-            lookup_key: >-
-              {{ ((avg_outdoor | float / 5) | round(0) | int * 5) | string | trim }}
-            new_repo_data: >-
-              {# 1. LOAD & LOOKUP (Type-Resilient) #}
-              {%- set lkey = lookup_key | string | trim -%}
-              {%- set raw = states('input_text.mbr_cooling_performance_data') | from_json -%}
-              {%- set ns = namespace(orate=obs_rate, match=false) -%}
-              {%- for k, v in raw.items() -%}
-                {%- if k|string|trim == lkey -%}
-                  {%- set ns.orate = v | float -%}
-                  {%- set ns.match = true -%}
-                {%- endif -%}
-              {%- endfor -%}
-              
-              {# 2. MATH (Data Armor v2) #}
-              {%- set rwt = ((ns.orate * 0.7) + (obs_rate * 0.3)) | round(1) -%}
-              {%- set clp = [[rwt, 10.0]|max, 45.0]|min -%}
-              {%- set df = clp - ns.orate -%}
-              {%- set cap = 5.0 -%}
-              {%- if df > cap -%}{%- set nr = (ns.orate + cap) | round(1) -%}
-              {%- elif df < (cap * -1) -%}{%- set nr = (ns.orate - cap) | round(1) -%}
-              {%- else -%}{%- set nr = clp -%}{%- endif -%}
-              
-              {# 3. CLEAN-SWEEP MERGE (List-based to force uniqueness & sorting) #}
-              {%- set ns_merge = namespace(items=[]) -%}
-              {%- for k, v in raw.items() -%}
-                {%- if k|string|trim != lkey -%}
-                  {%- set ns_merge.items = ns_merge.items + [(k|string|trim, v|float)] -%}
-                {%- endif -%}
-              {%- endfor -%}
-              {%- set ns_merge.items = ns_merge.items + [(lkey, nr|float)] -%}
-              
-              {# 4. EXPORT #}
-              {{- {
-                "new_repo": dict(ns_merge.items | sort) | to_json,
-                "old_rate": ns.orate,
-                "new_rate": nr,
-                "match": ns.match
-              } | to_json -}}
+            audit_verdict: '{{ (audit_result | default({''data'': ''VALID: No AI response''})).data
+              }}'
+            avg_outdoor: '{% set start = states(''input_number.precool_start_outdoor_temp'')
+              | float(70) %} {% set current = states(''sensor.weather_station_temperature_outdoor'')
+              | float(70) %} {{ ((start + current) / 2) | round(1) }}'
+            lookup_key: '{{ ((avg_outdoor | float / 5) | round(0) | int * 5) | string
+              | trim }}'
+            new_repo_data: "{# 1. LOAD & LOOKUP (Type-Resilient) #} {%- set lkey =
+              lookup_key | string | trim -%} {%- set raw = states('input_text.mbr_cooling_performance_data')
+              | from_json -%} {%- set ns = namespace(orate=obs_rate, match=false)
+              -%} {%- for k, v in raw.items() -%}\n  {%- if k|string|trim == lkey
+              -%}\n    {%- set ns.orate = v | float -%}\n    {%- set ns.match = true
+              -%}\n  {%- endif -%}\n{%- endfor -%}\n{# 2. MATH (Data Armor v2) #}
+              {%- set rwt = ((ns.orate * 0.7) + (obs_rate * 0.3)) | round(1) -%} {%-
+              set clp = [[rwt, 10.0]|max, 45.0]|min -%} {%- set df = clp - ns.orate
+              -%} {%- set cap = 5.0 -%} {%- if df > cap -%}{%- set nr = (ns.orate
+              + cap) | round(1) -%} {%- elif df < (cap * -1) -%}{%- set nr = (ns.orate
+              - cap) | round(1) -%} {%- else -%}{%- set nr = clp -%}{%- endif -%}\n{#
+              3. CLEAN-SWEEP MERGE (List-based to force uniqueness & sorting) #} {%-
+              set ns_merge = namespace(items=[]) -%} {%- for k, v in raw.items() -%}\n
+              \ {%- if k|string|trim != lkey -%}\n    {%- set ns_merge.items = ns_merge.items
+              + [(k|string|trim, v|float)] -%}\n  {%- endif -%}\n{%- endfor -%} {%-
+              set ns_merge.items = ns_merge.items + [(lkey, nr|float)] -%}\n{# 4.
+              EXPORT #} {{- {\n  \"new_repo\": dict(ns_merge.items | sort) | to_json,\n
+              \ \"old_rate\": ns.orate,\n  \"new_rate\": nr,\n  \"match\": ns.match\n}
+              | to_json -}}"
         - variables:
-            res: "{{ new_repo_data | from_json }}"
-            new_repo: "{{ res.new_repo }}"
-            old_rate: "{{ res.old_rate }}"
-            new_rate: "{{ res.new_rate }}"
+            res: '{{ new_repo_data | from_json }}'
+            new_repo: '{{ res.new_repo }}'
+            old_rate: '{{ res.old_rate }}'
+            new_rate: '{{ res.new_rate }}'
         - if:
           - condition: template
             value_template: '{{ ''VALID'' in audit_verdict | upper }}'
