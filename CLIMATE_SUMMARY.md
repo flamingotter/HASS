@@ -162,9 +162,9 @@ Understanding the system requires understanding the physical structure, mechanic
 **Key Milestone:** Eliminating "Handoff Shadowing" and zombie automation queues.
 - **The "Off the Rails" Failure (May 16, 2026):** A logic crash (the `cp` typo) occurred *inside* the Phase 3 Learning block. Because the thermostat reset command was located *after* the learning logic, the crash prevented the AC from ever being reset to its maintenance target. The system remained stuck in an "Agonal Push" (60°F), causing the room to drop to 56°F until manually intervened.
 - **Safety-First Handoff:** Refactored Phase 3 to perform the `climate.set_temperature` reset to the maintenance target at the **absolute start** of the sequence. This ensures that even if the AI Auditor or repository math fails, the home remains at a safe temperature.
-- **Mode Shift (Queued -> Restart):** 
-    - **Historical Context:** `mode: queued` was originally implemented to handle AI co-processor latency (10s+), ensuring sequential processing of triggers. However, this led to "Zombie Queues" where old, invalid data could be saved after a crash/recovery.
-    - **Engineering Standard (v7.8.4):** Transitioned to `mode: restart`. When combined with the "Safety-First" handoff, this creates an "Atomic Lock." Once the thermostat is reset at the start of Phase 3, any subsequent trigger while the AI is thinking will restart the automation, find the thermostat no longer at 60°F, and immediately stop—safely preventing duplicate runs and data corruption.
+- **Mode Shift (Queued -> Restart -> Queued):** 
+    - **Historical Context:** `mode: queued` was originally implemented to handle AI co-processor latency (10s+). However, this led to "Zombie Queues" where old, invalid data could be saved after a crash/recovery. Transitioned to `mode: restart` in v7.8.4 to implement an "Atomic Lock."
+    - **Reversion (v7.8.5):** Discovered that `mode: restart` caused race conditions during the 7:00 AM wakeup (triggers killing each other) and interrupted AI evaluations during pre-cooling jitter. Reverted to `mode: queued`. Because v7.8.4 introduced the `t6_target == 60` latch, "Zombie Queues" are no longer a risk as they will fail the latch and exit safely.
 - **Math Defaults:** Hardened all duration and rate calculations with `| default` and `[..., 1]|max` filters to prevent division-by-zero or undefined variable crashes.
 
 ---

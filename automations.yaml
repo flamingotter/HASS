@@ -3413,7 +3413,7 @@
 - id: ai_climate_mbr_v7_0
   alias: 'Climate: Sleep Comfort Engine (v7.8.4)'
   description: 'v7.8.4: Safety-First Hardening. Handoff prioritized before learning.
-    Mode: Restart.'
+    Mode: Queued.'
   triggers:
   - trigger: state
     entity_id:
@@ -3747,7 +3747,8 @@
           entity_id: climate.t6_pro_downstairs
         data:
           temperature: '{{ target + 2.0 }}'
-  mode: restart
+  mode: queued
+  max: 10
 - id: '1778077597598'
   alias: Motion Babe Cave
   description: ''
