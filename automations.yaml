@@ -2710,7 +2710,7 @@
       sequence:
       - action: light.toggle
         target:
-          entity_id: light.big_kitchen_lights
+          entity_id: light.kitchen_light
         data:
           transition: 0.5
     - conditions:
@@ -2753,6 +2753,7 @@
         - action: switch.turn_off
           target:
             entity_id: switch.kitchen_adaptive_lighting
+          data: {}
         - action: light.turn_on
           target:
             entity_id:
@@ -2762,6 +2763,7 @@
             transition: 0
             color_temp_kelvin: 4500
             brightness_pct: 100
+          enabled: false
         else:
         - action: switch.turn_on
           target:
@@ -3652,7 +3654,7 @@
               -%}\n    {%- set ns.orate = v | float -%}\n    {%- set ns.match = true
               -%}\n  {%- endif -%}\n{%- endfor -%}\n{# 2. MATH (Data Armor v2) #}
               {%- set rwt = ((ns.orate * 0.7) + (obs_rate * 0.3)) | round(1) -%} {%-
-              set clp = [[rwt, 10.0]|max, 45.0]|min -%} {%- set df = clp - ns.orate
+              set clp = [[rwt, 10.0]|max, 60.0]|min -%} {%- set df = clp - ns.orate
               -%} {%- set cap = 5.0 -%} {%- if df > cap -%}{%- set nr = (ns.orate
               + cap) | round(1) -%} {%- elif df < (cap * -1) -%}{%- set nr = (ns.orate
               - cap) | round(1) -%} {%- else -%}{%- set nr = clp -%}{%- endif -%}\n{#
