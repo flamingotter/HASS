@@ -3457,7 +3457,7 @@
         float(68) }}'
       is_precooling: '{{ is_state(''binary_sensor.mbr_pre_cooling_active'', ''on'')
         }}'
-      log_entity: notify.climate_control_log
+      log_entity: notify.local_climate_control_log
   - choose:
     - alias: 'Override: Eco Mode Active'
       conditions:
