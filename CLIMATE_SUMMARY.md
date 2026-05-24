@@ -169,17 +169,19 @@ Understanding the system requires understanding the physical structure, mechanic
 
 ---
 
-## 15. Future Roadmap: Phase XII - Winter Comfort Strategy
-**Conceptual Goal:** Pivot the engine from "Aggressive AC" to "Managed Free Cooling" and "Heat Guard."
-- **Winter Super-Cooling:** During heating season, the engine will prioritize opening the porch door to achieve the 64°F target. Unlike cooling season, the residents are comfortable with the room dropping **well below** the 64°F target.
-- **The Heat Guard:** The engine's primary winter job will be to prevent the HVAC from heating the MBR until it drops below a secondary safety threshold (e.g., 60°F), allowing it to remain a "cold pocket" for better sleep.
-- **Dual-Mode Repository:** Future analysis will determine if separate "Heating Season" and "Cooling Season" performance repositories are required to account for the different thermal dynamics of the porch door vs. the HVAC blower.
+## 15. Phase XI: Summer Resilience & Humidity Strategy (v7.8.5)
+**Key Milestone:** Hardening the system for high-heat load and "swampy" summer conditions.
+- **Data Armor v2.1 (The Summer Cap):** Raised the physical cooling rate ceiling from 45.0 to **60.0 min/deg**. This allows the engine to accurately model cooling performance on 85°F+ days where the actual rate was observed to exceed the previous safety threshold.
+- **Hygrometric Strategy:** Updated the 7:00 PM Free Cooling Strategist to evaluate outdoor humidity. The AI is now instructed to explicitly advise against opening the patio door if outdoor humidity exceeds **65%**, even if the temperature is favorable, to prevent moisture infiltration.
+- **Queued Mode Stability:** Re-validated the shift back to `mode: queued`. Combined with the "Atomic Lock" (T6 target check), this ensures that simultaneous triggers (like the 7:00 AM wakeup and temperature updates) are processed reliably without interrupting the engine's state.
 
 ---
 
-## 16. Current Configuration (As of May 18, 2026)
-- **Active Version:** v7.8.4 (Logic Certified).
+## 16. Current Configuration (As of May 24, 2026)
+- **Active Version:** v7.8.5 (Logic Certified).
 - **Core Repository:** Managed with **Single-Pass Clean-Sweep** and **Automatic Sorting**.
-- **Safety Standard:** **Safety-First Handoff** (thermostat reset before learning) and **Restart Mode** active.
+- **Safety Standard:** **Safety-First Handoff** (thermostat reset before learning).
+- **Automation Mode:** **Queued** (Hardened via Atomic Lock).
+- **Physical Cap:** 60.0 min/deg.
 - **Validation Suite:** 10-scenario stress test active in Sim Lab.
 - **Persistence:** State managed via `restore_state`; strictly normalized string-keyed JSON.

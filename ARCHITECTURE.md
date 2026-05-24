@@ -23,19 +23,19 @@ The system manages occupancy via a centralized "Authority" state machine.
 
 ---
 
-## 3. MBR Climate Engine (v7.8.4)
+## 3. MBR Climate Engine (v7.8.5)
 A high-precision engine designed to reach sleep temperature exactly at bedtime.
 
 - **Data Repository:** `input_text.mbr_cooling_performance_data` (JSON). Stores min/deg cooling rates in 5-degree outdoor bins.
 - **Single-Pass Clean-Sweep Pattern:** Consolidated logic (Load -> Normalize -> Lookup -> Math -> Merge) inside a single Jinja block to eliminate duplicate keys and type-drift.
 - **Safety-First Handoff:** Thermostat reset to maintenance target occurs at the **absolute start** of Phase 3. This ensures that even if learning math or AI co-processing fails, the home remains at a safe temperature.
-- **Atomic Lock (Mode: Queued):** The automation uses `mode: queued`. Because the thermostat is reset first in Phase 3, any subsequent "zombie" triggers in the queue will find the state no longer matches the "Agonal Push" requirement (T6 target is no longer 60°F) and stop safely—preventing duplicate runs. This mode ensures that 7:00 AM wakeup and AI evaluations are not interrupted by sensor jitter.
+- **Atomic Lock (Mode: Queued):** Reverted to `mode: queued` in v7.8.5. Because the thermostat is reset first in Phase 3 (v7.8.4 hardening), any subsequent "zombie" triggers in the queue will find the state no longer matches the "Agonal Push" requirement (T6 target is no longer 60°F) and stop safely. This mode ensures that 7:00 AM wakeup and AI evaluations are not interrupted by sensor jitter.
 - **Phases:**
     1. **Wakeup:** Reset to 68°F.
-    2. **Strategist (7:00 PM):** AI evaluates "Free Cooling" via patio door.
+    2. **Strategist (7:00 PM):** AI evaluates "Free Cooling" via patio door. Now humidity-aware: explicitly advises against opening if outdoor humidity > 65%.
     3. **Pre-Cooling:** Aggressive push to 60°F based on bin math + AI Humidity Optimizer.
     4. **Handoff:** At target, reset T6 Pro to maintenance temp. AI Auditor validates session data.
-- **Data Armor:** A software physical-swing cap (±5 min/deg) protects the repository from sensor jitter or thermal anomalies.
+- **Data Armor:** A software physical-swing cap protects the repository from sensor jitter or thermal anomalies. **Raised to 60.0 min/deg** in v7.8.5 to accommodate extreme summer heat loads.
 
 ---
 

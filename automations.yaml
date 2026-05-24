@@ -3413,9 +3413,9 @@
         check the filter or condenser coils.
   mode: single
 - id: ai_climate_mbr_v7_0
-  alias: 'Climate: Sleep Comfort Engine (v7.8.4)'
-  description: 'v7.8.4: Safety-First Hardening. Handoff prioritized before learning.
-    Mode: Queued.'
+  alias: 'Climate: Sleep Comfort Engine (v7.8.5)'
+  description: 'v7.8.5: Summer Resilience. Queued mode restored; Data Armor cap raised
+    to 60.0; Humidity-aware strategist.'
   triggers:
   - trigger: state
     entity_id:
