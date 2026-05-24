@@ -3476,10 +3476,12 @@
         data:
           task_name: Free Cooling Strategist
           instructions: 'Analyze the outdoor temperature ({{ states(''sensor.weather_station_temperature_outdoor'')
-            }}F)  and the bedroom temperature ({{ actual }}F).  If the outdoor temperature
-            is at least 3 degrees cooler than the bedroom, suggest opening the screened
-            patio door. Mention estimated savings of ~20% AC runtime. Keep response
-            under 20 words.
+            }}F), outdoor humidity ({{ states(''sensor.weather_station_humidity_outdoor'')
+            }}%), and the bedroom temperature ({{ actual }}F).  If the outdoor temperature
+            is at least 3 degrees cooler than the bedroom AND the outdoor humidity is
+            below 65%, suggest opening the screened patio door. If humidity is high (>65%),
+            explicitly advise against opening the door despite the cooler air. Keep
+            response under 25 words.
 
             '
         response_variable: strategist_advice
