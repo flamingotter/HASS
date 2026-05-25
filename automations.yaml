@@ -3478,10 +3478,10 @@
           instructions: 'Analyze the outdoor temperature ({{ states(''sensor.weather_station_temperature_outdoor'')
             }}F), outdoor humidity ({{ states(''sensor.weather_station_humidity_outdoor'')
             }}%), and the bedroom temperature ({{ actual }}F).  If the outdoor temperature
-            is at least 3 degrees cooler than the bedroom AND the outdoor humidity is
-            below 65%, suggest opening the screened patio door. If humidity is high (>65%),
-            explicitly advise against opening the door despite the cooler air. Keep
-            response under 25 words.
+            is at least 3 degrees cooler than the bedroom AND the outdoor humidity
+            is below 65%, suggest opening the screened patio door. If humidity is
+            high (>65%), explicitly advise against opening the door despite the cooler
+            air. Keep response under 25 words.
 
             '
         response_variable: strategist_advice
@@ -3870,41 +3870,117 @@
         target:
           entity_id: light.office_lights
   mode: single
-
 - id: poop_robot_maintenance_alerts
   alias: 'Pet: Poop Robot Maintenance Alerts'
-  description: 'Ported from Node-RED: Alerts for Waste Drawer (>95%) and Low Litter (<50%) during daytime.'
+  description: 'Ported from Node-RED: Alerts for Waste Drawer (>95%) and Low Litter
+    (<50%) during daytime.'
   triggers:
-    - trigger: state
-      entity_id:
-        - sensor.poop_robot_waste_drawer
-        - sensor.poop_robot_litter_level
-    - trigger: time_pattern
-      hours: "/2"
+  - trigger: state
+    entity_id:
+    - sensor.poop_robot_waste_drawer
+    - sensor.poop_robot_litter_level
+  - trigger: time_pattern
+    hours: /2
   conditions:
-    - condition: state
-      entity_id: sun.sun
-      state: above_horizon
+  - condition: state
+    entity_id: sun.sun
+    state: above_horizon
   actions:
-    - choose:
-        - alias: 'Waste Drawer > 95%'
-          conditions:
-            - condition: numeric_state
-              entity_id: sensor.poop_robot_waste_drawer
-              above: 95
-          sequence:
-            - action: notify.all_devices
-              data:
-                title: 'Poop Robot: Waste Drawer'
-                message: "The Poop Drawer needs attention. Current Level is {{ states('sensor.poop_robot_waste_drawer') }}% Full"
-        - alias: 'Litter Level < 50%'
-          conditions:
-            - condition: numeric_state
-              entity_id: sensor.poop_robot_litter_level
-              below: 50
-          sequence:
-            - action: notify.all_devices
-              data:
-                title: 'Poop Robot: Litter Level'
-                message: "The Poop Robot's litter level is low. Current Level is {{ states('sensor.poop_robot_litter_level') }}% Full"
+  - choose:
+    - alias: Waste Drawer > 95%
+      conditions:
+      - condition: numeric_state
+        entity_id: sensor.poop_robot_waste_drawer
+        above: 95
+      sequence:
+      - action: notify.all_devices
+        data:
+          title: 'Poop Robot: Waste Drawer'
+          message: The Poop Drawer needs attention. Current Level is {{ states('sensor.poop_robot_waste_drawer')
+            }}% Full
+    - alias: Litter Level < 50%
+      conditions:
+      - condition: numeric_state
+        entity_id: sensor.poop_robot_litter_level
+        below: 50
+      sequence:
+      - action: notify.all_devices
+        data:
+          title: 'Poop Robot: Litter Level'
+          message: The Poop Robot's litter level is low. Current Level is {{ states('sensor.poop_robot_litter_level')
+            }}% Full
+  mode: single
+- id: smart_doorbell_announcement
+  alias: 'Security: Doorbell Smart Announcement'
+  description: AI-augmented doorbell alerts with volume management and state restoration.
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.doorbell_outside_doorbell
+    to: 'on'
+  conditions:
+  - condition: state
+    entity_id: input_boolean.do_not_disturb
+    state: 'off'
+  actions:
+  - alias: Snapshot Volume Levels
+    action: scene.create
+    data:
+      scene_id: doorbell_volume_snapshot
+      snapshot_entities:
+      - media_player.counter
+      - media_player.bedroom
+      - media_player.babe_cave
+      - media_player.dining_room
+      - media_player.living_room
+      - media_player.garage
+  - alias: 'Audio Prep: Ramp and Chime'
+    parallel:
+    - action: media_player.volume_set
+      target:
+        entity_id: media_player.all_echos
+      data:
+        volume_level: 0.7
+    - action: media_player.play_media
+      target:
+        entity_id: media_player.all_echos
+      data:
+        media:
+          media_content_id: amzn_sfx_doorbell_chime_02
+          media_content_type: sound
+          metadata: {}
+  - alias: Capture Visitor Snapshot
+    action: camera.snapshot
+    target:
+      entity_id: camera.doorbell_outside_high_resolution_channel
+    data:
+      filename: /media/snapshots/porch/doorbell_visitor.jpg
+  - alias: AI Visitor Analysis
+    action: ai_task.generate_data
+    data:
+      task_name: Doorbell Visitor Analysis
+      instructions: Analyze the attached image from the front doorbell.  Describe
+        the person at the door (e.g. delivery driver, solicitor, child)  and their
+        likely intent (e.g. leaving a package, ringing for attention). If it is a
+        delivery, mention the company if visible on a uniform or vehicle. Keep the
+        response brief and natural, under 25 words.
+      attachments:
+      - media_content_id: media-source://media_source/local/snapshots/porch/doorbell_visitor.jpg
+        media_content_type: image/jpeg
+    response_variable: visitor_analysis
+    continue_on_error: true
+  - alias: AI TTS Announcement
+    action: notify.alexa_media
+    data:
+      target: media_player.all_echos
+      message: '{{ (visitor_analysis | default({})).data | default("Someone is at
+        the front door.") }}'
+      data:
+        type: tts
+  - delay:
+      seconds: 8
+  - alias: Restore Original Volume
+    action: scene.turn_on
+    target:
+      entity_id: scene.doorbell_volume_snapshot
+    data: {}
   mode: single
