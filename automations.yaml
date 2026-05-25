@@ -3870,3 +3870,41 @@
         target:
           entity_id: light.office_lights
   mode: single
+
+- id: poop_robot_maintenance_alerts
+  alias: 'Pet: Poop Robot Maintenance Alerts'
+  description: 'Ported from Node-RED: Alerts for Waste Drawer (>95%) and Low Litter (<50%) during daytime.'
+  triggers:
+    - trigger: state
+      entity_id:
+        - sensor.poop_robot_waste_drawer
+        - sensor.poop_robot_litter_level
+    - trigger: time_pattern
+      hours: "/2"
+  conditions:
+    - condition: state
+      entity_id: sun.sun
+      state: above_horizon
+  actions:
+    - choose:
+        - alias: 'Waste Drawer > 95%'
+          conditions:
+            - condition: numeric_state
+              entity_id: sensor.poop_robot_waste_drawer
+              above: 95
+          sequence:
+            - action: notify.all_devices
+              data:
+                title: 'Poop Robot: Waste Drawer'
+                message: "The Poop Drawer needs attention. Current Level is {{ states('sensor.poop_robot_waste_drawer') }}% Full"
+        - alias: 'Litter Level < 50%'
+          conditions:
+            - condition: numeric_state
+              entity_id: sensor.poop_robot_litter_level
+              below: 50
+          sequence:
+            - action: notify.all_devices
+              data:
+                title: 'Poop Robot: Litter Level'
+                message: "The Poop Robot's litter level is low. Current Level is {{ states('sensor.poop_robot_litter_level') }}% Full"
+  mode: single
