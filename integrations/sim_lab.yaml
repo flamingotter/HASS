@@ -215,7 +215,9 @@ automation:
                         {%- endfor -%}
                         
                         {# 2. MATH (Data Armor v2) #}
-                        {%- set rwt = ((ns.orate * 0.7) + (obs_rate * 0.3)) | round(1) -%}
+                        {%- set diff = (ns.orate - obs_rate) | abs -%}
+                        {%- set alpha = 0.9 if diff < 3.0 else 0.7 -%}
+                        {%- set rwt = ((ns.orate * alpha) + (obs_rate * (1.0 - alpha))) | round(1) -%}
                         {%- set clp = [[rwt, 10.0]|max, 60.0]|min -%}
                         {%- set df = clp - ns.orate -%}
                         {%- set cap = 5.0 -%}

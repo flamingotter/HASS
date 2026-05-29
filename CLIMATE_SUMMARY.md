@@ -171,17 +171,24 @@ Understanding the system requires understanding the physical structure, mechanic
 
 ## 15. Phase XI: Summer Resilience & Humidity Strategy (v7.8.5)
 **Key Milestone:** Hardening the system for high-heat load and "swampy" summer conditions.
-- **Data Armor v2.1 (The Summer Cap):** Raised the physical cooling rate ceiling from 45.0 to **60.0 min/deg**. This allows the engine to accurately model cooling performance on 85°F+ days where the actual rate was observed to exceed the previous safety threshold.
-- **Hygrometric Strategy:** Updated the 7:00 PM Free Cooling Strategist to evaluate outdoor humidity. The AI is now instructed to explicitly advise against opening the patio door if outdoor humidity exceeds **65%**, even if the temperature is favorable, to prevent moisture infiltration.
-- **Queued Mode Stability:** Re-validated the shift back to `mode: queued`. Combined with the "Atomic Lock" (T6 target check), this ensures that simultaneous triggers (like the 7:00 AM wakeup and temperature updates) are processed reliably without interrupting the engine's state.
+- **Data Armor v2.1 (The Summer Cap):** Raised the physical cooling rate ceiling from 45.0 to **60.0 min/deg**.
+- **Hygrometric Strategy:** Updated the 7:00 PM Free Cooling Strategist to evaluate outdoor humidity. The AI now explicitly advises against opening the patio door if outdoor humidity exceeds **65%**.
 
 ---
 
-## 16. Current Configuration (As of May 24, 2026)
-- **Active Version:** v7.8.5 (Logic Certified).
+## 16. Phase XII: Adaptive Learning & Seasonal Pivot Prep (v7.8.6)
+**Key Milestone:** Implementation of automated learning velocity and future-proofing for fall transitions.
+- **Adaptive Learning Velocity:** The engine now automatically detects when a data bin has converged. If the observed rate is within **3.0 min/deg** of the repository, it shifts to a **90/10 weight** (Stable Mode) to lock in solid averages. If the difference is larger, it uses **70/30 weight** (Aggressive Mode) to rapidly adapt to seasonal shifts or physical changes.
+- **Fall Readiness:** The architecture is now prepared for the transition to "Heat Decay" tracking and "Managed Free Cooling" as outdoor temperatures drop.
+
+---
+
+## 17. Current Configuration (As of May 29, 2026)
+- **Active Version:** v7.8.6 (Logic Certified).
 - **Core Repository:** Managed with **Single-Pass Clean-Sweep** and **Automatic Sorting**.
 - **Safety Standard:** **Safety-First Handoff** (thermostat reset before learning).
 - **Automation Mode:** **Queued** (Hardened via Atomic Lock).
+- **Learning Mode:** **Adaptive Velocity** (90/10 Stable | 70/30 Aggressive).
 - **Physical Cap:** 60.0 min/deg.
 - **Validation Suite:** 10-scenario stress test active in Sim Lab.
 - **Persistence:** State managed via `restore_state`; strictly normalized string-keyed JSON.

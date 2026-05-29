@@ -2923,6 +2923,7 @@
     - binary_sensor.garage_man_door
     - binary_sensor.front_door
     - binary_sensor.bedroom_door
+    - binary_sensor.catio_door
     to:
     - 'on'
   actions:
@@ -2940,6 +2941,8 @@
         instant: 6
       binary_sensor.bedroom_door:
         instant: 9
+      binary_sensor.catio_door:
+        instant: 8
   mode: single
   max_exceeded: silent
 - id: outdoor_motion_lighting_engine
@@ -3413,9 +3416,9 @@
         check the filter or condenser coils.
   mode: single
 - id: ai_climate_mbr_v7_0
-  alias: 'Climate: Sleep Comfort Engine (v7.8.5)'
-  description: 'v7.8.5: Summer Resilience. Queued mode restored; Data Armor cap raised
-    to 60.0; Humidity-aware strategist.'
+  alias: 'Climate: Sleep Comfort Engine (v7.8.6)'
+  description: 'v7.8.6: Adaptive Velocity. Automatic learning weight adjustment (90/10
+    vs 70/30) based on convergence.'
   triggers:
   - trigger: state
     entity_id:
@@ -3655,11 +3658,13 @@
               -%} {%- for k, v in raw.items() -%}\n  {%- if k|string|trim == lkey
               -%}\n    {%- set ns.orate = v | float -%}\n    {%- set ns.match = true
               -%}\n  {%- endif -%}\n{%- endfor -%}\n{# 2. MATH (Data Armor v2) #}
-              {%- set rwt = ((ns.orate * 0.7) + (obs_rate * 0.3)) | round(1) -%} {%-
-              set clp = [[rwt, 10.0]|max, 60.0]|min -%} {%- set df = clp - ns.orate
-              -%} {%- set cap = 5.0 -%} {%- if df > cap -%}{%- set nr = (ns.orate
-              + cap) | round(1) -%} {%- elif df < (cap * -1) -%}{%- set nr = (ns.orate
-              - cap) | round(1) -%} {%- else -%}{%- set nr = clp -%}{%- endif -%}\n{#
+              {%- set diff = (ns.orate - obs_rate) | abs -%} {%- set alpha = 0.9
+              if diff < 3.0 else 0.7 -%} {%- set rwt = ((ns.orate * alpha) + (obs_rate
+              * (1.0 - alpha))) | round(1) -%} {%- set clp = [[rwt, 10.0]|max, 60.0]|min
+              -%} {%- set df = clp - ns.orate -%} {%- set cap = 5.0 -%} {%- if df
+              > cap -%}{%- set nr = (ns.orate + cap) | round(1) -%} {%- elif df <
+              (cap * -1) -%}{%- set nr = (ns.orate - cap) | round(1) -%} {%- else
+              -%}{%- set nr = clp -%}{%- endif -%}\n{#
               3. CLEAN-SWEEP MERGE (List-based to force uniqueness & sorting) #} {%-
               set ns_merge = namespace(items=[]) -%} {%- for k, v in raw.items() -%}\n
               \ {%- if k|string|trim != lkey -%}\n    {%- set ns_merge.items = ns_merge.items

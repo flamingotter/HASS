@@ -13,11 +13,12 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
     - Physical install and entity update for `binary_sensor.bedroom_door` (replaces `binary_sensor.bedroom`).
 
 ## 2. Climate & Energy (The Sleep Engine v7.x)
+- [x] **v7.8.6 Release:** Adaptive Learning Velocity. Implemented automatic weight-shifting (90/10 vs 70/30) based on data convergence (Completed May 29, 2026).
 - [x] **v7.8.5 Release:** Summer Resilience. Restored `mode: queued` with Atomic Lock, raised Data Armor cap to 60.0, and implemented Humidity-Aware strategist (Completed May 24, 2026).
 - [x] **v7.4 Release:** Implemented "Total Transparency" mode with AI qualitative analysis and unconditional session reporting. (Deployed May 11, 2026)
 - [x] **v7.3 Release:** Implemented Data Armor v2 (physical clamps), empirical BigQuery re-baselining, and maximum transparency logging. (Completed May 10, 2026)
 - [ ] **Thermal Decay Modeling:** Analyze the first "80F+ Day" to determine if a solar-load offset is needed for pre-cooling start times.
-- [ ] **Decommissioning:** Once v7.8.5 is proven stable, disable the legacy v6.3 automation in the UI to prevent logic overlaps.
+- [ ] **Decommissioning:** Once v7.8.6 is proven stable, disable the legacy v6.3 automation in the UI to prevent logic overlaps.
 
 ## 3. Presence & Global Logic
 - [ ] **Eco Mode Validation:** Verify the first real-world 500-mile "Extended Away" trigger.
@@ -25,7 +26,7 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 
 ## 4. Maintenance & Housekeeping
 - [x] **Notification Standardization:** Standardized `Notify: Feed Pets (v3.0)` and `Notify: Trash Day` using the "Detective Butler" device ID pattern. (Completed May 12, 2026)
-- [x] **Climate Integrity v7.8.5:** Hardened Phase 3 logic with "Safety-First Handoff" and "Atomic Lock" (Mode: Queued). Prevents "Off the Rails" runs by resetting thermostat before learning math. (Completed May 24, 2026)
+- [x] **Climate Integrity v7.8.6:** Hardened Phase 3 logic with "Safety-First Handoff" and "Atomic Lock" (Mode: Queued). Implemented Adaptive Velocity learning. (Completed May 29, 2026)
 - [x] **Log Noise Reduction:** Removed `monitor_docker` integration; migrated BigQuery kickoff to surgical `shell_command` via `socket-proxy`. (Completed May 14, 2026)
 - [x] **Continuous Logic Validation:** Established the "Sim Lab" with 10-scenario stress test suite. (Completed May 14, 2026)
 - [ ] **System Integrity:** Build a "Critical Heartbeat" sensor using the `critical` label to monitor essential infrastructure (Freezer, Networking, Z-Wave).
