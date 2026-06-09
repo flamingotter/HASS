@@ -39,6 +39,13 @@ A high-precision engine designed to reach sleep temperature exactly at bedtime.
     3. **Pre-Cooling:** Aggressive push to 60°F based on bin math + AI Humidity Optimizer.
     4. **Handoff:** At target, reset T6 Pro to maintenance temp. AI Auditor validates session data.
 - **Data Armor:** A software physical-swing cap protects the repository from sensor jitter or thermal anomalies. **Raised to 60.0 min/deg** to accommodate extreme summer heat loads.
+- **Target Override Safeguard (Added June 2026):** To prevent accidental target temperature changes (such as slider touches while scrolling on mobile devices) from disrupting the active pre-cooling cycle, a state-recalculating safeguard was implemented. It monitors target temperature updates during pre-cooling, sends an actionable push notification with options to keep or revert the change, and handles the revert state statelessly using dynamic callback actions (REVERT_BEDROOM_TARGET_XX).
+- **Attic Micro-Climate Sensors (Added June 2026):** Two physical dual-sensor arrays were integrated to capture real-time roof thermal loads:
+    - **North Attic:** `sensor.north_attic_sensor_air_temperature` / `sensor.north_attic_sensor_humidity`. Covers the front porch, dining area, foyer, laundry, pantry, and north guest room. Mounted 2 feet above blown-in insulation, 1 foot below the roof deck.
+    - **South Attic:** `sensor.south_attic_sensor_air_temperature` / `sensor.south_attic_sensor_humidity`. Covers the living room and downstairs master bedroom suite. Mounted 2 feet below the highest peak of the roofline.
+    - **Physical Separation:** The two attic zones are separated by the second-floor hallway and office, with a small connecting space above the hallway.
+- **Thermodynamic Solar Load Asymmetry (SLA):** Under midday solar exposure, an intense thermal gradient exists across the roof. Telemetry shows a 14.6°F asymmetric solar load delta between the South Attic (112.1°F) and the North Attic (97.5°F), creating a 45.6°F thermal conduction differential across the downstairs MBR ceiling (66.5°F indoor room temperature).
+- **Roadmap to Climate Engine v7.9:** Mapped inside `exporter.py` for 7-day high-resolution BigQuery baseline profiling. Once complete, Scenario K (Attic Heat Soak Challenge) will validate the model in Sim Lab, allowing real-time attic thermal pressure to be used as a dynamic pre-cooling start-time multiplier.
 
 ---
 
@@ -53,7 +60,7 @@ Handles identity verification and suspicious activity detection.
 ---
 
 ## 5. Analytics & Infrastructure
-- **BigQuery Pipeline:** Data is exported to BigQuery for thermal decay and cooling velocity analysis.
+- **BigQuery Pipeline:** Data is exported to BigQuery for thermal decay and cooling velocity analysis. The `ha_bq_exporter` container is hardened with an infinite sleep loop (`sh -c "python exporter.py; exec sleep infinity"`) and set to `restart: unless-stopped`. This keeps the container permanently in a `Running` state to prevent it from being pruned by the weekly `docker system prune` of the housekeeper, while allowing Home Assistant to trigger the daily export cleanly via the `socket-proxy` restart command.
 - **Docker Management:** Container control is handled via `curl` to the `socket-proxy` Docker API.
 - **Sim Lab:** A Digital Twin environment (`integrations/sim_lab.yaml`) used to stress-test logic against 10 specific scenarios (e.g., Short-Cycle, Type Mismatch, High Humidity) before deployment.
 

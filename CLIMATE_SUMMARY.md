@@ -48,6 +48,13 @@ Understanding the system requires understanding the physical structure, mechanic
 - **Screened Porch:** 188.6° (South-Southwest). This area experiences significant late-afternoon solar gain, directly impacting MBR "Free Cooling" viability.
 - **Garage Door:** 278.6° (West-Northwest).
 
+### **Attic Micro-Climate Sensors & Thermodynamic Solar Load Asymmetry**
+To monitor attic thermal loading and solar heat radiation pressure on the living areas, two dual-sensor arrays were integrated in June 2026:
+- **North Attic Sensor (`sensor.north_attic_sensor_air_temperature` / `sensor.north_attic_sensor_humidity`):** Located on the north side of the home in the attic. This section of the attic sits over the front porch, dining area, foyer, laundry, pantry, and north guest room. It is mounted approximately 2 feet above the blown-in insulation and 1 foot below the roof deck.
+- **South Attic Sensor (`sensor.south_attic_sensor_air_temperature` / `sensor.south_attic_sensor_humidity`):** Located on the south side of the home in the attic. This section of the attic covers the living room and downstairs master bedroom suite. It is mounted approximately 2 feet below the highest peak of the roofline on the opposite side of the second-floor hallway from the north attic sensor.
+- **Physical Separation:** The north and south attic spaces are slightly separated by the second-floor hallway and office, with a small connecting space above the hallway.
+- **Thermodynamic Solar Load Asymmetry (SLA):** Midi-day telemetry reveals a massive solar load delta. For example, under peak midday solar gain (86.5°F outdoor ambient), a 14.6°F asymmetric solar load exists between the South Attic (112.1°F) and the North Attic (97.5°F). This creates a massive 45.6°F heat conduction differential across the downstairs Living Room and MBR ceiling (66.5°F indoor room temperature), exposing the MBR suite to intense ceiling heat-sink pressure.
+
 ---
 
 ## 3. Phase I: The Data-Driven Foundation (v1.0 - v5.6)
@@ -74,7 +81,7 @@ Understanding the system requires understanding the physical structure, mechanic
 ## 5. Phase III: The Intelligence Era (v7.0 Pilot)
 **Key Milestone:** Moving from "Math-Only" to "Heuristic Reasoning" using AI.
 - **The Strategy:** Version 7.0 introduced the `ai_task` (LLM) engine as a logic co-processor to handle nuance that math templates struggle with.
-- **Free Cooling Strategist:** At 7:00 PM, the AI analyzes the forecast. If the outdoors is $\ge$ 3°F cooler, it suggests opening the patio door to achieve "Free Cooling," potentially saving ~20% AC runtime.
+- **Free Cooling Strategist:** At 7:00 PM, the AI analyzes the forecast. If the outdoors is ≥ 3°F cooler, it suggests opening the patio door to achieve "Free Cooling," potentially saving ~20% AC runtime.
 - **Comfort Optimizer:** The AI evaluates humidity. If >55%, it automatically lowers the sleep target by 1°F to prioritize dehumidification (Comfort Index) over raw temperature.
 - **The Auditor:** A "Self-Healing" gate for the repository. The AI reviews every cooling session's duration/drop. If the math looks like an anomaly (e.g., cooling 1 degree in 1 minute), the AI blocks the update to prevent repository corruption.
 
@@ -183,12 +190,21 @@ Understanding the system requires understanding the physical structure, mechanic
 
 ---
 
-## 17. Current Configuration (As of May 29, 2026)
-- **Active Version:** v7.8.6 (Logic Certified).
+## 18. Phase XIII: Attic Thermal Integration & Solar Load Asymmetry (v7.9 Roadmap)
+**Key Milestone:** Integrating multi-zone attic thermal pressure into predictive pre-cooling calculations.
+- **Baseline Data Logging (June 2026):** Integrating `sensor.north_attic_sensor_air_temperature` and `sensor.south_attic_sensor_air_temperature` telemetry into `exporter.py` for high-resolution BigQuery baseline profiling (7-day window).
+- **Sim Lab Digital Twin Expansion:** Creating **Scenario K (Attic Heat Soak Challenge)** in `sim_lab.yaml` to simulate attic thermal mass radiating heat into the living space.
+- **Start Time Multiplier:** Developing a dynamic attic thermal multiplier to adjust the pre-cooling starting time according to real-time roof solar gain pressure, preventing bedtime temperature overshoots.
+
+---
+
+## 19. Current Configuration (As of June 7, 2026)
+- **Active Version:** v7.8.6 (Attic baseline collection active for v7.9).
 - **Core Repository:** Managed with **Single-Pass Clean-Sweep** and **Automatic Sorting**.
 - **Safety Standard:** **Safety-First Handoff** (thermostat reset before learning).
 - **Automation Mode:** **Queued** (Hardened via Atomic Lock).
 - **Learning Mode:** **Adaptive Velocity** (90/10 Stable | 70/30 Aggressive).
 - **Physical Cap:** 60.0 min/deg.
-- **Validation Suite:** 10-scenario stress test active in Sim Lab.
+- **Attic Micro-Climate Integration:** High-resolution baseline collection active via BigQuery exporter.
+- **Validation Suite:** 10-scenario stress test active in Sim Lab; Scenario K (Attic Heat Soak) under development.
 - **Persistence:** State managed via `restore_state`; strictly normalized string-keyed JSON.

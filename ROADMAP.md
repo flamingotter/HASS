@@ -17,8 +17,10 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 - [x] **v7.8.5 Release:** Summer Resilience. Restored `mode: queued` with Atomic Lock, raised Data Armor cap to 60.0, and implemented Humidity-Aware strategist (Completed May 24, 2026).
 - [x] **v7.4 Release:** Implemented "Total Transparency" mode with AI qualitative analysis and unconditional session reporting. (Deployed May 11, 2026)
 - [x] **v7.3 Release:** Implemented Data Armor v2 (physical clamps), empirical BigQuery re-baselining, and maximum transparency logging. (Completed May 10, 2026)
-- [ ] **Thermal Decay Modeling:** Analyze the first "80F+ Day" to determine if a solar-load offset is needed for pre-cooling start times.
-- [ ] **Decommissioning:** Once v7.8.6 is proven stable, disable the legacy v6.3 automation in the UI to prevent logic overlaps.
+- [x] **Thermal Decay & Attic Modeling:** Switched from a generic outdoor temperature offset to direct micro-climate monitoring with dual attic sensors (Completed June 2026).
+- [x] **Target Override Safeguard:** Added an override protection automation with high-priority actionable mobile notifications to revert accidental slider modifications during pre-cooling (Completed June 8, 2026).
+- [x] **Decommissioning:** Completely removed the retired legacy v6.3 automation to prevent background logic overlaps (Completed May 2026).
+- [ ] **v7.9 Release - Attic Thermal Integration:** Gather a 7-day high-resolution logging baseline for `sensor.north_attic_sensor_air_temperature` and `sensor.south_attic_sensor_air_temperature` in BigQuery, define Scenario K (Attic Heat Soak Challenge) in Sim Lab, and implement a dynamic pre-cooling start-time multiplier based on real-time roof solar gain pressure.
 
 ## 3. Presence & Global Logic
 - [ ] **Eco Mode Validation:** Verify the first real-world 500-mile "Extended Away" trigger.
@@ -29,6 +31,9 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 - [x] **Climate Integrity v7.8.6:** Hardened Phase 3 logic with "Safety-First Handoff" and "Atomic Lock" (Mode: Queued). Implemented Adaptive Velocity learning. (Completed May 29, 2026)
 - [x] **Log Noise Reduction:** Removed `monitor_docker` integration; migrated BigQuery kickoff to surgical `shell_command` via `socket-proxy`. (Completed May 14, 2026)
 - [x] **Continuous Logic Validation:** Established the "Sim Lab" with 10-scenario stress test suite. (Completed May 14, 2026)
+- [x] **Pantry Door Hardening:** Fixed template and state-filtering runtime errors in the pantry light automation to ignore attribute-only changes and startup/offline states. (Completed June 8, 2026)
+- [x] **Garage Door Trigger Hardening:** Hardened chimes and door monitor automations with 'from: off' boundaries to eliminate false alerts during wireless sensor drops. (Completed June 8, 2026)
+- [x] **BigQuery Pipeline Recovery:** Rebuilt the bq_exporter image and re-created the container after it was pruned by the weekly system pruner. Hardened the container with a sleep loop to prevent future prunes. (Completed June 9, 2026)
 - [ ] **System Integrity:** Build a "Critical Heartbeat" sensor using the `critical` label to monitor essential infrastructure (Freezer, Networking, Z-Wave).
 - [ ] **Notification Standardization (Remaining):** Refactor `Person: Status Synchronizer`, `Garage Door Monitor`, and `Maintenance Engine` to use the unified `activate_mobile_actionable_notification` script.
 
