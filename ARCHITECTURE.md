@@ -61,6 +61,7 @@ Handles identity verification and suspicious activity detection.
 
 ## 5. Analytics & Infrastructure
 - **BigQuery Pipeline:** Data is exported to BigQuery for thermal decay and cooling velocity analysis. The `ha_bq_exporter` container is hardened with an infinite sleep loop (`sh -c "python exporter.py; exec sleep infinity"`) and set to `restart: unless-stopped`. This keeps the container permanently in a `Running` state to prevent it from being pruned by the weekly `docker system prune` of the housekeeper, while allowing Home Assistant to trigger the daily export cleanly via the `socket-proxy` restart command.
+- **AI Agent Direct Query (Remote MCP):** To empower AI agents with direct, real-time analytics access, the official Google Cloud remote MCP server (`bigquery_remote`) is integrated client-side. This allows direct, credential-secured schema discovery and querying against the `moonlit-botany-293421` project's `home_assistant_data` dataset.
 - **Docker Management:** Container control is handled via `curl` to the `socket-proxy` Docker API.
 - **Sim Lab:** A Digital Twin environment (`integrations/sim_lab.yaml`) used to stress-test logic against 10 specific scenarios (e.g., Short-Cycle, Type Mismatch, High Humidity) before deployment.
 

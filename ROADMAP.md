@@ -34,6 +34,7 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 - [x] **Pantry Door Hardening:** Fixed template and state-filtering runtime errors in the pantry light automation to ignore attribute-only changes and startup/offline states. (Completed June 8, 2026)
 - [x] **Garage Door Trigger Hardening:** Hardened chimes and door monitor automations with 'from: off' boundaries to eliminate false alerts during wireless sensor drops. (Completed June 8, 2026)
 - [x] **BigQuery Pipeline Recovery:** Rebuilt the bq_exporter image and re-created the container after it was pruned by the weekly system pruner. Hardened the container with a sleep loop to prevent future prunes. (Completed June 9, 2026)
+- [x] **Remote BigQuery MCP Server Setup:** Configured official Google Cloud remote MCP server (`bigquery_remote`) in `mcp_config.json` with scopes for BigQuery to allow direct, secure AI-agent query and schema-inspection capabilities (Completed June 11, 2026).
 - [ ] **System Integrity:** Build a "Critical Heartbeat" sensor using the `critical` label to monitor essential infrastructure (Freezer, Networking, Z-Wave).
 - [ ] **Notification Standardization (Remaining):** Refactor `Person: Status Synchronizer`, `Garage Door Monitor`, and `Maintenance Engine` to use the unified `activate_mobile_actionable_notification` script.
 
