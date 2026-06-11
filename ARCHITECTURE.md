@@ -26,7 +26,7 @@ The system manages occupancy via a centralized "Authority" state machine.
 ## 3. MBR Climate Engine (v7.8.6)
 A high-precision engine designed to reach sleep temperature exactly at bedtime.
 
-- **Data Repository:** `input_text.mbr_cooling_performance_data` (JSON). Stores min/deg cooling rates in 5-degree outdoor bins.
+- **Data Repository:** `input_text.mbr_cooling_performance_data` (JSON). Stores min/deg cooling rates in 5-degree outdoor bins up to 100°F (`90`, `95`, and `100` bins added June 2026 to prevent silent lookup fallback failures on hot afternoons/evenings).
 - **Single-Pass Clean-Sweep Pattern:** Consolidated logic (Load -> Normalize -> Lookup -> Math -> Merge) inside a single Jinja block to eliminate duplicate keys and type-drift.
 - **Safety-First Handoff:** Thermostat reset to maintenance target occurs at the **absolute start** of Phase 3. This ensures that even if learning math or AI co-processing fails, the home remains at a safe temperature.
 - **Atomic Lock (Mode: Queued):** The automation uses `mode: queued`. Because the thermostat is reset first in Phase 3 (v7.8.4 hardening), any subsequent "zombie" triggers in the queue will find the state no longer matches the "Agonal Push" requirement (T6 target is no longer 60°F) and stop safely. This mode ensures that 7:00 AM wakeup and AI evaluations are not interrupted by sensor jitter.
@@ -39,6 +39,7 @@ A high-precision engine designed to reach sleep temperature exactly at bedtime.
     3. **Pre-Cooling:** Aggressive push to 60°F based on bin math + AI Humidity Optimizer.
     4. **Handoff:** At target, reset T6 Pro to maintenance temp. AI Auditor validates session data.
 - **Data Armor:** A software physical-swing cap protects the repository from sensor jitter or thermal anomalies. **Raised to 60.0 min/deg** to accommodate extreme summer heat loads.
+- **Bedtime Shift & Solar Pressure Relief (Added June 2026):** Shifting the sleep bedtime target to `23:30` (11:30 PM) places pre-cooling triggers later in the evening (typically 7:30 PM - 8:30 PM). This delays the start of the high-draw cycle until after solar radiation on the roof deck has subsided, bypassing peak attic heat-soak loads, enhancing thermal decay efficiency, and ensuring virtually 100% comfort target reliability.
 - **Target Override Safeguard (Added June 2026):** To prevent accidental target temperature changes (such as slider touches while scrolling on mobile devices) from disrupting the active pre-cooling cycle, a state-recalculating safeguard was implemented. It monitors target temperature updates during pre-cooling, sends an actionable push notification with options to keep or revert the change, and handles the revert state statelessly using dynamic callback actions (REVERT_BEDROOM_TARGET_XX).
 - **Attic Micro-Climate Sensors (Added June 2026):** Two physical dual-sensor arrays were integrated to capture real-time roof thermal loads:
     - **North Attic:** `sensor.north_attic_sensor_air_temperature` / `sensor.north_attic_sensor_humidity`. Covers the front porch, dining area, foyer, laundry, pantry, and north guest room. Mounted 2 feet above blown-in insulation, 1 foot below the roof deck.

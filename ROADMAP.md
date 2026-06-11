@@ -13,6 +13,7 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
     - Physical install and entity update for `binary_sensor.bedroom_door` (replaces `binary_sensor.bedroom`).
 
 ## 2. Climate & Energy (The Sleep Engine v7.x)
+- [x] **High-Temperature Bin Expansion & Bedtime Shift:** Expanded repository to include `90`, `95`, and `100` temperature bins (up to 60.0 min/deg) to handle high-temperature afternoon/evening pre-cooling. Shifted bedroom sleep bedtime target to `23:30` (11:30 PM) to move the aggressive AC cycle to late evening after solar roof pressure decays, maximizing thermal efficiency and comfort reliability (Completed June 11, 2026).
 - [x] **v7.8.6 Release:** Adaptive Learning Velocity. Implemented automatic weight-shifting (90/10 vs 70/30) based on data convergence (Completed May 29, 2026).
 - [x] **v7.8.5 Release:** Summer Resilience. Restored `mode: queued` with Atomic Lock, raised Data Armor cap to 60.0, and implemented Humidity-Aware strategist (Completed May 24, 2026).
 - [x] **v7.4 Release:** Implemented "Total Transparency" mode with AI qualitative analysis and unconditional session reporting. (Deployed May 11, 2026)
