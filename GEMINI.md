@@ -2,7 +2,7 @@
 - **Structure:** Modular Package-based config in `integrations/` and `entities/`.
 - **Environment:** Docker container on Debian host. Home Assistant 2026.5.0. Python 3.14.2.
 - **Paths:** Internal container path is `/config/`. External host path is `/data/brick1/docker_data/appdata/hub/hass/`.
-- **BigQuery:** Analytics environment in `bq_venv/` (rebuilt inside container May 6, 2026). Credentials at `/config/bigquery_credentials.json`.
+- **BigQuery:** Analytics environment in `bq_venv/` (rebuilt inside container May 6, 2026). Credentials at `/config/bigquery_credentials.json`. Dedicated remote MCP credentials configured at `/opt/docker/secrets/mcp-bq-key.json`.
 
 ## 1. Documentation Map
 - **[ARCHITECTURE.md](ARCHITECTURE.md):** Core logic engines, state machines, and cross-automation dependencies.
@@ -36,7 +36,8 @@
 - **Log Review:** Use `grep "PHASE_"` for Climate diagnostics or `grep "SIM_DATA"` for simulation results in `home-assistant.log`.
 - **Simulation First:** ALL major logic changes (Climate, Presence) MUST be verified in `integrations/sim_lab.yaml` using the stress test script before production deployment.
 
-## 6. Current System State (As of May 14, 2026)
-- **Climate Engine (v7.8.3):** Logic Certified stable. Uses sorted string-keyed JSON repository.
+## 6. Current System State (As of June 11, 2026)
+- **Climate Engine (v7.8.6):** Logic Certified stable. Uses sorted string-keyed JSON repository with Overrides/Attic sensors integrated June 2026.
 - **Vision Engine (v1.5):** Resilient recording with 2s flush delay to survive DTS stream drift.
+- **BigQuery Remote MCP (v1.0):** Active and verified stable as of June 11, 2026. Utilizes service account `mcp-bigquery-reader` for direct AI analytics.
 - **Startup:** Log sensor and core settings hardened; zero-warning boot.
