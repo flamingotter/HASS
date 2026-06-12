@@ -3649,7 +3649,8 @@
             task_name: Learning Auditor
             instructions: 'A cooling session dropped {{ drop }}F in {{ duration }}
               minutes. Calculated rate: {{ obs_rate }} min/deg. Is this rate physically
-              plausible for a residential AC (usually 10-45 min/deg)?  If the rate
+              plausible for a residential AC (usually 10-45 min/deg, but can go up to 60.0 min/deg
+              on extremely hot days over 90F with intense attic heat soak)? If the rate
               is < 5 min/deg, it is likely an anomaly. Return your verdict starting
               with ''VALID'' or ''ANOMALY'' followed by a one-sentence explanation.'
           response_variable: audit_result
