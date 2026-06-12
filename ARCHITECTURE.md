@@ -73,3 +73,33 @@ Handles identity verification and suspicious activity detection.
 - **Simulation Validation:** `grep "SIM_DATA" home-assistant.log | tail -n 10`
 - **Docker Status:** `curl -s http://127.0.0.1:2375/containers/ha_bq_exporter/json | jq .State.Status`
 - **Config Check:** `ha core check` or `ha core restart`
+
+---
+
+## 7. Custom Agent Skills Suite
+To empower programmatic, local, and secure AI-agent operations, the system deploys a suite of local Python-executable tools in the `skills/` directory. These tools are designed with zero external host-level dependencies to execute natively on the host's standard Python interpreter (`/usr/bin/python3`), while utilizing secure credential parsing or container-delegation pathways for privileged operations.
+
+### Component Map
+
+#### A. HA REST API Client (`skills/ha_client.py`)
+A lightweight, programmatic REST client that extracts Bearer Tokens and internal endpoints directly from `/root/.gemini/antigravity-cli/mcp_config.json`. This tool bypasses SQL database queries to interact directly with Home Assistant's state engine and services.
+* **Usage - Fetch State:** `python3 skills/ha_client.py get sensor.bedroom_temperature_smoothed`
+* **Usage - Call Action:** `python3 skills/ha_client.py action light turn_on '{"entity_id": "light.bedroom_ceiling"}'`
+
+#### B. Jinja Sandbox Compiler (`skills/jinja_sandbox.py`)
+A secure sandboxed parsing and compilation engine that compiles arbitrary Jinja templates using Home Assistant's native `/api/template` REST endpoint. This ensures accurate type evaluation and system variable lookups without running local sandbox parsers.
+* **Usage:** `python3 skills/jinja_sandbox.py "{{ states('sensor.bedroom_temperature_smoothed') | float }}"`
+
+#### C. Log Diagnostic & Performance Compiler (`skills/log_parser.py`)
+A streaming parser that scans `climate_control_log.csv` and `home-assistant.log`. It isolates core events (`PHASE_`), highlights climate exceptions, and compiles SQLite database lock/warning metrics into formatted CLI tables.
+* **Usage - Climate Phase Logs:** `python3 skills/log_parser.py --type climate`
+* **Usage - System Lock/Errors:** `python3 skills/log_parser.py --type errors`
+
+#### D. BigQuery Container Delegate (`skills/bq_analytics.py`)
+A host-side delegate script. Because the host lacks GCP Python packages, this delegate pipes SQL queries and options via `docker exec ha_bq_exporter` to query BigQuery using `/app/service-account.json` inside the running container. This provides zero-dependency, rapid SQL execution on the host.
+* **Usage:** `python3 skills/bq_analytics.py --preset SLA_ASYMMETRY`
+
+#### E. Sim Lab Scenario Runner & Learning Auditor (`skills/run_sim_lab.py`)
+An automation runner that triggers digital twin scenarios in the Sim Lab (`script.run_climate_stress_tests`) and audits repository learning state transitions (`input_text.sim_mbr_repo`) to verify math and adaptive learning velocity changes after simulation runs.
+* **Usage:** `python3 skills/run_sim_lab.py --scenario 1`
+

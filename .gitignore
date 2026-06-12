@@ -15,6 +15,7 @@ custom_components/
 *.py
 !bin/*.py
 !tools/*.py
+!skills/*.py
 *.db-shm
 *.db-wal
 *.red
@@ -49,3 +50,6 @@ HA.code-workspace
 watchman_report.txt
 bq_venv/
 climate_control_log.csv
+__pycache__/
+skills/__pycache__/
+
