@@ -334,8 +334,12 @@ welcome_home_ai_debrief:
   - action: notify.alexa_media_counter
     continue_on_error: true
     data:
-      message: '{{ (ai_greeting | default({})).data | default(''Welcome home! The
-        house is secure and the cats are waiting for you.'') }}'
+      message: >-
+        {%- if ai_greeting is defined and ai_greeting is not none and ai_greeting.data is defined -%}
+          {{ ai_greeting.data }}
+        {%- else -%}
+          Welcome home! The house is secure and the cats are waiting for you.
+        {%- endif -%}
       target: media_player.counter
   - delay:
       hours: 0

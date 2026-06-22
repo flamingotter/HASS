@@ -602,13 +602,6 @@
     id: disarmed
     to: disarmed
     trigger: state
-  - alias: When Home Alarm changes from Armed Night to Disarmed
-    entity_id:
-    - alarm_control_panel.home_alarm
-    id: disarmed from armed night
-    to: disarmed
-    from: armed_night
-    trigger: state
   - entity_id:
     - alarm_control_panel.home_alarm
     id: armed night
@@ -824,7 +817,7 @@
           id:
           - disarmed
         - condition: template
-          value_template: '{{ trigger.from_state.state != "armed_night" }}'
+          value_template: '{{ trigger.from_state is not none and trigger.from_state.state != "armed_night" }}'
       alias: When triggered by disarmed
       sequence:
       - action: script.turn_on
