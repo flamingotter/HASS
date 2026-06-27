@@ -36,8 +36,11 @@
 - **Log Review:** Use `grep "PHASE_"` for Climate diagnostics or `grep "SIM_DATA"` for simulation results in `home-assistant.log`.
 - **Simulation First:** ALL major logic changes (Climate, Presence) MUST be verified in `integrations/sim_lab.yaml` using the stress test script before production deployment.
 
-## 6. Current System State (As of June 11, 2026)
+## 6. Current System State (As of June 27, 2026)
 - **Climate Engine (v7.8.6):** Logic Certified stable. Uses sorted string-keyed JSON repository with Overrides/Attic sensors integrated June 2026.
 - **Vision Engine (v1.5):** Resilient recording with 2s flush delay to survive DTS stream drift.
-- **BigQuery Remote MCP (v1.0):** Active and verified stable as of June 11, 2026. Utilizes service account `mcp-bigquery-reader` for direct AI analytics.
+- **BigQuery Remote MCP (v1.0):** Active and verified stable. Utilizes service account `mcp-bigquery-reader` for direct AI analytics.
+- **Containers (HA & Z-Wave):** Core `homeassistant` and `zwave_js` container images successfully updated to their latest versions for performance and Z-Wave driver stability.
+- **Alexa Media Player Custom Integration:** Downgraded to previous stable release to bypass Amazon's expired cookie/session authentication loop.
+- **Security & Alarm State:** Staged aggregate watcher `binary_sensor.door_locks` checking the native `lock.door_locks` helper group, and optimized sirens automations to prevent triggering during `armed_night` status.
 - **Startup:** Log sensor and core settings hardened; zero-warning boot.
