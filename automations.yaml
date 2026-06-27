@@ -152,7 +152,9 @@
       - action: lock.lock
         enabled: true
         target:
-          entity_id: lock.garage_man_lock
+          entity_id:
+          - lock.door_locks
+        data: {}
       - if:
         - condition: state
           entity_id: input_boolean.trash_reminder
@@ -278,6 +280,11 @@
         entity_id:
         - switch.bedroom_sleep_mode
         - switch.bedroom_humidifier
+    - action: button.press
+      metadata: {}
+      target:
+        entity_id: button.shuttle_bay_restart
+      data: {}
   mode: parallel
   max: 10
 - id: '1723572617932'
@@ -739,15 +746,30 @@
               entity_id: alarm_control_panel.home_alarm
           alias: MJ Disarmed
         - conditions:
-          - condition: and
+          - alias: Both Extended Away (Arm Vacation)
+            condition: and
             conditions:
             - condition: state
               entity_id: input_select.josh_status
-              state: Away
+              state: Extended Away
             - condition: state
               entity_id: input_select.mj_status
-              state: Away
-            alias: Away / Away
+              state: Extended Away
+          sequence:
+          - action: alarm_control_panel.alarm_arm_vacation
+            target:
+              entity_id: alarm_control_panel.home_alarm
+          alias: Armed Vacation
+        - conditions:
+          - alias: Any Away State Combination (Arm Away)
+            condition: and
+            conditions:
+            - condition: template
+              value_template: '{{ states(''input_select.josh_status'') in [''Away'',
+                ''Extended Away'', ''Work''] }}'
+            - condition: template
+              value_template: '{{ states(''input_select.mj_status'') in [''Away'',
+                ''Extended Away'', ''Work''] }}'
           sequence:
           - if:
             - condition: state
@@ -770,21 +792,6 @@
               target:
                 entity_id: alarm_control_panel.home_alarm
           alias: Away / Away
-        - conditions:
-          - alias: Ext Away / Ext Away
-            condition: and
-            conditions:
-            - condition: state
-              entity_id: input_select.josh_status
-              state: Extended Away
-            - condition: state
-              entity_id: input_select.mj_status
-              state: Extended Away
-          sequence:
-          - action: alarm_control_panel.alarm_arm_vacation
-            target:
-              entity_id: alarm_control_panel.home_alarm
-          alias: Armed Vacation
       alias: When triggered by person status, set alarm panel mode.
     - conditions:
       - condition: trigger
@@ -817,7 +824,8 @@
           id:
           - disarmed
         - condition: template
-          value_template: '{{ trigger.from_state is not none and trigger.from_state.state != "armed_night" }}'
+          value_template: '{{ trigger.from_state is not none and trigger.from_state.state
+            != "armed_night" }}'
       alias: When triggered by disarmed
       sequence:
       - action: script.turn_on
@@ -1773,6 +1781,9 @@
         - and:
           - condition: trigger
             id: proximity_reset
+          - condition: state
+            entity_id: input_boolean.eco_mode
+            state: 'on'
           - condition: numeric_state
             entity_id: sensor.home_josh_distance
             below: 264000
@@ -2921,13 +2932,26 @@
     - 'off'
     to:
     - 'on'
+  conditions:
+  - condition: not
+    conditions:
+    - condition: state
+      entity_id: alarm_control_panel.home_alarm
+      state: armed_night
   actions:
   - action: siren.turn_on
     target:
-      entity_id: siren.downstairs_siren_chime_play_tone
+      entity_id:
+      - siren.downstairs_siren_chime_play_tone
+      - siren.office_siren_chime_play_tone
+      - siren.bedroom_siren_chime_play_tone
     data:
       tone: '{{ door_map[trigger.entity_id].instant | default(1) }}'
-  - delay: 00:10:00
+  - delay:
+      hours: 0
+      minutes: 3
+      seconds: 0
+      milliseconds: 0
   variables:
     door_map:
       binary_sensor.front_door:
@@ -3217,6 +3241,7 @@
     entity_id:
     - binary_sensor.garage_man_door
     - binary_sensor.front_door
+    - binary_sensor.bedroom_door
     - binary_sensor.pantry_door
     from:
     - 'off'
@@ -3249,21 +3274,33 @@
       - condition: trigger
         id: long_open
       sequence:
-      - action: siren.turn_on
-        target:
-          entity_id: siren.downstairs_siren_chime_play_tone
-        data:
-          tone: '{{ door_map[trigger.entity_id].long | default(1) }}'
+      - if:
+        - condition: not
+          conditions:
+          - condition: state
+            entity_id: alarm_control_panel.home_alarm
+            state: armed_night
+        then:
+        - action: siren.turn_on
+          target:
+            entity_id:
+            - siren.downstairs_siren_chime_play_tone
+            - siren.bedroom_siren_chime_play_tone
+            - siren.office_siren_chime_play_tone
+          data:
+            tone: '{{ door_map[trigger.entity_id].long | default(1) }}'
       - action: notify.all_devices
         data:
           title: Door Open
           message: The {{ state_attr(trigger.entity_id, 'friendly_name') }} is Open!
   variables:
     door_map:
+      binary_sensor.bedroom_door:
+        long: 9
       binary_sensor.front_door:
-        long: 4
+        long: 7
       binary_sensor.garage_man_door:
-        long: 5
+        long: 6
       binary_sensor.pantry_door:
         long: 1
   mode: parallel
@@ -3312,7 +3349,9 @@
     entity_id: binary_sensor.pantry_door
   conditions:
   - condition: template
-    value_template: "{{ trigger.from_state is not none and trigger.to_state is not none and trigger.from_state.state != trigger.to_state.state and trigger.to_state.state in ['on', 'off'] }}"
+    value_template: '{{ trigger.from_state is not none and trigger.to_state is not
+      none and trigger.from_state.state != trigger.to_state.state and trigger.to_state.state
+      in [''on'', ''off''] }}'
   actions:
   - action: switch.turn_{{ trigger.to_state.state }}
     target:
@@ -3642,10 +3681,11 @@
             task_name: Learning Auditor
             instructions: 'A cooling session dropped {{ drop }}F in {{ duration }}
               minutes. Calculated rate: {{ obs_rate }} min/deg. Is this rate physically
-              plausible for a residential AC (usually 10-45 min/deg, but can go up to 60.0 min/deg
-              on extremely hot days over 90F with intense attic heat soak)? If the rate
-              is < 5 min/deg, it is likely an anomaly. Return your verdict starting
-              with ''VALID'' or ''ANOMALY'' followed by a one-sentence explanation.'
+              plausible for a residential AC (usually 10-45 min/deg, but can go up
+              to 60.0 min/deg on extremely hot days over 90F with intense attic heat
+              soak)? If the rate is < 5 min/deg, it is likely an anomaly. Return your
+              verdict starting with ''VALID'' or ''ANOMALY'' followed by a one-sentence
+              explanation.'
           response_variable: audit_result
         - variables:
             audit_verdict: '{{ (audit_result | default({''data'': ''VALID: No AI response''})).data
@@ -3661,21 +3701,20 @@
               -%} {%- for k, v in raw.items() -%}\n  {%- if k|string|trim == lkey
               -%}\n    {%- set ns.orate = v | float -%}\n    {%- set ns.match = true
               -%}\n  {%- endif -%}\n{%- endfor -%}\n{# 2. MATH (Data Armor v2) #}
-              {%- set diff = (ns.orate - obs_rate) | abs -%} {%- set alpha = 0.9
-              if diff < 3.0 else 0.7 -%} {%- set rwt = ((ns.orate * alpha) + (obs_rate
+              {%- set diff = (ns.orate - obs_rate) | abs -%} {%- set alpha = 0.9 if
+              diff < 3.0 else 0.7 -%} {%- set rwt = ((ns.orate * alpha) + (obs_rate
               * (1.0 - alpha))) | round(1) -%} {%- set clp = [[rwt, 10.0]|max, 60.0]|min
               -%} {%- set df = clp - ns.orate -%} {%- set cap = 5.0 -%} {%- if df
               > cap -%}{%- set nr = (ns.orate + cap) | round(1) -%} {%- elif df <
               (cap * -1) -%}{%- set nr = (ns.orate - cap) | round(1) -%} {%- else
-              -%}{%- set nr = clp -%}{%- endif -%}\n{#
-              3. CLEAN-SWEEP MERGE (List-based to force uniqueness & sorting) #} {%-
-              set ns_merge = namespace(items=[]) -%} {%- for k, v in raw.items() -%}\n
-              \ {%- if k|string|trim != lkey -%}\n    {%- set ns_merge.items = ns_merge.items
-              + [(k|string|trim, v|float)] -%}\n  {%- endif -%}\n{%- endfor -%} {%-
-              set ns_merge.items = ns_merge.items + [(lkey, nr|float)] -%}\n{# 4.
-              EXPORT #} {{- {\n  \"new_repo\": dict(ns_merge.items | sort) | to_json,\n
-              \ \"old_rate\": ns.orate,\n  \"new_rate\": nr,\n  \"match\": ns.match\n}
-              | to_json -}}"
+              -%}{%- set nr = clp -%}{%- endif -%}\n{# 3. CLEAN-SWEEP MERGE (List-based
+              to force uniqueness & sorting) #} {%- set ns_merge = namespace(items=[])
+              -%} {%- for k, v in raw.items() -%}\n  {%- if k|string|trim != lkey
+              -%}\n    {%- set ns_merge.items = ns_merge.items + [(k|string|trim,
+              v|float)] -%}\n  {%- endif -%}\n{%- endfor -%} {%- set ns_merge.items
+              = ns_merge.items + [(lkey, nr|float)] -%}\n{# 4. EXPORT #} {{- {\n  \"new_repo\":
+              dict(ns_merge.items | sort) | to_json,\n  \"old_rate\": ns.orate,\n
+              \ \"new_rate\": nr,\n  \"match\": ns.match\n} | to_json -}}"
         - variables:
             res: '{{ new_repo_data | from_json }}'
             new_repo: '{{ res.new_repo }}'
@@ -3992,10 +4031,10 @@
       entity_id: scene.doorbell_volume_snapshot
     data: {}
   mode: single
-
 - id: climate_bedroom_target_override_safeguard
   alias: 'Climate: Bedroom Target Override Safeguard'
-  description: Detects manual changes to bedroom target temperature during active pre-cooling and offers a mobile alert with a one-tap action to revert.
+  description: Detects manual changes to bedroom target temperature during active
+    pre-cooling and offers a mobile alert with a one-tap action to revert.
   triggers:
   - trigger: state
     entity_id: input_number.bedroom_target_temperature
@@ -4006,82 +4045,80 @@
   conditions: []
   actions:
   - choose:
-    - alias: 'Target changed during pre-cooling'
+    - alias: Target changed during pre-cooling
       conditions:
       - condition: template
-        value_template: "{{ trigger.id == 'target_changed' }}"
+        value_template: '{{ trigger.id == ''target_changed'' }}'
       - condition: template
-        value_template: "{{ trigger.to_state.context.user_id is not none }}"
+        value_template: '{{ trigger.to_state.context.user_id is not none }}'
       - condition: template
-        value_template: "{{ trigger.from_state is not none and trigger.from_state.state not in ['unknown', 'unavailable'] }}"
+        value_template: '{{ trigger.from_state is not none and trigger.from_state.state
+          not in [''unknown'', ''unavailable''] }}'
       - condition: template
-        value_template: >-
-          {% set b = states('input_datetime.bedroom_bedtime') %}
-          {% set bedtime_str = b if b not in ['unknown', 'unavailable', 'None'] else '22:30:00' %}
-          {% set bedtime = today_at(bedtime_str) %}
-          {% set target = trigger.from_state.state | float(68) %}
-          {% set t6_temp = state_attr('climate.t6_pro_downstairs', 'current_temperature') | float(72) %}
-          {% set bdr_raw = states('sensor.bedroom_temperature_smoothed') | float(t6_temp) %}
-          {% set indoor = [bdr_raw, t6_temp + 3.0]|min %}
-          {% set outdoor = states('sensor.weather_station_temperature_outdoor') | float(70) %}
-          {%- set raw = states('input_text.mbr_cooling_performance_data') | from_json -%}
-          {%- set lkey = ((outdoor / 5) | round(0) | int * 5) | string | trim -%}
-          {%- set ns = namespace(orate=25) -%}
-          {%- for k, v in raw.items() -%}
-            {%- if k|string|trim == lkey -%}
-              {%- set ns.orate = v | float -%}
-            {%- endif -%}
-          {%- endfor -%}
-          {%- set base_rate = ns.orate -%}
-          {% set delta = [0, indoor - target]|max %}
-          {% set lead_min = (delta * base_rate) %}
-          {% set start_ts = as_timestamp(bedtime, 0) - (lead_min * 60) %}
-          {% set is_sleep_window = now() >= bedtime or now().hour < 7 %}
-          {% set is_precool_window = as_timestamp(now(), 0) >= start_ts and now() < bedtime %}
-          {% set is_cooling_mode = is_state('climate.t6_pro_downstairs', 'cool') %}
-          {{ is_precool_window and not is_sleep_window and indoor > target and is_cooling_mode }}
+        value_template: "{% set b = states('input_datetime.bedroom_bedtime') %} {%
+          set bedtime_str = b if b not in ['unknown', 'unavailable', 'None'] else
+          '22:30:00' %} {% set bedtime = today_at(bedtime_str) %} {% set target =
+          trigger.from_state.state | float(68) %} {% set t6_temp = state_attr('climate.t6_pro_downstairs',
+          'current_temperature') | float(72) %} {% set bdr_raw = states('sensor.bedroom_temperature_smoothed')
+          | float(t6_temp) %} {% set indoor = [bdr_raw, t6_temp + 3.0]|min %} {% set
+          outdoor = states('sensor.weather_station_temperature_outdoor') | float(70)
+          %} {%- set raw = states('input_text.mbr_cooling_performance_data') | from_json
+          -%} {%- set lkey = ((outdoor / 5) | round(0) | int * 5) | string | trim
+          -%} {%- set ns = namespace(orate=25) -%} {%- for k, v in raw.items() -%}\n
+          \ {%- if k|string|trim == lkey -%}\n    {%- set ns.orate = v | float -%}\n
+          \ {%- endif -%}\n{%- endfor -%} {%- set base_rate = ns.orate -%} {% set
+          delta = [0, indoor - target]|max %} {% set lead_min = (delta * base_rate)
+          %} {% set start_ts = as_timestamp(bedtime, 0) - (lead_min * 60) %} {% set
+          is_sleep_window = now() >= bedtime or now().hour < 7 %} {% set is_precool_window
+          = as_timestamp(now(), 0) >= start_ts and now() < bedtime %} {% set is_cooling_mode
+          = is_state('climate.t6_pro_downstairs', 'cool') %} {{ is_precool_window
+          and not is_sleep_window and indoor > target and is_cooling_mode }}"
       sequence:
       - action: notify.mobile_app_josh_mobile
         data:
-          title: "Bedroom Target Override Detected"
-          message: "The bedroom target was changed from {{ trigger.from_state.state | float | int }}°F to {{ trigger.to_state.state | float | int }}°F during pre-cooling. Tap below to revert."
+          title: Bedroom Target Override Detected
+          message: The bedroom target was changed from {{ trigger.from_state.state
+            | float | int }}°F to {{ trigger.to_state.state | float | int }}°F during
+            pre-cooling. Tap below to revert.
           data:
-            tag: "bedroom_target_override"
+            tag: bedroom_target_override
             ttl: 0
             priority: high
             actions:
-            - action: "REVERT_BEDROOM_TARGET_{{ trigger.from_state.state | float | int }}"
-              title: "Revert to {{ trigger.from_state.state | float | int }}°F"
-            - action: "KEEP_BEDROOM_TARGET"
-              title: "Keep {{ trigger.to_state.state | float | int }}°F"
-    - alias: 'Notification action triggered'
+            - action: REVERT_BEDROOM_TARGET_{{ trigger.from_state.state | float |
+                int }}
+              title: Revert to {{ trigger.from_state.state | float | int }}°F
+            - action: KEEP_BEDROOM_TARGET
+              title: Keep {{ trigger.to_state.state | float | int }}°F
+    - alias: Notification action triggered
       conditions:
       - condition: template
-        value_template: "{{ trigger.id == 'notification_action' }}"
+        value_template: '{{ trigger.id == ''notification_action'' }}'
       - condition: template
-        value_template: "{{ trigger.event.data.action.startswith('REVERT_BEDROOM_TARGET_') }}"
+        value_template: '{{ trigger.event.data.action.startswith(''REVERT_BEDROOM_TARGET_'')
+          }}'
       sequence:
       - action: input_number.set_value
         target:
           entity_id: input_number.bedroom_target_temperature
         data:
-          value: "{{ trigger.event.data.action.replace('REVERT_BEDROOM_TARGET_', '') | float }}"
+          value: '{{ trigger.event.data.action.replace(''REVERT_BEDROOM_TARGET_'',
+            '''') | float }}'
       - action: notify.mobile_app_josh_mobile
         data:
-          message: "clear_notification"
+          message: clear_notification
           data:
-            tag: "bedroom_target_override"
-    - alias: 'Keep target'
+            tag: bedroom_target_override
+    - alias: Keep target
       conditions:
       - condition: template
-        value_template: "{{ trigger.id == 'notification_action' }}"
+        value_template: '{{ trigger.id == ''notification_action'' }}'
       - condition: template
-        value_template: "{{ trigger.event.data.action == 'KEEP_BEDROOM_TARGET' }}"
+        value_template: '{{ trigger.event.data.action == ''KEEP_BEDROOM_TARGET'' }}'
       sequence:
       - action: notify.mobile_app_josh_mobile
         data:
-          message: "clear_notification"
+          message: clear_notification
           data:
-            tag: "bedroom_target_override"
+            tag: bedroom_target_override
   mode: single
-

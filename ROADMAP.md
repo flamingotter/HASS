@@ -26,6 +26,7 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 ## 3. Presence & Global Logic
 - [ ] **Eco Mode Validation:** Verify the first real-world 500-mile "Extended Away" trigger.
 - [ ] **Proximity Testing:** Confirm both Josh and MJ entering the 50-mile radius correctly releases Eco Mode.
+- [x] **Eco Mode Proximity Reset Hardening:** Added a guard condition to the Enhanced Eco Mode Manager proximity reset logic to verify input_boolean.eco_mode is 'on', preventing unexpected temperature overrides of regular sleep windows when Eco Mode is off (Completed June 23, 2026).
 
 ## 4. Maintenance & Housekeeping
 - [x] **Notification Standardization:** Standardized `Notify: Feed Pets (v3.0)` and `Notify: Trash Day` using the "Detective Butler" device ID pattern. (Completed May 12, 2026)
@@ -38,6 +39,8 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 - [x] **BigQuery Pipeline Recovery:** Rebuilt the bq_exporter image and re-created the container after it was pruned by the weekly system pruner. Hardened the container with a sleep loop to prevent future prunes. (Completed June 9, 2026)
 - [x] **Remote BigQuery MCP Server Setup:** Configured official Google Cloud remote MCP server (`bigquery_remote`) in `mcp_config.json` with scopes for BigQuery to allow direct, secure AI-agent query and schema-inspection capabilities (Completed June 11, 2026).
 - [x] **Alarm panel functions & welcome script hardening:** Hardened the disarmed transition template guard against null-state crashes, trimmed the redundant unhandled disarm trigger, and implemented a robust, whitespace-hardened fail-safe fallback for the AI debrief message (Completed June 12, 2026).
+- [x] **Asymmetric Away Alarm Arming Support:** Restructured the arming choose-block in the alarm panel functions automation to natively support mixed presence states, securing the house when residents are in any combination of Away, Extended Away, or Work (Completed June 23, 2026).
+- [x] **Door Locks Binary Sensor Modernization:** Updated the Door Locks binary sensor state template to dynamically monitor the centralized `lock.door_locks` group helper instead of only checking a single lock, ensuring aggregate security state tracking across all front, garage, and bedroom doors (Completed June 27, 2026).
 - [ ] **System Integrity:** Build a "Critical Heartbeat" sensor using the `critical` label to monitor essential infrastructure (Freezer, Networking, Z-Wave).
 - [ ] **Notification Standardization (Remaining):** Refactor `Person: Status Synchronizer`, `Garage Door Monitor`, and `Maintenance Engine` to use the unified `activate_mobile_actionable_notification` script.
 
