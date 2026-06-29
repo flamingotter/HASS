@@ -149,12 +149,18 @@
         target:
           entity_id: alarm_control_panel.home_alarm
         data: {}
-      - action: lock.lock
-        enabled: true
-        target:
-          entity_id:
-          - lock.door_locks
-        data: {}
+      - if:
+        - condition: template
+          value_template: >-
+            {% set locks = state_attr('lock.door_locks', 'entity_id') %}
+            {% set to_lock = locks | reject('is_state', 'locked') | reject('is_state', 'locking') | list %}
+            {{ to_lock | length > 0 }}
+        then:
+        - action: lock.lock
+          target:
+            entity_id: >-
+              {% set locks = state_attr('lock.door_locks', 'entity_id') %}
+              {{ locks | reject('is_state', 'locked') | reject('is_state', 'locking') | list }}
       - if:
         - condition: state
           entity_id: input_boolean.trash_reminder
@@ -799,9 +805,18 @@
         - armed away
       sequence:
       - parallel:
-        - action: lock.lock
-          target:
-            entity_id: lock.door_locks
+        - if:
+          - condition: template
+            value_template: >-
+              {% set locks = state_attr('lock.door_locks', 'entity_id') %}
+              {% set to_lock = locks | reject('is_state', 'locked') | reject('is_state', 'locking') | list %}
+              {{ to_lock | length > 0 }}
+          then:
+          - action: lock.lock
+            target:
+              entity_id: >-
+                {% set locks = state_attr('lock.door_locks', 'entity_id') %}
+                {{ locks | reject('is_state', 'locked') | reject('is_state', 'locking') | list }}
         - action: light.turn_off
           target:
             entity_id:
