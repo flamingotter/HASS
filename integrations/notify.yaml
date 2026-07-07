@@ -14,7 +14,7 @@ notify:
     sender: flamingotter@gmail.com
     encryption: starttls
     username: flamingotter@gmail.com
-    password: "mdppapjwbpzpygdc" # No spaces
+    password: !secret smtp_password
     recipient:
       - flamingotter+hass@gmail.com # Where you want the report sent
     sender_name: "Home Assistant"

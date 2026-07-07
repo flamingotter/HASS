@@ -25,6 +25,7 @@
       for_each:
       - camera.driveway_outside_high_resolution_channel
       - camera.patio_left_high_resolution_channel
+      - camera.patio_right_high_resolution_channel
       - camera.doorbell_outside_high_resolution_channel
       - camera.front_porch_ptz_high_resolution_channel
       sequence:
@@ -151,16 +152,15 @@
         data: {}
       - if:
         - condition: template
-          value_template: >-
-            {% set locks = state_attr('lock.door_locks', 'entity_id') %}
-            {% set to_lock = locks | reject('is_state', 'locked') | reject('is_state', 'locking') | list %}
-            {{ to_lock | length > 0 }}
+          value_template: '{% set locks = state_attr(''lock.door_locks'', ''entity_id'')
+            %} {% set to_lock = locks | reject(''is_state'', ''locked'') | reject(''is_state'',
+            ''locking'') | list %} {{ to_lock | length > 0 }}'
         then:
         - action: lock.lock
           target:
-            entity_id: >-
-              {% set locks = state_attr('lock.door_locks', 'entity_id') %}
-              {{ locks | reject('is_state', 'locked') | reject('is_state', 'locking') | list }}
+            entity_id: '{% set locks = state_attr(''lock.door_locks'', ''entity_id'')
+              %} {{ locks | reject(''is_state'', ''locked'') | reject(''is_state'',
+              ''locking'') | list }}'
       - if:
         - condition: state
           entity_id: input_boolean.trash_reminder
@@ -807,16 +807,15 @@
       - parallel:
         - if:
           - condition: template
-            value_template: >-
-              {% set locks = state_attr('lock.door_locks', 'entity_id') %}
-              {% set to_lock = locks | reject('is_state', 'locked') | reject('is_state', 'locking') | list %}
-              {{ to_lock | length > 0 }}
+            value_template: '{% set locks = state_attr(''lock.door_locks'', ''entity_id'')
+              %} {% set to_lock = locks | reject(''is_state'', ''locked'') | reject(''is_state'',
+              ''locking'') | list %} {{ to_lock | length > 0 }}'
           then:
           - action: lock.lock
             target:
-              entity_id: >-
-                {% set locks = state_attr('lock.door_locks', 'entity_id') %}
-                {{ locks | reject('is_state', 'locked') | reject('is_state', 'locking') | list }}
+              entity_id: '{% set locks = state_attr(''lock.door_locks'', ''entity_id'')
+                %} {{ locks | reject(''is_state'', ''locked'') | reject(''is_state'',
+                ''locking'') | list }}'
         - action: light.turn_off
           target:
             entity_id:
@@ -3697,7 +3696,7 @@
             instructions: 'A cooling session dropped {{ drop }}F in {{ duration }}
               minutes. Calculated rate: {{ obs_rate }} min/deg. Is this rate physically
               plausible for a residential AC (usually 10-45 min/deg, but can go up
-              to 60.0 min/deg on extremely hot days over 90F with intense attic heat
+              to 90.0 min/deg on extremely hot days over 90F with intense attic heat
               soak)? If the rate is < 5 min/deg, it is likely an anomaly. Return your
               verdict starting with ''VALID'' or ''ANOMALY'' followed by a one-sentence
               explanation.'
@@ -3718,7 +3717,7 @@
               -%}\n  {%- endif -%}\n{%- endfor -%}\n{# 2. MATH (Data Armor v2) #}
               {%- set diff = (ns.orate - obs_rate) | abs -%} {%- set alpha = 0.9 if
               diff < 3.0 else 0.7 -%} {%- set rwt = ((ns.orate * alpha) + (obs_rate
-              * (1.0 - alpha))) | round(1) -%} {%- set clp = [[rwt, 10.0]|max, 60.0]|min
+              * (1.0 - alpha))) | round(1) -%} {%- set clp = [[rwt, 10.0]|max, 90.0]|min
               -%} {%- set df = clp - ns.orate -%} {%- set cap = 5.0 -%} {%- if df
               > cap -%}{%- set nr = (ns.orate + cap) | round(1) -%} {%- elif df <
               (cap * -1) -%}{%- set nr = (ns.orate - cap) | round(1) -%} {%- else

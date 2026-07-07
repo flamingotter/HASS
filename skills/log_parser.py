@@ -56,7 +56,23 @@ def parse_climate_log(days_filter=7):
             run_date = ts_subparts[1] if len(ts_subparts) > 1 else dt.strftime("%Y-%m-%d")
             
             if run_date not in runs:
-                runs[run_date] = {"start_indoor": "-", "start_outdoor": "-", "expected_rate": "-", "duration": "-", "drop": "-", "actual_rate": "-", "bin": "-", "handoff_indoor": "-", "status": "Incomplete"}
+                runs[run_date] = {
+                    "start_dt": None,
+                    "handoff_dt": None,
+                    "start_indoor": "-",
+                    "start_outdoor": "-",
+                    "expected_rate": "-",
+                    "duration": "-",
+                    "drop": "-",
+                    "actual_rate": "-",
+                    "bin": "-",
+                    "handoff_indoor": "-",
+                    "status": "Incomplete",
+                    "ai_reason": "-",
+                    "audit": "-",
+                    "keep_cool_count": 0,
+                    "prevent_overcool_count": 0
+                }
             
             # Parse key-value attributes
             attrs = {}
@@ -69,31 +85,79 @@ def parse_climate_log(days_filter=7):
             if phase == "PHASE_2_START":
                 runs[run_date]["start_indoor"] = attrs.get("indoor", "-")
                 runs[run_date]["start_outdoor"] = attrs.get("outdoor", "-")
-                runs[run_date]["expected_rate"] = attrs.get("expectedrate", "-")
+                runs[run_date]["ai_reason"] = attrs.get("ai_reason", "-")
+                runs[run_date]["start_dt"] = dt
                 runs[run_date]["status"] = "Started"
-            elif phase == "PHASE_3_LEARNED":
-                runs[run_date]["duration"] = attrs.get("duration", "-")
-                runs[run_date]["drop"] = attrs.get("drop", "-")
-                runs[run_date]["actual_rate"] = attrs.get("actualrate", "-")
-                runs[run_date]["bin"] = attrs.get("bin", "-")
-                runs[run_date]["status"] = "Completed & Learned"
             elif phase == "PHASE_3_HANDOFF":
                 runs[run_date]["handoff_indoor"] = attrs.get("indoor", "-")
+                runs[run_date]["handoff_dt"] = dt
                 if runs[run_date]["status"] == "Started":
                      runs[run_date]["status"] = "Handoff Only"
+                
+                # Compute duration and drop dynamically
+                if runs[run_date]["start_dt"]:
+                    duration_mins = int((dt - runs[run_date]["start_dt"]).total_seconds() / 60)
+                    runs[run_date]["duration"] = str(duration_mins)
+                if runs[run_date]["start_indoor"] != "-":
+                    try:
+                        start_temp = float(runs[run_date]["start_indoor"])
+                        handoff_temp = float(attrs.get("indoor", 0))
+                        runs[run_date]["drop"] = f"{start_temp - handoff_temp:.1f}"
+                    except ValueError:
+                        pass
+            elif phase == "PHASE_3_LEARNED":
+                runs[run_date]["actual_rate"] = attrs.get("obsrate", "-")
+                runs[run_date]["expected_rate"] = attrs.get("newrate", "-")
+                runs[run_date]["bin"] = attrs.get("bin", "-")
+                runs[run_date]["audit"] = attrs.get("audit", "-")
+                runs[run_date]["status"] = "Completed & Learned"
+            elif phase == "PHASE_3_ANOMALY":
+                runs[run_date]["actual_rate"] = attrs.get("obsrate", "-")
+                runs[run_date]["audit"] = attrs.get("audit", "-")
+                runs[run_date]["status"] = "Anomaly Blocked"
+            elif phase == "PHASE_4_KEEP_COOL":
+                runs[run_date]["keep_cool_count"] += 1
+            elif phase == "PHASE_5_PREVENT_OVERCOOL":
+                runs[run_date]["prevent_overcool_count"] += 1
 
     # Display the result in Markdown
     print(f"# Climate Control Performance Summary (Last {days_filter} Days)")
     print()
-    print("| Date | Start Temp (In/Out) | Expected Rate | Duration (min) | Drop (°F) | Actual Rate | Handoff Temp | Status |")
-    print("|------|---------------------|---------------|----------------|-----------|-------------|--------------|--------|")
+    print("| Date | Start Temp (In/Out) | Duration | Drop | Obs Rate | New Rate | Bin | Handoff Temp | Status |")
+    print("|------|---------------------|----------|------|----------|----------|-----|--------------|--------|")
     
     for date in sorted(runs.keys(), reverse=True):
         r = runs[date]
         start_temp = f"{r['start_indoor']}°F / {r['start_outdoor']}°F" if r['start_indoor'] != "-" else "-"
-        actual_rate_str = f"{r['actual_rate']} m/d" if r['actual_rate'] != "-" else "-"
-        expected_rate_str = f"{r['expected_rate']} m/d" if r['expected_rate'] != "-" else "-"
-        print(f"| {date} | {start_temp} | {expected_rate_str} | {r['duration']} | {r['drop']} | {actual_rate_str} | {r['handoff_indoor']}°F | {r['status']} |")
+        obs_rate_str = f"{r['actual_rate']} m/d" if r['actual_rate'] != "-" else "-"
+        new_rate_str = f"{r['expected_rate']} m/d" if r['expected_rate'] != "-" else "-"
+        duration_str = f"{r['duration']} min" if r['duration'] != "-" else "-"
+        drop_str = f"{r['drop']}°F" if r['drop'] != "-" else "-"
+        handoff_temp_str = f"{r['handoff_indoor']}°F" if r['handoff_indoor'] != "-" else "-"
+        print(f"| {date} | {start_temp} | {duration_str} | {drop_str} | {obs_rate_str} | {new_rate_str} | {r['bin']} | {handoff_temp_str} | {r['status']} |")
+
+    print()
+    print("## Detailed Run Telemetry & AI Commentary")
+    print()
+    for date in sorted(runs.keys(), reverse=True):
+        r = runs[date]
+        print(f"### Run Date: {date}")
+        print(f"- **Status:** {r['status']}")
+        if r['start_indoor'] != "-":
+            print(f"- **Initial Conditions:** Room at {r['start_indoor']}°F, Outdoors at {r['start_outdoor']}°F")
+        if r['ai_reason'] and r['ai_reason'] != "-":
+            print(f"- **AI Pre-Cooling Reason:** *\"{r['ai_reason']}\"*")
+        if r['handoff_indoor'] != "-":
+            print(f"- **Handoff Conditions:** Room at {r['handoff_indoor']}°F after {r['duration']} minutes (cooling drop of {r['drop']}°F)")
+        if r['keep_cool_count'] > 0 or r['prevent_overcool_count'] > 0:
+            print(f"- **Sleep Maintenance Profile:** {r['keep_cool_count']} Keep-Cool cycles, {r['prevent_overcool_count']} Over-Cool Guard cycles")
+        if r['actual_rate'] != "-":
+            print(f"- **Observed Rate:** {r['actual_rate']} min/deg")
+        if r['expected_rate'] != "-":
+            print(f"- **New Learned Rate:** {r['expected_rate']} min/deg (Stored in Bin {r['bin']})")
+        if r['audit'] and r['audit'] != "-":
+            print(f"- **AI Auditor Verdict:** *\"{r['audit']}\"*")
+        print()
 
 def scan_ha_warnings():
     """Scans home-assistant.log for core warnings, database locked messages, and component failures."""
