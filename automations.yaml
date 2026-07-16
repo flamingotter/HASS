@@ -152,15 +152,20 @@
         data: {}
       - if:
         - condition: template
-          value_template: '{% set locks = state_attr(''lock.door_locks'', ''entity_id'')
-            %} {% set to_lock = locks | reject(''is_state'', ''locked'') | reject(''is_state'',
-            ''locking'') | list %} {{ to_lock | length > 0 }}'
+          value_template: >-
+            {%- set locks = state_attr('lock.door_locks', 'entity_id') -%}
+            {%- if locks -%}
+              {{- locks | select('is_state', 'unlocked') | list | length > 0 -}}
+            {%- else -%}
+              false
+            {%- endif -%}
         then:
         - action: lock.lock
+          continue_on_error: true
           target:
-            entity_id: '{% set locks = state_attr(''lock.door_locks'', ''entity_id'')
-              %} {{ locks | reject(''is_state'', ''locked'') | reject(''is_state'',
-              ''locking'') | list }}'
+            entity_id: >-
+              {%- set locks = state_attr('lock.door_locks', 'entity_id') -%}
+              {{- locks | select('is_state', 'unlocked') | list -}}
       - if:
         - condition: state
           entity_id: input_boolean.trash_reminder
@@ -807,15 +812,20 @@
       - parallel:
         - if:
           - condition: template
-            value_template: '{% set locks = state_attr(''lock.door_locks'', ''entity_id'')
-              %} {% set to_lock = locks | reject(''is_state'', ''locked'') | reject(''is_state'',
-              ''locking'') | list %} {{ to_lock | length > 0 }}'
+            value_template: >-
+              {%- set locks = state_attr('lock.door_locks', 'entity_id') -%}
+              {%- if locks -%}
+                {{- locks | select('is_state', 'unlocked') | list | length > 0 -}}
+              {%- else -%}
+                false
+              {%- endif -%}
           then:
           - action: lock.lock
+            continue_on_error: true
             target:
-              entity_id: '{% set locks = state_attr(''lock.door_locks'', ''entity_id'')
-                %} {{ locks | reject(''is_state'', ''locked'') | reject(''is_state'',
-                ''locking'') | list }}'
+              entity_id: >-
+                {%- set locks = state_attr('lock.door_locks', 'entity_id') -%}
+                {{- locks | select('is_state', 'unlocked') | list -}}
         - action: light.turn_off
           target:
             entity_id:
