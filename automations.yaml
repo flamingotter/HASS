@@ -1565,9 +1565,9 @@
       - action: ai_task.generate_data
         continue_on_error: true
         data:
-          task_name: Feed Cats
-          instructions: 'Demanding but short: It is time to feed the cats. Max 25
-            words.'
+          task_name: Feed Pets
+          instructions: >-
+            Demanding but short: It is time to feed the cats (Battle Cat, Josie, Custard) and the dog Mars. Max 25 words.
         response_variable: gen_text
       - delay:
           hours: 0
@@ -1578,14 +1578,12 @@
         continue_on_error: true
         metadata: {}
         data:
-          message: '{{ (gen_text | default({})).data | default(''It is time to feed
-            the cats.'') }}'
+          message: '{{ (gen_text | default({})).data | default(''It is time to feed the cats and Mars.'') }}'
           target: media_player.counter
       - action: notify.all_devices
         data:
           title: Feeding Mission
-          message: '{{ (gen_text | default({})).data | default(''It is time to feed
-            the cats.'') }}'
+          message: '{{ (gen_text | default({})).data | default(''It is time to feed the cats and Mars.'') }}'
           data:
             tag: pets-notify
             actions:
@@ -1618,7 +1616,7 @@
       - action: notify.{{ target_notify }}
         data:
           title: Mission Accomplished
-          message: '{{ scanned_name }} has fed the cats.'
+          message: '{{ scanned_name }} has fed the cats and Mars.'
           data:
             tag: pets-status
     - conditions:
@@ -1635,7 +1633,7 @@
       - action: notify.{{ target_notify }}
         data:
           title: Reinforcements Requested
-          message: Help! The cats are winning. Can you take this one?
+          message: Help! Mars and the felines are teaming up. Can you take this one?
           data:
             tag: pets-notify
             actions:
@@ -1651,17 +1649,14 @@
       - action: ai_task.generate_data
         continue_on_error: true
         data:
-          task_name: Feed Cats Nag
-          instructions: 'The user swiped away the cat feeding notification without  completing
-            it. Write a creative, firm nag. Limit to 20 words.
-
-            '
+          task_name: Feed Pets Nag
+          instructions: >-
+            The user swiped away the pet feeding notification without completing it. Write a creative, firm nag from the joint perspective of the cats and the dog Mars. Limit to 20 words.
         response_variable: nag_text
       - action: notify.mobile_app_josh_mobile
         data:
           title: Feeding Required
-          message: '{{ (nag_text | default({})).data | default(''The cats are still
-            hungry! Please feed them.'') }}'
+          message: '{{ (nag_text | default({})).data | default(''The felines and Mars are still hungry! Please feed them.'') }}'
           data:
             tag: pets-notify
             sticky: true

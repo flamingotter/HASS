@@ -297,28 +297,50 @@ welcome_home_ai_debrief:
   - action: ai_task.generate_data
     continue_on_error: true
     data:
-      instructions: "{% set josh_home = states('input_select.josh_status') in ['Home',
-        'Just Arrived'] %} {% set mj_home = states('input_select.mj_status') in ['Home',
-        'Just Arrived'] %} {% set is_vacation = states('alarm_control_panel.home_alarm')
-        == 'armed_vacation' %} {% set time_of_day = 'evening' if is_state('sun.sun',
-        'below_horizon') else 'daytime' %}\n{% if josh_home and mj_home %}\n  {% set
-        person = \"Josh and MJ\" %}\n{% elif josh_home %}\n  {% set person = \"Josh\"
-        %}\n{% elif mj_home %}\n  {% set person = \"MJ\" %}\n{% else %}\n  {% set
-        person = \"the Devines (Derrick and Gia)\" %}\n{% endif %}\n{% set visitor_status
-        = \"A visitor or delivery was detected at the front door while the house was
-        empty.\" if is_state('input_boolean.porch_visitor_while_away', 'on') else
-        \"\" %}\n{# This picks a random way to refer to the pets to keep it fresh
-        #} {% set cat_prompt = [\n  \"Include a cute observation about one specific
-        cat chosen from: Battle Cat (he/him), Josie(she/her), or Custard(she/her).\",\n
-        \ \"Include a funny observation about two of their cats choose two from: Battle
-        Cat (he/him), Josie(she/her), or Custard(she/her).\",\n  \"Include a brief,
-        chaotic update on all three cats: Battle Cat (he/him), Josie(she/her), or
-        Custard(she/her).\",\n  \"Refer to the cats generally as 'the cats' or 'the
-        felines' without using their specific names.\"\n] | random %}\nWrite a short,
-        creative {{ time_of_day }} welcome home message for {{ person }}.  {% if is_vacation
-        %}Mention they are returning from a long trip and the Home is secure.{% endif
-        %} {{ cat_prompt }} {{ visitor_status }}  Limit the entire response to 35
-        words."
+      instructions: >-
+        {# 1. Extract Real-Time Contextual Signals #}
+        {% set josh_home = states('input_select.josh_status') in ['Home', 'Just Arrived'] %}
+        {% set mj_home = states('input_select.mj_status') in ['Home', 'Just Arrived'] %}
+        {% set is_vacation = states('alarm_control_panel.home_alarm') == 'armed_vacation' %}
+        {% set time_of_day = 'night' if is_state('sun.sun', 'below_horizon') else 'daytime' %}
+        {% set current_weather = states('weather.pirateweather') | default('unknown') %}
+        
+        {# 2. Resolve target audience #}
+        {% if josh_home and mj_home %}
+          {% set person = "Josh and MJ" %}
+        {% elif josh_home %}
+          {% set person = "Josh" %}
+        {% elif mj_home %}
+          {% set person = "MJ" %}
+        {% else %}
+          {% set person = "the Devines (Derrick and Gia)" %}
+        {% endif %}
+        
+        {# 3. Porch Visitor Trigger #}
+        {% set visitor_status = "A visitor or delivery was detected at the front door while the house was empty." if is_state('input_boolean.porch_visitor_while_away', 'on') else "" %}
+        
+        {# 4. Mixed Pet Prompts (Incorporating Mars the Dog) #}
+        {% set pet_prompt = [
+          "Include a cute observation about their new dog Mars (he/him) being excited to see them, while one cat (choose from Battle Cat, Josie, or Custard) watches regally.",
+          "Include a funny comment about Mars (he/him) and one specific cat (choose from Battle Cat (he/him), Josie (she/her), or Custard (she/her)) reacting to their return.",
+          "Include a chaotic update about Mars (he/him) and all three cats (Battle Cat, Josie, Custard) teaming up to welcome them.",
+          "Refer to the pets generally (the felines and their dog Mars) without listing all names, mentioning Mars' puppy energy."
+        ] | random %}
+        
+        {# 5. Construct the Prompt #}
+        Current Conditions: It is {{ time_of_day }} and the weather is {{ current_weather }}.
+        Write a short, creative welcome home message for {{ person }}.
+        
+        CRITICAL RULES:
+        - The message MUST be contextually realistic and consistent with the current weather and time (e.g. if it is raining, overcast, or night, do NOT mention laying in the sunshine or sunbathing. Instead, describe them curled up seeking warmth, listening to the rain, watching the stars, or running to greet you to escape the elements).
+        - Limit the entire response to 35 words.
+        
+        {% if is_vacation %}
+          Mention they are returning from a long trip and the Home is secure.
+        {% endif %}
+        
+        {{ pet_prompt }}
+        {{ visitor_status }}
       task_name: Generate Welcome Message
     response_variable: ai_greeting
   - wait_template: '{{ is_state(''binary_sensor.motion_indoors_kitchen'', ''on'')
@@ -338,7 +360,7 @@ welcome_home_ai_debrief:
         {%- if ai_greeting is defined and ai_greeting is not none and ai_greeting.data is defined -%}
           {{ ai_greeting.data }}
         {%- else -%}
-          Welcome home! The house is secure and the cats are waiting for you.
+          Welcome home! The house is secure, and Mars and the cats are waiting for you.
         {%- endif -%}
       target: media_player.counter
   - delay:
