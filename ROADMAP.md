@@ -14,6 +14,7 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 
 ## 2. Climate & Energy (The Sleep Engine v7.x)
 - [x] **High-Temperature Bin Expansion & Bedtime Shift:** Expanded repository to include `90`, `95`, and `100` temperature bins (up to 60.0 min/deg) to handle high-temperature afternoon/evening pre-cooling. Shifted bedroom sleep bedtime target to `23:30` (11:30 PM) to move the aggressive AC cycle to late evening after solar roof pressure decays, maximizing thermal efficiency and comfort reliability (Completed June 11, 2026).
+- [x] **AI Auditor Temperature-Awareness Hardening:** Identified a bias where the AI Auditor rejected high-temperature runs (such as 81.1 min/deg and 84.0 min/deg on 90F+ days) as anomalies. Restructured the automation to pass real-time average outdoor temperature to the Auditor and clarified that 45-90 min/deg rates are expected and valid under extreme heat-soak loads, enabling high-temperature bins (90, 95, 100) to successfully refine (Completed July 22, 2026).
 - [x] **v7.8.6 Release:** Adaptive Learning Velocity. Implemented automatic weight-shifting (90/10 vs 70/30) based on data convergence (Completed May 29, 2026).
 - [x] **v7.8.5 Release:** Summer Resilience. Restored `mode: queued` with Atomic Lock, raised Data Armor cap to 60.0, and implemented Humidity-Aware strategist (Completed May 24, 2026).
 - [x] **v7.4 Release:** Implemented "Total Transparency" mode with AI qualitative analysis and unconditional session reporting. (Deployed May 11, 2026)
