@@ -63,3 +63,13 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
     - *Goal:* Integrate with Eco Mode and Office occupancy.
 - [ ] **RF Infrastructure:** Deploy Broadlink RM4 Pro to bridge non-smart RF devices (fans/blinds) into the MBR v7.x logic.
 - [ ] **Maintenance Audit:** Transition battery monitoring to the native 2026.5 Maintenance Dashboard.
+
+## 7. Whole-Home Energy & Utility Intelligence (Emporia Vue 3)
+- [ ] **Energy Exporter Integration:** Map the new Emporia Vue 3 channels (washer, dryer, well pump, compressors, mini-split) in `exporter.py` and verify streaming into BigQuery.
+- [ ] **Washer & Dryer Cycle Tracker:** Implement template sensors and helper counters to count completed laundry loads and design the predictive "detergent depletion nudge" algorithm.
+- [ ] **Dishwasher Consumables Predictor:** Connect cycle counts from `sensor.dishwasher_operation_state` with a dishwasher-tablet reset button to predict tab usage.
+- [ ] **Well Pump Emergency Leak Shield:** Build a 20-minute continuous well pump draw trigger that shuts down water/power during a pipe-burst and fires high-priority alerts to phones.
+- [ ] **Well Pump Silent/Slow Leak Auditor:** Design a sleeping-hours well-pump cycle watcher that alerts the user to silent leaks (like a leaking toilet flapper) if the pump runs at night.
+- [ ] **HVAC COP-Based Health Monitor:** Program a weekly auditor inside BigQuery correlating compressor kW-draw with temperature drops to proactively detect degraded heat-pump performance.
+- [ ] **Cross-Floor Thermal Balancing:** Create an interlocking coordinator for the upstairs and downstairs T6 Pro thermostats to mitigate the stack-effect and optimize dual-zone cooling.
+- [ ] **Integrated Vacation Load-Shedding:** Automate non-essential smart plugs and water-heater power-downs the moment the system registers "Extended Away" status.
