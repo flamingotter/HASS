@@ -4161,17 +4161,22 @@
   condition:
     - condition: template
       value_template: >-
-        {{ trigger.to_state.attributes.last_called_summary is defined and 
-           trigger.to_state.attributes.last_called_summary | lower | replace('tell the house', '') != trigger.to_state.attributes.last_called_summary | lower }}
+        {%- set summary = trigger.to_state.attributes.last_called_summary | default('') | lower -%}
+        {{ summary != '' and (summary.startswith('tell the house') or summary.startswith('please note') or summary.startswith('please remember')) }}
   action:
-    # 1. Extract the note (stripping out "tell the house")
+    # 1. Extract the note (stripping out matching phrase)
     - variables:
         raw_speech: "{{ trigger.to_state.attributes.last_called_summary }}"
         clean_note: >-
-          {%- set phrase = 'tell the house ' -%}
-          {%- set text = raw_speech | lower -%}
-          {%- if text.startswith(phrase) -%}
-            {{ raw_speech[phrase|length:] }}
+          {%- set summary = raw_speech | lower -%}
+          {%- set match = namespace(prefix='') -%}
+          {%- for p in ['tell the house ', 'please note ', 'please remember '] -%}
+            {%- if summary.startswith(p) -%}
+              {%- set match.prefix = p -%}
+            {%- endif -%}
+          {%- endfor -%}
+          {%- if match.prefix != '' -%}
+            {{ raw_speech[match.prefix|length:] }}
           {%- else -%}
             {{ raw_speech }}
           {%- endif -%}
