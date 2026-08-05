@@ -4145,9 +4145,9 @@
             tag: bedroom_target_override
   mode: single
 
-- id: 'alexa_tell_the_house_test'
-  alias: "Test: Alexa Tell the House Voice Logger"
-  description: "Sandbox test to verify voice logging via last_called_summary and trigger.entity_id"
+- id: 'alexa_house_log_trigger'
+  alias: "Voice: Start Household Log Actionable"
+  description: "Triggers the Alexa Actionable Notification QA whenever you tell Alexa to log or update the house ledger"
   trigger:
     - platform: state
       entity_id:
@@ -4162,42 +4162,44 @@
     - condition: template
       value_template: >-
         {%- set summary = trigger.to_state.attributes.last_called_summary | default('') | lower -%}
-        {{ summary != '' and summary.startswith('tell south haven') }}
+        {{ summary != '' and (summary == 'start the house log' or summary == 'update the house log' or summary == 'tell south haven' or summary == 'please log') }}
   action:
-    # 1. Extract the note (stripping out matching phrase)
-    - variables:
-        raw_speech: "{{ trigger.to_state.attributes.last_called_summary }}"
-        clean_note: >-
-          {%- set summary = raw_speech | lower -%}
-          {%- set match = namespace(prefix='') -%}
-          {%- for p in ['tell south haven '] -%}
-            {%- if summary.startswith(p) -%}
-              {%- set match.prefix = p -%}
-            {%- endif -%}
-          {%- endfor -%}
-          {%- if match.prefix != '' -%}
-            {{ raw_speech[match.prefix|length:] }}
-          {%- else -%}
-            {{ raw_speech }}
-          {%- endif -%}
+    - action: script.activate_alexa_actionable_notification
+      data:
+        text: "Sure, what would you like me to note?"
+        event_id: household_notes_logger
+        alexa_device: "{{ trigger.entity_id }}"
+        suppress_confirmation: 'true'
+  mode: single
 
-    # 2. Write to your new household_notes_txt file notifier
+- id: 'alexa_house_log_response'
+  alias: "Voice: Capture Household Log Response"
+  description: "Catches your spoken reply from the Actionable Notification skill and logs it to your ledger"
+  trigger:
+    - platform: event
+      event_type: alexa_actionable_notification
+      event_data:
+        event_id: household_notes_logger
+  condition: []
+  action:
+    # 1. Log the spoken text to your custom file notifier
     - action: notify.send_message
       target:
         entity_id: notify.household_notes_txt
       data:
-        message: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }} | {{ clean_note }}"
+        message: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }} | {{ trigger.event.data.event_response }}"
 
-    # 3. Speak a confirmation on the EXACT Echo that heard you (using trigger.entity_id!)
+    # 2. Have Alexa say a short, clean confirmation
     - action: notify.alexa_media
       data:
-        target: "{{ trigger.entity_id }}"
+        target: "{{ states('sensor.last_alexa') }}"
         data:
           type: tts
-        message: "Logged to the house: {{ clean_note }}."
+        message: "Logged."
 
-    # 4. Push a backup alert to your mobile phone so we can verify the trigger entity
+    # 3. Send a push notification to your phone so you can verify the transcription
     - action: notify.mobile_app_josh_mobile
       data:
-        title: "Tell the House Test"
-        message: "Heard: '{{ clean_note }}' from {{ trigger.entity_id }}"
+        title: "Household Log Updated"
+        message: "Heard and Logged: '{{ trigger.event.data.event_response }}'"
+  mode: single
