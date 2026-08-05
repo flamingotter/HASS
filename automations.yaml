@@ -4162,7 +4162,7 @@
     - condition: template
       value_template: >-
         {%- set summary = trigger.to_state.attributes.last_called_summary | default('') | lower -%}
-        {{ summary != '' and (summary == 'start the house log' or summary == 'update the house log' or summary == 'tell south haven' or summary == 'please log') }}
+        {{ summary != '' and ('tell south haven' in summary or 'start the house log' in summary or 'update the house log' in summary or 'please log' in summary) }}
   action:
     - action: script.activate_alexa_actionable_notification
       data:
