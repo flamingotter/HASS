@@ -4144,3 +4144,55 @@
           data:
             tag: bedroom_target_override
   mode: single
+
+- id: 'alexa_tell_the_house_test'
+  alias: "Test: Alexa Tell the House Voice Logger"
+  description: "Sandbox test to verify voice logging via last_called_summary and trigger.entity_id"
+  trigger:
+    - platform: state
+      entity_id:
+        - media_player.bedroom
+        - media_player.counter
+        - media_player.garage
+        - media_player.dining_room
+        - media_player.babe_cave
+        - media_player.living_room
+      attribute: last_called_summary
+  condition:
+    - condition: template
+      value_template: >-
+        {{ trigger.to_state.attributes.last_called_summary is defined and 
+           trigger.to_state.attributes.last_called_summary | lower | replace('tell the house', '') != trigger.to_state.attributes.last_called_summary | lower }}
+  action:
+    # 1. Extract the note (stripping out "tell the house")
+    - variables:
+        raw_speech: "{{ trigger.to_state.attributes.last_called_summary }}"
+        clean_note: >-
+          {%- set phrase = 'tell the house ' -%}
+          {%- set text = raw_speech | lower -%}
+          {%- if text.startswith(phrase) -%}
+            {{ raw_speech[phrase|length:] }}
+          {%- else -%}
+            {{ raw_speech }}
+          {%- endif -%}
+
+    # 2. Write to your new household_notes_txt file notifier
+    - action: notify.send_message
+      target:
+        entity_id: notify.household_notes_txt
+      data:
+        message: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }} | {{ clean_note }}"
+
+    # 3. Speak a confirmation on the EXACT Echo that heard you (using trigger.entity_id!)
+    - action: notify.alexa_media
+      data:
+        target: "{{ trigger.entity_id }}"
+        data:
+          type: tts
+        message: "Logged to the house: {{ clean_note }}."
+
+    # 4. Push a backup alert to your mobile phone so we can verify the trigger entity
+    - action: notify.mobile_app_josh_mobile
+      data:
+        title: "Tell the House Test"
+        message: "Heard: '{{ clean_note }}' from {{ trigger.entity_id }}"
