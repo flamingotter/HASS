@@ -1,0 +1,4 @@
+---
+alexa_house_log:
+  name: "Alexa House Log Trigger"
+  icon: mdi:microphone-outline

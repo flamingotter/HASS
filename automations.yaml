@@ -4147,28 +4147,24 @@
 
 - id: 'alexa_house_log_trigger'
   alias: "Voice: Start Household Log Actionable"
-  description: "Triggers the Alexa Actionable Notification QA whenever you tell Alexa to log or update the house ledger"
+  description: "Triggers the Alexa Actionable Notification QA instantly when input_boolean.alexa_house_log is turned on"
   trigger:
     - platform: state
-      entity_id:
-        - media_player.bedroom
-        - media_player.counter
-        - media_player.garage
-        - media_player.dining_room
-        - media_player.babe_cave
-        - media_player.living_room
-      attribute: last_called_summary
-  condition:
-    - condition: template
-      value_template: >-
-        {%- set summary = trigger.to_state.attributes.last_called_summary | default('') | lower -%}
-        {{ summary != '' and ('tell south haven' in summary or 'start the house log' in summary or 'update the house log' in summary or 'please log' in summary) }}
+      entity_id: input_boolean.alexa_house_log
+      to: 'on'
+  condition: []
   action:
+    # 1. Reset the trigger switch instantly
+    - action: input_boolean.turn_off
+      target:
+        entity_id: input_boolean.alexa_house_log
+
+    # 2. Fire the actionable notification on the active room's Echo
     - action: script.activate_alexa_actionable_notification
       data:
         text: "Sure, what would you like me to note?"
         event_id: household_notes_logger
-        alexa_device: "{{ trigger.entity_id }}"
+        alexa_device: "{{ states('sensor.last_alexa') }}"
         suppress_confirmation: 'true'
   mode: single
 
