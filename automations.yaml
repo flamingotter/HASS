@@ -4162,7 +4162,7 @@
     - condition: template
       value_template: >-
         {%- set summary = trigger.to_state.attributes.last_called_summary | default('') | lower -%}
-        {{ summary != '' and (summary.startswith('tell the home') or summary.startswith('record that')) }}
+        {{ summary != '' and summary.startswith('tell south haven') }}
   action:
     # 1. Extract the note (stripping out matching phrase)
     - variables:
@@ -4170,7 +4170,7 @@
         clean_note: >-
           {%- set summary = raw_speech | lower -%}
           {%- set match = namespace(prefix='') -%}
-          {%- for p in ['tell the home ', 'record that '] -%}
+          {%- for p in ['tell south haven '] -%}
             {%- if summary.startswith(p) -%}
               {%- set match.prefix = p -%}
             {%- endif -%}
