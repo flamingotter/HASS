@@ -65,11 +65,17 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 - [ ] **Maintenance Audit:** Transition battery monitoring to the native 2026.5 Maintenance Dashboard.
 
 ## 7. Whole-Home Energy & Utility Intelligence (Emporia Vue 3)
+### 🔍 Phase 7.1: Data-First Observation & Baseline Analysis
 - [ ] **Energy Exporter Integration:** Map the new Emporia Vue 3 channels (washer, dryer, well pump, compressors, mini-split) in `exporter.py` and verify streaming into BigQuery.
+- [ ] **14-Day Baseline Profiling:** Log real-world curves to analyze unmanaged peak demand patterns, baseline household "phantom" standby loads, and signature well pump runtimes before purchasing hardware.
 - [ ] **Washer & Dryer Cycle Tracker:** Implement template sensors and helper counters to count completed laundry loads and design the predictive "detergent depletion nudge" algorithm.
 - [ ] **Dishwasher Consumables Predictor:** Connect cycle counts from `sensor.dishwasher_operation_state` with a dishwasher-tablet reset button to predict tab usage.
-- [ ] **Well Pump Emergency Leak Shield:** Build a 20-minute continuous well pump draw trigger that shuts down water/power during a pipe-burst and fires high-priority alerts to phones.
-- [ ] **Well Pump Silent/Slow Leak Auditor:** Design a sleeping-hours well-pump cycle watcher that alerts the user to silent leaks (like a leaking toilet flapper) if the pump runs at night.
+
+### 🛡️ Phase 7.2: Decentralized Physical Load Management
+- [ ] **Garage Node (Water Heater Peak-Shedding):** Install a UL-listed **Zooz ZEN78 High-Power 40A Relay** next to the garage water tank to safely break both L1/L2 legs simultaneously and support manual push-button overrides.
+- [ ] **Crawl Space Node (Well Pump & Leak Shield):** Install a **Zooz ZEN17 Universal Relay** in the crawl space near the pressure tank.
+    - *Relay 1:* Act as the emergency well pump cutoff switch (triggered on 20-minute continuous run cycles).
+    - *Input 1:* Wire a low-voltage floor leak probe to locally trigger well-pump shutdown if a pipe drips.
 - [ ] **HVAC COP-Based Health Monitor:** Program a weekly auditor inside BigQuery correlating compressor kW-draw with temperature drops to proactively detect degraded heat-pump performance.
 - [ ] **Cross-Floor Thermal Balancing:** Create an interlocking coordinator for the upstairs and downstairs T6 Pro thermostats to mitigate the stack-effect and optimize dual-zone cooling.
 - [ ] **Integrated Vacation Load-Shedding:** Automate non-essential smart plugs and water-heater power-downs the moment the system registers "Extended Away" status.
