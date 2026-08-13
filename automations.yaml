@@ -2242,6 +2242,14 @@
     - sensor.garage_beer_fridge_electric_consumption_w
     - sensor.garage_freezer_electric_consumption_w
     for:
+      minutes: 45
+    below: 1
+    id: unplugged
+  - trigger: numeric_state
+    entity_id:
+    - sensor.garage_beer_fridge_electric_consumption_w
+    - sensor.garage_freezer_electric_consumption_w
+    for:
       hours: 3
     below: 10
     id: stalled
@@ -2250,7 +2258,8 @@
     - sensor.garage_beer_fridge_electric_consumption_w
     - sensor.garage_freezer_electric_consumption_w
     for:
-      hours: 5
+      hours: 2
+      minutes: 30
     above: 10
     id: overrunning
   - trigger: event
@@ -2266,6 +2275,16 @@
   - condition: template
     value_template: '{{ config.name is defined }}'
   - choose:
+    - conditions:
+      - condition: trigger
+        id: unplugged
+      sequence:
+      - action: script.activate_mobile_actionable_notification
+        data:
+          notify_target: notify.mobile_app_josh_mobile
+          title: '{{ config.name | upper }} CRITICAL ALERT'
+          message: '{{ config.name }} power is 0W / unplugged for 45 mins!'
+          notify_tag: '{{ config.tag }}'
     - conditions:
       - condition: trigger
         id: stalled
@@ -2284,7 +2303,7 @@
         data:
           notify_target: notify.mobile_app_josh_mobile
           title: '{{ config.name | upper }} ALERT'
-          message: '{{ config.name }} has been running for > 5hrs!'
+          message: '{{ config.name }} has been running for > 2.5hrs!'
           notify_tag: '{{ config.tag }}'
           notify_action_1: '{{ config.off_action }}'
           notify_action_1_title: Turn Off
