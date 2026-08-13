@@ -2226,29 +2226,29 @@
   description: Unified engine for monitoring appliance power consumption and performance.
   variables:
     appliance_map:
-      sensor.beer_fridge_electric_consumption_w:
+      sensor.garage_beer_fridge_electric_consumption_w:
         name: Beer Fridge
-        switch: switch.beer_fridge
+        switch: switch.garage_beer_fridge
         tag: beer01-notify
         off_action: beer01-off
-      sensor.freezer_electric_consumption_w:
+      sensor.garage_freezer_electric_consumption_w:
         name: Freezer
-        switch: switch.freezer
+        switch: switch.garage_freezer
         tag: frzr01-notify
         off_action: frzr01-off
   triggers:
   - trigger: numeric_state
     entity_id:
-    - sensor.beer_fridge_electric_consumption_w
-    - sensor.freezer_electric_consumption_w
+    - sensor.garage_beer_fridge_electric_consumption_w
+    - sensor.garage_freezer_electric_consumption_w
     for:
       hours: 3
     below: 10
     id: stalled
   - trigger: numeric_state
     entity_id:
-    - sensor.beer_fridge_electric_consumption_w
-    - sensor.freezer_electric_consumption_w
+    - sensor.garage_beer_fridge_electric_consumption_w
+    - sensor.garage_freezer_electric_consumption_w
     for:
       hours: 5
     above: 10
@@ -2259,8 +2259,8 @@
   actions:
   - variables:
       appliance_sensor: "{% if trigger.id == 'remote_off' %}\n  {% if trigger.event.data.action
-        == 'beer01-off' %} sensor.beer_fridge_electric_consumption_w\n  {% elif trigger.event.data.action
-        == 'frzr01-off' %} sensor.freezer_electric_consumption_w\n  {% endif %}\n{%
+        == 'beer01-off' %} sensor.garage_beer_fridge_electric_consumption_w\n  {% elif trigger.event.data.action
+        == 'frzr01-off' %} sensor.garage_freezer_electric_consumption_w\n  {% endif %}\n{%
         else %}\n  {{ trigger.entity_id | default('') }}\n{% endif %}\n"
       config: '{{ appliance_map.get(appliance_sensor.strip(), {}) }}'
   - condition: template
