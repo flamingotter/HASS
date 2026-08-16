@@ -32,6 +32,7 @@
 * Zooz Z-wave devices
 * GE Enbrighten Z-wave devices
 * Schlage Connect Z-Wave Locks
+* Emporia Vue 3 
 * Custom Sensors (D1 Minis, ESP32)
 * WLED
 * <a href="https://amzn.to/4cbHVal" target="_blank">Elgado Stream Deck
@@ -52,6 +53,7 @@
 * Unifi G3 Instant
 * Unifi G4 Doorbell
 * Unifi G4 Dome
+* Unifi G5 PTZ
 * Unifi G5 PTZ
 * Unifi G6 Turrent
 
