@@ -17,7 +17,6 @@
     * Mariadb
     * Influxdb
     * Mosquito MQTT
-    * Nodered
     * Zwave JS
 
 ## Enabling Components:
