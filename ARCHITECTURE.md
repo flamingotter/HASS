@@ -33,11 +33,12 @@ A high-precision engine designed to reach sleep temperature exactly at bedtime.
 - **Adaptive Learning Velocity:** Implemented in v7.8.6. The engine automatically shifts its learning weight based on data convergence:
     - **Aggressive (70/30):** Used when the new observation differs from the repo by > 3.0 min/deg. Allows rapid adaptation to seasonal shifts.
     - **Stable (90/10):** Used when the observation is within the ballpark of the repo. Prevents jitter and locks in "solid averages."
-- **Phases:**
-    1. **Wakeup:** Reset to 68°F.
-    2. **Strategist (7:00 PM):** AI evaluates "Free Cooling" via patio door. Now humidity-aware: explicitly advises against opening if outdoor humidity > 65%.
-    3. **Pre-Cooling:** Aggressive push to 60°F based on bin math + AI Humidity Optimizer.
-    4. **Handoff:** At target, reset T6 Pro to maintenance temp. AI Auditor validates session data.
+- **Phases & Lean Notification Architecture:**
+    1. **Wakeup (7:00 AM):** Reset downstairs thermostat to neutral (70°F trial). Silent execution with diagnostic file log.
+    2. **Strategist (7:00 PM):** Actionable Free Cooling gate. Evaluates outdoor temperature (at least 3°F cooler than bedroom) and outdoor humidity (< 65%). Only pushes a mobile alert if opening the patio door is actually beneficial; otherwise remains completely silent.
+    3. **Pre-Cooling:** Aggressive push based on bin math + AI Humidity Optimizer. Sends single pre-cooling initiation notification with ETA.
+    4. **Handoff:** At target or bedtime, reset T6 Pro to maintenance temp. AI Auditor validates session data. Routine handoff and learning updates run silently; alerts sent only if an anomaly is detected.
+    5. **Sleep Window Maintenance (Overnight):** Maintains bedroom within ±1°F deadband completely silently.
 - **Data Armor:** A software physical-swing cap protects the repository from sensor jitter or thermal anomalies. **Raised to 60.0 min/deg** to accommodate extreme summer heat loads.
 - **Bedtime Shift & Solar Pressure Relief (Added June 2026):** Shifting the sleep bedtime target to `23:30` (11:30 PM) places pre-cooling triggers later in the evening (typically 7:30 PM - 8:30 PM). This delays the start of the high-draw cycle until after solar radiation on the roof deck has subsided, bypassing peak attic heat-soak loads, enhancing thermal decay efficiency, and ensuring virtually 100% comfort target reliability.
 - **Target Override Safeguard (Added June 2026):** To prevent accidental target temperature changes (such as slider touches while scrolling on mobile devices) from disrupting the active pre-cooling cycle, a state-recalculating safeguard was implemented. It monitors target temperature updates during pre-cooling, sends an actionable push notification with options to keep or revert the change, and handles the revert state statelessly using dynamic callback actions (REVERT_BEDROOM_TARGET_XX).

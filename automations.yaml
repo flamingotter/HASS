@@ -3589,27 +3589,32 @@
       conditions:
       - condition: trigger
         id: strategist
+      - condition: template
+        alias: 'Free Cooling Viability Gate (Outdoor >= 3F cooler and humidity < 65%)'
+        value_template: >-
+          {%- set out_temp = states('sensor.weather_station_temperature_outdoor') | float(100) -%}
+          {%- set out_hum = states('sensor.weather_station_humidity_outdoor') | float(100) -%}
+          {{ out_temp <= (actual - 3.0) and out_hum < 65 }}
       sequence:
       - action: ai_task.generate_data
         continue_on_error: true
         data:
           task_name: Free Cooling Strategist
-          instructions: 'Analyze the outdoor temperature ({{ states(''sensor.weather_station_temperature_outdoor'')
-            }}F), outdoor humidity ({{ states(''sensor.weather_station_humidity_outdoor'')
-            }}%), and the bedroom temperature ({{ actual }}F).  If the outdoor temperature
-            is at least 3 degrees cooler than the bedroom AND the outdoor humidity
-            is below 65%, suggest opening the screened patio door. If humidity is
-            high (>65%), explicitly advise against opening the door despite the cooler
-            air. Keep response under 25 words.
-
-            '
+          instructions: >-
+            Outdoor temp is {{ states('sensor.weather_station_temperature_outdoor') }}F with {{ states('sensor.weather_station_humidity_outdoor') }}% humidity. Bedroom temp is {{ actual }}F. Give a short, helpful 1-sentence tip recommending opening the screened patio door for free cooling. Keep response under 25 words.
         response_variable: strategist_advice
       - action: notify.mobile_app_josh_mobile
         data:
-          title: Climate Strategy
-          message: '{{ (strategist_advice | default({})).data | default(''The outdoor
-            air is currently cooler than the bedroom. Consider opening the patio door
-            to save energy.'') }}'
+          title: '🍃 Free Cooling Opportunity'
+          message: >-
+            {{ (strategist_advice | default({})).data | default('Outdoor air is cooler and dry (' ~ states('sensor.weather_station_temperature_outdoor') ~ '°F / ' ~ states('sensor.weather_station_humidity_outdoor') ~ '%). Consider opening the patio door to save energy.') }}
+      - action: notify.send_message
+        target:
+          entity_id: '{{ log_entity }}'
+        data:
+          message: >-
+            {{ now().strftime('%Y-%m-%d %H:%M:%S') }},FREE_COOLING_ADVISED,Outdoor:{{ states('sensor.weather_station_temperature_outdoor') }}F,Humidity:{{ states('sensor.weather_station_humidity_outdoor') }}%,Indoor:{{ actual }}F
+
     - alias: 'Phase 1: Wake Up (Reset to Neutral)'
       conditions:
       - condition: trigger
@@ -3727,11 +3732,6 @@
             }}'
           drop: '{{ start_temp - current_temp }}'
           obs_rate: '{{ (duration / drop) | round(1) if drop > 0.1 else 999.0 }}'
-      - action: notify.mobile_app_josh_mobile
-        data:
-          title: 'Climate: MBR Target Reached'
-          message: 'Target {{ target }}F achieved. Handoff to maintenance mode complete.
-            Session: {{ duration | round(0) }} mins.'
       - if:
         - condition: template
           alias: Minimum Run Time Check (5 minutes)
@@ -3808,11 +3808,6 @@
               entity_id: input_text.mbr_cooling_performance_data
             data:
               value: '{{ new_repo }}'
-          - action: notify.mobile_app_josh_mobile
-            data:
-              title: 'Climate: AI Session Learned'
-              message: 'Analysis: {{ audit_verdict }} Bin {{ lookup_key }}F -> {{
-                new_rate }} min/deg. Obs: {{ obs_rate }} | Old: {{ old_rate }}'
           - action: notify.send_message
             target:
               entity_id: '{{ log_entity }}'
@@ -3840,10 +3835,6 @@
         value_template: '{{ is_sleep_window and actual >= (target + 1.0) and t6_target
           != (target - 2.0) }}'
       sequence:
-      - action: notify.mobile_app_josh_mobile
-        data:
-          title: 'Climate: Maintenance Push'
-          message: Room rose to {{ actual }}F. Pushing back to {{ target - 2.0 }}F.
       - action: notify.send_message
         target:
           entity_id: '{{ log_entity }}'
@@ -3861,11 +3852,6 @@
         value_template: '{{ is_sleep_window and actual <= (target - 1.0) and t6_target
           != (target + 2.0) }}'
       sequence:
-      - action: notify.mobile_app_josh_mobile
-        data:
-          title: 'Climate: Over-Cool Guard'
-          message: Room dropped to {{ actual }}F. Letting warm to {{ target + 2.0
-            }}F.
       - action: notify.send_message
         target:
           entity_id: '{{ log_entity }}'
