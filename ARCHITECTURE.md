@@ -47,6 +47,12 @@ A high-precision engine designed to reach sleep temperature exactly at bedtime.
     - **Physical Separation:** The two attic zones are separated by the second-floor hallway and office, with a small connecting space above the hallway.
 - **Thermodynamic Solar Load Asymmetry (SLA):** Under midday solar exposure, an intense thermal gradient exists across the roof. Telemetry shows a 14.6°F asymmetric solar load delta between the South Attic (112.1°F) and the North Attic (97.5°F), creating a 45.6°F thermal conduction differential across the downstairs MBR ceiling (66.5°F indoor room temperature).
 - **Roadmap to Climate Engine v7.9:** Mapped inside `exporter.py` for 7-day high-resolution BigQuery baseline profiling. Once complete, Scenario K (Attic Heat Soak Challenge) will validate the model in Sim Lab, allowing real-time attic thermal pressure to be used as a dynamic pre-cooling start-time multiplier.
+- **Daytime Downstairs Trial (August 2026):** Shifted Phase 1 Wakeup reset temperature from 68°F to 70°F to reduce mid-day high-head-pressure compressor cycling during peak solar hours while evaluating bedtime pre-cooling pull impact.
+- **Upstairs Climate Coordinator (v1.0 - August 2026):** Automated Floor 2 central Trane 2-Ton heat pump (`climate.t6_pro_upstairs`) with inter-floor thermal coordination:
+    - **Daytime & Evening (7:00 AM – Bedtime):** 73°F Cool / 67°F Heat (maintaining comfort with open office door while office mini-split operates at 68°F Auto).
+    - **Overnight (Bedtime – 7:00 AM):** 76°F Cool / 62°F Heat (deep setback eliminating ghost runtimes on unoccupied 2nd floor).
+    - **Eco / Vacation Mode:** 78°F Cool / 64°F Heat synchronized with `input_boolean.eco_mode`.
+
 
 ---
 

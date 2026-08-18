@@ -229,6 +229,11 @@
     - target:
         entity_id: switch.noise_machines
       action: switch.turn_on
+    - action: button.press
+      metadata: {}
+      target:
+        entity_id: button.desktop_windows11_hibernate
+      data: {}
     - target:
         entity_id: input_boolean.bedtime
       action: input_boolean.turn_off
@@ -286,6 +291,11 @@
         entity_id:
         - switch.bedroom_sleep_mode
         - switch.bedroom_humidifier
+    - action: button.press
+      metadata: {}
+      target:
+        entity_id: button.office_wake_on_lan_pc
+      data: {}
     - action: button.press
       metadata: {}
       target:
@@ -879,6 +889,11 @@
           - media_player.babe_cave
           - media_player.counter
           - media_player.dining_room
+      - action: button.press
+        metadata: {}
+        target:
+          entity_id: button.office_wake_on_lan_pc
+        data: {}
     - conditions:
       - condition: trigger
         id:
@@ -1545,12 +1560,13 @@
           volume_level: 0.5
       - action: media_player.play_media
         continue_on_error: true
-        metadata: {}
         target:
           entity_id: media_player.counter
         data:
-          media_content_id: amzn_sfx_rooster_crow_01
-          media_content_type: sound
+          media:
+            media_content_id: amzn_sfx_rooster_crow_01
+            media_content_type: sound
+            metadata: {}
       - delay:
           hours: 0
           minutes: 0
@@ -1593,6 +1609,11 @@
         metadata: {}
         target:
           entity_id: scene.last_alexa_volume
+        data: {}
+      - action: switch.turn_on
+        metadata: {}
+        target:
+          entity_id: switch.guest_hall_light
         data: {}
     - conditions:
       - condition: trigger
@@ -1720,6 +1741,15 @@
             else %} 70 {% endif %}
 
             '
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.t6_pro_upstairs
+        data:
+          temperature: '{% if is_state(''climate.t6_pro_upstairs'', ''cool'') %}
+            78 {% elif is_state(''climate.t6_pro_upstairs'', ''heat'') %} 64 {%
+            else %} 73 {% endif %}
+
+            '
       - action: notify.mobile_app_josh_mobile
         data:
           title: Eco Mode Activated
@@ -1819,12 +1849,17 @@
         target:
           entity_id: climate.t6_pro_downstairs
         data:
-          temperature: 68
+          temperature: 70
+      - action: climate.set_temperature
+        target:
+          entity_id: climate.t6_pro_upstairs
+        data:
+          temperature: 73
       - action: notify.mobile_app_josh_mobile
         data:
           title: Welcome Home
           message: Eco Mode deactivated ({{ 'Manual' if trigger.id == 'deactivate_eco'
-            else 'Proximity' }}). Thermostat set to 68°F.
+            else 'Proximity' }}). Thermostats set to 70°F / 73°F.
           data:
             tag: eco-finish
   mode: restart
@@ -2242,7 +2277,7 @@
     - sensor.garage_beer_fridge_electric_consumption_w
     - sensor.garage_freezer_electric_consumption_w
     for:
-      minutes: 45
+      minutes: 90
     below: 1
     id: unplugged
   - trigger: numeric_state
@@ -2268,9 +2303,10 @@
   actions:
   - variables:
       appliance_sensor: "{% if trigger.id == 'remote_off' %}\n  {% if trigger.event.data.action
-        == 'beer01-off' %} sensor.garage_beer_fridge_electric_consumption_w\n  {% elif trigger.event.data.action
-        == 'frzr01-off' %} sensor.garage_freezer_electric_consumption_w\n  {% endif %}\n{%
-        else %}\n  {{ trigger.entity_id | default('') }}\n{% endif %}\n"
+        == 'beer01-off' %} sensor.garage_beer_fridge_electric_consumption_w\n  {%
+        elif trigger.event.data.action == 'frzr01-off' %} sensor.garage_freezer_electric_consumption_w\n
+        \ {% endif %}\n{% else %}\n  {{ trigger.entity_id | default('') }}\n{% endif
+        %}\n"
       config: '{{ appliance_map.get(appliance_sensor.strip(), {}) }}'
   - condition: template
     value_template: '{{ config.name is defined }}'
@@ -2283,7 +2319,7 @@
         data:
           notify_target: notify.mobile_app_josh_mobile
           title: '{{ config.name | upper }} CRITICAL ALERT'
-          message: '{{ config.name }} power is 0W / unplugged for 45 mins!'
+          message: '{{ config.name }} power is 0W / unplugged for 90 mins!'
           notify_tag: '{{ config.tag }}'
     - conditions:
       - condition: trigger
@@ -3011,7 +3047,9 @@
     - binary_sensor.patio_left_person_detected
     - binary_sensor.driveway_outside_person_detected
     - binary_sensor.driveway_ptz_person_detected
-    to: 'on'
+    - binary_sensor.patio_right_person_detected
+    to:
+    - 'on'
   conditions:
   - condition: state
     entity_id: sun.sun
@@ -3581,13 +3619,13 @@
         target:
           entity_id: climate.t6_pro_downstairs
         data:
-          temperature: 68
+          temperature: 70
       - action: notify.send_message
         target:
           entity_id: '{{ log_entity }}'
         data:
           message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }},PHASE_1_WAKEUP,Indoor:
-            {{ actual }},Resetting to 68F'
+            {{ actual }},Resetting to 70F'
     - alias: 'Phase 2: Pre-Cooling (AI Adjusted Start)'
       conditions:
       - condition: template
@@ -4163,58 +4201,234 @@
           data:
             tag: bedroom_target_override
   mode: single
-
-- id: 'alexa_house_log_trigger'
-  alias: "Voice: Start Household Log Actionable"
-  description: "Triggers the Alexa Actionable Notification QA instantly when input_boolean.alexa_house_log is turned on"
+- id: alexa_house_log_trigger
+  alias: 'Voice: Start Household Log Actionable'
+  description: Triggers the Alexa Actionable Notification QA instantly when input_boolean.alexa_house_log
+    is turned on
   trigger:
-    - platform: state
+  - platform: state
+    entity_id: input_boolean.alexa_house_log
+    to: 'on'
+  condition: []
+  action:
+  - action: input_boolean.turn_off
+    target:
       entity_id: input_boolean.alexa_house_log
-      to: 'on'
-  condition: []
-  action:
-    # 1. Reset the trigger switch instantly
-    - action: input_boolean.turn_off
-      target:
-        entity_id: input_boolean.alexa_house_log
-
-    # 2. Fire the actionable notification on the active room's Echo
-    - action: script.activate_alexa_actionable_notification
-      data:
-        text: "Sure, what would you like me to note?"
-        event_id: household_notes_logger
-        alexa_device: "{{ states('sensor.last_alexa') }}"
-        suppress_confirmation: 'true'
+  - action: script.activate_alexa_actionable_notification
+    data:
+      text: Sure, what would you like me to note?
+      event_id: household_notes_logger
+      alexa_device: '{{ states(''sensor.last_alexa'') }}'
+      suppress_confirmation: 'true'
   mode: single
-
-- id: 'alexa_house_log_response'
-  alias: "Voice: Capture Household Log Response"
-  description: "Catches your spoken reply from the Actionable Notification skill and logs it to your ledger"
+- id: alexa_house_log_response
+  alias: 'Voice: Capture Household Log Response'
+  description: Catches your spoken reply from the Actionable Notification skill and
+    logs it to your ledger
   trigger:
-    - platform: event
-      event_type: alexa_actionable_notification
-      event_data:
-        event_id: household_notes_logger
+  - platform: event
+    event_type: alexa_actionable_notification
+    event_data:
+      event_id: household_notes_logger
   condition: []
   action:
-    # 1. Log the spoken text to your custom file notifier
-    - action: notify.send_message
-      target:
-        entity_id: notify.household_notes_txt
+  - action: notify.send_message
+    target:
+      entity_id: notify.household_notes_txt
+    data:
+      message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }} | {{ trigger.event.data.event_response
+        }}'
+  - action: notify.alexa_media
+    data:
+      target: '{{ states(''sensor.last_alexa'') }}'
       data:
-        message: "{{ now().strftime('%Y-%m-%d %H:%M:%S') }} | {{ trigger.event.data.event_response }}"
-
-    # 2. Have Alexa say a short, clean confirmation
-    - action: notify.alexa_media
-      data:
-        target: "{{ states('sensor.last_alexa') }}"
-        data:
-          type: tts
-        message: "Logged."
-
-    # 3. Send a push notification to your phone so you can verify the transcription
-    - action: notify.mobile_app_josh_mobile
-      data:
-        title: "Household Log Updated"
-        message: "Heard and Logged: '{{ trigger.event.data.event_response }}'"
+        type: tts
+      message: Logged.
+  - action: notify.mobile_app_josh_mobile
+    data:
+      title: Household Log Updated
+      message: 'Heard and Logged: ''{{ trigger.event.data.event_response }}'''
   mode: single
+- id: light_control_catio_zen73
+  alias: 'Light Control: Catio (v1.0)'
+  description: Synchronizes Zooz ZEN73 Catio switches (switch.catio_light_01, switch.catio_light_02,
+    switch.catio_light_03) in a virtual 3-way setup.
+  triggers:
+  - id: top
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      property_key: '001'
+  - id: bottom
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      property_key: '002'
+  - id: switch_state_on
+    trigger: state
+    entity_id:
+    - switch.catio_light_01
+    - switch.catio_light_02
+    - switch.catio_light_03
+    to: 'on'
+  - id: switch_state_off
+    trigger: state
+    entity_id:
+    - switch.catio_light_01
+    - switch.catio_light_02
+    - switch.catio_light_03
+    to: 'off'
+  conditions:
+  - condition: template
+    value_template: "{{ trigger.id in ['switch_state_on', 'switch_state_off'] or\n
+      \  trigger.event.data.device_id in [\n     device_id('switch.catio_light_01'),\n
+      \    device_id('switch.catio_light_02'),\n     device_id('switch.catio_light_03')\n
+      \  ] }}"
+  actions:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.id == 'switch_state_on' or\n   (trigger.id ==
+          'top' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}"
+      sequence:
+      - action: switch.turn_on
+        target:
+          entity_id:
+          - switch.catio_light_01
+          - switch.catio_light_02
+          - switch.catio_light_03
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.id == 'switch_state_off' or\n   (trigger.id ==
+          'bottom' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x'])
+          }}"
+      sequence:
+      - action: switch.turn_off
+        target:
+          entity_id:
+          - switch.catio_light_01
+          - switch.catio_light_02
+          - switch.catio_light_03
+  mode: restart
+- id: light_control_garage_entry_zen73_zen12
+  alias: 'Light Control: Garage Entry (v1.0)'
+  description: Synchronizes Zooz ZEN73 switch (switch.garage_entry_switch) and ZEN12
+    motion switch (light.garage_motion_switch) in a virtual 3-way setup.
+  triggers:
+  - id: top
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      property_key: '001'
+  - id: bottom
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      property_key: '002'
+  - id: switch_state_on
+    trigger: state
+    entity_id:
+    - switch.garage_entry_switch
+    - light.garage_motion_switch
+    to: 'on'
+  - id: switch_state_off
+    trigger: state
+    entity_id:
+    - switch.garage_entry_switch
+    - light.garage_motion_switch
+    to: 'off'
+  conditions:
+  - condition: template
+    value_template: "{{ trigger.id in ['switch_state_on', 'switch_state_off'] or\n
+      \  trigger.event.data.device_id in [\n     device_id('switch.garage_entry_switch'),\n
+      \    device_id('light.garage_motion_switch')\n   ] }}"
+  actions:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.id == 'switch_state_on' or\n   (trigger.id ==
+          'top' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}"
+      sequence:
+      - action: homeassistant.turn_on
+        target:
+          entity_id:
+          - switch.garage_entry_switch
+          - light.garage_motion_switch
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.id == 'switch_state_off' or\n   (trigger.id ==
+          'bottom' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x'])
+          }}"
+      sequence:
+      - action: homeassistant.turn_off
+        target:
+          entity_id:
+          - switch.garage_entry_switch
+          - light.garage_motion_switch
+  mode: restart
+- id: climate_upstairs_coordinator_v1_0
+  alias: 'Climate: Upstairs Coordinator (v1.0)'
+  description: Dynamic thermal coordination for Floor 2 central Trane heat pump (73F day/evening, 76F night setback, 78F eco).
+  triggers:
+  - trigger: time
+    at: 07:00:00
+    id: wake_up
+  - trigger: time
+    at: input_datetime.bedroom_bedtime
+    id: bedtime
+  - trigger: time
+    at: '22:30:00'
+    id: bedtime_fallback
+  - trigger: state
+    entity_id: input_boolean.eco_mode
+    id: eco_mode
+  - trigger: homeassistant
+    event: start
+    id: boot
+  conditions:
+  - condition: template
+    value_template: "{{ states('climate.t6_pro_upstairs') in ['cool', 'heat', 'auto'] }}"
+  actions:
+  - variables:
+      target_cool: >-
+        {%- set b = states('input_datetime.bedroom_bedtime') -%}
+        {%- set bedtime_str = b if b not in ['unknown', 'unavailable', 'None'] else '22:30:00' -%}
+        {%- set is_night = now() >= today_at(bedtime_str) or now().hour < 7 -%}
+        {%- if is_state('input_boolean.eco_mode', 'on') -%}
+          78
+        {%- elif is_night -%}
+          76
+        {%- else -%}
+          73
+        {%- endif -%}
+      target_heat: >-
+        {%- set b = states('input_datetime.bedroom_bedtime') -%}
+        {%- set bedtime_str = b if b not in ['unknown', 'unavailable', 'None'] else '22:30:00' -%}
+        {%- set is_night = now() >= today_at(bedtime_str) or now().hour < 7 -%}
+        {%- if is_state('input_boolean.eco_mode', 'on') -%}
+          64
+        {%- elif is_night -%}
+          62
+        {%- else -%}
+          67
+        {%- endif -%}
+      desired_temp: >-
+        {%- if is_state('climate.t6_pro_upstairs', 'cool') -%}
+          {{ target_cool | int(73) }}
+        {%- elif is_state('climate.t6_pro_upstairs', 'heat') -%}
+          {{ target_heat | int(67) }}
+        {%- else -%}
+          {{ target_cool | int(73) }}
+        {%- endif -%}
+      current_target: "{{ state_attr('climate.t6_pro_upstairs', 'temperature') | float(0) }}"
+  - if:
+    - condition: template
+      value_template: "{{ current_target != desired_temp | float }}"
+    then:
+    - action: climate.set_temperature
+      target:
+        entity_id: climate.t6_pro_upstairs
+      data:
+        temperature: "{{ desired_temp }}"
+  mode: single
+
