@@ -1849,19 +1849,30 @@
         target:
           entity_id: climate.t6_pro_downstairs
         data:
-          temperature: 70
+          temperature: >-
+            {%- if is_state('climate.t6_pro_downstairs', 'heat') -%}
+              68
+            {%- else -%}
+              70
+            {%- endif -%}
       - action: climate.set_temperature
         target:
           entity_id: climate.t6_pro_upstairs
         data:
-          temperature: 73
+          temperature: >-
+            {%- if is_state('climate.t6_pro_upstairs', 'heat') -%}
+              67
+            {%- else -%}
+              73
+            {%- endif -%}
       - action: notify.mobile_app_josh_mobile
         data:
           title: Welcome Home
-          message: Eco Mode deactivated ({{ 'Manual' if trigger.id == 'deactivate_eco'
-            else 'Proximity' }}). Thermostats set to 70°F / 73°F.
+          message: >-
+            Eco Mode deactivated ({{ 'Manual' if trigger.id == 'deactivate_eco' else 'Proximity' }}). Downstairs: {{ '68°F (Heat)' if is_state('climate.t6_pro_downstairs', 'heat') else '70°F (Cool)' }} | Upstairs: {{ '67°F (Heat)' if is_state('climate.t6_pro_upstairs', 'heat') else '73°F (Cool)' }}.
           data:
             tag: eco-finish
+
   mode: restart
 - id: '1725030108440'
   alias: Cleaning Lifecycle
@@ -4352,9 +4363,9 @@
           - switch.garage_entry_switch
           - light.garage_motion_switch
   mode: restart
-- id: climate_upstairs_coordinator_v1_0
-  alias: 'Climate: Upstairs Coordinator (v1.0)'
-  description: Dynamic thermal coordination for Floor 2 central Trane heat pump (73F day/evening, 76F night setback, 78F eco).
+- id: climate_whole_home_coordinator_v1_0
+  alias: 'Climate: Whole-Home Thermostat Coordinator (v1.0)'
+  description: Unified thermal orchestration across all seasons for Floor 1 (Downstairs) and Floor 2 (Upstairs) Trane heat pumps.
   triggers:
   - trigger: time
     at: 07:00:00
@@ -4368,53 +4379,68 @@
   - trigger: state
     entity_id: input_boolean.eco_mode
     id: eco_mode
+  - trigger: state
+    entity_id:
+    - climate.t6_pro_downstairs
+    - climate.t6_pro_upstairs
+    to:
+    - cool
+    - heat
+    id: mode_changed
   - trigger: homeassistant
     event: start
     id: boot
-  conditions:
-  - condition: template
-    value_template: "{{ states('climate.t6_pro_upstairs') in ['cool', 'heat', 'auto'] }}"
   actions:
   - variables:
-      target_cool: >-
-        {%- set b = states('input_datetime.bedroom_bedtime') -%}
-        {%- set bedtime_str = b if b not in ['unknown', 'unavailable', 'None'] else '22:30:00' -%}
-        {%- set is_night = now() >= today_at(bedtime_str) or now().hour < 7 -%}
-        {%- if is_state('input_boolean.eco_mode', 'on') -%}
-          78
-        {%- elif is_night -%}
-          76
-        {%- else -%}
-          73
-        {%- endif -%}
-      target_heat: >-
-        {%- set b = states('input_datetime.bedroom_bedtime') -%}
-        {%- set bedtime_str = b if b not in ['unknown', 'unavailable', 'None'] else '22:30:00' -%}
-        {%- set is_night = now() >= today_at(bedtime_str) or now().hour < 7 -%}
-        {%- if is_state('input_boolean.eco_mode', 'on') -%}
-          64
-        {%- elif is_night -%}
-          62
-        {%- else -%}
-          67
-        {%- endif -%}
-      desired_temp: >-
+      b: "{{ states('input_datetime.bedroom_bedtime') }}"
+      bedtime_str: "{{ b if b not in ['unknown', 'unavailable', 'None'] else '22:30:00' }}"
+      is_night: "{{ now() >= today_at(bedtime_str) or now().hour < 7 }}"
+      is_eco: "{{ is_state('input_boolean.eco_mode', 'on') }}"
+
+      # Floor 2 (Upstairs) Targets
+      upstairs_target_cool: "{{ 78 if is_eco else (76 if is_night else 73) }}"
+      upstairs_target_heat: "{{ 64 if is_eco else (62 if is_night else 67) }}"
+      upstairs_desired: >-
         {%- if is_state('climate.t6_pro_upstairs', 'cool') -%}
-          {{ target_cool | int(73) }}
+          {{ upstairs_target_cool | int(73) }}
         {%- elif is_state('climate.t6_pro_upstairs', 'heat') -%}
-          {{ target_heat | int(67) }}
+          {{ upstairs_target_heat | int(67) }}
         {%- else -%}
-          {{ target_cool | int(73) }}
+          {{ upstairs_target_cool | int(73) }}
         {%- endif -%}
-      current_target: "{{ state_attr('climate.t6_pro_upstairs', 'temperature') | float(0) }}"
+      upstairs_current: "{{ state_attr('climate.t6_pro_upstairs', 'temperature') | float(0) }}"
+
+      # Floor 1 (Downstairs) Targets
+      downstairs_target_heat: "{{ 66 if is_eco else (64 if is_night else 68) }}"
+      downstairs_target_cool: "{{ 74 if is_eco else 70 }}"
+      downstairs_current: "{{ state_attr('climate.t6_pro_downstairs', 'temperature') | float(0) }}"
+  # 1. Coordinate Upstairs Thermostat
   - if:
     - condition: template
-      value_template: "{{ current_target != desired_temp | float }}"
+      value_template: "{{ states('climate.t6_pro_upstairs') in ['cool', 'heat', 'auto'] and upstairs_current != (upstairs_desired | float) }}"
     then:
     - action: climate.set_temperature
       target:
         entity_id: climate.t6_pro_upstairs
       data:
-        temperature: "{{ desired_temp }}"
+        temperature: "{{ upstairs_desired }}"
+  # 2. Coordinate Downstairs Thermostat (Heating Season & Non-Precool Baselines)
+  - if:
+    - condition: template
+      value_template: "{{ is_state('climate.t6_pro_downstairs', 'heat') and downstairs_current != (downstairs_target_heat | float) }}"
+    then:
+    - action: climate.set_temperature
+      target:
+        entity_id: climate.t6_pro_downstairs
+      data:
+        temperature: "{{ downstairs_target_heat }}"
+    - if:
+      - condition: template
+        value_template: "{{ is_night }}"
+      then:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.bedroom_humidifier
   mode: single
+
 

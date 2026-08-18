@@ -25,7 +25,8 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 - [x] **Thermal Decay & Attic Modeling:** Switched from a generic outdoor temperature offset to direct micro-climate monitoring with dual attic sensors (Completed June 2026).
 - [x] **Target Override Safeguard:** Added an override protection automation with high-priority actionable mobile notifications to revert accidental slider modifications during pre-cooling (Completed June 8, 2026).
 - [x] **Decommissioning:** Completely removed the retired legacy v6.3 automation to prevent background logic overlaps (Completed May 2026).
-- [x] **Upstairs Climate Coordinator (v1.0) & Downstairs 70°F Daytime Trial:** Automated Floor 2 central Trane 2-Ton heat pump (`climate.t6_pro_upstairs`) with dynamic 73°F day/evening target, 76°F overnight setback, and 78°F Eco Mode, while testing Downstairs 70°F daytime target to optimize compressor duty cycles and mitigate solar stack effect (Completed August 18, 2026).
+- [x] **Whole-Home Climate Coordinator (v1.0) & Seasonal Eco Mode Hardening:** Automated dual-floor Trane central heat pumps across all 4 seasons with mode-aware Eco Mode restoration, 70°F daytime cooling baseline, 68°F day / 64°F night heating downstairs, and 67°F day / 62°F night heating upstairs (Completed August 18, 2026).
+
 - [x] **Local BigQuery MCP Server Integration:** Implemented stdio MCP server (`skills/bq_mcp_server.py`) and configured `mcp_config.json` to allow direct, permission-less AI querying of the BigQuery analytics dataset (Completed August 18, 2026).
 - [ ] **v7.9 Release - Attic Thermal Integration:** Gather a 7-day high-resolution logging baseline for `sensor.north_attic_sensor_air_temperature` and `sensor.south_attic_sensor_air_temperature` in BigQuery, define Scenario K (Attic Heat Soak Challenge) in Sim Lab, and implement a dynamic pre-cooling start-time multiplier based on real-time roof solar gain pressure.
 
