@@ -1,0 +1,164 @@
+---
+sensor:
+  - name: "Total Grid Power"
+    unique_id: energy_agg_total_grid
+    state_class: measurement
+    device_class: power
+    unit_of_measurement: "W"
+    state: >-
+      {{ (states('sensor.panel_01_total_power') | float(0) + states('sensor.panel_02_total_power') | float(0)) | round(1) }}
+
+  - name: "1st Floor Total Power"
+    unique_id: energy_agg_1st_floor
+    state_class: measurement
+    device_class: power
+    unit_of_measurement: "W"
+    state: >-
+      {{ (
+        states('sensor.panel_01_range_power') | float(0) +
+        states('sensor.panel_01_microwave_power') | float(0) +
+        states('sensor.panel_01_kitchen_01_power') | float(0) +
+        states('sensor.panel_01_kitchen_02_power') | float(0) +
+        states('sensor.panel_02_dishwasher_power') | float(0) +
+        states('sensor.panel_02_primary_bedroom_power') | float(0) +
+        states('sensor.panel_02_bathrooms_gfci_power') | float(0) +
+        states('sensor.panel_02_guest_rooms_power') | float(0) +
+        states('sensor.panel_02_downstairs_hall_power') | float(0) +
+        states('sensor.panel_02_family_room_foyer_power') | float(0) +
+        states('sensor.panel_02_garage_power') | float(0) +
+        states('sensor.panel_02_garage_extension_power') | float(0) +
+        states('sensor.panel_02_downstairs_heat_pump_power') | float(0) +
+        states('sensor.panel_02_downstairs_air_handler_power') | float(0) +
+        states('sensor.panel_02_water_heater_power') | float(0) +
+        states('sensor.panel_01_dryer_power') | float(0) +
+        states('sensor.panel_01_washing_machine_power') | float(0) +
+        states('sensor.panel_02_well_power') | float(0)
+      ) | round(1) }}
+
+  - name: "2nd Floor Total Power"
+    unique_id: energy_agg_2nd_floor
+    state_class: measurement
+    device_class: power
+    unit_of_measurement: "W"
+    state: >-
+      {{ (
+        states('sensor.panel_01_upstairs_bedroom_power') | float(0) +
+        states('sensor.panel_02_upstairs_gfci_power') | float(0) +
+        states('sensor.panel_01_upstairs_heat_pump_power') | float(0) +
+        states('sensor.panel_01_office_01_power') | float(0) +
+        states('sensor.panel_01_office_02_power') | float(0) +
+        states('sensor.panel_01_office_lights_power') | float(0) +
+        states('sensor.panel_01_network_rack_power') | float(0) +
+        states('sensor.panel_01_zen_den_power') | float(0) +
+        states('sensor.panel_01_mini_split_power') | float(0) +
+        states('sensor.panel_01_upstairs_air_handler_power') | float(0)
+      ) | round(1) }}
+
+  - name: "Outdoor Total Power"
+    unique_id: energy_agg_outdoor
+    state_class: measurement
+    device_class: power
+    unit_of_measurement: "W"
+    state: >-
+      {{ states('sensor.panel_01_catio_power') | float(0) | round(1) }}
+
+  - name: "Kitchen Total Power"
+    unique_id: energy_agg_kitchen
+    state_class: measurement
+    device_class: power
+    unit_of_measurement: "W"
+    state: >-
+      {{ (
+        states('sensor.panel_01_range_power') | float(0) +
+        states('sensor.panel_01_microwave_power') | float(0) +
+        states('sensor.panel_02_dishwasher_power') | float(0) +
+        states('sensor.panel_01_kitchen_01_power') | float(0) +
+        states('sensor.panel_01_kitchen_02_power') | float(0)
+      ) | round(1) }}
+
+  - name: "Office & IT Power"
+    unique_id: energy_agg_office_it
+    state_class: measurement
+    device_class: power
+    unit_of_measurement: "W"
+    state: >-
+      {{ (
+        states('sensor.panel_01_office_01_power') | float(0) +
+        states('sensor.panel_01_office_02_power') | float(0) +
+        states('sensor.panel_01_office_lights_power') | float(0) +
+        states('sensor.panel_01_network_rack_power') | float(0)
+      ) | round(1) }}
+
+  - name: "Primary Suite Power"
+    unique_id: energy_agg_primary_suite
+    state_class: measurement
+    device_class: power
+    unit_of_measurement: "W"
+    state: >-
+      {{ (
+        states('sensor.panel_02_primary_bedroom_power') | float(0) +
+        states('sensor.panel_02_bathrooms_gfci_power') | float(0)
+      ) | round(1) }}
+
+  - name: "Living & Hall Power"
+    unique_id: energy_agg_living_hall
+    state_class: measurement
+    device_class: power
+    unit_of_measurement: "W"
+    state: >-
+      {{ (
+        states('sensor.panel_02_family_room_foyer_power') | float(0) +
+        states('sensor.panel_02_downstairs_hall_power') | float(0) +
+        states('sensor.panel_02_guest_rooms_power') | float(0)
+      ) | round(1) }}
+
+
+  - name: "Garage Power"
+    unique_id: energy_agg_garage_subsystem
+    state_class: measurement
+    device_class: power
+    unit_of_measurement: "W"
+    state: >-
+      {{ (
+        states('sensor.panel_02_garage_extension_power') | float(0) +
+        states('sensor.panel_02_garage_power') | float(0)
+      ) | round(1) }}
+
+  - name: "1st Floor HVAC & Utilities Power"
+    unique_id: energy_agg_1st_floor_hvac_utilities
+    state_class: measurement
+    device_class: power
+    unit_of_measurement: "W"
+    state: >-
+      {{ (
+        states('sensor.panel_02_downstairs_heat_pump_power') | float(0) +
+        states('sensor.panel_02_downstairs_air_handler_power') | float(0) +
+        states('sensor.panel_02_water_heater_power') | float(0) +
+        states('sensor.panel_01_dryer_power') | float(0) +
+        states('sensor.panel_01_washing_machine_power') | float(0) +
+        states('sensor.panel_02_well_power') | float(0)
+      ) | round(1) }}
+
+  - name: "2nd Floor Rooms Power"
+    unique_id: energy_agg_2nd_floor_rooms
+    state_class: measurement
+    device_class: power
+    unit_of_measurement: "W"
+    state: >-
+      {{ (
+        states('sensor.panel_01_upstairs_bedroom_power') | float(0) +
+        states('sensor.panel_01_zen_den_power') | float(0) +
+        states('sensor.panel_02_upstairs_gfci_power') | float(0)
+      ) | round(1) }}
+
+  - name: "2nd Floor HVAC Power"
+    unique_id: energy_agg_2nd_floor_hvac
+    state_class: measurement
+    device_class: power
+    unit_of_measurement: "W"
+    state: >-
+      {{ (
+        states('sensor.panel_01_upstairs_heat_pump_power') | float(0) +
+        states('sensor.panel_01_mini_split_power') | float(0) +
+        states('sensor.panel_01_upstairs_air_handler_power') | float(0)
+      ) | round(1) }}
