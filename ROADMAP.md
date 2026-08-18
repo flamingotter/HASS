@@ -84,5 +84,6 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
     - *Relay 1:* Act as the emergency well pump cutoff switch (triggered on 20-minute continuous run cycles).
     - *Input 1:* Wire a low-voltage floor leak probe to locally trigger well-pump shutdown if a pipe drips.
 - [ ] **HVAC COP-Based Health Monitor:** Program a weekly auditor inside BigQuery correlating compressor kW-draw with temperature drops to proactively detect degraded heat-pump performance.
-- [ ] **Cross-Floor Thermal Balancing:** Create an interlocking coordinator for the upstairs and downstairs T6 Pro thermostats to mitigate the stack-effect and optimize dual-zone cooling.
+- [x] **Cross-Floor Thermal Balancing:** Created unified `Climate: Whole-Home Thermostat Coordinator (v1.0)` interlocking Upstairs and Downstairs T6 Pro thermostats across all seasons with Eco Mode sync and stack-effect mitigation (Completed August 18, 2026).
 - [ ] **Integrated Vacation Load-Shedding:** Automate non-essential smart plugs and water-heater power-downs the moment the system registers "Extended Away" status.
+
