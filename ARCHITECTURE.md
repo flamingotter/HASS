@@ -59,9 +59,19 @@ A high-precision engine designed to reach sleep temperature exactly at bedtime.
 
 
 
+## 4. Whole-Home Appliance Intelligence & Consumables Engine
+**Authority:** `Appliance: Cycle and Consumables Tracker` (`id: appliance_cycle_and_consumables_tracker`)
+Monitors high-draw major appliances using circuit-level Emporia Vue 3 telemetry and smart plugs.
+
+- **Washing Machine:** `binary_sensor.washing_machine_running` (Active $> 4\text{W}$, 2-min debounce off). Sends push notification to transfer laundry and auto-decrements `input_number.laundry_detergent_loads_remaining`.
+- **Clothes Dryer:** `binary_sensor.clothes_dryer_running` (Active $> 50\text{W}$, 1-min debounce off). Sends push notification when drying cycle completes.
+- **Dishwasher:** `binary_sensor.dishwasher_running` (Active $> 10\text{W}$, 3-min debounce off). Sends push notification when cycle completes and auto-decrements `input_number.dishwasher_tabs_remaining`.
+- **Consumables Depletion Alerts:** Pushes a low-stock alert when remaining detergent loads or dishwasher tabs reach $\le 5$.
+- **1-Tap Dashboard Restock:** Physical/Lovelace button triggers (`input_button.reset_laundry_detergent` $\rightarrow$ 96 loads, `input_button.reset_dishwasher_tabs` $\rightarrow$ 60 tabs) instantly refresh inventory counts.
+
 ---
 
-## 4. Vision & Security Engine (v1.5)
+## 5. Vision & Security Engine (v1.5)
 **Authority:** `Security: Front Porch - AI Video Analysis`
 Handles identity verification and suspicious activity detection.
 

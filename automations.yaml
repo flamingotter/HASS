@@ -4443,4 +4443,148 @@
           entity_id: switch.bedroom_humidifier
   mode: single
 
+- id: appliance_cycle_and_consumables_tracker
+  alias: 'Appliance: Cycle and Consumables Tracker'
+  description: Automatically monitors washer, dryer, and dishwasher cycles, alerts upon completion, and manages detergent and dishwasher tab consumables.
+  triggers:
+  - trigger: state
+    entity_id: binary_sensor.washing_machine_running
+    from: 'on'
+    to: 'off'
+    id: washer_finished
+  - trigger: state
+    entity_id: binary_sensor.clothes_dryer_running
+    from: 'on'
+    to: 'off'
+    id: dryer_finished
+  - trigger: state
+    entity_id: binary_sensor.dishwasher_running
+    from: 'on'
+    to: 'off'
+    id: dishwasher_finished
+  - trigger: state
+    entity_id: input_button.reset_laundry_detergent
+    id: reset_detergent
+  - trigger: state
+    entity_id: input_button.reset_dishwasher_tabs
+    id: reset_dishwasher
+  actions:
+  - choose:
+    # 1. Washer Cycle Finished
+    - conditions:
+      - condition: trigger
+        id: washer_finished
+      sequence:
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.laundry_detergent_loads_remaining
+        data:
+          value: "{{ [states('input_number.laundry_detergent_loads_remaining') | int(1) - 1, 0] | max }}"
+      - action: script.activate_mobile_actionable_notification
+        data:
+          notify_target: notify.mobile_app_josh_mobile
+          title: "🧺 Washing Machine Finished"
+          message: "Wash cycle complete! Time to move clothes to the dryer. ({{ [states('input_number.laundry_detergent_loads_remaining') | int(0), 0] | max }} detergent loads left)"
+          notify_tag: laundry-washer-notify
+      - action: script.activate_mobile_actionable_notification
+        data:
+          notify_target: notify.mobile_app_mj_pixel_8_pro
+          title: "🧺 Washing Machine Finished"
+          message: "Wash cycle complete! Time to move clothes to the dryer."
+          notify_tag: laundry-washer-notify
+      - if:
+        - condition: template
+          value_template: "{{ states('input_number.laundry_detergent_loads_remaining') | int(0) <= 5 }}"
+        then:
+        - action: script.activate_mobile_actionable_notification
+          data:
+            notify_target: notify.mobile_app_josh_mobile
+            title: "⚠️ Laundry Detergent Low"
+            message: "Only {{ states('input_number.laundry_detergent_loads_remaining') | int(0) }} loads of detergent remaining. Time to restock!"
+            notify_tag: laundry-detergent-low
+
+    # 2. Dryer Cycle Finished
+    - conditions:
+      - condition: trigger
+        id: dryer_finished
+      sequence:
+      - action: script.activate_mobile_actionable_notification
+        data:
+          notify_target: notify.mobile_app_josh_mobile
+          title: "👕 Clothes Dryer Finished"
+          message: "Dryer cycle complete! Clothes are ready to fold."
+          notify_tag: laundry-dryer-notify
+      - action: script.activate_mobile_actionable_notification
+        data:
+          notify_target: notify.mobile_app_mj_pixel_8_pro
+          title: "👕 Clothes Dryer Finished"
+          message: "Dryer cycle complete! Clothes are ready to fold."
+          notify_tag: laundry-dryer-notify
+
+    # 3. Dishwasher Cycle Finished
+    - conditions:
+      - condition: trigger
+        id: dishwasher_finished
+      sequence:
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.dishwasher_tabs_remaining
+        data:
+          value: "{{ [states('input_number.dishwasher_tabs_remaining') | int(1) - 1, 0] | max }}"
+      - action: script.activate_mobile_actionable_notification
+        data:
+          notify_target: notify.mobile_app_josh_mobile
+          title: "🍽️ Dishwasher Finished"
+          message: "Dishwasher cycle complete! Clean dishes are ready to unload. ({{ [states('input_number.dishwasher_tabs_remaining') | int(0), 0] | max }} tabs left)"
+          notify_tag: dishwasher-notify
+      - action: script.activate_mobile_actionable_notification
+        data:
+          notify_target: notify.mobile_app_mj_pixel_8_pro
+          title: "🍽️ Dishwasher Finished"
+          message: "Dishwasher cycle complete! Clean dishes are ready to unload."
+          notify_tag: dishwasher-notify
+      - if:
+        - condition: template
+          value_template: "{{ states('input_number.dishwasher_tabs_remaining') | int(0) <= 5 }}"
+        then:
+        - action: script.activate_mobile_actionable_notification
+          data:
+            notify_target: notify.mobile_app_josh_mobile
+            title: "⚠️ Dishwasher Tabs Low"
+            message: "Only {{ states('input_number.dishwasher_tabs_remaining') | int(0) }} dishwasher tabs remaining. Time to restock!"
+            notify_tag: dishwasher-tabs-low
+
+    # 4. Manual Restock Button - Detergent
+    - conditions:
+      - condition: trigger
+        id: reset_detergent
+      sequence:
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.laundry_detergent_loads_remaining
+        data:
+          value: 96
+      - action: notify.mobile_app_josh_mobile
+        data:
+          title: "🧺 Detergent Restocked"
+          message: "Laundry detergent inventory reset to 96 loads."
+
+    # 5. Manual Restock Button - Dishwasher Tabs
+    - conditions:
+      - condition: trigger
+        id: reset_dishwasher
+      sequence:
+      - action: input_number.set_value
+        target:
+          entity_id: input_number.dishwasher_tabs_remaining
+        data:
+          value: 60
+      - action: notify.mobile_app_josh_mobile
+        data:
+          title: "🍽️ Dishwasher Tabs Restocked"
+          message: "Dishwasher tabs inventory reset to 60 tabs."
+  mode: parallel
+  max: 5
+
+
 

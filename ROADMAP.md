@@ -73,10 +73,10 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 
 ## 7. Whole-Home Energy & Utility Intelligence (Emporia Vue 3)
 ### 🔍 Phase 7.1: Data-First Observation & Baseline Analysis
-- [ ] **Energy Exporter Integration:** Map the new Emporia Vue 3 channels (washer, dryer, well pump, compressors, mini-split) in `exporter.py` and verify streaming into BigQuery.
+- [x] **Energy Exporter Integration:** Mapped all 29 Emporia Vue 3 channels and dual attic sensors in `exporter.py`, verified 518k-row staging/merge pipeline into BigQuery (Completed August 19, 2026).
 - [ ] **14-Day Baseline Profiling:** Log real-world curves to analyze unmanaged peak demand patterns, baseline household "phantom" standby loads, and signature well pump runtimes before purchasing hardware.
-- [ ] **Washer & Dryer Cycle Tracker:** Implement template sensors and helper counters to count completed laundry loads and design the predictive "detergent depletion nudge" algorithm.
-- [ ] **Dishwasher Consumables Predictor:** Connect cycle counts from `sensor.dishwasher_operation_state` with a dishwasher-tablet reset button to predict tab usage.
+- [x] **Washer & Dryer Cycle Tracker:** Implemented power-draw template binary sensors (`binary_sensor.washing_machine_running`, `binary_sensor.clothes_dryer_running`), laundry completion push notifications to Josh & MJ, and predictive detergent pod depletion counter with low-stock alerts and 1-tap reset (Completed August 19, 2026).
+- [x] **Dishwasher Consumables Predictor:** Implemented power-draw wash cycle detection (`binary_sensor.dishwasher_running`), completion notifications, and auto-decrementing tab counter with <= 5 tab low-stock alert and 60-tab dashboard reset button (Completed August 19, 2026).
 
 ### 🛡️ Phase 7.2: Decentralized Physical Load Management
 - [ ] **Garage Node (Water Heater Peak-Shedding):** Install a UL-listed **Zooz ZEN78 High-Power 40A Relay** next to the garage water tank to safely break both L1/L2 legs simultaneously and support manual push-button overrides.

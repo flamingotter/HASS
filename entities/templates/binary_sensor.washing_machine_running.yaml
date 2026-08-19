@@ -1,0 +1,11 @@
+---
+binary_sensor:
+  - name: "Washing Machine Running"
+    unique_id: washing_machine_running_001
+    device_class: running
+    icon: mdi:washing-machine
+    state: "{{ states('sensor.panel_01_washing_machine_power') | float(0) > 4 }}"
+    delay_on:
+      seconds: 30
+    delay_off:
+      minutes: 2

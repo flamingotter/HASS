@@ -1,0 +1,11 @@
+---
+binary_sensor:
+  - name: "Clothes Dryer Running"
+    unique_id: clothes_dryer_running_001
+    device_class: running
+    icon: mdi:tumble-dryer
+    state: "{{ states('sensor.panel_01_dryer_power') | float(0) > 50 }}"
+    delay_on:
+      seconds: 30
+    delay_off:
+      minutes: 1
