@@ -28,6 +28,7 @@
       - camera.patio_right_high_resolution_channel
       - camera.doorbell_outside_high_resolution_channel
       - camera.front_porch_ptz_high_resolution_channel
+      - camera.driveway_ptz_high_resolution_channel
       sequence:
       - action: camera.snapshot
         data:
@@ -115,14 +116,14 @@
           entity_id: scene.before_onair
   mode: single
 - id: '1717275482675'
-  alias: 'Office Scene '
+  alias: 'Kitchen Scene '
   description: ''
-  trigger:
-  - platform: state
-    entity_id:
-    - input_select.office_scene_select
-  condition: []
-  action:
+  triggers:
+  - entity_id:
+    - input_select.kitchen_scene
+    trigger: state
+  conditions: []
+  actions:
   - action: scene.turn_on
     data:
       entity_id: scene.{{trigger.to_state.state}}
@@ -836,6 +837,13 @@
             entity_id:
             - light.lights
             - light.bedroom
+        - action: fan.turn_off
+          metadata: {}
+          target:
+            entity_id:
+            - fan.catio_fan_01
+            - fan.catio_fan_02
+          data: {}
         - action: input_boolean.turn_off
           target:
             entity_id: input_boolean.reading_mode
@@ -980,16 +988,6 @@
         - parallel:
           - action: light.turn_on
             data:
-              transition: 0.5
-              color_temp_kelvin: 4500
-              brightness_pct: 100
-            target:
-              entity_id:
-              - light.island
-              - light.big_kitchen_lights
-              - light.dining
-          - action: light.turn_on
-            data:
               rgb_color:
               - 137
               - 41
@@ -998,6 +996,11 @@
               transition: 2
             target:
               entity_id: light.spot_light
+          - action: scene.turn_on
+            metadata: {}
+            target:
+              entity_id: scene.kitchen_normal
+            data: {}
     - conditions:
       - condition: trigger
         id: t02
@@ -1205,8 +1208,9 @@
     entity_id: binary_sensor.garage_man_door
     state: 'off'
   - condition: state
-    entity_id: binary_sensor.motion_indoors_garage_motion_light
-    state: 'off'
+    entity_id: binary_sensor.garage_garage_motion_switch_motion_detection
+    state:
+    - 'off'
   actions:
   - action: lock.lock
     target:
@@ -1745,9 +1749,9 @@
         target:
           entity_id: climate.t6_pro_upstairs
         data:
-          temperature: '{% if is_state(''climate.t6_pro_upstairs'', ''cool'') %}
-            78 {% elif is_state(''climate.t6_pro_upstairs'', ''heat'') %} 64 {%
-            else %} 73 {% endif %}
+          temperature: '{% if is_state(''climate.t6_pro_upstairs'', ''cool'') %} 78
+            {% elif is_state(''climate.t6_pro_upstairs'', ''heat'') %} 64 {% else
+            %} 73 {% endif %}
 
             '
       - action: notify.mobile_app_josh_mobile
@@ -1849,30 +1853,23 @@
         target:
           entity_id: climate.t6_pro_downstairs
         data:
-          temperature: >-
-            {%- if is_state('climate.t6_pro_downstairs', 'heat') -%}
-              68
-            {%- else -%}
-              70
-            {%- endif -%}
+          temperature: "{%- if is_state('climate.t6_pro_downstairs', 'heat') -%}\n
+            \ 68\n{%- else -%}\n  70\n{%- endif -%}"
       - action: climate.set_temperature
         target:
           entity_id: climate.t6_pro_upstairs
         data:
-          temperature: >-
-            {%- if is_state('climate.t6_pro_upstairs', 'heat') -%}
-              67
-            {%- else -%}
-              73
-            {%- endif -%}
+          temperature: "{%- if is_state('climate.t6_pro_upstairs', 'heat') -%}\n  67\n{%-
+            else -%}\n  73\n{%- endif -%}"
       - action: notify.mobile_app_josh_mobile
         data:
           title: Welcome Home
-          message: >-
-            Eco Mode deactivated ({{ 'Manual' if trigger.id == 'deactivate_eco' else 'Proximity' }}). Downstairs: {{ '68°F (Heat)' if is_state('climate.t6_pro_downstairs', 'heat') else '70°F (Cool)' }} | Upstairs: {{ '67°F (Heat)' if is_state('climate.t6_pro_upstairs', 'heat') else '73°F (Cool)' }}.
+          message: 'Eco Mode deactivated ({{ ''Manual'' if trigger.id == ''deactivate_eco''
+            else ''Proximity'' }}). Downstairs: {{ ''68°F (Heat)'' if is_state(''climate.t6_pro_downstairs'',
+            ''heat'') else ''70°F (Cool)'' }} | Upstairs: {{ ''67°F (Heat)'' if is_state(''climate.t6_pro_upstairs'',
+            ''heat'') else ''73°F (Cool)'' }}.'
           data:
             tag: eco-finish
-
   mode: restart
 - id: '1725030108440'
   alias: Cleaning Lifecycle
@@ -2885,25 +2882,21 @@
         id:
         - Rise
       sequence:
-      - action: switch.turn_off
+      - action: homeassistant.turn_off
+        metadata: {}
         target:
-          entity_id:
-          - switch.garage_porch_light
-          - switch.narnia
-          - switch.outdoor_lights
-          - switch.front_door_porch_light
+          label_id:
+          - outdoor_lights
         data: {}
     - conditions:
       - condition: trigger
         id:
         - Set
       sequence:
-      - action: switch.turn_on
+      - action: homeassistant.turn_on
+        metadata: {}
         target:
-          entity_id:
-          - switch.garage_porch_light
-          - switch.narnia
-          - switch.front_door_porch_light
+          label_id: dusk_dawn
         data: {}
   mode: single
 - id: '1766015428765'
@@ -3601,31 +3594,36 @@
       - condition: trigger
         id: strategist
       - condition: template
-        alias: 'Free Cooling Viability Gate (Outdoor >= 3F cooler and humidity < 65%)'
-        value_template: >-
-          {%- set out_temp = states('sensor.weather_station_temperature_outdoor') | float(100) -%}
-          {%- set out_hum = states('sensor.weather_station_humidity_outdoor') | float(100) -%}
-          {{ out_temp <= (actual - 3.0) and out_hum < 65 }}
+        alias: Free Cooling Viability Gate (Outdoor >= 3F cooler and humidity < 65%)
+        value_template: '{%- set out_temp = states(''sensor.weather_station_temperature_outdoor'')
+          | float(100) -%} {%- set out_hum = states(''sensor.weather_station_humidity_outdoor'')
+          | float(100) -%} {{ out_temp <= (actual - 3.0) and out_hum < 65 }}'
       sequence:
       - action: ai_task.generate_data
         continue_on_error: true
         data:
           task_name: Free Cooling Strategist
-          instructions: >-
-            Outdoor temp is {{ states('sensor.weather_station_temperature_outdoor') }}F with {{ states('sensor.weather_station_humidity_outdoor') }}% humidity. Bedroom temp is {{ actual }}F. Give a short, helpful 1-sentence tip recommending opening the screened patio door for free cooling. Keep response under 25 words.
+          instructions: Outdoor temp is {{ states('sensor.weather_station_temperature_outdoor')
+            }}F with {{ states('sensor.weather_station_humidity_outdoor') }}% humidity.
+            Bedroom temp is {{ actual }}F. Give a short, helpful 1-sentence tip recommending
+            opening the screened patio door for free cooling. Keep response under
+            25 words.
         response_variable: strategist_advice
       - action: notify.mobile_app_josh_mobile
         data:
-          title: '🍃 Free Cooling Opportunity'
-          message: >-
-            {{ (strategist_advice | default({})).data | default('Outdoor air is cooler and dry (' ~ states('sensor.weather_station_temperature_outdoor') ~ '°F / ' ~ states('sensor.weather_station_humidity_outdoor') ~ '%). Consider opening the patio door to save energy.') }}
+          title: "\U0001F343 Free Cooling Opportunity"
+          message: '{{ (strategist_advice | default({})).data | default(''Outdoor
+            air is cooler and dry ('' ~ states(''sensor.weather_station_temperature_outdoor'')
+            ~ ''°F / '' ~ states(''sensor.weather_station_humidity_outdoor'') ~ ''%).
+            Consider opening the patio door to save energy.'') }}'
       - action: notify.send_message
         target:
           entity_id: '{{ log_entity }}'
         data:
-          message: >-
-            {{ now().strftime('%Y-%m-%d %H:%M:%S') }},FREE_COOLING_ADVISED,Outdoor:{{ states('sensor.weather_station_temperature_outdoor') }}F,Humidity:{{ states('sensor.weather_station_humidity_outdoor') }}%,Indoor:{{ actual }}F
-
+          message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }},FREE_COOLING_ADVISED,Outdoor:{{
+            states(''sensor.weather_station_temperature_outdoor'') }}F,Humidity:{{
+            states(''sensor.weather_station_humidity_outdoor'') }}%,Indoor:{{ actual
+            }}F'
     - alias: 'Phase 1: Wake Up (Reset to Neutral)'
       conditions:
       - condition: trigger
@@ -4365,7 +4363,8 @@
   mode: restart
 - id: climate_whole_home_coordinator_v1_0
   alias: 'Climate: Whole-Home Thermostat Coordinator (v1.0)'
-  description: Unified thermal orchestration across all seasons for Floor 1 (Downstairs) and Floor 2 (Upstairs) Trane heat pumps.
+  description: Unified thermal orchestration across all seasons for Floor 1 (Downstairs)
+    and Floor 2 (Upstairs) Trane heat pumps.
   triggers:
   - trigger: time
     at: 07:00:00
@@ -4392,60 +4391,55 @@
     id: boot
   actions:
   - variables:
-      b: "{{ states('input_datetime.bedroom_bedtime') }}"
-      bedtime_str: "{{ b if b not in ['unknown', 'unavailable', 'None'] else '22:30:00' }}"
-      is_night: "{{ now() >= today_at(bedtime_str) or now().hour < 7 }}"
-      is_eco: "{{ is_state('input_boolean.eco_mode', 'on') }}"
-
-      # Floor 2 (Upstairs) Targets
-      upstairs_target_cool: "{{ 78 if is_eco else (76 if is_night else 73) }}"
-      upstairs_target_heat: "{{ 64 if is_eco else (62 if is_night else 67) }}"
-      upstairs_desired: >-
-        {%- if is_state('climate.t6_pro_upstairs', 'cool') -%}
-          {{ upstairs_target_cool | int(73) }}
-        {%- elif is_state('climate.t6_pro_upstairs', 'heat') -%}
-          {{ upstairs_target_heat | int(67) }}
-        {%- else -%}
-          {{ upstairs_target_cool | int(73) }}
-        {%- endif -%}
-      upstairs_current: "{{ state_attr('climate.t6_pro_upstairs', 'temperature') | float(0) }}"
-
-      # Floor 1 (Downstairs) Targets
-      downstairs_target_heat: "{{ 66 if is_eco else (64 if is_night else 68) }}"
-      downstairs_target_cool: "{{ 74 if is_eco else 70 }}"
-      downstairs_current: "{{ state_attr('climate.t6_pro_downstairs', 'temperature') | float(0) }}"
-  # 1. Coordinate Upstairs Thermostat
+      b: '{{ states(''input_datetime.bedroom_bedtime'') }}'
+      bedtime_str: '{{ b if b not in [''unknown'', ''unavailable'', ''None''] else
+        ''22:30:00'' }}'
+      is_night: '{{ now() >= today_at(bedtime_str) or now().hour < 7 }}'
+      is_eco: '{{ is_state(''input_boolean.eco_mode'', ''on'') }}'
+      upstairs_target_cool: '{{ 78 if is_eco else (76 if is_night else 73) }}'
+      upstairs_target_heat: '{{ 64 if is_eco else (62 if is_night else 67) }}'
+      upstairs_desired: "{%- if is_state('climate.t6_pro_upstairs', 'cool') -%}\n
+        \ {{ upstairs_target_cool | int(73) }}\n{%- elif is_state('climate.t6_pro_upstairs',
+        'heat') -%}\n  {{ upstairs_target_heat | int(67) }}\n{%- else -%}\n  {{ upstairs_target_cool
+        | int(73) }}\n{%- endif -%}"
+      upstairs_current: '{{ state_attr(''climate.t6_pro_upstairs'', ''temperature'')
+        | float(0) }}'
+      downstairs_target_heat: '{{ 66 if is_eco else (64 if is_night else 68) }}'
+      downstairs_target_cool: '{{ 74 if is_eco else 70 }}'
+      downstairs_current: '{{ state_attr(''climate.t6_pro_downstairs'', ''temperature'')
+        | float(0) }}'
   - if:
     - condition: template
-      value_template: "{{ states('climate.t6_pro_upstairs') in ['cool', 'heat', 'auto'] and upstairs_current != (upstairs_desired | float) }}"
+      value_template: '{{ states(''climate.t6_pro_upstairs'') in [''cool'', ''heat'',
+        ''auto''] and upstairs_current != (upstairs_desired | float) }}'
     then:
     - action: climate.set_temperature
       target:
         entity_id: climate.t6_pro_upstairs
       data:
-        temperature: "{{ upstairs_desired }}"
-  # 2. Coordinate Downstairs Thermostat (Heating Season & Non-Precool Baselines)
+        temperature: '{{ upstairs_desired }}'
   - if:
     - condition: template
-      value_template: "{{ is_state('climate.t6_pro_downstairs', 'heat') and downstairs_current != (downstairs_target_heat | float) }}"
+      value_template: '{{ is_state(''climate.t6_pro_downstairs'', ''heat'') and downstairs_current
+        != (downstairs_target_heat | float) }}'
     then:
     - action: climate.set_temperature
       target:
         entity_id: climate.t6_pro_downstairs
       data:
-        temperature: "{{ downstairs_target_heat }}"
+        temperature: '{{ downstairs_target_heat }}'
     - if:
       - condition: template
-        value_template: "{{ is_night }}"
+        value_template: '{{ is_night }}'
       then:
       - action: switch.turn_on
         target:
           entity_id: switch.bedroom_humidifier
   mode: single
-
 - id: appliance_cycle_and_consumables_tracker
   alias: 'Appliance: Cycle and Consumables Tracker'
-  description: Automatically monitors washer, dryer, and dishwasher cycles, alerts upon completion, and manages detergent and dishwasher tab consumables.
+  description: Automatically monitors washer, dryer, and dishwasher cycles, alerts
+    upon completion, and manages detergent and dishwasher tab consumables.
   triggers:
   - trigger: state
     entity_id: binary_sensor.washing_machine_running
@@ -4457,6 +4451,7 @@
     from: 'on'
     to: 'off'
     id: dryer_finished
+    enabled: true
   - trigger: state
     entity_id: binary_sensor.dishwasher_running
     from: 'on'
@@ -4470,7 +4465,6 @@
     id: reset_dishwasher
   actions:
   - choose:
-    # 1. Washer Cycle Finished
     - conditions:
       - condition: trigger
         id: washer_finished
@@ -4479,31 +4473,33 @@
         target:
           entity_id: input_number.laundry_detergent_loads_remaining
         data:
-          value: "{{ [states('input_number.laundry_detergent_loads_remaining') | int(1) - 1, 0] | max }}"
+          value: '{{ [states(''input_number.laundry_detergent_loads_remaining'') |
+            int(1) - 1, 0] | max }}'
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.mobile_app_josh_mobile
-          title: "🧺 Washing Machine Finished"
-          message: "Wash cycle complete! Time to move clothes to the dryer. ({{ [states('input_number.laundry_detergent_loads_remaining') | int(0), 0] | max }} detergent loads left)"
+          title: "\U0001F9FA Washing Machine Finished"
+          message: Wash cycle complete! Time to move clothes to the dryer. ({{ [states('input_number.laundry_detergent_loads_remaining')
+            | int(0), 0] | max }} detergent loads left)
           notify_tag: laundry-washer-notify
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.mobile_app_mj_pixel_8_pro
-          title: "🧺 Washing Machine Finished"
-          message: "Wash cycle complete! Time to move clothes to the dryer."
+          title: "\U0001F9FA Washing Machine Finished"
+          message: Wash cycle complete! Time to move clothes to the dryer.
           notify_tag: laundry-washer-notify
       - if:
         - condition: template
-          value_template: "{{ states('input_number.laundry_detergent_loads_remaining') | int(0) <= 5 }}"
+          value_template: '{{ states(''input_number.laundry_detergent_loads_remaining'')
+            | int(0) <= 5 }}'
         then:
         - action: script.activate_mobile_actionable_notification
           data:
             notify_target: notify.mobile_app_josh_mobile
-            title: "⚠️ Laundry Detergent Low"
-            message: "Only {{ states('input_number.laundry_detergent_loads_remaining') | int(0) }} loads of detergent remaining. Time to restock!"
+            title: ⚠️ Laundry Detergent Low
+            message: Only {{ states('input_number.laundry_detergent_loads_remaining')
+              | int(0) }} loads of detergent remaining. Time to restock!
             notify_tag: laundry-detergent-low
-
-    # 2. Dryer Cycle Finished
     - conditions:
       - condition: trigger
         id: dryer_finished
@@ -4511,17 +4507,15 @@
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.mobile_app_josh_mobile
-          title: "👕 Clothes Dryer Finished"
-          message: "Dryer cycle complete! Clothes are ready to fold."
+          title: "\U0001F455 Clothes Dryer Finished"
+          message: Dryer cycle complete! Clothes are ready to fold.
           notify_tag: laundry-dryer-notify
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.mobile_app_mj_pixel_8_pro
-          title: "👕 Clothes Dryer Finished"
-          message: "Dryer cycle complete! Clothes are ready to fold."
+          title: "\U0001F455 Clothes Dryer Finished"
+          message: Dryer cycle complete! Clothes are ready to fold.
           notify_tag: laundry-dryer-notify
-
-    # 3. Dishwasher Cycle Finished
     - conditions:
       - condition: trigger
         id: dishwasher_finished
@@ -4530,31 +4524,34 @@
         target:
           entity_id: input_number.dishwasher_tabs_remaining
         data:
-          value: "{{ [states('input_number.dishwasher_tabs_remaining') | int(1) - 1, 0] | max }}"
+          value: '{{ [states(''input_number.dishwasher_tabs_remaining'') | int(1)
+            - 1, 0] | max }}'
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.mobile_app_josh_mobile
-          title: "🍽️ Dishwasher Finished"
-          message: "Dishwasher cycle complete! Clean dishes are ready to unload. ({{ [states('input_number.dishwasher_tabs_remaining') | int(0), 0] | max }} tabs left)"
+          title: "\U0001F37D️ Dishwasher Finished"
+          message: Dishwasher cycle complete! Clean dishes are ready to unload. ({{
+            [states('input_number.dishwasher_tabs_remaining') | int(0), 0] | max }}
+            tabs left)
           notify_tag: dishwasher-notify
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.mobile_app_mj_pixel_8_pro
-          title: "🍽️ Dishwasher Finished"
-          message: "Dishwasher cycle complete! Clean dishes are ready to unload."
+          title: "\U0001F37D️ Dishwasher Finished"
+          message: Dishwasher cycle complete! Clean dishes are ready to unload.
           notify_tag: dishwasher-notify
       - if:
         - condition: template
-          value_template: "{{ states('input_number.dishwasher_tabs_remaining') | int(0) <= 5 }}"
+          value_template: '{{ states(''input_number.dishwasher_tabs_remaining'') |
+            int(0) <= 5 }}'
         then:
         - action: script.activate_mobile_actionable_notification
           data:
             notify_target: notify.mobile_app_josh_mobile
-            title: "⚠️ Dishwasher Tabs Low"
-            message: "Only {{ states('input_number.dishwasher_tabs_remaining') | int(0) }} dishwasher tabs remaining. Time to restock!"
+            title: ⚠️ Dishwasher Tabs Low
+            message: Only {{ states('input_number.dishwasher_tabs_remaining') | int(0)
+              }} dishwasher tabs remaining. Time to restock!
             notify_tag: dishwasher-tabs-low
-
-    # 4. Manual Restock Button - Detergent
     - conditions:
       - condition: trigger
         id: reset_detergent
@@ -4566,10 +4563,8 @@
           value: 96
       - action: notify.mobile_app_josh_mobile
         data:
-          title: "🧺 Detergent Restocked"
-          message: "Laundry detergent inventory reset to 96 loads."
-
-    # 5. Manual Restock Button - Dishwasher Tabs
+          title: "\U0001F9FA Detergent Restocked"
+          message: Laundry detergent inventory reset to 96 loads.
     - conditions:
       - condition: trigger
         id: reset_dishwasher
@@ -4581,10 +4576,7 @@
           value: 60
       - action: notify.mobile_app_josh_mobile
         data:
-          title: "🍽️ Dishwasher Tabs Restocked"
-          message: "Dishwasher tabs inventory reset to 60 tabs."
+          title: "\U0001F37D️ Dishwasher Tabs Restocked"
+          message: Dishwasher tabs inventory reset to 60 tabs.
   mode: parallel
   max: 5
-
-
-

@@ -315,8 +315,6 @@
     light.island:
       min_color_temp_kelvin: 1500
       max_color_temp_kelvin: 9000
-      min_mireds: 111
-      max_mireds: 666
       effect_list:
       - effect_colorloop
       - effect_pulse
@@ -327,18 +325,17 @@
       effect:
       color_mode: color_temp
       brightness: 26
-      color_temp_kelvin: 4500
-      color_temp: 222
+      color_temp_kelvin: 5415
       hs_color:
-      - 26.728
-      - 26.496
+      - 27.698
+      - 13.881
       rgb_color:
       - 255
-      - 218
-      - 187
+      - 236
+      - 220
       xy_color:
-      - 0.393
-      - 0.358
+      - 0.356
+      - 0.344
       entity_id:
       - light.island_01
       - light.island_02
@@ -349,8 +346,6 @@
     light.big_kitchen_lights:
       min_color_temp_kelvin: 1500
       max_color_temp_kelvin: 9000
-      min_mireds: 111
-      max_mireds: 666
       effect_list:
       - effect_colorloop
       - effect_pulse
@@ -362,7 +357,6 @@
       color_mode:
       brightness:
       color_temp_kelvin:
-      color_temp:
       hs_color:
       rgb_color:
       xy_color:
@@ -378,8 +372,6 @@
     light.dining:
       min_color_temp_kelvin: 1500
       max_color_temp_kelvin: 9000
-      min_mireds: 111
-      max_mireds: 666
       effect_list:
       - effect_colorloop
       - effect_pulse
@@ -391,7 +383,6 @@
       color_mode:
       brightness:
       color_temp_kelvin:
-      color_temp:
       hs_color:
       rgb_color:
       xy_color:
@@ -410,6 +401,19 @@
       friendly_name: Stair light
       supported_features: 32
       state: 'off'
+    switch.kitchen_adaptive_lighting:
+      configuration: {}
+      icon: mdi:theme-light-dark
+      friendly_name: Kitchen Adaptive Lighting
+      brightness_pct:
+      color_temp_kelvin:
+      color_temp_mired:
+      rgb_color:
+      xy_color:
+      hs_color:
+      sun_position:
+      force_rgb_color:
+      state: 'off'
   metadata:
     light.island:
       entity_only: true
@@ -418,4 +422,178 @@
     light.dining:
       entity_only: true
     light.stair_light:
+      entity_only: true
+    switch.kitchen_adaptive_lighting:
+      entity_only: true
+- id: '1787172146097'
+  name: Kitchen Bright
+  entities:
+    light.kitchen_light:
+      min_color_temp_kelvin: 1500
+      max_color_temp_kelvin: 9000
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      effect:
+      color_mode: color_temp
+      brightness: 255
+      color_temp_kelvin: 4500
+      hs_color:
+      - 26.728
+      - 26.496
+      rgb_color:
+      - 255
+      - 218
+      - 187
+      xy_color:
+      - 0.393
+      - 0.358
+      entity_id:
+      - light.island
+      - light.big_kitchen_lights
+      icon: mdi:lightbulb-group
+      friendly_name: Kitchen Light
+      supported_features: 36
+      state: 'on'
+    light.dining:
+      min_color_temp_kelvin: 1500
+      max_color_temp_kelvin: 9000
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      effect:
+      color_mode:
+      brightness:
+      color_temp_kelvin:
+      hs_color:
+      rgb_color:
+      xy_color:
+      entity_id:
+      - light.dining_01
+      - light.dining_02
+      icon: mdi:dome-light
+      friendly_name: Dining Room
+      supported_features: 36
+      state: 'off'
+    switch.kitchen_adaptive_lighting:
+      configuration: {}
+      icon: mdi:theme-light-dark
+      friendly_name: Kitchen Adaptive Lighting
+      brightness_pct:
+      color_temp_kelvin:
+      color_temp_mired:
+      rgb_color:
+      xy_color:
+      hs_color:
+      sun_position:
+      force_rgb_color:
+      state: 'off'
+  metadata:
+    light.kitchen_light:
+      entity_only: true
+    light.dining:
+      entity_only: true
+    switch.kitchen_adaptive_lighting:
+      entity_only: true
+- id: '1787172749887'
+  name: Kitchen Normal
+  entities:
+    switch.kitchen_adaptive_lighting:
+      configuration: {}
+      brightness_pct: 100
+      color_temp_kelvin: 5245
+      color_temp_mired: 190
+      rgb_color:
+      - 255
+      - 233
+      - 214
+      xy_color:
+      - 0.362
+      - 0.347
+      hs_color:
+      - 27.805
+      - 16.078
+      sun_position: 0.7492404254519756
+      force_rgb_color: false
+      icon: mdi:theme-light-dark
+      friendly_name: Kitchen Adaptive Lighting
+      manual_control: []
+      autoreset_time_remaining: {}
+      state: 'on'
+    light.kitchen_light:
+      min_color_temp_kelvin: 1500
+      max_color_temp_kelvin: 9000
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      effect:
+      color_mode: color_temp
+      brightness: 255
+      color_temp_kelvin: 5258
+      hs_color:
+      - 27.362
+      - 15.848
+      rgb_color:
+      - 255
+      - 233
+      - 215
+      xy_color:
+      - 0.362
+      - 0.346
+      entity_id:
+      - light.island
+      - light.big_kitchen_lights
+      icon: mdi:lightbulb-group
+      friendly_name: Kitchen Light
+      supported_features: 36
+      state: 'on'
+    light.dining:
+      min_color_temp_kelvin: 1500
+      max_color_temp_kelvin: 9000
+      effect_list:
+      - effect_colorloop
+      - effect_pulse
+      - effect_stop
+      supported_color_modes:
+      - color_temp
+      - hs
+      effect:
+      color_mode: color_temp
+      brightness: 255
+      color_temp_kelvin: 5245
+      hs_color:
+      - 27.338
+      - 16.014
+      rgb_color:
+      - 255
+      - 233
+      - 214
+      xy_color:
+      - 0.362
+      - 0.347
+      entity_id:
+      - light.dining_01
+      - light.dining_02
+      icon: mdi:dome-light
+      friendly_name: Dining Room
+      supported_features: 36
+      state: 'on'
+  metadata:
+    switch.kitchen_adaptive_lighting:
+      entity_only: true
+    light.kitchen_light:
+      entity_only: true
+    light.dining:
       entity_only: true
