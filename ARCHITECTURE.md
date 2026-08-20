@@ -65,7 +65,7 @@ Monitors high-draw major appliances using circuit-level Emporia Vue 3 telemetry 
 
 - **Washing Machine:** `binary_sensor.washing_machine_running` (Active $> 4\text{W}$, 2-min debounce off). Sends push notification to transfer laundry and auto-decrements `input_number.laundry_detergent_loads_remaining`.
 - **Clothes Dryer:** `binary_sensor.clothes_dryer_running` (Active $> 30\text{W}$, 5-min debounce off to bridge sensor-dry moisture pauses). Sends push notification when drying cycle completes.
-- **Dishwasher:** `binary_sensor.dishwasher_running` (Active $> 10\text{W}$, 3-min debounce off). Sends push notification when cycle completes and auto-decrements `input_number.dishwasher_tabs_remaining`.
+- **Dishwasher:** `binary_sensor.dishwasher_running` (Native `sensor.dishwasher_operation_state` == `run` with $> 10\text{W}$ CT fallback, 1-min debounce off). Sends push notification when cycle completes and auto-decrements `input_number.dishwasher_tabs_remaining`.
 - **Consumables Depletion Alerts:** Pushes a low-stock alert when remaining detergent loads or dishwasher tabs reach $\le 5$.
 - **1-Tap Dashboard Restock:** Physical/Lovelace button triggers (`input_button.reset_laundry_detergent` $\rightarrow$ 96 loads, `input_button.reset_dishwasher_tabs` $\rightarrow$ 60 tabs) instantly refresh inventory counts.
 
