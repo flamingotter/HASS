@@ -144,71 +144,91 @@ locate_cats_snapshot_ai_notification_duplicate:
   icon: mdi:cctv
 update_kitchen_zen35_leds:
   alias: Update Kitchen ZEN35 LEDs
-  mode: restart
+  mode: queued
+  max: 2
   sequence:
   - delay: 00:00:01
   - variables:
       dim_threshold: 230
-      light_state_big: '{{ states(''light.big_kitchen_lights'') }}'
-      light_brightness_big: '{{ state_attr(''light.big_kitchen_lights'', ''brightness'')
-        | int(0) }}'
-      light_state_island: '{{ states(''light.island'') }}'
-      light_brightness_island: '{{ state_attr(''light.island'', ''brightness'') |
-        int(0) }}'
+      light_state_big: "{{ states('light.big_kitchen_lights') }}"
+      light_brightness_big: "{{ state_attr('light.big_kitchen_lights', 'brightness') | int(0) }}"
+      light_state_island: "{{ states('light.island') }}"
+      light_brightness_island: "{{ state_attr('light.island', 'brightness') | int(0) }}"
   - variables:
-      led_mode_big: "{% if light_state_big == 'off' or light_brightness_big < dim_threshold
-        %}\n  Always on\n{% else %}\n  Always off\n{% endif %}\n"
-      led_color_big: '{% if light_state_big == ''off'' %} White {% else %} Blue {%
-        endif %}
-
-        '
-      led_mode_island: "{% if light_state_island == 'off' or light_brightness_island
-        < dim_threshold %}\n  Always on\n{% else %}\n  Always off\n{% endif %}\n"
-      led_color_island: '{% if light_state_island == ''off'' %} White {% else %} Blue
-        {% endif %}
-
-        '
-  - action: select.select_option
-    target:
-      entity_id:
-      - select.kitchen_controller_01_led_indicator_relay
-      - select.kitchen_controller_02_led_indicator_relay
-      - select.kitchen_controller_03_led_indicator_relay
-    data:
-      option: '{{ led_mode_big }}'
-  - action: select.select_option
-    target:
-      entity_id:
-      - select.kitchen_controller_01_led_indicator_button_1
-      - select.kitchen_controller_02_led_indicator_button_1
-      - select.kitchen_controller_03_led_indicator_button_1
-    data:
-      option: '{{ led_mode_island }}'
-  - delay: 00:00:01
+      led_mode_big: >-
+        {{ 'Always on' if (light_state_big == 'off' or light_brightness_big < dim_threshold) else 'Always off' }}
+      led_color_big: >-
+        {{ 'White' if light_state_big == 'off' else 'Blue' }}
+      led_mode_island: >-
+        {{ 'Always on' if (light_state_island == 'off' or light_brightness_island < dim_threshold) else 'Always off' }}
+      led_color_island: >-
+        {{ 'White' if light_state_island == 'off' else 'Blue' }}
+  - variables:
+      mismatch_mode_big: >-
+        {{ ['select.kitchen_controller_01_led_indicator_relay',
+            'select.kitchen_controller_02_led_indicator_relay',
+            'select.kitchen_controller_03_led_indicator_relay']
+           | select('has_value')
+           | reject('is_state', led_mode_big)
+           | list }}
+      mismatch_mode_island: >-
+        {{ ['select.kitchen_controller_01_led_indicator_button_1',
+            'select.kitchen_controller_02_led_indicator_button_1',
+            'select.kitchen_controller_03_led_indicator_button_1']
+           | select('has_value')
+           | reject('is_state', led_mode_island)
+           | list }}
+      mismatch_color_big: >-
+        {{ ['select.kitchen_controller_01_led_indicator_color_relay',
+            'select.kitchen_controller_02_led_indicator_color_relay',
+            'select.kitchen_controller_03_led_indicator_color_relay']
+           | select('has_value')
+           | reject('is_state', led_color_big)
+           | list if led_mode_big == 'Always on' else [] }}
+      mismatch_color_island: >-
+        {{ ['select.kitchen_controller_01_led_indicator_color_button_1',
+            'select.kitchen_controller_02_led_indicator_color_button_1',
+            'select.kitchen_controller_03_led_indicator_color_button_1']
+           | select('has_value')
+           | reject('is_state', led_color_island)
+           | list if led_mode_island == 'Always on' else [] }}
   - if:
     - condition: template
-      value_template: '{{ led_mode_big == ''Always on'' }}'
+      value_template: "{{ mismatch_mode_big | length > 0 }}"
     then:
     - action: select.select_option
       target:
-        entity_id:
-        - select.kitchen_controller_01_led_indicator_color_relay
-        - select.kitchen_controller_02_led_indicator_color_relay
-        - select.kitchen_controller_03_led_indicator_color_relay
+        entity_id: "{{ mismatch_mode_big }}"
       data:
-        option: '{{ led_color_big }}'
+        option: "{{ led_mode_big }}"
   - if:
     - condition: template
-      value_template: '{{ led_mode_island == ''Always on'' }}'
+      value_template: "{{ mismatch_mode_island | length > 0 }}"
     then:
     - action: select.select_option
       target:
-        entity_id:
-        - select.kitchen_controller_01_led_indicator_color_button_1
-        - select.kitchen_controller_02_led_indicator_color_button_1
-        - select.kitchen_controller_03_led_indicator_color_button_1
+        entity_id: "{{ mismatch_mode_island }}"
       data:
-        option: '{{ led_color_island }}'
+        option: "{{ led_mode_island }}"
+  - delay: 00:00:00.5
+  - if:
+    - condition: template
+      value_template: "{{ mismatch_color_big | length > 0 }}"
+    then:
+    - action: select.select_option
+      target:
+        entity_id: "{{ mismatch_color_big }}"
+      data:
+        option: "{{ led_color_big }}"
+  - if:
+    - condition: template
+      value_template: "{{ mismatch_color_island | length > 0 }}"
+    then:
+    - action: select.select_option
+      target:
+        entity_id: "{{ mismatch_color_island }}"
+      data:
+        option: "{{ led_color_island }}"
 bedtime_charging_check:
   alias: Bedtime Charging Check
   sequence:
