@@ -4560,11 +4560,11 @@
         target:
           entity_id: input_number.laundry_detergent_loads_remaining
         data:
-          value: 96
+          value: '{{ states(''input_number.laundry_detergent_restock_quantity'') | int(96) }}'
       - action: notify.mobile_app_josh_mobile
         data:
-          title: "\U0001F9FA Detergent Restocked"
-          message: Laundry detergent inventory reset to 96 loads.
+          title: "🧺 Detergent Restocked"
+          message: "Laundry detergent inventory reset to {{ states('input_number.laundry_detergent_loads_remaining') | int(96) }} loads."
     - conditions:
       - condition: trigger
         id: reset_dishwasher
@@ -4573,10 +4573,10 @@
         target:
           entity_id: input_number.dishwasher_tabs_remaining
         data:
-          value: 60
+          value: '{{ states(''input_number.dishwasher_tabs_restock_quantity'') | int(60) }}'
       - action: notify.mobile_app_josh_mobile
         data:
-          title: "\U0001F37D️ Dishwasher Tabs Restocked"
-          message: Dishwasher tabs inventory reset to 60 tabs.
+          title: "🍽️ Dishwasher Tabs Restocked"
+          message: "Dishwasher tabs inventory reset to {{ states('input_number.dishwasher_tabs_remaining') | int(60) }} tabs."
   mode: parallel
   max: 5
