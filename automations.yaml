@@ -2914,11 +2914,43 @@
       property_key: '002'
     id: bottom
     trigger: event
+  - id: light_state_on
+    trigger: state
+    entity_id: light.dining
+    to: 'on'
+  - id: light_state_off
+    trigger: state
+    entity_id: light.dining
+    to: 'off'
   actions:
   - condition: template
-    value_template: "{{ trigger.event.data.device_id in [\n  'c125586b93f269297aa55b3247f9d054',\n
-      \ '961b9d5943f96a6021fbf5392265d48c'\n] }}\n"
+    value_template: >-
+      {{ trigger.id in ['light_state_on', 'light_state_off'] or
+         trigger.event.data.device_id in [
+           'c125586b93f269297aa55b3247f9d054',
+           '961b9d5943f96a6021fbf5392265d48c'
+         ] }}
   - choose:
+    - conditions:
+      - condition: template
+        value_template: >-
+          {{ trigger.id == 'light_state_on' }}
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id:
+          - light.dining_switch_01
+          - light.dining_switch_02
+    - conditions:
+      - condition: template
+        value_template: >-
+          {{ trigger.id == 'light_state_off' }}
+      sequence:
+      - action: light.turn_off
+        target:
+          entity_id:
+          - light.dining_switch_01
+          - light.dining_switch_02
     - conditions:
       - condition: template
         value_template: '{{ trigger.event.data.value == ''KeyPressed2x'' and trigger.id
@@ -2926,7 +2958,10 @@
       sequence:
       - action: light.turn_on
         target:
-          entity_id: light.dining
+          entity_id:
+          - light.dining
+          - light.dining_switch_01
+          - light.dining_switch_02
         data:
           brightness_pct: 100
     - conditions:
@@ -2936,7 +2971,10 @@
       sequence:
       - action: light.turn_on
         target:
-          entity_id: light.dining
+          entity_id:
+          - light.dining
+          - light.dining_switch_01
+          - light.dining_switch_02
         data:
           brightness_pct: 50
     - conditions:
@@ -2946,7 +2984,10 @@
       sequence:
       - action: light.turn_on
         target:
-          entity_id: light.dining
+          entity_id:
+          - light.dining
+          - light.dining_switch_01
+          - light.dining_switch_02
         data:
           brightness_pct: 100
     - conditions:
@@ -2956,7 +2997,10 @@
       sequence:
       - action: light.turn_off
         target:
-          entity_id: light.dining
+          entity_id:
+          - light.dining
+          - light.dining_switch_01
+          - light.dining_switch_02
     - conditions:
       - condition: template
         value_template: '{{ trigger.event.data.value == ''KeyHeldDown'' and trigger.id
@@ -4361,6 +4405,67 @@
           entity_id:
           - switch.garage_entry_switch
           - light.garage_motion_switch
+  mode: restart
+- id: light_control_hallway_zen73_lifx
+  alias: 'Light Control: Downstairs Hallway (v1.0)'
+  description: Synchronizes Zooz ZEN73 switches (switch.hall_switch_01, switch.hall_switch_02) with LIFX light (light.hall_light) and maintains guide-light LED states.
+  triggers:
+  - id: top
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      property_key: '001'
+  - id: bottom
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      property_key: '002'
+  - id: light_state_on
+    trigger: state
+    entity_id: light.hall_light
+    to: 'on'
+  - id: light_state_off
+    trigger: state
+    entity_id: light.hall_light
+    to: 'off'
+  conditions:
+  - condition: template
+    value_template: >-
+      {{ trigger.id in ['light_state_on', 'light_state_off'] or
+         trigger.event.data.device_id in [
+           device_id('switch.hall_switch_01'),
+           device_id('switch.hall_switch_02')
+         ] }}
+  actions:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: >-
+          {{ trigger.id == 'light_state_on' or
+             (trigger.id == 'top' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}
+      sequence:
+      - action: light.turn_on
+        target:
+          entity_id: light.hall_light
+      - action: switch.turn_on
+        target:
+          entity_id:
+          - switch.hall_switch_01
+          - switch.hall_switch_02
+    - conditions:
+      - condition: template
+        value_template: >-
+          {{ trigger.id == 'light_state_off' or
+             (trigger.id == 'bottom' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}
+      sequence:
+      - action: light.turn_off
+        target:
+          entity_id: light.hall_light
+      - action: switch.turn_off
+        target:
+          entity_id:
+          - switch.hall_switch_01
+          - switch.hall_switch_02
   mode: restart
 - id: climate_whole_home_coordinator_v1_0
   alias: 'Climate: Whole-Home Thermostat Coordinator (v1.0)'
