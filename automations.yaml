@@ -3118,6 +3118,7 @@
     enabled: false
   actions:
   - alias: 'Data Collection: Video and Snapshots'
+    continue_on_error: true
     parallel:
     - action: camera.record
       continue_on_error: true
