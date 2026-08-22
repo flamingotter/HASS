@@ -4289,7 +4289,7 @@
   mode: single
 - id: light_control_catio_zen73
   alias: 'Light Control: Catio (v2.0)'
-  description: Synchronizes Zooz ZEN73 Catio switches (switch.catio_light_01, switch.catio_light_02, switch.catio_light_03) in Smart Bulb Mode with LIFX lights (light.catio_lifx_01, light.catio_lifx_02) and maintains guide-light LED states.
+  description: Synchronizes Zooz ZEN73 Catio switches (switch.catio_light_01, switch.catio_light_02, switch.catio_light_03) in Smart Bulb Mode with LIFX lights (light.catio_lifx_01, light.catio_lifx_02) supporting 100% 4500K on single-tap up, 20% colorloop on double-tap up, 4500K effect-stop on double-tap down, and off on single-tap down.
   triggers:
   - id: top
     trigger: event
@@ -4326,16 +4326,16 @@
   - choose:
     - conditions:
       - condition: template
-        value_template: >-
-          {{ trigger.id == 'light_state_on' or
-             (trigger.id == 'top' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}
+        value_template: "{{ trigger.id == 'top' and trigger.event.data.value == 'KeyPressed2x' }}"
       sequence:
-      - action: light.turn_on
+      - action: lifx.effect_colorloop
         continue_on_error: true
         target:
           entity_id:
           - light.catio_lifx_01
           - light.catio_lifx_02
+        data:
+          brightness_pct: 20
       - action: switch.turn_on
         target:
           entity_id:
@@ -4344,16 +4344,89 @@
           - switch.catio_light_03
     - conditions:
       - condition: template
-        value_template: >-
-          {{ trigger.id == 'light_state_off' or
-             (trigger.id == 'bottom' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}
+        value_template: "{{ trigger.id == 'top' and trigger.event.data.value == 'KeyPressed' }}"
       sequence:
+      - action: lifx.effect_stop
+        continue_on_error: true
+        target:
+          entity_id:
+          - light.catio_lifx_01
+          - light.catio_lifx_02
+      - action: light.turn_on
+        continue_on_error: true
+        target:
+          entity_id:
+          - light.catio_lifx_01
+          - light.catio_lifx_02
+        data:
+          color_temp_kelvin: 4500
+          brightness_pct: 100
+      - action: switch.turn_on
+        target:
+          entity_id:
+          - switch.catio_light_01
+          - switch.catio_light_02
+          - switch.catio_light_03
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.id == 'bottom' and trigger.event.data.value == 'KeyPressed2x' }}"
+      sequence:
+      - action: lifx.effect_stop
+        continue_on_error: true
+        target:
+          entity_id:
+          - light.catio_lifx_01
+          - light.catio_lifx_02
+      - action: light.turn_on
+        continue_on_error: true
+        target:
+          entity_id:
+          - light.catio_lifx_01
+          - light.catio_lifx_02
+        data:
+          color_temp_kelvin: 4500
+      - action: switch.turn_on
+        target:
+          entity_id:
+          - switch.catio_light_01
+          - switch.catio_light_02
+          - switch.catio_light_03
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.id == 'bottom' and trigger.event.data.value == 'KeyPressed' }}"
+      sequence:
+      - action: lifx.effect_stop
+        continue_on_error: true
+        target:
+          entity_id:
+          - light.catio_lifx_01
+          - light.catio_lifx_02
       - action: light.turn_off
         continue_on_error: true
         target:
           entity_id:
           - light.catio_lifx_01
           - light.catio_lifx_02
+      - action: switch.turn_off
+        target:
+          entity_id:
+          - switch.catio_light_01
+          - switch.catio_light_02
+          - switch.catio_light_03
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.id == 'light_state_on' }}"
+      sequence:
+      - action: switch.turn_on
+        target:
+          entity_id:
+          - switch.catio_light_01
+          - switch.catio_light_02
+          - switch.catio_light_03
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.id == 'light_state_off' }}"
+      sequence:
       - action: switch.turn_off
         target:
           entity_id:
