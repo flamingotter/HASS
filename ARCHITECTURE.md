@@ -81,15 +81,24 @@ Handles identity verification and suspicious activity detection.
 
 ---
 
-## 5. Analytics & Infrastructure
-- **BigQuery Pipeline:** Data is exported to BigQuery for thermal decay and cooling velocity analysis. The `ha_bq_exporter` container is hardened with an infinite sleep loop (`sh -c "python exporter.py; exec sleep infinity"`) and set to `restart: unless-stopped`. This keeps the container permanently in a `Running` state to prevent it from being pruned by the weekly `docker system prune` of the housekeeper, while allowing Home Assistant to trigger the daily export cleanly via the `socket-proxy` restart command.
+## 6. Whole-Home Energy Architecture (Emporia Vue 3)
+**Hardware:** Dual ESPHome-flashed Emporia Vue 3 units (`emporiavue3_panel_01` and `emporiavue3_panel_02`).
+- **Feeder Standard:** Phase A (Left Main / Black Voltage Wire) and Phase B (Right Main / Red Voltage Wire) across both 200A panels.
+- **Circuit Hierarchical Aggregates:** Defined in `entities/templates/sensor.energy_hierarchical_aggregates.yaml` (calculating Grid Total, 1st/2nd Floor Totals, Kitchen, IT/Office, Living, and HVAC/Utility subsystems).
+- **Appliance Cycle Interlocks:** Real-time current/power feeds `binary_sensor.washing_machine_running`, `binary_sensor.clothes_dryer_running`, and `binary_sensor.dishwasher_running`.
+- **Calibration Baseline Cutoff:** Formally calibrated on **August 22, 2026 at 17:13:00 UTC**. Historical queries prior to this timestamp contain uncalibrated/inverted data for Dishwasher and Water Heater; all BigQuery analytics and baseline modeling must filter `timestamp >= '2026-08-22T17:13:00Z'`.
+
+---
+
+## 7. Analytics & Infrastructure
+- **BigQuery Pipeline:** Data is exported to BigQuery for thermal decay, energy modeling, and cooling velocity analysis. The `ha_bq_exporter` container is hardened with an infinite sleep loop (`sh -c "python exporter.py; exec sleep infinity"`) and set to `restart: unless-stopped`. This keeps the container permanently in a `Running` state to prevent it from being pruned by the weekly `docker system prune` of the housekeeper, while allowing Home Assistant to trigger the daily export cleanly via the `socket-proxy` restart command.
 - **AI Agent Direct Query (Remote MCP):** To empower AI agents with direct, real-time analytics access, the official Google Cloud remote MCP server (`bigquery_remote`) is integrated client-side. This allows direct, credential-secured schema discovery and querying against the `moonlit-botany-293421` project's `home_assistant_data` dataset.
 - **Docker Management:** Container control is handled via `curl` to the `socket-proxy` Docker API.
 - **Sim Lab:** A Digital Twin environment (`integrations/sim_lab.yaml`) used to stress-test logic against 10 specific scenarios (e.g., Short-Cycle, Type Mismatch, High Humidity) before deployment.
 
 ---
 
-## 6. Diagnostic Cheat Sheet
+## 8. Diagnostic Cheat Sheet
 - **Climate Check:** `grep "PHASE_" climate_control_log.csv | tail -n 20`
 - **Simulation Validation:** `grep "SIM_DATA" home-assistant.log | tail -n 10`
 - **Docker Status:** `curl -s http://127.0.0.1:2375/containers/ha_bq_exporter/json | jq .State.Status`
