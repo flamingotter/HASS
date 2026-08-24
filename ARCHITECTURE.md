@@ -71,7 +71,16 @@ Monitors high-draw major appliances using circuit-level Emporia Vue 3 telemetry 
 
 ---
 
-## 5. Vision & Security Engine (v1.5)
+## 5. Notification Architecture & Standardization
+**Unified Dispatcher:** `script.activate_mobile_actionable_notification`
+Standardizes actionable and informational push notifications across iOS and Android companion apps (`notify.mobile_app_josh_mobile`, `notify.mobile_app_mj_pixel_8_pro`, and `notify.all_devices`).
+- **Dynamic Action Generator:** Automatically constructs 0, 1, 2, or 3 interactive action buttons without rendering blank UI buttons when fewer actions are specified.
+- **Priority & Critical Channels:** Supports high-priority delivery, custom thread grouping (`notify_tag`), persistent/sticky alerts, TTL expirations, and bypass for phone silent modes (`channel: alarm_stream`).
+- **Standardized Consumers:** Fully deployed across `Notify: Feed Pets (v3.0)`, `Notify: Trash Day`, `Notify Shuttle Bay`, `Door Security: Safety & Armed Alerts`, `Notify House Guests`, `Alarm Panel Functions`, `System: Maintenance Engine (v2.0)`, and `Appliance: Cycle and Consumables Tracker`.
+
+---
+
+## 6. Vision & Security Engine (v1.5)
 **Authority:** `Security: Front Porch - AI Video Analysis`
 Handles identity verification and suspicious activity detection.
 

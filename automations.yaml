@@ -809,17 +809,16 @@
               entity_id: input_boolean.house_guests
               state: 'on'
             then:
-            - action: notify.mobile_app_josh_mobile
+            - action: script.activate_mobile_actionable_notification
               data:
-                message: Set home to Armed Away with House Guests?
+                notify_target: notify.mobile_app_josh_mobile
                 title: Arm Away Verify
-                data:
-                  tag: arm-guests
-                  actions:
-                  - action: guests_arm
-                    title: Arm
-                  - action: guests_ignore
-                    title: Ignore
+                message: Set home to Armed Away with House Guests?
+                notify_tag: arm-guests
+                notify_action_1: guests_arm
+                notify_action_1_title: Arm
+                notify_action_2: guests_ignore
+                notify_action_2_title: Ignore
             else:
             - action: alarm_control_panel.alarm_arm_away
               target:
@@ -1309,18 +1308,16 @@
 
                 '
             response_variable: nag_content
-          - action: notify.mobile_app_josh_mobile
+          - action: script.activate_mobile_actionable_notification
             data:
+              notify_target: notify.mobile_app_josh_mobile
               title: 'Maintenance Alert: {{ t_name }}'
-              message: '{{ (nag_content | default({})).data | default("Maintenance
-                is due for " ~ t_name) }}'
-              data:
-                tag: '{{ repeat.item }}'
-                actions:
-                - action: '{{ repeat.item }}_done'
-                  title: Done
-                - action: '{{ repeat.item }}_snooze'
-                  title: Snooze 24h
+              message: '{{ (nag_content | default({})).data | default("Maintenance is due for " ~ t_name) }}'
+              notify_tag: '{{ repeat.item }}'
+              notify_action_1: '{{ repeat.item }}_done'
+              notify_action_1_title: Done
+              notify_action_2: '{{ repeat.item }}_snooze'
+              notify_action_2_title: Snooze 24h
     - conditions:
       - condition: trigger
         id: action_handler
@@ -1414,22 +1411,21 @@
       - condition: trigger
         id: trash_time
       sequence:
-      - target:
+      - action: input_boolean.turn_on
+        target:
           entity_id: input_boolean.trash_reminder
-        action: input_boolean.turn_on
-      - data:
-          message: Put to the Curb
+      - action: script.activate_mobile_actionable_notification
+        data:
+          notify_target: notify.all_devices
           title: Trash and Recycling
-          data:
-            tag: trash-notify
-            actions:
-            - action: trash_done
-              title: Done
-            - action: trash_passon
-              title: Ask Other
-            - action: trash_delay
-              title: Delay 24hr
-        action: notify.all_devices
+          message: Put to the Curb
+          notify_tag: trash-notify
+          notify_action_1: trash_done
+          notify_action_1_title: Done
+          notify_action_2: trash_passon
+          notify_action_2_title: Ask Other
+          notify_action_3: trash_delay
+          notify_action_3_title: Delay 24hr
     - conditions:
       - or:
         - condition: trigger
@@ -1437,9 +1433,9 @@
         - condition: trigger
           id: trash_tag_scanned
       sequence:
-      - target:
+      - action: input_boolean.turn_off
+        target:
           entity_id: input_boolean.trash_reminder
-        action: input_boolean.turn_off
       - variables:
           scanned_device: '{{ trigger.device_id | default(trigger.event.data.device_id)
             | default(''unknown'') }}'
@@ -1448,18 +1444,22 @@
           - condition: template
             value_template: '{{ scanned_device == josh_device_id }}'
           sequence:
-          - data:
+          - action: script.activate_mobile_actionable_notification
+            data:
+              notify_target: notify.mobile_app_mj_pixel_8_pro
               title: Trash and Recycling
               message: Josh Completed
-            action: notify.mobile_app_mj_pixel_8_pro
+              notify_tag: trash-notify
         - conditions:
           - condition: template
             value_template: '{{ scanned_device == mj_device_id }}'
           sequence:
-          - data:
+          - action: script.activate_mobile_actionable_notification
+            data:
+              notify_target: notify.mobile_app_josh_mobile
               title: Trash and Recycling
               message: MJ Completed
-            action: notify.mobile_app_josh_mobile
+              notify_tag: trash-notify
     - conditions:
       - condition: trigger
         id: trash_passon
@@ -1469,74 +1469,70 @@
           - condition: template
             value_template: '{{ trigger.event.data.device_id == josh_device_id }}'
           sequence:
-          - data:
+          - action: script.activate_mobile_actionable_notification
+            data:
+              notify_target: notify.mobile_app_mj_pixel_8_pro
               title: Trash and Recycling
               message: YOU'RE MY ONLY HOPE.
-              data:
-                tag: trash-notify
-                actions:
-                - action: trash_done
-                  title: Done
-            action: notify.mobile_app_mj_pixel_8_pro
+              notify_tag: trash-notify
+              notify_action_1: trash_done
+              notify_action_1_title: Done
         - conditions:
           - condition: template
             value_template: '{{ trigger.event.data.device_id == mj_device_id }}'
           sequence:
-          - data:
+          - action: script.activate_mobile_actionable_notification
+            data:
+              notify_target: notify.mobile_app_josh_mobile
               title: Trash and Recycling
               message: YOU'RE MY ONLY HOPE.
-              data:
-                tag: trash-notify
-                actions:
-                - action: trash_done
-                  title: Done
-            action: notify.mobile_app_josh_mobile
+              notify_tag: trash-notify
+              notify_action_1: trash_done
+              notify_action_1_title: Done
     - conditions:
       - condition: trigger
         id: trash_cleared
       sequence:
-      - data:
+      - action: ai_task.generate_data
+        continue_on_error: true
+        data:
           task_name: Trash Nag
           instructions: 'Rewrite this in a creative way, limit to about 35 words:
             "The trash isn''t going to take itself out."'
         response_variable: generated_content
-        action: ai_task.generate_data
-        continue_on_error: true
       - delay:
           seconds: 2
-      - data:
+      - action: script.activate_mobile_actionable_notification
+        data:
+          notify_target: notify.all_devices
           title: Trash and Recycling
-          message: '{{ (generated_content | default({})).data | default(''The trash
-            isn''''t going to take itself out.'') }}'
-          data:
-            tag: trash-notify
-            actions:
-            - action: trash_done
-              title: Done
-            - action: trash_passon
-              title: Ask Other
-            - action: trash_delay
-              title: Delay 24hr
-        action: notify.all_devices
+          message: >-
+            {{ (generated_content | default({})).data | default("The trash isn't going to take itself out.") }}
+          notify_tag: trash-notify
+          notify_action_1: trash_done
+          notify_action_1_title: Done
+          notify_action_2: trash_passon
+          notify_action_2_title: Ask Other
+          notify_action_3: trash_delay
+          notify_action_3_title: Delay 24hr
     - conditions:
       - condition: trigger
         id: trash_delay
       sequence:
       - delay:
           hours: 24
-      - data:
-          message: Put to the Curb
+      - action: script.activate_mobile_actionable_notification
+        data:
+          notify_target: notify.all_devices
           title: Trash and Recycling
-          data:
-            tag: trash-notify
-            actions:
-            - action: trash_done
-              title: Done
-            - action: trash_passon
-              title: Ask Other
-            - action: trash_delay
-              title: Delay 24hr
-        action: notify.all_devices
+          message: Put to the Curb
+          notify_tag: trash-notify
+          notify_action_1: trash_done
+          notify_action_1_title: Done
+          notify_action_2: trash_passon
+          notify_action_2_title: Ask Other
+          notify_action_3: trash_delay
+          notify_action_3_title: Delay 24hr
   variables:
     josh_device_id: d818035824cf47ea
     mj_device_id: 0aa560faf0e8784c
@@ -1621,18 +1617,16 @@
           message: '{{ (gen_text | default({})).data | default(''It is time to feed
             the cats and Mars.'') }}'
           target: media_player.counter
-      - action: notify.all_devices
+      - action: script.activate_mobile_actionable_notification
         data:
+          notify_target: notify.all_devices
           title: Feeding Mission
-          message: '{{ (gen_text | default({})).data | default(''It is time to feed
-            the cats and Mars.'') }}'
-          data:
-            tag: pets-notify
-            actions:
-            - action: feed_done
-              title: Done
-            - action: feed_passon
-              title: Ask Other
+          message: '{{ (gen_text | default({})).data | default("It is time to feed the cats and Mars.") }}'
+          notify_tag: pets-notify
+          notify_action_1: feed_done
+          notify_action_1_title: Done
+          notify_action_2: feed_passon
+          notify_action_2_title: Ask Other
       - action: scene.turn_on
         continue_on_error: true
         metadata: {}
@@ -1660,12 +1654,12 @@
           message: clear_notification
           data:
             tag: pets-notify
-      - action: notify.{{ target_notify }}
+      - action: script.activate_mobile_actionable_notification
         data:
+          notify_target: '{{ "notify." ~ target_notify }}'
           title: Mission Accomplished
           message: '{{ scanned_name }} has fed the cats and Mars.'
-          data:
-            tag: pets-status
+          notify_tag: pets-status
     - conditions:
       - condition: trigger
         id: feed_passon
@@ -1677,15 +1671,14 @@
             }}'
           target_notify: '{{ ''mobile_app_mj_pixel_8_pro'' if scanned_name == ''Josh''
             else ''mobile_app_josh_mobile'' }}'
-      - action: notify.{{ target_notify }}
+      - action: script.activate_mobile_actionable_notification
         data:
+          notify_target: '{{ "notify." ~ target_notify }}'
           title: Reinforcements Requested
           message: Help! Mars and the felines are teaming up. Can you take this one?
-          data:
-            tag: pets-notify
-            actions:
-            - action: feed_done
-              title: Done
+          notify_tag: pets-notify
+          notify_action_1: feed_done
+          notify_action_1_title: Done
     - conditions:
       - condition: trigger
         id: feed_cleared
@@ -1701,19 +1694,17 @@
             completing it. Write a creative, firm nag from the joint perspective of
             the cats and the dog Mars. Limit to 20 words.
         response_variable: nag_text
-      - action: notify.mobile_app_josh_mobile
+      - action: script.activate_mobile_actionable_notification
         data:
+          notify_target: notify.mobile_app_josh_mobile
           title: Feeding Required
-          message: '{{ (nag_text | default({})).data | default(''The felines and Mars
-            are still hungry! Please feed them.'') }}'
-          data:
-            tag: pets-notify
-            sticky: true
-            actions:
-            - action: feed_done
-              title: Done
-            - action: feed_passon
-              title: Ask Other
+          message: '{{ (nag_text | default({})).data | default("The felines and Mars are still hungry! Please feed them.") }}'
+          notify_tag: pets-notify
+          sticky: true
+          notify_action_1: feed_done
+          notify_action_1_title: Done
+          notify_action_2: feed_passon
+          notify_action_2_title: Ask Other
   mode: restart
   variables:
     josh_device_id: d818035824cf47ea
@@ -2050,28 +2041,27 @@
       id:
       - guests_ignore
     then:
-    - action: notify.all_devices
+    - action: script.activate_mobile_actionable_notification
       data:
+        notify_target: notify.all_devices
         title: Arm Away Verify
         message: Arming has been ignored.
-        data:
-          tag: arm-guests
+        notify_tag: arm-guests
   - if:
     - condition: trigger
       id:
       - cleared
     then:
-    - action: notify.all_devices
+    - action: script.activate_mobile_actionable_notification
       data:
-        message: Set home to Armed Away with House Guests?
+        notify_target: notify.all_devices
         title: Arm Away Verify
-        data:
-          tag: arm-guests
-          actions:
-          - action: guests_arm
-            title: Arm
-          - action: guests_ignore
-            title: Ignore
+        message: Set home to Armed Away with House Guests?
+        notify_tag: arm-guests
+        notify_action_1: guests_arm
+        notify_action_1_title: Arm
+        notify_action_2: guests_ignore
+        notify_action_2_title: Ignore
     alias: cleared
   mode: single
 - id: person_status_synchronizer
@@ -2465,17 +2455,16 @@
         entity_id: cover.shuttle_bay
         state: open
       sequence:
-      - action: notify.mobile_app_josh_mobile
+      - action: script.activate_mobile_actionable_notification
         data:
+          notify_target: notify.mobile_app_josh_mobile
           title: Garage Door
           message: Garage Door 01 Open
-          data:
-            tag: garage-warning_01
-            actions:
-            - action: close_garage_01
-              title: Close
-            - action: ignore_garage_01
-              title: Ignore
+          notify_tag: garage-warning_01
+          notify_action_1: close_garage_01
+          notify_action_1_title: Close
+          notify_action_2: ignore_garage_01
+          notify_action_2_title: Ignore
       alias: timer_finished
     - conditions:
       - condition: trigger
@@ -2486,12 +2475,12 @@
         target:
           entity_id: cover.shuttle_bay
         data: {}
-      - action: notify.all_devices
+      - action: script.activate_mobile_actionable_notification
         data:
+          notify_target: notify.all_devices
           title: Garage Door
           message: Garage Door 01 Closing
-          data:
-            tag: garage-warning_01
+          notify_tag: garage-warning_01
       alias: close_garage_01
     - conditions:
       - condition: trigger
@@ -2503,12 +2492,12 @@
           duration: 01:00:00
         target:
           entity_id: timer.timer_garage_door
-      - action: notify.all_devices
+      - action: script.activate_mobile_actionable_notification
         data:
+          notify_target: notify.all_devices
           title: Garage Door
           message: Garage Door 01 Ignored. Reminding in 1 hour
-          data:
-            tag: garage-warning_01
+          notify_tag: garage-warning_01
       alias: ignore_garage_01
     - conditions:
       - condition: trigger
@@ -3405,13 +3394,13 @@
         - armed_away
         - armed_vacation
       sequence:
-      - action: notify.mobile_app_josh_mobile
+      - action: script.activate_mobile_actionable_notification
         data:
+          notify_target: notify.mobile_app_josh_mobile
           title: ⚠️ SECURITY ALERT
-          message: The {{ state_attr(trigger.entity_id, 'friendly_name') }} was opened
-            while ARMED!
-          data:
-            priority: high
+          message: The {{ state_attr(trigger.entity_id, 'friendly_name') }} was opened while ARMED!
+          priority: high
+          channel: alarm_stream
     - conditions:
       - condition: trigger
         id: long_open
@@ -3431,8 +3420,9 @@
             - siren.office_siren_chime_play_tone
           data:
             tone: '{{ door_map[trigger.entity_id].long | default(1) }}'
-      - action: notify.all_devices
+      - action: script.activate_mobile_actionable_notification
         data:
+          notify_target: notify.all_devices
           title: Door Open
           message: The {{ state_attr(trigger.entity_id, 'friendly_name') }} is Open!
   variables:
@@ -4777,11 +4767,12 @@
         data:
           value: '{{ states(''input_number.laundry_detergent_restock_quantity'') |
             int(96) }}'
-      - action: notify.mobile_app_josh_mobile
+      - action: script.activate_mobile_actionable_notification
         data:
-          title: "\U0001F9FA Detergent Restocked"
-          message: Laundry detergent inventory reset to {{ states('input_number.laundry_detergent_loads_remaining')
-            | int(96) }} loads.
+          notify_target: notify.mobile_app_josh_mobile
+          title: "🧺 Detergent Restocked"
+          message: Laundry detergent inventory reset to {{ states('input_number.laundry_detergent_loads_remaining') | int(96) }} loads.
+          notify_tag: detergent-restock
     - conditions:
       - condition: trigger
         id: reset_dishwasher
@@ -4792,10 +4783,11 @@
         data:
           value: '{{ states(''input_number.dishwasher_tabs_restock_quantity'') | int(60)
             }}'
-      - action: notify.mobile_app_josh_mobile
+      - action: script.activate_mobile_actionable_notification
         data:
-          title: "\U0001F37D️ Dishwasher Tabs Restocked"
-          message: Dishwasher tabs inventory reset to {{ states('input_number.dishwasher_tabs_remaining')
-            | int(60) }} tabs.
+          notify_target: notify.mobile_app_josh_mobile
+          title: "🍽️ Dishwasher Tabs Restocked"
+          message: Dishwasher tabs inventory reset to {{ states('input_number.dishwasher_tabs_remaining') | int(60) }} tabs.
+          notify_tag: dishwasher-restock
   mode: parallel
   max: 5

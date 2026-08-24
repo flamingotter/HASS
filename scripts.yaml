@@ -72,26 +72,36 @@ activate_mobile_actionable_notification:
       description: Priority level
     color:
       description: color of notification
-    channel:
-      description: Use 'alarm_stream' to give audible alert even if on silent
-  variables:
-    device: 123
+    sticky:
+      description: Whether the notification is sticky
+    persistent:
+      description: Whether the notification is persistent
   sequence:
-  - action: '{{ notify_target }}'
+  - action: '{{ notify_target | default("notify.mobile_app_josh_mobile") }}'
     data:
-      message: '{{ message }}'
       title: '{{ title }}'
-      data:
-        tag: '{{ notify_tag }}'
-        ttl: '{{ ttl }}'
-        importance: '{{ importance }}'
-        color: '{{ color }}'
-        channel: '{{ channel }}'
-        actions:
-        - action: '{{ notify_action_1 }}'
-          title: '{{ notify_action_1_title }}'
-        - action: '{{ notify_action_2 }}'
-          title: '{{ notify_action_2_title }}'
+      message: '{{ message }}'
+      data: >-
+        {%- set acts = [] -%}
+        {%- if notify_action_1 is defined and notify_action_1 | string | trim | length > 0 -%}
+          {%- set acts = acts + [{"action": notify_action_1, "title": notify_action_1_title | default(notify_action_1)}] -%}
+        {%- endif -%}
+        {%- if notify_action_2 is defined and notify_action_2 | string | trim | length > 0 -%}
+          {%- set acts = acts + [{"action": notify_action_2, "title": notify_action_2_title | default(notify_action_2)}] -%}
+        {%- endif -%}
+        {%- if notify_action_3 is defined and notify_action_3 | string | trim | length > 0 -%}
+          {%- set acts = acts + [{"action": notify_action_3, "title": notify_action_3_title | default(notify_action_3)}] -%}
+        {%- endif -%}
+        {%- set d = {} -%}
+        {%- if notify_tag is defined and notify_tag | string | trim | length > 0 -%}{%- set d = dict(d, tag=notify_tag) -%}{%- endif -%}
+        {%- if ttl is defined and ttl | string | trim | length > 0 -%}{%- set d = dict(d, ttl=ttl|int) -%}{%- endif -%}
+        {%- if priority is defined and priority | string | trim | length > 0 -%}{%- set d = dict(d, priority=priority, importance=priority) -%}{%- endif -%}
+        {%- if color is defined and color | string | trim | length > 0 -%}{%- set d = dict(d, color=color) -%}{%- endif -%}
+        {%- if channel is defined and channel | string | trim | length > 0 -%}{%- set d = dict(d, channel=channel) -%}{%- endif -%}
+        {%- if sticky is defined -%}{%- set d = dict(d, sticky=sticky) -%}{%- endif -%}
+        {%- if persistent is defined -%}{%- set d = dict(d, persistent=persistent) -%}{%- endif -%}
+        {%- if acts | length > 0 -%}{%- set d = dict(d, actions=acts) -%}{%- endif -%}
+        {{ d }}
   mode: single
 locate_cats_snapshot_ai_notification_duplicate:
   alias: Locate Cats - Snapshot, AI & Notification (Duplicate)
