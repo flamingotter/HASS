@@ -1174,7 +1174,7 @@
   description: ''
   triggers:
   - entity_id:
-    - binary_sensor.motion_indoors_garage_motion_light
+    - binary_sensor.motion_indoors_garage_motion_switch_motion_detection
     trigger: state
     to: 'on'
     id: t01
@@ -1211,7 +1211,7 @@
     closed.
   triggers:
   - trigger: state
-    entity_id: binary_sensor.motion_indoors_garage_motion_light
+    entity_id: binary_sensor.motion_indoors_garage_motion_switch_motion_detection
     to: 'off'
     for:
       minutes: 5
@@ -3979,14 +3979,14 @@
         data: {}
         action: timer.start
         target:
-          entity_id: timer.timer_bab_cave
+          entity_id: timer.timer_babe_cave
       else:
       - parallel:
         - metadata: {}
           data: {}
           action: timer.start
           target:
-            entity_id: timer.timer_bab_cave
+            entity_id: timer.timer_babe_cave
         - action: light.turn_on
           metadata: {}
           data:
