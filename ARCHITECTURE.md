@@ -86,7 +86,7 @@ Handles identity verification and suspicious activity detection.
 - **Feeder Standard:** Phase A (Left Main / Black Voltage Wire) and Phase B (Right Main / Red Voltage Wire) across both 200A panels.
 - **Circuit Hierarchical Aggregates:** Defined in `entities/templates/sensor.energy_hierarchical_aggregates.yaml` (calculating Grid Total, 1st/2nd Floor Totals, Kitchen, IT/Office, Living, and HVAC/Utility subsystems).
 - **Appliance Cycle Interlocks:** Real-time current/power feeds `binary_sensor.washing_machine_running`, `binary_sensor.clothes_dryer_running`, and `binary_sensor.dishwasher_running`.
-- **Calibration Baseline Cutoff:** Formally calibrated on **August 22, 2026 at 17:13:00 UTC**. Historical queries prior to this timestamp contain uncalibrated/inverted data for Dishwasher and Water Heater; all BigQuery analytics and baseline modeling must filter `timestamp >= '2026-08-22T17:13:00Z'`.
+- **Calibration Baseline Cutoff:** Formally calibrated on **August 22, 2026 at 17:13:00 UTC** (Panel 02) and **August 24, 2026 at 13:35:00 UTC** (Panel 01). Historical queries prior to these timestamps contain uncalibrated/inverted data; all whole-home BigQuery analytics and baseline modeling should filter `timestamp >= '2026-08-24T13:35:00Z'`.
 
 ---
 
