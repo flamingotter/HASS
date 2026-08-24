@@ -208,6 +208,13 @@
         target:
           label_id: bedtime_on
         data: {}
+      - action: switch.turn_on
+        target:
+          entity_id:
+            - switch.patio_left_detections_person
+            - switch.patio_left_detections_animal
+            - switch.patio_right_person_detection
+            - switch.patio_right_animal_detection
     else:
     - action: script.bedtime_charging_check
     - target:
@@ -292,6 +299,10 @@
         entity_id:
         - switch.bedroom_sleep_mode
         - switch.bedroom_humidifier
+        - switch.patio_left_detections_person
+        - switch.patio_left_detections_animal
+        - switch.patio_right_person_detection
+        - switch.patio_right_animal_detection
     - action: button.press
       metadata: {}
       target:
@@ -850,6 +861,13 @@
         - action: input_boolean.turn_on
           target:
             entity_id: input_boolean.camera_alerts
+        - action: switch.turn_on
+          target:
+            entity_id:
+              - switch.patio_left_detections_person
+              - switch.patio_left_detections_animal
+              - switch.patio_right_person_detection
+              - switch.patio_right_animal_detection
         - action: notify.mobile_app_josh_mobile
           data:
             title: Armed Away
@@ -870,6 +888,13 @@
           entity_id:
           - script.welcome_home_ai_debrief
         data: {}
+      - action: switch.turn_off
+        target:
+          entity_id:
+            - switch.patio_left_detections_person
+            - switch.patio_left_detections_animal
+            - switch.patio_right_person_detection
+            - switch.patio_right_animal_detection
       - parallel:
         - if:
           - condition: state
@@ -2922,17 +2947,13 @@
     to: 'off'
   actions:
   - condition: template
-    value_template: >-
-      {{ trigger.id in ['light_state_on', 'light_state_off'] or
-         trigger.event.data.device_id in [
-           'c125586b93f269297aa55b3247f9d054',
-           '961b9d5943f96a6021fbf5392265d48c'
-         ] }}
+    value_template: "{{ trigger.id in ['light_state_on', 'light_state_off'] or\n   trigger.event.data.device_id
+      in [\n     'c125586b93f269297aa55b3247f9d054',\n     '961b9d5943f96a6021fbf5392265d48c'\n
+      \  ] }}"
   - choose:
     - conditions:
       - condition: template
-        value_template: >-
-          {{ trigger.id == 'light_state_on' }}
+        value_template: '{{ trigger.id == ''light_state_on'' }}'
       sequence:
       - action: light.turn_on
         target:
@@ -2941,8 +2962,7 @@
           - light.dining_switch_02
     - conditions:
       - condition: template
-        value_template: >-
-          {{ trigger.id == 'light_state_off' }}
+        value_template: '{{ trigger.id == ''light_state_off'' }}'
       sequence:
       - action: light.turn_off
         target:
@@ -4289,7 +4309,10 @@
   mode: single
 - id: light_control_catio_zen73
   alias: 'Light Control: Catio (v2.0)'
-  description: Synchronizes Zooz ZEN73 Catio switches (switch.catio_light_01, switch.catio_light_02, switch.catio_light_03) in Smart Bulb Mode with LIFX lights (light.catio_lifx_01, light.catio_lifx_02) supporting 100% 4500K on single-tap up, 20% colorloop on double-tap up, 4500K effect-stop on double-tap down, and off on single-tap down.
+  description: Synchronizes Zooz ZEN73 Catio switches (switch.catio_light_01, switch.catio_light_02,
+    switch.catio_light_03) in Smart Bulb Mode with LIFX lights (light.catio_lifx_01,
+    light.catio_lifx_02) supporting 100% 4500K on single-tap up, 20% colorloop on
+    double-tap up, 4500K effect-stop on double-tap down, and off on single-tap down.
   triggers:
   - id: top
     trigger: event
@@ -4315,18 +4338,15 @@
     to: 'off'
   conditions:
   - condition: template
-    value_template: >-
-      {{ trigger.id in ['light_state_on', 'light_state_off'] or
-         trigger.event.data.device_id in [
-           device_id('switch.catio_light_01'),
-           device_id('switch.catio_light_02'),
-           device_id('switch.catio_light_03')
-         ] }}
+    value_template: "{{ trigger.id in ['light_state_on', 'light_state_off'] or\n   trigger.event.data.device_id
+      in [\n     device_id('switch.catio_light_01'),\n     device_id('switch.catio_light_02'),\n
+      \    device_id('switch.catio_light_03')\n   ] }}"
   actions:
   - choose:
     - conditions:
       - condition: template
-        value_template: "{{ trigger.id == 'top' and trigger.event.data.value == 'KeyPressed2x' }}"
+        value_template: '{{ trigger.id == ''top'' and trigger.event.data.value ==
+          ''KeyPressed2x'' }}'
       sequence:
       - action: lifx.effect_colorloop
         continue_on_error: true
@@ -4336,6 +4356,7 @@
           - light.catio_lifx_02
         data:
           brightness_pct: 20
+          transition: 2
       - action: switch.turn_on
         target:
           entity_id:
@@ -4344,7 +4365,8 @@
           - switch.catio_light_03
     - conditions:
       - condition: template
-        value_template: "{{ trigger.id == 'top' and trigger.event.data.value == 'KeyPressed' }}"
+        value_template: '{{ trigger.id == ''top'' and trigger.event.data.value ==
+          ''KeyPressed'' }}'
       sequence:
       - action: lifx.effect_stop
         continue_on_error: true
@@ -4361,6 +4383,7 @@
         data:
           color_temp_kelvin: 4500
           brightness_pct: 100
+          transition: 2
       - action: switch.turn_on
         target:
           entity_id:
@@ -4369,7 +4392,8 @@
           - switch.catio_light_03
     - conditions:
       - condition: template
-        value_template: "{{ trigger.id == 'bottom' and trigger.event.data.value == 'KeyPressed2x' }}"
+        value_template: '{{ trigger.id == ''bottom'' and trigger.event.data.value
+          == ''KeyPressed2x'' }}'
       sequence:
       - action: lifx.effect_stop
         continue_on_error: true
@@ -4385,6 +4409,7 @@
           - light.catio_lifx_02
         data:
           color_temp_kelvin: 4500
+          transition: 2
       - action: switch.turn_on
         target:
           entity_id:
@@ -4393,7 +4418,8 @@
           - switch.catio_light_03
     - conditions:
       - condition: template
-        value_template: "{{ trigger.id == 'bottom' and trigger.event.data.value == 'KeyPressed' }}"
+        value_template: '{{ trigger.id == ''bottom'' and trigger.event.data.value
+          == ''KeyPressed'' }}'
       sequence:
       - action: lifx.effect_stop
         continue_on_error: true
@@ -4407,6 +4433,8 @@
           entity_id:
           - light.catio_lifx_01
           - light.catio_lifx_02
+        data:
+          transition: 2
       - action: switch.turn_off
         target:
           entity_id:
@@ -4415,7 +4443,7 @@
           - switch.catio_light_03
     - conditions:
       - condition: template
-        value_template: "{{ trigger.id == 'light_state_on' }}"
+        value_template: '{{ trigger.id == ''light_state_on'' }}'
       sequence:
       - action: switch.turn_on
         target:
@@ -4425,7 +4453,7 @@
           - switch.catio_light_03
     - conditions:
       - condition: template
-        value_template: "{{ trigger.id == 'light_state_off' }}"
+        value_template: '{{ trigger.id == ''light_state_off'' }}'
       sequence:
       - action: switch.turn_off
         target:
@@ -4492,7 +4520,8 @@
   mode: restart
 - id: light_control_hallway_zen73_lifx
   alias: 'Light Control: Downstairs Hallway (v1.0)'
-  description: Synchronizes Zooz ZEN73 switches (switch.hall_switch_01, switch.hall_switch_02) with LIFX light (light.hall_light) and maintains guide-light LED states.
+  description: Synchronizes Zooz ZEN73 switches (switch.hall_switch_01, switch.hall_switch_02)
+    with LIFX light (light.hall_light) and maintains guide-light LED states.
   triggers:
   - id: top
     trigger: event
@@ -4514,19 +4543,15 @@
     to: 'off'
   conditions:
   - condition: template
-    value_template: >-
-      {{ trigger.id in ['light_state_on', 'light_state_off'] or
-         trigger.event.data.device_id in [
-           device_id('switch.hall_switch_01'),
-           device_id('switch.hall_switch_02')
-         ] }}
+    value_template: "{{ trigger.id in ['light_state_on', 'light_state_off'] or\n   trigger.event.data.device_id
+      in [\n     device_id('switch.hall_switch_01'),\n     device_id('switch.hall_switch_02')\n
+      \  ] }}"
   actions:
   - choose:
     - conditions:
       - condition: template
-        value_template: >-
-          {{ trigger.id == 'light_state_on' or
-             (trigger.id == 'top' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}
+        value_template: "{{ trigger.id == 'light_state_on' or\n   (trigger.id == 'top'
+          and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}"
       sequence:
       - action: light.turn_on
         target:
@@ -4538,9 +4563,9 @@
           - switch.hall_switch_02
     - conditions:
       - condition: template
-        value_template: >-
-          {{ trigger.id == 'light_state_off' or
-             (trigger.id == 'bottom' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}
+        value_template: "{{ trigger.id == 'light_state_off' or\n   (trigger.id ==
+          'bottom' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x'])
+          }}"
       sequence:
       - action: light.turn_off
         target:
@@ -4750,11 +4775,13 @@
         target:
           entity_id: input_number.laundry_detergent_loads_remaining
         data:
-          value: '{{ states(''input_number.laundry_detergent_restock_quantity'') | int(96) }}'
+          value: '{{ states(''input_number.laundry_detergent_restock_quantity'') |
+            int(96) }}'
       - action: notify.mobile_app_josh_mobile
         data:
-          title: "🧺 Detergent Restocked"
-          message: "Laundry detergent inventory reset to {{ states('input_number.laundry_detergent_loads_remaining') | int(96) }} loads."
+          title: "\U0001F9FA Detergent Restocked"
+          message: Laundry detergent inventory reset to {{ states('input_number.laundry_detergent_loads_remaining')
+            | int(96) }} loads.
     - conditions:
       - condition: trigger
         id: reset_dishwasher
@@ -4763,10 +4790,12 @@
         target:
           entity_id: input_number.dishwasher_tabs_remaining
         data:
-          value: '{{ states(''input_number.dishwasher_tabs_restock_quantity'') | int(60) }}'
+          value: '{{ states(''input_number.dishwasher_tabs_restock_quantity'') | int(60)
+            }}'
       - action: notify.mobile_app_josh_mobile
         data:
-          title: "🍽️ Dishwasher Tabs Restocked"
-          message: "Dishwasher tabs inventory reset to {{ states('input_number.dishwasher_tabs_remaining') | int(60) }} tabs."
+          title: "\U0001F37D️ Dishwasher Tabs Restocked"
+          message: Dishwasher tabs inventory reset to {{ states('input_number.dishwasher_tabs_remaining')
+            | int(60) }} tabs.
   mode: parallel
   max: 5
