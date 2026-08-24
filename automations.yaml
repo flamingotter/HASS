@@ -3570,7 +3570,7 @@
   mode: restart
 - id: hvac_health_alert
   alias: 'Climate: HVAC Health Alert'
-  description: Monitors the BigQuery AI health check and alerts if the AC loses efficiency.
+  description: Monitors BigQuery COP health check and alerts if cooling efficiency degrades.
   triggers:
   - trigger: state
     entity_id: sensor.hvac_health_status
@@ -3579,14 +3579,17 @@
     - Critical
   conditions: []
   actions:
-  - action: notify.mobile_app_josh_mobile
+  - action: script.activate_mobile_actionable_notification
     data:
-      title: '⚠️ HVAC Alert: {{ trigger.to_state.state }}'
-      message: Your AC efficiency has dropped by {{ state_attr('sensor.hvac_health_status',
-        'degradation_pct') }}%. It is taking {{ state_attr('sensor.hvac_health_status',
-        'recent_rate') }} minutes to cool 1 degree, compared to your baseline of {{
-        state_attr('sensor.hvac_health_status', 'baseline_rate') }} minutes. Please
-        check the filter or condenser coils.
+      notify_target: notify.mobile_app_josh_mobile
+      title: '⚠️ HVAC Efficiency Alert: {{ trigger.to_state.state }}'
+      message: >-
+        HVAC cooling efficiency has dropped by {{ state_attr('sensor.hvac_health_status', 'degradation_pct') }}%.
+        Recent consumption: {{ state_attr('sensor.hvac_health_status', 'recent_rate') }} kWh/°F (Baseline: {{ state_attr('sensor.hvac_health_status', 'baseline_rate') }} kWh/°F).
+        Downstairs: {{ state_attr('sensor.hvac_health_status', 'downstairs').status }} ({{ state_attr('sensor.hvac_health_status', 'downstairs').degradation_pct }}%),
+        Upstairs: {{ state_attr('sensor.hvac_health_status', 'upstairs').status }} ({{ state_attr('sensor.hvac_health_status', 'upstairs').degradation_pct }}%).
+      notify_tag: hvac-health-alert
+      priority: high
   mode: single
 - id: ai_climate_mbr_v7_0
   alias: 'Climate: Sleep Comfort Engine (v7.8.6)'

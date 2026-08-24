@@ -8,5 +8,7 @@
       - degradation_pct
       - baseline_rate
       - recent_rate
+      - upstairs
+      - downstairs
       - check_time
     scan_interval: 86400 # Runs once a day
