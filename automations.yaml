@@ -3339,13 +3339,14 @@
       - media_content_id: media-source://media_source/local/snapshots/daily_camera_log.txt
         media_content_type: text/plain
     response_variable: evening_rollup
-  - action: notify.email_daily_rollup
+  - action: smtp.send_message
+    target:
+      entity_id: notify.email_daily_rollup_flamingotter_hass_gmail_com
     data:
       title: Security Briefing - {{ now().strftime('%b %d, %Y') }}
       message: Please view this email in an HTML-compatible client.
-      data:
-        html: '{{ (evening_rollup | default({})).data | default(''<h3>The daily security
-          briefing could not be generated at this time.</h3>'') }}'
+      html: >-
+        {{ (evening_rollup | default({})).data | default('<h3>The daily security briefing could not be generated at this time.</h3>') }}
 - id: '1772743146418'
   alias: System - Cameras - Clear Daily Log
   description: ''
