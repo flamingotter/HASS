@@ -1819,8 +1819,12 @@
         conditions:
         - condition: trigger
           id: timer_done
-        - condition: trigger
-          id: notification_cleared
+        - and:
+          - condition: trigger
+            id: notification_cleared
+          - condition: state
+            entity_id: timer.timer_eco_mode_normal
+            state: idle
       - condition: state
         entity_id: input_boolean.eco_mode
         state: 'on'
@@ -1868,7 +1872,7 @@
           message: 'AI Parser: ''{{ trigger.event.data.reply_text }}'' interpreted
             as {{ days }} days. Eco Mode will remain active.'
           data:
-            tag: eco-finish
+            tag: eco-status
     - conditions:
       - condition: or
         conditions:
@@ -1893,6 +1897,11 @@
       - action: timer.cancel
         target:
           entity_id: timer.timer_eco_mode_normal
+      - action: notify.mobile_app_josh_mobile
+        data:
+          message: clear_notification
+          data:
+            tag: eco-finish
       - action: climate.set_temperature
         target:
           entity_id: climate.t6_pro_downstairs
@@ -1913,7 +1922,7 @@
             ''heat'') else ''70°F (Cool)'' }} | Upstairs: {{ ''67°F (Heat)'' if is_state(''climate.t6_pro_upstairs'',
             ''heat'') else ''73°F (Cool)'' }}.'
           data:
-            tag: eco-finish
+            tag: eco-status
   mode: restart
 - id: '1725030108440'
   alias: Cleaning Lifecycle
@@ -1979,6 +1988,11 @@
       - action: timer.cancel
         target:
           entity_id: timer.timer_cleaning
+      - action: notify.all_devices
+        data:
+          message: clear_notification
+          data:
+            tag: cleaning-warning
       - action: scene.turn_on
         target:
           entity_id: scene.cleaning_before
@@ -1999,6 +2013,9 @@
     - conditions:
       - condition: trigger
         id: remind
+      - condition: state
+        entity_id: input_boolean.cleaning
+        state: 'on'
       sequence:
       - action: ai_task.generate_data
         continue_on_error: true
@@ -2008,18 +2025,16 @@
 
             '
         response_variable: cleaning_nag
-      - action: notify.all_devices
+      - action: script.activate_mobile_actionable_notification
         data:
+          notify_target: notify.all_devices
           title: Cleaning Mode
-          message: '{{ (cleaning_nag | default({})).data | default(''The house is
-            still in Cleaning Mode. Are you done?'') }}'
-          data:
-            tag: cleaning-warning
-            actions:
-            - action: cleaning_off
-              title: Turn Off
-            - action: cleaning_snooze
-              title: Snooze 30min
+          message: '{{ (cleaning_nag | default({})).data | default("The house is still in Cleaning Mode. Are you done?") }}'
+          notify_tag: cleaning-warning
+          notify_action_1: cleaning_off
+          notify_action_1_title: Turn Off
+          notify_action_2: cleaning_snooze
+          notify_action_2_title: Snooze 30min
     - conditions:
       - condition: trigger
         id: snooze
@@ -2029,6 +2044,11 @@
           duration: 00:30:00
         target:
           entity_id: timer.timer_cleaning
+      - action: notify.all_devices
+        data:
+          message: clear_notification
+          data:
+            tag: cleaning-warning
   mode: restart
 - id: '1725031300511'
   alias: Notify House Guests
@@ -2049,7 +2069,7 @@
   - platform: event
     event_type: mobile_app_notification_cleared
     event_data:
-      action_1_key: guests_arm
+      tag: arm-guests
     alias: cleared
     id: cleared
   condition: []
@@ -2063,22 +2083,38 @@
     - action: alarm_control_panel.alarm_arm_away
       target:
         entity_id: alarm_control_panel.home_alarm
+    - action: notify.all_devices
+      data:
+        message: clear_notification
+        data:
+          tag: arm-guests
   - alias: guests_ignore
     if:
     - condition: trigger
       id:
       - guests_ignore
     then:
+    - action: notify.all_devices
+      data:
+        message: clear_notification
+        data:
+          tag: arm-guests
     - action: script.activate_mobile_actionable_notification
       data:
         notify_target: notify.all_devices
         title: Arm Away Verify
         message: Arming has been ignored.
-        notify_tag: arm-guests
+        notify_tag: arm-guests-status
   - if:
     - condition: trigger
       id:
       - cleared
+    - condition: template
+      value_template: >-
+        {{ states('input_select.josh_status') in ['Away', 'Extended Away', 'Work']
+           and states('input_select.mj_status') in ['Away', 'Extended Away', 'Work']
+           and is_state('input_boolean.house_guests', 'on')
+           and states('alarm_control_panel.home_alarm') == 'disarmed' }}
     then:
     - action: script.activate_mobile_actionable_notification
       data:
@@ -2403,6 +2439,11 @@
       - action: switch.turn_off
         target:
           entity_id: '{{ config.switch }}'
+      - action: notify.mobile_app_josh_mobile
+        data:
+          message: clear_notification
+          data:
+            tag: '{{ config.tag }}'
   mode: parallel
   max: 10
 - id: '1752157984119'
@@ -2438,7 +2479,6 @@
     id: cleared
     event_data:
       tag: garage-warning_01
-      action_1_key: close_garage_01
     trigger: event
   - alias: shuttle_bay Closed
     entity_id:
@@ -2451,34 +2491,30 @@
   - choose:
     - conditions:
       - condition: trigger
-        id:
-        - shuttle-bay
+        id: shuttle-bay
       sequence:
-      - if:
-        - condition: state
-          entity_id: cover.shuttle_bay
-          state: open
-        then:
-        - action: timer.start
-          data:
-            duration: 00:05:00
-          target:
-            entity_id: timer.timer_garage_door
-        else:
-        - if:
-          - condition: state
-            entity_id: cover.shuttle_bay
-            state: closed
-          then:
-          - action: timer.cancel
-            data: {}
-            target:
-              entity_id: timer.timer_garage_door
-      alias: shuttle_bay
+      - action: timer.start
+        data:
+          duration: 00:05:00
+        target:
+          entity_id: timer.timer_garage_door
+      alias: shuttle_bay_open
     - conditions:
       - condition: trigger
-        id:
-        - timer_finished
+        id: shuttle-bay-closed
+      sequence:
+      - action: timer.cancel
+        target:
+          entity_id: timer.timer_garage_door
+      - action: notify.all_devices
+        data:
+          message: clear_notification
+          data:
+            tag: garage-warning_01
+      alias: shuttle_bay_closed
+    - conditions:
+      - condition: trigger
+        id: timer_finished
       - condition: state
         entity_id: cover.shuttle_bay
         state: open
@@ -2496,41 +2532,51 @@
       alias: timer_finished
     - conditions:
       - condition: trigger
-        id:
-        - close_garage_01
+        id: close_garage_01
       sequence:
       - action: cover.close_cover
         target:
           entity_id: cover.shuttle_bay
         data: {}
+      - action: notify.all_devices
+        data:
+          message: clear_notification
+          data:
+            tag: garage-warning_01
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.all_devices
           title: Garage Door
           message: Garage Door 01 Closing
-          notify_tag: garage-warning_01
+          notify_tag: garage-status
       alias: close_garage_01
     - conditions:
       - condition: trigger
-        id:
-        - ignore_garage_01
+        id: ignore_garage_01
       sequence:
       - action: timer.start
         data:
           duration: 01:00:00
         target:
           entity_id: timer.timer_garage_door
+      - action: notify.all_devices
+        data:
+          message: clear_notification
+          data:
+            tag: garage-warning_01
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.all_devices
           title: Garage Door
           message: Garage Door 01 Ignored. Reminding in 1 hour
-          notify_tag: garage-warning_01
+          notify_tag: garage-status
       alias: ignore_garage_01
     - conditions:
       - condition: trigger
-        id:
-        - cleared
+        id: cleared
+      - condition: state
+        entity_id: cover.shuttle_bay
+        state: open
       sequence:
       - variables:
           device_id: '{{ trigger.event.data.device_id }}'
@@ -2538,7 +2584,7 @@
       - action: system_log.write
         data:
           level: warning
-          message: device id= "{{ device_id }}" and cleared= "{{ cleared }}"
+          message: 'Garage Door 01 notification cleared on device {{ device_id }} while door is open'
   mode: single
 - id: '1752169679107'
   alias: Motion Bedroom
