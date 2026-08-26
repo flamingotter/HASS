@@ -4644,6 +4644,87 @@
           - switch.hall_switch_01
           - switch.hall_switch_02
   mode: restart
+- id: fan_control_catio_zen73_zen51
+  alias: 'Fan Control: Catio (v1.0)'
+  description: Synchronizes Zooz ZEN73 wall switches (switch.catio_fan_01, switch.catio_fan_02) with ZEN51 fan relays (fan.catio_fan_001, fan.catio_fan_002) in a unified dual pair setup with full guide-light LED synchronization.
+  triggers:
+  - id: top
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      property_key: '001'
+  - id: bottom
+    trigger: event
+    event_type: zwave_js_value_notification
+    event_data:
+      property_key: '002'
+  - id: fan_state_on
+    trigger: state
+    entity_id:
+    - fan.catio_fan_001
+    - fan.catio_fan_002
+    to: 'on'
+  - id: fan_state_off
+    trigger: state
+    entity_id:
+    - fan.catio_fan_001
+    - fan.catio_fan_002
+    to: 'off'
+  - id: switch_state_on
+    trigger: state
+    entity_id:
+    - switch.catio_fan_01
+    - switch.catio_fan_02
+    to: 'on'
+  - id: switch_state_off
+    trigger: state
+    entity_id:
+    - switch.catio_fan_01
+    - switch.catio_fan_02
+    to: 'off'
+  conditions:
+  - condition: template
+    value_template: >-
+      {{ trigger.id in ['fan_state_on', 'fan_state_off', 'switch_state_on', 'switch_state_off'] or
+         trigger.event.data.device_id in [
+           device_id('switch.catio_fan_01'),
+           device_id('switch.catio_fan_02')
+         ] }}
+  actions:
+  - choose:
+    - conditions:
+      - condition: template
+        value_template: >-
+          {{ trigger.id in ['fan_state_on', 'switch_state_on'] or
+             (trigger.id == 'top' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}
+      sequence:
+      - action: fan.turn_on
+        target:
+          entity_id:
+          - fan.catio_fan_001
+          - fan.catio_fan_002
+      - action: switch.turn_on
+        target:
+          entity_id:
+          - switch.catio_fan_01
+          - switch.catio_fan_02
+    - conditions:
+      - condition: template
+        value_template: >-
+          {{ trigger.id in ['fan_state_off', 'switch_state_off'] or
+             (trigger.id == 'bottom' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}
+      sequence:
+      - action: fan.turn_off
+        target:
+          entity_id:
+          - fan.catio_fan_001
+          - fan.catio_fan_002
+      - action: switch.turn_off
+        target:
+          entity_id:
+          - switch.catio_fan_01
+          - switch.catio_fan_02
+  mode: restart
 - id: climate_whole_home_coordinator_v1_0
   alias: 'Climate: Whole-Home Thermostat Coordinator (v1.0)'
   description: Unified thermal orchestration across all seasons for Floor 1 (Downstairs)
