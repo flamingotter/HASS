@@ -1436,6 +1436,11 @@
       - action: input_boolean.turn_off
         target:
           entity_id: input_boolean.trash_reminder
+      - action: notify.all_devices
+        data:
+          message: clear_notification
+          data:
+            tag: trash-notify
       - variables:
           scanned_device: '{{ trigger.device_id | default(trigger.event.data.device_id)
             | default(''unknown'') }}'
@@ -1449,7 +1454,7 @@
               notify_target: notify.mobile_app_mj_pixel_8_pro
               title: Trash and Recycling
               message: Josh Completed
-              notify_tag: trash-notify
+              notify_tag: trash-status
         - conditions:
           - condition: template
             value_template: '{{ scanned_device == mj_device_id }}'
@@ -1459,7 +1464,7 @@
               notify_target: notify.mobile_app_josh_mobile
               title: Trash and Recycling
               message: MJ Completed
-              notify_tag: trash-notify
+              notify_tag: trash-status
     - conditions:
       - condition: trigger
         id: trash_passon
@@ -1492,6 +1497,9 @@
     - conditions:
       - condition: trigger
         id: trash_cleared
+      - condition: state
+        entity_id: input_boolean.trash_reminder
+        state: 'on'
       sequence:
       - action: ai_task.generate_data
         continue_on_error: true
@@ -1519,8 +1527,19 @@
       - condition: trigger
         id: trash_delay
       sequence:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.trash_reminder
+      - action: notify.all_devices
+        data:
+          message: clear_notification
+          data:
+            tag: trash-notify
       - delay:
           hours: 24
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.trash_reminder
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.all_devices
@@ -1569,6 +1588,9 @@
       - condition: trigger
         id: feed_time
       sequence:
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.feed_pets_reminder
       - action: scene.create
         continue_on_error: true
         metadata: {}
@@ -1642,6 +1664,9 @@
       - condition: trigger
         id: feed_done
       sequence:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.feed_pets_reminder
       - variables:
           scanned_device: '{{ trigger.device_id | default(trigger.event.data.device_id)
             | default(''unknown'') }}'
@@ -1682,6 +1707,9 @@
     - conditions:
       - condition: trigger
         id: feed_cleared
+      - condition: state
+        entity_id: input_boolean.feed_pets_reminder
+        state: 'on'
       - condition: template
         value_template: '{{ trigger.event.event_type == ''mobile_app_notification_cleared''
           }}'
@@ -1689,7 +1717,7 @@
       - action: ai_task.generate_data
         continue_on_error: true
         data:
-          task_name: Feed Pets Nag
+          task_name: Feed Pets
           instructions: The user swiped away the pet feeding notification without
             completing it. Write a creative, firm nag from the joint perspective of
             the cats and the dog Mars. Limit to 20 words.
