@@ -121,14 +121,18 @@ try:
             "kwh_per_deg_drop": round(row.kwh_per_deg_drop, 3) if row.kwh_per_deg_drop else None
         }
 
+    MIN_SAMPLE_CYCLES = 6
+
     # Evaluate Downstairs Zone
     ds_base = zone_data.get("downstairs", {}).get("baseline", {}).get("kwh_per_deg_drop")
     ds_rec = zone_data.get("downstairs", {}).get("recent", {}).get("kwh_per_deg_drop")
+    ds_rec_cycles = zone_data.get("downstairs", {}).get("recent", {}).get("valid_cycles", 0)
     if ds_base and ds_rec and ds_base > 0:
         ds_deg = round(((ds_rec - ds_base) / ds_base) * 100, 1)
         ds_status = "Healthy"
-        if ds_deg > 25: ds_status = "Degraded"
-        if ds_deg > 50: ds_status = "Critical"
+        if ds_rec_cycles >= MIN_SAMPLE_CYCLES:
+            if ds_deg > 25: ds_status = "Degraded"
+            if ds_deg > 50: ds_status = "Critical"
     else:
         ds_deg = 0.0
         ds_status = "Healthy" if (ds_rec or ds_base) else "Insufficient Data"
@@ -136,11 +140,13 @@ try:
     # Evaluate Upstairs Zone
     us_base = zone_data.get("upstairs", {}).get("baseline", {}).get("kwh_per_deg_drop")
     us_rec = zone_data.get("upstairs", {}).get("recent", {}).get("kwh_per_deg_drop")
+    us_rec_cycles = zone_data.get("upstairs", {}).get("recent", {}).get("valid_cycles", 0)
     if us_base and us_rec and us_base > 0:
         us_deg = round(((us_rec - us_base) / us_base) * 100, 1)
         us_status = "Healthy"
-        if us_deg > 25: us_status = "Degraded"
-        if us_deg > 50: us_status = "Critical"
+        if us_rec_cycles >= MIN_SAMPLE_CYCLES:
+            if us_deg > 25: us_status = "Degraded"
+            if us_deg > 50: us_status = "Critical"
     else:
         us_deg = 0.0
         us_status = "Healthy" if (us_rec or us_base) else "Insufficient Data"
@@ -154,7 +160,12 @@ try:
     elif ds_status == "Insufficient Data" and us_status == "Insufficient Data":
         overall_status = "Insufficient Data"
 
-    max_deg = max(ds_deg, us_deg)
+    valid_degs = []
+    if ds_rec_cycles >= MIN_SAMPLE_CYCLES:
+        valid_degs.append(ds_deg)
+    if us_rec_cycles >= MIN_SAMPLE_CYCLES:
+        valid_degs.append(us_deg)
+    max_deg = max(valid_degs) if valid_degs else 0.0
     primary_baseline = ds_base if ds_base is not None else us_base
     primary_recent = ds_rec if ds_rec is not None else us_rec
 
