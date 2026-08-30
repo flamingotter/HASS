@@ -90,10 +90,8 @@ Handles identity verification and suspicious activity detection.
 - **Resilient Recording:** Uses `continue_on_error: true` for `camera.record` to survive DTS stream errors (caused by 5s GOP intervals found in camera hardware).
 - **Sequential Processing:** Data collection (video/snapshots) must complete and include a 2s "Flush Delay" before AI analysis begins to prevent file-locking errors.
 - **AI Context:** Uses MJ and Josh reference photos to identify residents vs. delivery personnel.
-- **Patio Camera Detection Synchronization:** Person and animal smart detections (`switch.patio_left_detections_person`, `switch.patio_left_detections_animal`, `switch.patio_right_person_detection`, `switch.patio_right_animal_detection`) are dynamically coordinated across routines:
-  - *Awake / Home:* Suspended (`off`) upon `MBR Wakeup` and arriving home (`disarmed` from away) to suppress nuisance notifications and footage during daily outdoor activities.
-  - *Bedtime / Overnight:* Re-enabled (`on`) upon `MBR Bedtime` (`alarm_arm_night`) for nocturnal perimeter protection.
-  - *Away:* Re-enabled (`on`) whenever the alarm transitions to `armed_away` / `armed_vacation`.
+- **Patio Camera Detection & Security Architecture:** Smart detections on Patio Left and Patio Right cameras remain permanently active 24/7. This guarantees that `binary_sensor.patio_left_person_detected` and `binary_sensor.patio_right_person_detected` remain fully online and responsive to trigger `Lighting: Outdoor Motion Presence` (`switch.backyard_lights`) whenever someone is outside after dark (`sun.sun: below_horizon`), regardless of alarm or waking state.
+- **Software-Gated Security Notifications:** Perimeter security alerts for Patio Left and Patio Right are decoupled from hardware sensor power and handled purely at the software logic layer via `Security: Patio Perimeter Alert (Night & Away)`. When the alarm is armed (`armed_night`, `armed_away`, `armed_vacation`) or residents are away, person detection dispatches rich actionable mobile notifications with live camera snapshots, direct UniFi Protect deep-linking (`app://com.ubnt.unifi.protect`), and one-tap backyard floodlight controls. During waking home hours, Protect app notifications for patio cameras are silenced to eliminate daytime notification fatigue while preserving full motion lighting automation.
 
 ---
 

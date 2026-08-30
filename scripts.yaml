@@ -66,6 +66,12 @@ activate_mobile_actionable_notification:
     notify_action_3_title:
       description: Notification actions
       example: Done, Ignore, Ask Other, etc...
+    image:
+      description: URL or camera proxy path for image attachment
+    clickAction:
+      description: App package URI or deep link to open on click
+    url:
+      description: URL to open on click
     ttl:
       description: time to live
     priority:
@@ -84,15 +90,30 @@ activate_mobile_actionable_notification:
       data: >-
         {%- set acts = [] -%}
         {%- if notify_action_1 is defined and notify_action_1 | string | trim | length > 0 -%}
-          {%- set acts = acts + [{"action": notify_action_1, "title": notify_action_1_title | default(notify_action_1)}] -%}
+          {%- if notify_action_1 == 'URI' and notify_action_1_uri is defined -%}
+            {%- set acts = acts + [{"action": "URI", "title": notify_action_1_title | default("Open"), "uri": notify_action_1_uri}] -%}
+          {%- else -%}
+            {%- set acts = acts + [{"action": notify_action_1, "title": notify_action_1_title | default(notify_action_1)}] -%}
+          {%- endif -%}
         {%- endif -%}
         {%- if notify_action_2 is defined and notify_action_2 | string | trim | length > 0 -%}
-          {%- set acts = acts + [{"action": notify_action_2, "title": notify_action_2_title | default(notify_action_2)}] -%}
+          {%- if notify_action_2 == 'URI' and notify_action_2_uri is defined -%}
+            {%- set acts = acts + [{"action": "URI", "title": notify_action_2_title | default("Open"), "uri": notify_action_2_uri}] -%}
+          {%- else -%}
+            {%- set acts = acts + [{"action": notify_action_2, "title": notify_action_2_title | default(notify_action_2)}] -%}
+          {%- endif -%}
         {%- endif -%}
         {%- if notify_action_3 is defined and notify_action_3 | string | trim | length > 0 -%}
-          {%- set acts = acts + [{"action": notify_action_3, "title": notify_action_3_title | default(notify_action_3)}] -%}
+          {%- if notify_action_3 == 'URI' and notify_action_3_uri is defined -%}
+            {%- set acts = acts + [{"action": "URI", "title": notify_action_3_title | default("Open"), "uri": notify_action_3_uri}] -%}
+          {%- else -%}
+            {%- set acts = acts + [{"action": notify_action_3, "title": notify_action_3_title | default(notify_action_3)}] -%}
+          {%- endif -%}
         {%- endif -%}
         {%- set d = {} -%}
+        {%- if image is defined and image | string | trim | length > 0 -%}{%- set d = dict(d, image=image) -%}{%- endif -%}
+        {%- if clickAction is defined and clickAction | string | trim | length > 0 -%}{%- set d = dict(d, clickAction=clickAction) -%}{%- endif -%}
+        {%- if url is defined and url | string | trim | length > 0 -%}{%- set d = dict(d, url=url) -%}{%- endif -%}
         {%- if notify_tag is defined and notify_tag | string | trim | length > 0 -%}{%- set d = dict(d, tag=notify_tag) -%}{%- endif -%}
         {%- if ttl is defined and ttl | string | trim | length > 0 -%}{%- set d = dict(d, ttl=ttl|int) -%}{%- endif -%}
         {%- if priority is defined and priority | string | trim | length > 0 -%}{%- set d = dict(d, priority=priority, importance=priority) -%}{%- endif -%}

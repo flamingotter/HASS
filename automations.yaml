@@ -208,13 +208,6 @@
         target:
           label_id: bedtime_on
         data: {}
-      - action: switch.turn_on
-        target:
-          entity_id:
-            - switch.patio_left_detections_person
-            - switch.patio_left_detections_animal
-            - switch.patio_right_person_detection
-            - switch.patio_right_animal_detection
     else:
     - action: script.bedtime_charging_check
     - target:
@@ -299,10 +292,6 @@
         entity_id:
         - switch.bedroom_sleep_mode
         - switch.bedroom_humidifier
-        - switch.patio_left_detections_person
-        - switch.patio_left_detections_animal
-        - switch.patio_right_person_detection
-        - switch.patio_right_animal_detection
     - action: button.press
       metadata: {}
       target:
@@ -860,13 +849,6 @@
         - action: input_boolean.turn_on
           target:
             entity_id: input_boolean.camera_alerts
-        - action: switch.turn_on
-          target:
-            entity_id:
-              - switch.patio_left_detections_person
-              - switch.patio_left_detections_animal
-              - switch.patio_right_person_detection
-              - switch.patio_right_animal_detection
         - action: notify.mobile_app_josh_mobile
           data:
             title: Armed Away
@@ -887,13 +869,6 @@
           entity_id:
           - script.welcome_home_ai_debrief
         data: {}
-      - action: switch.turn_off
-        target:
-          entity_id:
-            - switch.patio_left_detections_person
-            - switch.patio_left_detections_animal
-            - switch.patio_right_person_detection
-            - switch.patio_right_animal_detection
       - parallel:
         - if:
           - condition: state
@@ -3210,6 +3185,9 @@
       binary_sensor.patio_left_person_detected:
         switch: switch.backyard_lights
         motion_clear: binary_sensor.patio_left_person_detected
+      binary_sensor.patio_right_person_detected:
+        switch: switch.backyard_lights
+        motion_clear: binary_sensor.patio_right_person_detected
       binary_sensor.driveway_outside_person_detected:
         switch: switch.garage_spot_light
         motion_clear: binary_sensor.driveway_outside_person_detected
@@ -4950,3 +4928,95 @@
           notify_tag: dishwasher-restock
   mode: parallel
   max: 5
+- id: security_patio_perimeter_alert
+  alias: 'Security: Patio Perimeter Alert (Night & Away)'
+  description: Sends actionable security alerts with live camera snapshot and UniFi Protect deep-link when person is detected on Patio while sleeping or away.
+  triggers:
+  - trigger: state
+    entity_id:
+    - binary_sensor.patio_left_person_detected
+    - binary_sensor.patio_right_person_detected
+    to: 'on'
+    id: detection
+  - trigger: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: patio_turn_on_floodlights
+    id: turn_on_lights
+  - trigger: event
+    event_type: mobile_app_notification_action
+    event_data:
+      action: patio_dismiss_alert
+    id: dismiss
+  conditions: []
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: detection
+      - condition: or
+        conditions:
+        - condition: state
+          entity_id: alarm_control_panel.home_alarm
+          state:
+          - armed_night
+          - armed_away
+          - armed_vacation
+        - condition: state
+          entity_id: input_boolean.camera_alerts
+          state: 'on'
+        - condition: and
+          conditions:
+          - condition: state
+            entity_id: person.josh
+            state: not_home
+          - condition: state
+            entity_id: person.mj
+            state: not_home
+      sequence:
+      - variables:
+          cam_entity: >-
+            {{ 'camera.patio_left_high_resolution_channel' if 'patio_left' in trigger.entity_id else 'camera.patio_right_high_resolution_channel' }}
+          cam_name: >-
+            {{ 'Patio Left' if 'patio_left' in trigger.entity_id else 'Patio Right' }}
+          alert_mode: >-
+            {{ 'Perimeter Alert (Armed Night)' if is_state('alarm_control_panel.home_alarm', 'armed_night') else 'Perimeter Alert (Away)' }}
+      - action: script.activate_mobile_actionable_notification
+        data:
+          notify_target: notify.all_devices
+          title: '🚨 {{ alert_mode }}: {{ cam_name }}'
+          message: 'Person detected on {{ cam_name }}. Tap image to open live UniFi Protect feed.'
+          notify_tag: patio-security-alert
+          priority: high
+          image: '/api/camera_proxy/{{ cam_entity }}'
+          clickAction: 'app://com.ubnt.unifi.protect'
+          notify_action_1: 'URI'
+          notify_action_1_title: '🔴 Open Protect'
+          notify_action_1_uri: 'app://com.ubnt.unifi.protect'
+          notify_action_2: 'patio_turn_on_floodlights'
+          notify_action_2_title: '💡 Turn On Lights'
+          notify_action_3: 'patio_dismiss_alert'
+          notify_action_3_title: 'Dismiss'
+    - conditions:
+      - condition: trigger
+        id: turn_on_lights
+      sequence:
+      - action: switch.turn_on
+        target:
+          entity_id: switch.backyard_lights
+      - action: notify.all_devices
+        data:
+          message: clear_notification
+          data:
+            tag: patio-security-alert
+    - conditions:
+      - condition: trigger
+        id: dismiss
+      sequence:
+      - action: notify.all_devices
+        data:
+          message: clear_notification
+          data:
+            tag: patio-security-alert
+  mode: single
+  max_exceeded: silent
