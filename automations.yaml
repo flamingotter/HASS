@@ -3167,38 +3167,55 @@
   actions:
   - variables:
       target_switch: '{{ light_map[trigger.entity_id].switch }}'
-      clear_sensor: '{{ light_map[trigger.entity_id].motion_clear }}'
   - action: switch.turn_on
     target:
       entity_id: '{{ target_switch }}'
   - wait_for_trigger:
     - trigger: template
-      value_template: '{{ is_state(clear_sensor, ''off'') }}'
+      value_template: >-
+        {%- set sensors = light_map[trigger.entity_id].motion_clear -%}
+        {{- sensors | select('is_state', 'on') | list | length == 0 -}}
       for:
         minutes: 2
     timeout: 01:00:00
-  - action: switch.turn_off
-    target:
-      entity_id: '{{ target_switch }}'
+  - if:
+    - condition: template
+      value_template: >-
+        {%- set sensors = light_map[trigger.entity_id].motion_clear -%}
+        {{- sensors | select('is_state', 'on') | list | length == 0 -}}
+    then:
+    - action: switch.turn_off
+      target:
+        entity_id: '{{ target_switch }}'
   variables:
     light_map:
       binary_sensor.front_porch_ptz_person_detected:
         switch: switch.front_yard_lights
-        motion_clear: binary_sensor.front_porch_ptz_object_detected
+        motion_clear:
+        - binary_sensor.front_porch_ptz_person_detected
       binary_sensor.patio_left_person_detected:
         switch: switch.backyard_lights
-        motion_clear: binary_sensor.patio_left_person_detected
+        motion_clear:
+        - binary_sensor.patio_left_person_detected
+        - binary_sensor.patio_right_person_detected
       binary_sensor.patio_right_person_detected:
         switch: switch.backyard_lights
-        motion_clear: binary_sensor.patio_right_person_detected
+        motion_clear:
+        - binary_sensor.patio_left_person_detected
+        - binary_sensor.patio_right_person_detected
       binary_sensor.driveway_outside_person_detected:
         switch: switch.garage_spot_light
-        motion_clear: binary_sensor.driveway_outside_person_detected
+        motion_clear:
+        - binary_sensor.driveway_outside_person_detected
+        - binary_sensor.driveway_ptz_person_detected
       binary_sensor.driveway_ptz_person_detected:
         switch:
         - switch.garage_spot_light
         - switch.front_yard_lights
-        motion_clear: binary_sensor.driveway_ptz_person_detected
+        motion_clear:
+        - binary_sensor.driveway_outside_person_detected
+        - binary_sensor.driveway_ptz_person_detected
+        - binary_sensor.front_porch_ptz_person_detected
   mode: parallel
   max: 10
 - id: '1772728212323'
