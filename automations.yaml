@@ -1210,9 +1210,8 @@
     entity_id: binary_sensor.garage_man_door
     state: 'off'
   - condition: state
-    entity_id: binary_sensor.garage_garage_motion_switch_motion_detection
-    state:
-    - 'off'
+    entity_id: binary_sensor.motion_indoors_garage_motion_switch_motion_detection
+    state: 'off'
   actions:
   - action: lock.lock
     target:
@@ -4529,9 +4528,9 @@
           - switch.catio_light_03
   mode: restart
 - id: light_control_garage_entry_zen73_zen12
-  alias: 'Light Control: Garage Entry (v1.0)'
+  alias: 'Light Control: Garage Entry (v2.0)'
   description: Synchronizes Zooz ZEN73 switch (switch.garage_entry_switch) and ZEN12
-    motion switch (light.garage_motion_switch) in a virtual 3-way setup.
+    motion switch (light.garage_motion_switch) with motion occupancy and auto-off.
   triggers:
   - id: top
     trigger: event
@@ -4543,6 +4542,16 @@
     event_type: zwave_js_value_notification
     event_data:
       property_key: '002'
+  - id: motion_on
+    trigger: state
+    entity_id: binary_sensor.motion_indoors_garage_motion_switch_motion_detection
+    to: 'on'
+  - id: motion_off
+    trigger: state
+    entity_id: binary_sensor.motion_indoors_garage_motion_switch_motion_detection
+    to: 'off'
+    for:
+      minutes: 10
   - id: switch_state_on
     trigger: state
     entity_id:
@@ -4557,14 +4566,14 @@
     to: 'off'
   conditions:
   - condition: template
-    value_template: "{{ trigger.id in ['switch_state_on', 'switch_state_off'] or\n
+    value_template: "{{ trigger.id in ['motion_on', 'motion_off', 'switch_state_on', 'switch_state_off'] or\n
       \  trigger.event.data.device_id in [\n     device_id('switch.garage_entry_switch'),\n
       \    device_id('light.garage_motion_switch')\n   ] }}"
   actions:
   - choose:
     - conditions:
       - condition: template
-        value_template: "{{ trigger.id == 'switch_state_on' or\n   (trigger.id ==
+        value_template: "{{ trigger.id in ['motion_on', 'switch_state_on'] or\n   (trigger.id ==
           'top' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}"
       sequence:
       - action: homeassistant.turn_on
@@ -4574,7 +4583,7 @@
           - light.garage_motion_switch
     - conditions:
       - condition: template
-        value_template: "{{ trigger.id == 'switch_state_off' or\n   (trigger.id ==
+        value_template: "{{ trigger.id in ['motion_off', 'switch_state_off'] or\n   (trigger.id ==
           'bottom' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x'])
           }}"
       sequence:
