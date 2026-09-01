@@ -3659,8 +3659,58 @@
         HVAC cooling efficiency has dropped by {{ state_attr('sensor.hvac_health_status', 'degradation_pct') }}%.
         Recent consumption: {{ state_attr('sensor.hvac_health_status', 'recent_rate') }} kWh/°F (Baseline: {{ state_attr('sensor.hvac_health_status', 'baseline_rate') }} kWh/°F).
         Downstairs: {{ state_attr('sensor.hvac_health_status', 'downstairs').status }} ({{ state_attr('sensor.hvac_health_status', 'downstairs').degradation_pct }}%),
-        Upstairs: {{ state_attr('sensor.hvac_health_status', 'upstairs').status }} ({{ state_attr('sensor.hvac_health_status', 'upstairs').degradation_pct }}%).
+        Upstairs: {{ state_attr('sensor.hvac_health_status', 'upstairs').status }} ({{ state_attr('sensor.hvac_health_status', 'upstairs').degradation_pct }}%),
+        Office Mini-Split: {{ state_attr('sensor.hvac_health_status', 'office_minisplit').status }} ({{ state_attr('sensor.hvac_health_status', 'office_minisplit').degradation_pct }}%).
       notify_tag: hvac-health-alert
+      priority: high
+  mode: single
+- id: hvac_upstairs_runaway_alert
+  alias: 'Climate: Upstairs Compressor Runaway Alert'
+  description: Alerts if upstairs central heat pump runs continuously above 1100W for > 2.5 hours.
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.panel_01_upstairs_heat_pump_power
+    above: 1100
+    for:
+      hours: 2
+      minutes: 30
+  conditions: []
+  actions:
+  - action: script.activate_mobile_actionable_notification
+    data:
+      notify_target: notify.mobile_app_josh_mobile
+      title: '⚠️ Upstairs HVAC Runaway Warning'
+      message: >-
+        Upstairs heat pump has been pinned in Stage 2 ({{ states('sensor.panel_01_upstairs_heat_pump_power') | round(0) }}W) for over 2.5 hours continuously. 
+        Upstairs Temp: {{ states('climate.t6_pro_upstairs') }}°F. 
+        Check for open doors, thermal leakage from office, or failed zone equipment.
+      notify_tag: upstairs-hvac-runaway
+      priority: high
+  mode: single
+- id: hvac_office_minisplit_failure_alert
+  alias: 'Climate: Office Mini-Split Failure Alert'
+  description: Alerts if office temperature is elevated during the day while mini-split power is idle/off.
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.office_sensor_air_temperature
+    above: 77.0
+    for:
+      minutes: 30
+  conditions:
+  - condition: numeric_state
+    entity_id: sensor.panel_01_mini_split_power
+    below: 30
+  - condition: time
+    after: '08:00:00'
+    before: '18:00:00'
+  actions:
+  - action: script.activate_mobile_actionable_notification
+    data:
+      notify_target: notify.mobile_app_josh_mobile
+      title: '⚠️ Office Mini-Split Failure / Offline'
+      message: >-
+        Office temperature has reached {{ states('sensor.office_sensor_air_temperature') }}°F, but the mini-split is drawing only {{ states('sensor.panel_01_mini_split_power') | round(1) }}W. Verify power and unit status.
+      notify_tag: office-minisplit-offline
       priority: high
   mode: single
 - id: ai_climate_mbr_v7_0

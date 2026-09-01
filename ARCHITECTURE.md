@@ -56,6 +56,13 @@ A high-precision engine designed to reach sleep temperature exactly at bedtime.
         - *Cooling:* 73°F Daytime & Evening, 76°F Overnight Setback, 78°F Eco Mode (with independent office mini-split at 68°F Auto).
         - *Heating:* 67°F Daytime & Evening, 62°F Overnight Setback, 64°F Eco Mode.
     - **Eco Mode Restoration:** Mode-aware return logic restoring appropriate seasonal targets (Cool: 70°F / 73°F; Heat: 68°F / 67°F).
+- **Multi-Zone COP HVAC Health Engine & Real-Time Runaway Sentinels:**
+    - **Physical Zone Mapping:**
+        1. *Downstairs Zone (Floor 1):* `sensor.panel_02_downstairs_heat_pump_power` vs `climate.t6_pro_downstairs` (Master Bedroom Suite & Great Room).
+        2. *Upstairs Zone (Floor 2):* `sensor.panel_01_upstairs_heat_pump_power` vs `climate.t6_pro_upstairs` (Hallway, Guest Bedroom, Bonus Room).
+        3. *Office Mini-Split (Floor 2):* `sensor.panel_01_mini_split_power` vs `sensor.office_sensor_air_temperature` (Isolated Office / Server Corner).
+    - **Batch Health Engine (`bin/hvac_health_check.py`):** Calculates true thermodynamic $\text{kWh / } ^\circ\text{F drop}$ across all 3 zones with `MIN_SAMPLE_CYCLES = 2` statistical gate and August 24 calibration cutoff.
+    - **Real-Time Runaway Watchdogs:** Instant HA automation sentinels that alert if central compressors run pinned above 1,100W for > 2.5 hours (`hvac_upstairs_runaway_alert`) or if the office mini-split is offline during daytime work hours when office temperature exceeds 77°F (`hvac_office_minisplit_failure_alert`).
 
 
 
