@@ -4374,54 +4374,6 @@
           data:
             tag: bedroom_target_override
   mode: single
-- id: alexa_house_log_trigger
-  alias: 'Voice: Start Household Log Actionable'
-  description: Triggers the Alexa Actionable Notification QA instantly when input_boolean.alexa_house_log
-    is turned on
-  trigger:
-  - platform: state
-    entity_id: input_boolean.alexa_house_log
-    to: 'on'
-  condition: []
-  action:
-  - action: input_boolean.turn_off
-    target:
-      entity_id: input_boolean.alexa_house_log
-  - action: script.activate_alexa_actionable_notification
-    data:
-      text: Sure, what would you like me to note?
-      event_id: household_notes_logger
-      alexa_device: '{{ states(''sensor.last_alexa'') }}'
-      suppress_confirmation: 'true'
-  mode: single
-- id: alexa_house_log_response
-  alias: 'Voice: Capture Household Log Response'
-  description: Catches your spoken reply from the Actionable Notification skill and
-    logs it to your ledger
-  trigger:
-  - platform: event
-    event_type: alexa_actionable_notification
-    event_data:
-      event_id: household_notes_logger
-  condition: []
-  action:
-  - action: notify.send_message
-    target:
-      entity_id: notify.household_notes_txt
-    data:
-      message: '{{ now().strftime(''%Y-%m-%d %H:%M:%S'') }} | {{ trigger.event.data.event_response
-        }}'
-  - action: notify.alexa_media
-    data:
-      target: '{{ states(''sensor.last_alexa'') }}'
-      data:
-        type: tts
-      message: Logged.
-  - action: notify.mobile_app_josh_mobile
-    data:
-      title: Household Log Updated
-      message: 'Heard and Logged: ''{{ trigger.event.data.event_response }}'''
-  mode: single
 - id: light_control_catio_zen73
   alias: 'Light Control: Catio (v2.0)'
   description: Synchronizes Zooz ZEN73 Catio switches (switch.catio_light_01, switch.catio_light_02,

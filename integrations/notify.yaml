@@ -1,10 +1,10 @@
 ---
 notify:
-  - name: ALL_DEVICES
-    platform: group
-    services: 
-      - service: mobile_app_josh_mobile
-      - service: mobile_app_mj_pixel_8_pro
+  # - name: ALL_DEVICES
+  #   platform: group
+  #   services: 
+  #     - service: mobile_app_josh_mobile
+  #     - service: mobile_app_mj_pixel_8_pro
 
   - name: email_daily_rollup
     platform: smtp
