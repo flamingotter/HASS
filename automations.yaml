@@ -1402,7 +1402,7 @@
           notify_action_2: trash_passon
           notify_action_2_title: Ask Other
           notify_action_3: trash_delay
-          notify_action_3_title: Snooze 2hr
+          notify_action_3_title: Delay 24hr
     - conditions:
       - or:
         - condition: trigger
@@ -1472,33 +1472,36 @@
           notify_action_2: trash_passon
           notify_action_2_title: Ask Other
           notify_action_3: trash_delay
-          notify_action_3_title: Snooze 2hr
+          notify_action_3_title: Delay 24hr
     - conditions:
       - condition: trigger
         id: trash_delay
       sequence:
+      - action: input_boolean.turn_off
+        target:
+          entity_id: input_boolean.trash_reminder
       - action: notify.all_devices
         data:
           message: clear_notification
           data:
             tag: trash-notify
       - delay:
-          hours: 2
-      - condition: state
-        entity_id: input_boolean.trash_reminder
-        state: 'on'
+          hours: 24
+      - action: input_boolean.turn_on
+        target:
+          entity_id: input_boolean.trash_reminder
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.all_devices
           title: Trash and Recycling
-          message: Put to the Curb (Snooze Reminder)
+          message: Put to the Curb
           notify_tag: trash-notify
           notify_action_1: trash_done
           notify_action_1_title: Done
           notify_action_2: trash_passon
           notify_action_2_title: Ask Other
           notify_action_3: trash_delay
-          notify_action_3_title: Snooze 2hr
+          notify_action_3_title: Delay 24hr
   variables:
     josh_device_id: d818035824cf47ea
     mj_device_id: 0aa560faf0e8784c
