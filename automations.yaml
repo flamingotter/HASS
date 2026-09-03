@@ -1402,7 +1402,7 @@
           notify_action_2: trash_passon
           notify_action_2_title: Ask Other
           notify_action_3: trash_delay
-          notify_action_3_title: Delay 24hr
+          notify_action_3_title: Snooze 2hr
     - conditions:
       - or:
         - condition: trigger
@@ -1419,58 +1419,31 @@
           data:
             tag: trash-notify
       - variables:
-          scanned_device: '{{ trigger.device_id | default(trigger.event.data.device_id)
-            | default(''unknown'') }}'
-      - choose:
-        - conditions:
-          - condition: template
-            value_template: '{{ scanned_device == josh_device_id }}'
-          sequence:
-          - action: script.activate_mobile_actionable_notification
-            data:
-              notify_target: notify.mobile_app_mj_pixel_8_pro
-              title: Trash and Recycling
-              message: Josh Completed
-              notify_tag: trash-status
-        - conditions:
-          - condition: template
-            value_template: '{{ scanned_device == mj_device_id }}'
-          sequence:
-          - action: script.activate_mobile_actionable_notification
-            data:
-              notify_target: notify.mobile_app_josh_mobile
-              title: Trash and Recycling
-              message: MJ Completed
-              notify_tag: trash-status
+          scanned_device: '{{ trigger.device_id | default(trigger.event.data.device_id) | default("unknown") }}'
+          scanned_name: '{{ "Josh" if scanned_device == josh_device_id else "MJ" }}'
+          target_notify: '{{ "notify.mobile_app_mj_pixel_8_pro" if scanned_name == "Josh" else "notify.mobile_app_josh_mobile" }}'
+      - action: script.activate_mobile_actionable_notification
+        data:
+          notify_target: '{{ target_notify }}'
+          title: Trash and Recycling
+          message: '{{ scanned_name }} Completed'
+          notify_tag: trash-status
     - conditions:
       - condition: trigger
         id: trash_passon
       sequence:
-      - choose:
-        - conditions:
-          - condition: template
-            value_template: '{{ trigger.event.data.device_id == josh_device_id }}'
-          sequence:
-          - action: script.activate_mobile_actionable_notification
-            data:
-              notify_target: notify.mobile_app_mj_pixel_8_pro
-              title: Trash and Recycling
-              message: YOU'RE MY ONLY HOPE.
-              notify_tag: trash-notify
-              notify_action_1: trash_done
-              notify_action_1_title: Done
-        - conditions:
-          - condition: template
-            value_template: '{{ trigger.event.data.device_id == mj_device_id }}'
-          sequence:
-          - action: script.activate_mobile_actionable_notification
-            data:
-              notify_target: notify.mobile_app_josh_mobile
-              title: Trash and Recycling
-              message: YOU'RE MY ONLY HOPE.
-              notify_tag: trash-notify
-              notify_action_1: trash_done
-              notify_action_1_title: Done
+      - variables:
+          scanned_device: '{{ trigger.device_id | default(trigger.event.data.device_id) | default("unknown") }}'
+          scanned_name: '{{ "Josh" if scanned_device == josh_device_id else "MJ" }}'
+          target_notify: '{{ "notify.mobile_app_mj_pixel_8_pro" if scanned_name == "Josh" else "notify.mobile_app_josh_mobile" }}'
+      - action: script.activate_mobile_actionable_notification
+        data:
+          notify_target: '{{ target_notify }}'
+          title: Trash and Recycling
+          message: "YOU'RE MY ONLY HOPE."
+          notify_tag: trash-notify
+          notify_action_1: trash_done
+          notify_action_1_title: Done
     - conditions:
       - condition: trigger
         id: trash_cleared
@@ -1499,40 +1472,38 @@
           notify_action_2: trash_passon
           notify_action_2_title: Ask Other
           notify_action_3: trash_delay
-          notify_action_3_title: Delay 24hr
+          notify_action_3_title: Snooze 2hr
     - conditions:
       - condition: trigger
         id: trash_delay
       sequence:
-      - action: input_boolean.turn_off
-        target:
-          entity_id: input_boolean.trash_reminder
       - action: notify.all_devices
         data:
           message: clear_notification
           data:
             tag: trash-notify
       - delay:
-          hours: 24
-      - action: input_boolean.turn_on
-        target:
-          entity_id: input_boolean.trash_reminder
+          hours: 2
+      - condition: state
+        entity_id: input_boolean.trash_reminder
+        state: 'on'
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.all_devices
           title: Trash and Recycling
-          message: Put to the Curb
+          message: Put to the Curb (Snooze Reminder)
           notify_tag: trash-notify
           notify_action_1: trash_done
           notify_action_1_title: Done
           notify_action_2: trash_passon
           notify_action_2_title: Ask Other
           notify_action_3: trash_delay
-          notify_action_3_title: Delay 24hr
+          notify_action_3_title: Snooze 2hr
   variables:
     josh_device_id: d818035824cf47ea
     mj_device_id: 0aa560faf0e8784c
-  mode: single
+  mode: parallel
+  max: 10
 - id: '1724695238002'
   alias: 'Notify: Feed Pets (v3.0)'
   description: Mission-ready feeding with standardized device identification and discrete
