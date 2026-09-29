@@ -3073,7 +3073,7 @@
   mode: restart
 - id: '1772286703556'
   alias: 'Door Security: Entry Chimes (Throttled)'
-  description: Plays siren tone once every 10 minutes when a door opens.
+  description: Plays siren tone when a door opens with a 30-second cooldown per door.
   triggers:
   - trigger: state
     entity_id:
@@ -3091,7 +3091,21 @@
     - condition: state
       entity_id: alarm_control_panel.home_alarm
       state: armed_night
+  - condition: template
+    value_template: >-
+      {%- set raw = states('input_text.door_announce_cooldown') -%}
+      {%- set repo = raw | from_json(default={}) if raw not in ['', 'unknown', 'unavailable', None] else {} -%}
+      {%- set last_ts = repo.get(trigger.entity_id, 0) | float(0) -%}
+      {{ (as_timestamp(now()) - last_ts) >= 30 }}
   actions:
+  - action: input_text.set_value
+    target:
+      entity_id: input_text.door_announce_cooldown
+    data:
+      value: >-
+        {%- set raw = states('input_text.door_announce_cooldown') -%}
+        {%- set repo = raw | from_json(default={}) if raw not in ['', 'unknown', 'unavailable', None] else {} -%}
+        {{ repo | combine({trigger.entity_id: as_timestamp(now()) | int}) | to_json }}
   - action: siren.turn_on
     target:
       entity_id:
@@ -3100,11 +3114,6 @@
       - siren.bedroom_siren_chime_play_tone
     data:
       tone: '{{ door_map[trigger.entity_id].instant | default(1) }}'
-  - delay:
-      hours: 0
-      minutes: 3
-      seconds: 0
-      milliseconds: 0
   variables:
     door_map:
       binary_sensor.front_door:
@@ -3115,7 +3124,8 @@
         instant: 9
       binary_sensor.catio_door:
         instant: 8
-  mode: single
+  mode: parallel
+  max: 10
   max_exceeded: silent
 - id: outdoor_motion_lighting_engine
   alias: 'Lighting: Outdoor Motion Presence'
@@ -3508,8 +3518,8 @@
       message: Devine's unlocked the door. The house has been temporarily disarmed.
   mode: single
 - id: '1775057723989'
-  alias: Nightly Climate Data to BigQuery
-  description: ''
+  alias: Nightly Telemetry Exporter Sync
+  description: 'Triggers exporter sync/health verification'
   triggers:
   - at: 03:01:00
     trigger: time
@@ -3517,8 +3527,8 @@
   - action: shell_command.kickoff_bq_exporter
   - action: notify.persistent_notification
     data:
-      message: Climate data sync to BigQuery triggered via Shell Command.
-      title: Data Pipeline
+      message: Whole-home telemetry sync to ClickHouse verified via Shell Command.
+      title: Telemetry Pipeline
 - id: '1776622737956'
   alias: Pantry Light/Door (v2.0)
   description: Turns pantry light on/off based on door sensor.
@@ -4109,40 +4119,73 @@
   mode: restart
 - id: '1778103562000'
   alias: 'Light Control: Office (v1.0)'
-  description: Instant control for Office ZEN24 Toggle Dimmer in Smart Light Mode.
+  description: Synchronizes Zooz ZEN73 switch (light.switch_office_light) with Office LIFX lights (light.office_lights).
   triggers:
-  - event_type: zwave_js_value_notification
+  - id: top
+    trigger: event
+    event_type: zwave_js_value_notification
     event_data:
-      device_id: feb5c436b4b7088a73d571cad4175dbd
+      device_id: 0e70048e907adfc2b741d4fc88e5e1ad
       property_key: '001'
-    id: top
+  - id: bottom
     trigger: event
-  - event_type: zwave_js_value_notification
+    event_type: zwave_js_value_notification
     event_data:
-      device_id: feb5c436b4b7088a73d571cad4175dbd
+      device_id: 0e70048e907adfc2b741d4fc88e5e1ad
       property_key: '002'
-    id: bottom
-    trigger: event
+  - id: switch_state_on
+    trigger: state
+    entity_id:
+    - light.switch_office_light
+    - switch.office_light
+    to: 'on'
+  - id: switch_state_off
+    trigger: state
+    entity_id:
+    - light.switch_office_light
+    - switch.office_light
+    to: 'off'
+  - id: light_state_on
+    trigger: state
+    entity_id: light.office_lights
+    to: 'on'
+  - id: light_state_off
+    trigger: state
+    entity_id: light.office_lights
+    to: 'off'
   actions:
   - choose:
     - conditions:
       - condition: template
-        value_template: '{{ trigger.event.data.value == "KeyPressed" and trigger.id
-          == "top" }}'
+        value_template: >-
+          {{ trigger.id in ['switch_state_on', 'light_state_on'] or (trigger.id == 'top' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}
       sequence:
-      - action: light.turn_on
-        target:
-          entity_id: light.office_lights
-        data: {}
+      - variables:
+          targets: >-
+            {{ ['light.office_lights', 'light.switch_office_light'] | reject('is_state', 'on') | list }}
+      - if:
+        - condition: template
+          value_template: "{{ targets | length > 0 }}"
+        then:
+        - action: light.turn_on
+          target:
+            entity_id: "{{ targets }}"
     - conditions:
       - condition: template
-        value_template: '{{ trigger.event.data.value == "KeyPressed" and trigger.id
-          == "bottom" }}'
+        value_template: >-
+          {{ trigger.id in ['switch_state_off', 'light_state_off'] or (trigger.id == 'bottom' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}
       sequence:
-      - action: light.turn_off
-        target:
-          entity_id: light.office_lights
-  mode: single
+      - variables:
+          targets: >-
+            {{ ['light.office_lights', 'light.switch_office_light'] | reject('is_state', 'off') | list }}
+      - if:
+        - condition: template
+          value_template: "{{ targets | length > 0 }}"
+        then:
+        - action: light.turn_off
+          target:
+            entity_id: "{{ targets }}"
+  mode: restart
 - id: poop_robot_maintenance_alerts
   alias: 'Pet: Poop Robot Maintenance Alerts'
   description: 'Ported from Node-RED: Alerts for Waste Drawer (>95%) and Low Litter
@@ -4552,22 +4595,32 @@
         value_template: "{{ trigger.id in ['motion_on', 'switch_state_on'] or\n   (trigger.id ==
           'top' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}"
       sequence:
-      - action: homeassistant.turn_on
-        target:
-          entity_id:
-          - switch.garage_entry_switch
-          - light.garage_motion_switch
+      - variables:
+          targets: >-
+            {{ ['switch.garage_entry_switch', 'light.garage_motion_switch'] | reject('is_state', 'on') | list }}
+      - if:
+        - condition: template
+          value_template: "{{ targets | length > 0 }}"
+        then:
+        - action: homeassistant.turn_on
+          target:
+            entity_id: "{{ targets }}"
     - conditions:
       - condition: template
         value_template: "{{ trigger.id in ['motion_off', 'switch_state_off'] or\n   (trigger.id ==
           'bottom' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x'])
           }}"
       sequence:
-      - action: homeassistant.turn_off
-        target:
-          entity_id:
-          - switch.garage_entry_switch
-          - light.garage_motion_switch
+      - variables:
+          targets: >-
+            {{ ['switch.garage_entry_switch', 'light.garage_motion_switch'] | reject('is_state', 'off') | list }}
+      - if:
+        - condition: template
+          value_template: "{{ targets | length > 0 }}"
+        then:
+        - action: homeassistant.turn_off
+          target:
+            entity_id: "{{ targets }}"
   mode: restart
 - id: light_control_hallway_zen73_lifx
   alias: 'Light Control: Downstairs Hallway (v1.0)'

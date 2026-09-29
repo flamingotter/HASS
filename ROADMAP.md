@@ -5,9 +5,11 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 ---
 
 ## 1. Immediate Infrastructure & Hardware Fixes
-- [x] **Bluetooth Stability:** Host-level settings updated May 6, 2026. Monitoring for stability.
+- [x] **Bluetooth Stability (Ubuntu 26.04 AppArmor Fix):** Resolved D-Bus `[org.freedesktop.DBus.Error.AccessDenied]` exception by adding `security_opt: - apparmor:unconfined` to `homeassistant` service in `/opt/docker/compose/home/compose.yaml`. Both physical controllers (`hci0`, `hci1`) now initialize without errors. (Completed September 25, 2026)
+- [x] **ClickHouse Telemetry Migration & HVAC Health Check:** Migrated all whole-home and climate telemetry from BigQuery to ClickHouse (25M+ rows). Upgraded `bin/hvac_health_check.py` to query ClickHouse HTTP directly with Python standard library, updated `entities/command_line/hvac_health.yaml`, and deployed `skills/ch_analytics.py`. (Completed September 25, 2026)
+- [x] **Alexa Media Player & Template Hardening:** Hardened `sensor.last_alexa` state and availability templates with `selectattr('attributes.last_called', 'defined')` filter to prevent `UndefinedError` during initialization. (Completed September 25, 2026)
+- [x] **Garage Entry Z-Wave Command Collision Hardening:** Added state-delta filtering (`reject('is_state', 'off')` / `reject('is_state', 'on')`) in `Light Control: Garage Entry (v2.0)` to eliminate `ZW1405` packet decode errors on ZEN73/ZEN12 switches. (Completed September 25, 2026)
 - [x] **Porch Cameras:** Diagnosed `Errno 22` video recording errors as DTS drift caused by 5s GOP interval (nMultiplier: 5). Implemented software failsafe in AI Analysis v1.5 (sequential processing + flush delay) to ensure logic continuity when stream jitter occurs. (Completed May 14, 2026)
-- [x] **BigQuery Integration:** Re-created `bq_venv`, verified `hvac_health_check.py` functionality, and hardened credentials path. (Completed May 6, 2026)
 - [ ] **Hardware Maintenance:** 
     - Re-add `light.masonic_lamp` to the network.
     - Physical install and entity update for `binary_sensor.bedroom_door` (replaces `binary_sensor.bedroom`).

@@ -1,31 +1,28 @@
 #!/usr/bin/env python3
 """
-BigQuery Analytics Engine Skill (Host Wrapper).
-Delegates execution cleanly to the running ha_bq_exporter container where all dependencies exist.
+Telemetry Analytics Skill Wrapper.
+Transparently forwards legacy BigQuery CLI calls to ClickHouse Analytics Skill (ch_analytics.py).
 """
 
 import sys
 import subprocess
+import os
+
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+CH_SCRIPT = os.path.join(SCRIPT_DIR, "ch_analytics.py")
 
 def main():
-    # Pass all arguments transparently to the container-side script
     args = sys.argv[1:]
-    
-    # Run the command inside the ha_bq_exporter container
-    cmd = ["docker", "exec", "ha_bq_exporter", "python3", "/app/bq_analytics.py"] + args
-    
+    cmd = [sys.executable, CH_SCRIPT] + args
     try:
-        # Run process and pipe output
         res = subprocess.run(cmd, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True, check=False)
-        
         if res.returncode == 0:
             print(res.stdout, end="")
         else:
             sys.stderr.write(res.stderr)
             sys.exit(res.returncode)
-            
     except Exception as e:
-        sys.stderr.write(f"Error executing skill wrapper: {e}\n")
+        sys.stderr.write(f"Error executing analytics skill: {e}\n")
         sys.exit(1)
 
 if __name__ == "__main__":

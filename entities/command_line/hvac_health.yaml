@@ -2,7 +2,7 @@
 - sensor:
     name: "HVAC Health Status"
     unique_id: hvac_health_status
-    command: "/config/bq_venv/bin/python3 /config/bin/hvac_health_check.py"
+    command: "python3 /config/bin/hvac_health_check.py"
     value_template: "{{ value_json.status | title }}"
     json_attributes:
       - degradation_pct

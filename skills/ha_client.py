@@ -9,29 +9,37 @@ import sys
 import json
 import requests
 
-CONFIG_PATH = "/root/.gemini/antigravity-cli/mcp_config.json"
+CANDIDATE_PATHS = [
+    os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), ".agents", "mcp_config.json"),
+    os.path.expanduser("~/.gemini/antigravity-cli/mcp_config.json"),
+    os.path.expanduser("~/.gemini/config/mcp_config.json"),
+    "/root/.gemini/antigravity-cli/mcp_config.json",
+]
 
 def load_credentials():
     """Loads Home Assistant API URL and Token from mcp_config.json."""
-    try:
-        if os.path.exists(CONFIG_PATH):
-            with open(CONFIG_PATH, "r") as f:
-                config = json.load(f)
-            ha_api = config.get("mcpServers", {}).get("ha_api", {})
-            server_url = ha_api.get("serverUrl", "")
-            # Convert https://ha.flamingotter.com/api/mcp to https://ha.flamingotter.com/api
-            if server_url.endswith("/mcp"):
-                api_url = server_url[:-4]
-            elif server_url.endswith("/"):
-                api_url = server_url[:-1]
-            else:
-                api_url = server_url
-            
-            auth_header = ha_api.get("headers", {}).get("Authorization", "")
-            token = auth_header.replace("Bearer ", "").strip()
-            return api_url, token
-    except Exception as e:
-        sys.stderr.write(f"Warning: Failed to load config from {CONFIG_PATH}: {e}\n")
+    for config_path in CANDIDATE_PATHS:
+        try:
+            if os.path.exists(config_path):
+                with open(config_path, "r") as f:
+                    config = json.load(f)
+                ha_api = config.get("mcpServers", {}).get("ha_api", {})
+                server_url = ha_api.get("serverUrl", "")
+                if server_url:
+                    # Convert https://ha.flamingotter.com/api/mcp to https://ha.flamingotter.com/api
+                    if server_url.endswith("/mcp"):
+                        api_url = server_url[:-4]
+                    elif server_url.endswith("/"):
+                        api_url = server_url[:-1]
+                    else:
+                        api_url = server_url
+                    
+                    auth_header = ha_api.get("headers", {}).get("Authorization", "")
+                    token = auth_header.replace("Bearer ", "").strip()
+                    if token:
+                        return api_url, token
+        except Exception as e:
+            sys.stderr.write(f"Warning: Failed to load config from {config_path}: {e}\n")
     
     # Fallbacks from environment variables
     api_url = os.environ.get("SUPERVISOR_TOKEN", "https://ha.flamingotter.com/api")

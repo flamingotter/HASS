@@ -7,6 +7,7 @@ The **Home Assistant Lab** is a production-grade, whole-home automation ecosyste
 
 ## 1. Core Engineering Mandates
 - **Modular Config:** The system uses `packages:` for integrations and `!include_dir_list` for entities.
+- **UI-First Helper Provisioning:** Helper entities (`input_text`, `input_boolean`, `input_number`, `input_datetime`, `timer`) are provisioned via Home Assistant's collection WebSocket API (`<domain>/create`) rather than YAML files, ensuring they remain native UI-editable helpers in `.storage/`.
 - **Explicit Types:** Jinja templates MUST explicitly cast variables (e.g., `| float`, `| int`, `| string | trim`) to prevent Home Assistant's automatic type-guessing from corrupting data.
 - **Fail-Safe AI:** Any automation relying on `ai_task` must provide local fallback defaults and use `continue_on_error: true`.
 
@@ -107,14 +108,14 @@ Handles identity verification and suspicious activity detection.
 - **Feeder Standard:** Phase A (Left Main / Black Voltage Wire) and Phase B (Right Main / Red Voltage Wire) across both 200A panels.
 - **Circuit Hierarchical Aggregates:** Defined in `entities/templates/sensor.energy_hierarchical_aggregates.yaml` (calculating Grid Total, 1st/2nd Floor Totals, Kitchen, IT/Office, Living, and HVAC/Utility subsystems).
 - **Appliance Cycle Interlocks:** Real-time current/power feeds `binary_sensor.washing_machine_running`, `binary_sensor.clothes_dryer_running`, and `binary_sensor.dishwasher_running`.
-- **Calibration Baseline Cutoff:** Formally calibrated on **August 22, 2026 at 17:13:00 UTC** (Panel 02) and **August 24, 2026 at 13:35:00 UTC** (Panel 01). Historical queries prior to these timestamps contain uncalibrated/inverted data; all whole-home BigQuery analytics and baseline modeling should filter `timestamp >= '2026-08-24T13:35:00Z'`.
+- **Calibration Baseline Cutoff:** Formally calibrated on **August 22, 2026 at 17:13:00 UTC** (Panel 02) and **August 24, 2026 at 13:35:00 UTC** (Panel 01). Historical queries prior to these timestamps contain uncalibrated/inverted data; all whole-home ClickHouse analytics and baseline modeling should filter `timestamp >= '2026-08-24 13:35:00'`.
 
 ---
 
 ## 7. Analytics & Infrastructure
-- **BigQuery Pipeline:** Data is exported to BigQuery for thermal decay, energy modeling, and cooling velocity analysis. The `ha_bq_exporter` container is hardened with an infinite sleep loop (`sh -c "python exporter.py; exec sleep infinity"`) and set to `restart: unless-stopped`. This keeps the container permanently in a `Running` state to prevent it from being pruned by the weekly `docker system prune` of the housekeeper, while allowing Home Assistant to trigger the daily export cleanly via the `socket-proxy` restart command.
-- **COP-Based Multi-Zone HVAC Health Engine (`bin/hvac_health_check.py`):** Runs daily inside `bq_venv` to evaluate real-time cooling efficiency across both Upstairs (Panel 01 Cir 3) and Downstairs (Panel 02 Cir 3) Trane heat pumps. Segments discrete cooling sessions ($P > 300\text{W}$, $\text{duration} \ge 8\text{ min}$), extracts temperature drops ($\Delta T$) and outdoor ambient temperatures, and computes true electrical energy consumed per degree drop ($\text{kWh / } ^\circ\text{F}$). Compares 7-day rolling performance against the 30-day baseline to isolate refrigerant loss from airflow restriction, enforces a minimum sample size gate (`MIN_SAMPLE_CYCLES = 6`) to prevent false degradation alarms during low-frequency mild weather periods, and exposes structured JSON telemetry to `sensor.hvac_health_status`.
-- **AI Agent Direct Query (Remote MCP):** To empower AI agents with direct, real-time analytics access, the official Google Cloud remote MCP server (`bigquery_remote`) is integrated client-side. This allows direct, credential-secured schema discovery and querying against the `moonlit-botany-293421` project's `home_assistant_data` dataset.
+- **ClickHouse Pipeline:** Whole-home high-frequency telemetry is streamed continuously into a local ClickHouse instance (`127.0.0.1:8124`) by `ha_telemetry_exporter`. ClickHouse maintains over 25M+ rows of historical telemetry across `home_assistant_data.whole_home_telemetry` and `home_assistant_data.climate_analytics` with sub-millisecond query execution.
+- **COP-Based Multi-Zone HVAC Health Engine (`bin/hvac_health_check.py`):** Runs daily to evaluate real-time cooling efficiency across Upstairs (Panel 01 Cir 3), Downstairs (Panel 02 Cir 3) Trane heat pumps, and the Office Mini-Split. Queries ClickHouse directly via HTTP using Python's standard library (`urllib.request`) with zero external virtualenv dependencies. Segments discrete cooling sessions ($P > 300\text{W}$, $\text{duration} \ge 8\text{ min}$), extracts temperature drops ($\Delta T$) and outdoor ambient temperatures, and computes true electrical energy consumed per degree drop ($\text{kWh / } ^\circ\text{F}$). Exposes structured JSON telemetry to `sensor.hvac_health_status`.
+- **Local ClickHouse Analytics Tooling (`skills/ch_analytics.py`):** Provides instant SQL execution and pre-compiled diagnostic presets (`energy`, `asymmetry`, `entities`) against the local ClickHouse database with zero third-party dependencies.
 - **Docker Management:** Container control is handled via `curl` to the `socket-proxy` Docker API.
 - **Sim Lab:** A Digital Twin environment (`integrations/sim_lab.yaml`) used to stress-test logic against 10 specific scenarios (e.g., Short-Cycle, Type Mismatch, High Humidity) before deployment.
 
@@ -122,19 +123,20 @@ Handles identity verification and suspicious activity detection.
 
 ## 8. Diagnostic Cheat Sheet
 - **Climate Check:** `grep "PHASE_" climate_control_log.csv | tail -n 20`
-- **Simulation Validation:** `grep "SIM_DATA" home-assistant.log | tail -n 10`
-- **Docker Status:** `curl -s http://127.0.0.1:2375/containers/ha_bq_exporter/json | jq .State.Status`
-- **Config Check:** `ha core check` or `ha core restart`
+- **ClickHouse Analytics:** `python3 skills/ch_analytics.py --preset energy` or `--preset asymmetry`
+- **HVAC Health Telemetry:** `python3 bin/hvac_health_check.py`
+- **Docker Status:** `curl -s http://127.0.0.1:2375/containers/ha_telemetry_exporter/json | jq .State.Status`
+- **Config Check:** `ha core check` or `docker exec hass hass --script check_config -c /config`
 
 ---
 
-## 7. Custom Agent Skills Suite
+## 9. Custom Agent Skills Suite
 To empower programmatic, local, and secure AI-agent operations, the system deploys a suite of local Python-executable tools in the `skills/` directory. These tools are designed with zero external host-level dependencies to execute natively on the host's standard Python interpreter (`/usr/bin/python3`), while utilizing secure credential parsing or container-delegation pathways for privileged operations.
 
 ### Component Map
 
 #### A. HA REST API Client (`skills/ha_client.py`)
-A lightweight, programmatic REST client that extracts Bearer Tokens and internal endpoints directly from `/root/.gemini/antigravity-cli/mcp_config.json`. This tool bypasses SQL database queries to interact directly with Home Assistant's state engine and services.
+A lightweight, programmatic REST client that extracts Bearer Tokens and internal endpoints dynamically from workspace `.agents/mcp_config.json` and user configurations. This tool interacts directly with Home Assistant's state engine and services.
 * **Usage - Fetch State:** `python3 skills/ha_client.py get sensor.bedroom_temperature_smoothed`
 * **Usage - Call Action:** `python3 skills/ha_client.py action light turn_on '{"entity_id": "light.bedroom_ceiling"}'`
 
@@ -143,13 +145,13 @@ A secure sandboxed parsing and compilation engine that compiles arbitrary Jinja 
 * **Usage:** `python3 skills/jinja_sandbox.py "{{ states('sensor.bedroom_temperature_smoothed') | float }}"`
 
 #### C. Log Diagnostic & Performance Compiler (`skills/log_parser.py`)
-A streaming parser that scans `climate_control_log.csv` and `home-assistant.log`. It isolates core events (`PHASE_`), highlights climate exceptions, and compiles SQLite database lock/warning metrics into formatted CLI tables.
-* **Usage - Climate Phase Logs:** `python3 skills/log_parser.py --type climate`
-* **Usage - System Lock/Errors:** `python3 skills/log_parser.py --type errors`
+A streaming parser that scans `climate_control_log.csv` and `home-assistant.log`. It isolates core events (`PHASE_`), highlights climate exceptions, and compiles system warnings into formatted CLI tables.
+* **Usage - Warnings Scan:** `python3 skills/log_parser.py warnings`
 
-#### D. BigQuery Container Delegate (`skills/bq_analytics.py`)
-A host-side delegate script. Because the host lacks GCP Python packages, this delegate pipes SQL queries and options via `docker exec ha_bq_exporter` to query BigQuery using `/app/service-account.json` inside the running container. This provides zero-dependency, rapid SQL execution on the host.
-* **Usage:** `python3 skills/bq_analytics.py --preset SLA_ASYMMETRY`
+#### D. ClickHouse Telemetry Analytics Engine (`skills/ch_analytics.py`)
+A high-speed analytics script querying the local ClickHouse instance at `127.0.0.1:8124` using Python standard library HTTP requests.
+* **Usage - Presets:** `python3 skills/ch_analytics.py --preset asymmetry` (or `energy`, `entities`)
+* **Usage - Raw SQL:** `python3 skills/ch_analytics.py "SELECT count() FROM home_assistant_data.whole_home_telemetry"`
 
 #### E. Sim Lab Scenario Runner & Learning Auditor (`skills/run_sim_lab.py`)
 An automation runner that triggers digital twin scenarios in the Sim Lab (`script.run_climate_stress_tests`) and audits repository learning state transitions (`input_text.sim_mbr_repo`) to verify math and adaptive learning velocity changes after simulation runs.
