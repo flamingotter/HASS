@@ -1275,21 +1275,20 @@
           - variables:
               t_name: '{{ state_attr(repeat.item, ''friendly_name'') | replace(''Maintenance
                 '', '''') | replace('' Timer'', '''') }}'
-          - action: ai_task.generate_data
+          - action: conversation.process
             continue_on_error: true
             data:
-              task_name: '{{ t_name }} Nag'
-              instructions: 'The maintenance task "{{ t_name }}" is due. Write a short,
-                creative reminder for Josh.  Make it sound like a high-end estate
-                manager reporting a necessary maintenance item. Limit to 25 words.
-
-                '
+              agent_id: conversation.extended_openai_conversation_2
+              text: >-
+                The maintenance task "{{ t_name }}" is due. Write a short, creative reminder for Josh. Make it sound like a high-end estate manager reporting a necessary maintenance item. Limit to 25 words, no quotes.
             response_variable: nag_content
           - action: script.activate_mobile_actionable_notification
             data:
               notify_target: notify.mobile_app_josh_mobile
               title: 'Maintenance Alert: {{ t_name }}'
-              message: '{{ (nag_content | default({})).data | default("Maintenance is due for " ~ t_name) }}'
+              message: >-
+                {% set resp = nag_content.response.speech.plain.speech | default('', true) if nag_content is defined and nag_content.response is defined and nag_content.response.speech is defined and nag_content.response.speech.plain is defined else '' %}
+                {{ resp | trim | replace('\"', '') if resp | length > 0 else "Maintenance is due for " ~ t_name }}
               notify_tag: '{{ repeat.item }}'
               notify_action_1: '{{ repeat.item }}_done'
               notify_action_1_title: Done
@@ -1451,12 +1450,13 @@
         entity_id: input_boolean.trash_reminder
         state: 'on'
       sequence:
-      - action: ai_task.generate_data
+      - action: conversation.process
         continue_on_error: true
         data:
-          task_name: Trash Nag
-          instructions: 'Rewrite this in a creative way, limit to about 35 words:
-            "The trash isn''t going to take itself out."'
+          agent_id: conversation.extended_openai_conversation_2
+          text: >-
+            Rewrite this in a creative, witty, or humorous way (limit to about 35 words, no quotes):
+            "The trash isn't going to take itself out."
         response_variable: generated_content
       - delay:
           seconds: 2
@@ -1465,7 +1465,8 @@
           notify_target: notify.all_devices
           title: Trash and Recycling
           message: >-
-            {{ (generated_content | default({})).data | default("The trash isn't going to take itself out.") }}
+            {% set resp = generated_content.response.speech.plain.speech | default('', true) if generated_content is defined and generated_content.response is defined and generated_content.response.speech is defined and generated_content.response.speech.plain is defined else '' %}
+            {{ resp | trim | replace('\"', '') if resp | length > 0 else "The trash isn't going to take itself out." }}
           notify_tag: trash-notify
           notify_action_1: trash_done
           notify_action_1_title: Done
@@ -1571,12 +1572,12 @@
           seconds: 2
           milliseconds: 0
         enabled: false
-      - action: ai_task.generate_data
+      - action: conversation.process
         continue_on_error: true
         data:
-          task_name: Feed Pets
-          instructions: 'Demanding but short: It is time to feed the cats (Battle
-            Cat, Josie, Custard) and the dog Mars. Max 25 words.'
+          agent_id: conversation.extended_openai_conversation_2
+          text: >-
+            Demanding but short: It is time to feed the cats (Battle Cat, Josie, Custard) and the dog Mars. Max 25 words, no quotes.
         response_variable: gen_text
       - delay:
           hours: 0
@@ -1587,14 +1588,17 @@
         continue_on_error: true
         metadata: {}
         data:
-          message: '{{ (gen_text | default({})).data | default(''It is time to feed
-            the cats and Mars.'') }}'
+          message: >-
+            {% set resp = gen_text.response.speech.plain.speech | default('', true) if gen_text is defined and gen_text.response is defined and gen_text.response.speech is defined and gen_text.response.speech.plain is defined else '' %}
+            {{ resp | trim | replace('\"', '') if resp | length > 0 else 'It is time to feed the cats and Mars.' }}
           target: media_player.counter
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.all_devices
           title: Feeding Mission
-          message: '{{ (gen_text | default({})).data | default("It is time to feed the cats and Mars.") }}'
+          message: >-
+            {% set resp = gen_text.response.speech.plain.speech | default('', true) if gen_text is defined and gen_text.response is defined and gen_text.response.speech is defined and gen_text.response.speech.plain is defined else '' %}
+            {{ resp | trim | replace('\"', '') if resp | length > 0 else 'It is time to feed the cats and Mars.' }}
           notify_tag: pets-notify
           notify_action_1: feed_done
           notify_action_1_title: Done
@@ -1665,19 +1669,20 @@
         value_template: '{{ trigger.event.event_type == ''mobile_app_notification_cleared''
           }}'
       sequence:
-      - action: ai_task.generate_data
+      - action: conversation.process
         continue_on_error: true
         data:
-          task_name: Feed Pets
-          instructions: The user swiped away the pet feeding notification without
-            completing it. Write a creative, firm nag from the joint perspective of
-            the cats and the dog Mars. Limit to 20 words.
+          agent_id: conversation.extended_openai_conversation_2
+          text: >-
+            The user swiped away the pet feeding notification without completing it. Write a creative, firm nag from the joint perspective of the cats and the dog Mars. Limit to 20 words, no quotes.
         response_variable: nag_text
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.mobile_app_josh_mobile
           title: Feeding Required
-          message: '{{ (nag_text | default({})).data | default("The felines and Mars are still hungry! Please feed them.") }}'
+          message: >-
+            {% set resp = nag_text.response.speech.plain.speech | default('', true) if nag_text is defined and nag_text.response is defined and nag_text.response.speech is defined and nag_text.response.speech.plain is defined else '' %}
+            {{ resp | trim | replace('\"', '') if resp | length > 0 else "The felines and Mars are still hungry! Please feed them." }}
           notify_tag: pets-notify
           sticky: true
           notify_action_1: feed_done
@@ -1797,21 +1802,19 @@
       - condition: trigger
         id: extend_eco
       sequence:
-      - action: ai_task.generate_data
+      - action: conversation.process
+        continue_on_error: true
         data:
-          task_name: Eco Mode Timer Parser
-          instructions: 'The user wants to extend Eco Mode. Their reply was: "{{ trigger.event.data.reply_text
-            }}". Convert this into a number of DAYS from now.  If they just gave a
-            number, return that number. If they gave a day of the week, calculate
-            days until that day. Return ONLY the integer number of days.
-
-            '
+          agent_id: conversation.extended_openai_conversation_2
+          text: >-
+            Today is {{ now().strftime('%A') }}. The user wants to extend an HVAC timer. Their reply was: "{{ trigger.event.data.reply_text }}". Convert this into a number of DAYS from now. If they just gave a number, return that number. If they gave a day of the week, calculate days until that day. Return ONLY the integer number of days as a single number with no other text, words, or punctuation.
         response_variable: extension_days
       - variables:
-          days: '{{ (extension_days.data | int(1)) if (extension_days.data | is_number)
-            else 1 }}'
-          seconds: '{{ ((extension_days.data | int(1)) if (extension_days.data | is_number)
-            else 1) * 86400 }}'
+          raw_days: >-
+            {% set resp = extension_days.response.speech.plain.speech | default('', true) if extension_days is defined and extension_days.response is defined and extension_days.response.speech is defined and extension_days.response.speech.plain is defined else '' %}
+            {{ resp | trim }}
+          days: "{{ (raw_days | int(1)) if (raw_days | is_number) else 1 }}"
+          seconds: "{{ ((raw_days | int(1)) if (raw_days | is_number) else 1) * 86400 }}"
       - action: timer.start
         data:
           duration: '{{ seconds }}'
@@ -1947,19 +1950,18 @@
       - action: scene.turn_on
         target:
           entity_id: scene.cleaning_before
-      - action: ai_task.generate_data
+      - action: conversation.process
         continue_on_error: true
         data:
-          instructions: 'The user just finished cleaning. Write a high-energy,  hilarious,
-            and extremely enthusiastic congratulatory message.  Use some ''Army-style''
-            colorful language. Limit to 25 words.
-
-            '
+          agent_id: conversation.extended_openai_conversation_2
+          text: >-
+            The user just finished cleaning. Write a high-energy, hilarious, and extremely enthusiastic congratulatory message. Use some 'Army-style' colorful language. Limit to 25 words, no quotes.
         response_variable: clean_complete_ai
       - action: notify.alexa_media
         data:
-          message: '{{ (clean_complete_ai | default({})).data | default(''Cleaning
-            mission complete! Outstanding work!'') }}'
+          message: >-
+            {% set resp = clean_complete_ai.response.speech.plain.speech | default('', true) if clean_complete_ai is defined and clean_complete_ai.response is defined and clean_complete_ai.response.speech is defined and clean_complete_ai.response.speech.plain is defined else '' %}
+            {{ resp | trim | replace('\"', '') if resp | length > 0 else 'Cleaning mission complete! Outstanding work!' }}
           target: '{{ states.sensor.last_alexa.state }}'
     - conditions:
       - condition: trigger
@@ -1968,19 +1970,20 @@
         entity_id: input_boolean.cleaning
         state: 'on'
       sequence:
-      - action: ai_task.generate_data
+      - action: conversation.process
         continue_on_error: true
         data:
-          instructions: 'The house is still in ''Cleaning Mode''. Write a short,  slightly
-            annoying but helpful reminder asking if they are done.  Limit to 20 words.
-
-            '
+          agent_id: conversation.extended_openai_conversation_2
+          text: >-
+            The house is still in 'Cleaning Mode'. Write a short, slightly annoying but helpful reminder asking if they are done. Limit to 20 words, no quotes.
         response_variable: cleaning_nag
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.all_devices
           title: Cleaning Mode
-          message: '{{ (cleaning_nag | default({})).data | default("The house is still in Cleaning Mode. Are you done?") }}'
+          message: >-
+            {% set resp = cleaning_nag.response.speech.plain.speech | default('', true) if cleaning_nag is defined and cleaning_nag.response is defined and cleaning_nag.response.speech is defined and cleaning_nag.response.speech.plain is defined else '' %}
+            {{ resp | trim | replace('\"', '') if resp | length > 0 else "The house is still in Cleaning Mode. Are you done?" }}
           notify_tag: cleaning-warning
           notify_action_1: cleaning_off
           notify_action_1_title: Turn Off
@@ -3262,138 +3265,124 @@
   - alias: Flush Delay
     delay:
       seconds: 2
-  - action: ai_task.generate_data
-    data:
-      entity_id: ai_task.google_ai_task
-      task_name: Porch Video Analysis
-      instructions: 'Attachment 1 and 2 are reference photos of the residents, MJ
-        and Josh. Attachment 3 is a video from the porch PTZ. Attachments 4, 5, and
-        6 are sequential snapshots from the doorbell (T=0s, T=1s, T=3s). If there
-        is a vehicle parked in the driveway (upper right of the frame) in Attachment
-        3, use that to determine the delivery service (Amazon, UPS, USPS, Fedex, etc)
-        if it is a normal passenger vehicle or unmarked truck/van ignore it. Compare
-        the person in the footage to the reference photos.
-
-
-        CRITICAL LOGIC:
-
-        Residents do not deliver packages or wear delivery uniforms. If the person
-        leaves a package, takes a photo of a package, or is wearing a delivery uniform
-        (Amazon, UPS, FedEx, USPS), they are NEVER a resident, regardless of physical
-        resemblance.
-
-
-        Visual Marker for Josh: Be advised that Josh often wears a large straw-type
-        hat when doing yard work, which may partially obscure his face in the reference
-        photos.
-
-
-        RULE 1: If the person is a visual match for Josh or MJ (or matches the Josh
-        visual marker: straw hat, work clothes, no package) AND does not leave a package,
-        start your response with: [RESIDENT]
-
-
-        RULE 2: If the person is a guest who is let inside the house or walks through
-        the front door, start your response with: [ENTERED]
-
-
-        RULE 3: For all other visitors, deliveries, or solicitors, start your response
-        with: [ALERT]
-
-
-        OUTPUT FORMAT: Provide a SINGLE LINE response. No bullet points, no newlines,
-        no markdown. Format: [TAG] Person: [Details]. Action: [What they did]. Intent:
-        [Delivery/Visitor/Resident].'
-      attachments:
-      - media_content_id: media-source://media_source/local/snapshots/reference/mj.jpg
-        media_content_type: image/jpeg
-      - media_content_id: media-source://media_source/local/snapshots/reference/josh.jpg
-        media_content_type: image/jpeg
-      - media_content_id: media-source://media_source/local/snapshots/porch/approach.mp4
-        media_content_type: video/mp4
-      - media_content_id: media-source://media_source/local/snapshots/porch/doorbell_t0.jpg
-        media_content_type: image/jpeg
-      - media_content_id: media-source://media_source/local/snapshots/porch/doorbell_t1.jpg
-        media_content_type: image/jpeg
-      - media_content_id: media-source://media_source/local/snapshots/porch/doorbell_t3.jpg
-        media_content_type: image/jpeg
-    response_variable: gemini_report
+  - alias: Sample Approach Video
+    action: shell_command.sample_approach_video
     continue_on_error: true
-  - action: notify.send_message
-    target:
-      entity_id: notify.daily_camera_log
+  - alias: AI Porch Video Analysis
+    action: extended_openai_conversation.query_image
     data:
-      message: '{{ now().strftime(''%I:%M %p'') }} - Front Porch: {{ (gemini_report
-        | default({})).data | default(''[ALERT] Video analysis failed.'') }}'
-  - action: notify.send_message
-    target:
-      entity_id:
-      - notify.porch_history
-    data:
-      message: '{% set report = (gemini_report | default({})).data | default(''[ALERT]
-        Video analysis failed.'') %} {% set tag = report.split('']'')[0] ~ '']'' if
-        '']'' in report else ''[ERROR]'' %} {% set content = report.replace(tag, '''').strip()
-        %} "{{ now().strftime(''%Y-%m-%d'') }}","{{ now().strftime(''%H:%M:%S'') }}","{{
-        tag }}","{{ content | replace(''"'', ''""'') }}"
+      config_entry: 01M3YG3WVESNZR8QG41VKNSXHE
+      model: qwen-vl-7b
+      prompt: >-
+        You are analyzing a security event from a front porch camera.
+        - Item 1 is a reference photo of resident Josh (identification profile only).
+        - Item 2 is a reference photo of resident MJ (identification profile only).
+        - Item 3 is a video recording of the entire front porch approach.
 
-        '
+        Do NOT describe Item 1 or Item 2. Focus strictly on the video (Item 3).
+
+        Rules:
+        1. Examine Item 3: If NO person and NO delivery vehicle is visible in the video:
+           Output: [ALL_CLEAR] No activity on porch.
+
+        2. If a person or vehicle IS in the video:
+           - Check if they are delivering a package, wearing a delivery uniform (Amazon, UPS, FedEx, USPS), or driving a delivery truck:
+             Output: [ALERT] Person: [delivery driver/uniform/company]. Action: [delivery action]. Intent: Delivery.
+           - If NOT delivering, compare them to resident reference photos (Item 1 = Josh, Item 2 = MJ). If they match a resident:
+             Output: [RESIDENT] Person: Josh (or MJ). Action: [action]. Intent: Resident.
+           - If they entered the front door or were let inside:
+             Output: [ENTERED] Person: [visitor description]. Action: Entered home. Intent: Visitor.
+           - If they are an unfamiliar visitor, solicitor, or unrecognized person:
+             Output: [ALERT] Person: [visitor description]. Action: [action]. Intent: Visitor.
+
+        Output must be a SINGLE line without markdown or newlines.
+      images:
+        - url: /media/snapshots/reference/josh_thumb.jpg
+        - url: /media/snapshots/reference/mj_thumb.jpg
+        - url: /media/snapshots/porch/approach_sample.mp4
+      max_tokens: 150
+    response_variable: porch_report
+    continue_on_error: true
+  - variables:
+      report: >-
+        {{ porch_report.choices[0].message.content | default('[ALL_CLEAR] No person on porch.', true)
+           if porch_report is defined and porch_report.choices is defined and porch_report.choices | length > 0
+           else '[ALL_CLEAR] No person on porch.' }}
   - if:
-    - condition: template
-      value_template: '{{ ''[ALERT]'' in (gemini_report | default({})).data | default(''[ALERT]'')
-        }}'
+      - condition: template
+        value_template: "{{ '[ALL_CLEAR]' not in report }}"
     then:
-    - action: notify.persistent_notification
-      data:
-        title: Porch Intel (Full Report)
-        message: '{% set report = (gemini_report | default({})).data | default('''')
-          %} {% set tag = report.split('']'')[0] ~ '']'' if '']'' in report else ''[ALERT]''
-          %} {{ report.replace(tag, '''').strip() }}
-
-          '
-    - action: notify.mobile_app_josh_mobile
-      data:
-        title: Porch Intel
-        message: '{% set report = (gemini_report | default({})).data | default(''Video
-          analysis failed.'') %} {% set tag = report.split('']'')[0] ~ '']'' if '']''
-          in report else ''[ALERT]'' %} {{ report.replace(tag, '''').strip() | truncate(150,
-          true, ''...'') }}
-
-          '
-    - if:
-      - condition: state
-        entity_id: alarm_control_panel.home_alarm
-        state:
-        - armed_away
-        - armed_vacation
-      then:
-      - action: input_boolean.turn_on
+      - action: notify.send_message
         target:
-          entity_id: input_boolean.porch_visitor_while_away
+          entity_id: notify.daily_camera_log
+        data:
+          message: "{{ now().strftime('%I:%M %p') }} - Front Porch: {{ report }}"
+      - action: notify.send_message
+        target:
+          entity_id:
+            - notify.porch_history
+        data:
+          message: >-
+            {% set tag = report.split(']')[0] ~ ']' if ']' in report else '[ERROR]' %}
+            {% set content = report.replace(tag, '').strip() %}
+            "{{ now().strftime('%Y-%m-%d') }}","{{ now().strftime('%H:%M:%S') }}","{{ tag }}","{{ content | replace('"', '""') }}"
+      - if:
+          - condition: template
+            value_template: "{{ '[ALERT]' in report }}"
+        then:
+          - action: notify.persistent_notification
+            data:
+              title: Porch Intel (Full Report)
+              message: >-
+                {% set tag = report.split(']')[0] ~ ']' if ']' in report else '[ALERT]' %}
+                {{ report.replace(tag, '').strip() }}
+          - action: notify.mobile_app_josh_mobile
+            data:
+              title: Porch Intel
+              message: >-
+                {% set tag = report.split(']')[0] ~ ']' if ']' in report else '[ALERT]' %}
+                {{ report.replace(tag, '').strip() | truncate(150, true, '...') }}
+          - if:
+              - condition: state
+                entity_id: alarm_control_panel.home_alarm
+                state:
+                  - armed_away
+                  - armed_vacation
+            then:
+              - action: input_boolean.turn_on
+                target:
+                  entity_id: input_boolean.porch_visitor_while_away
   mode: single
 - id: '1772742848092'
   alias: System - Cameras - Evening AI Rollup
-  description: ''
+  description: Reads daily porch events and generates an evening HTML security briefing via Local Brain (Qwen 32B).
   triggers:
   - at: '20:00:00'
     trigger: time
   actions:
-  - action: ai_task.generate_data
-    continue_on_error: true
-    data:
-      entity_id: ai_task.google_ai_task
-      task_name: Daily Security Briefing
-      instructions: 'Read the attached log of today''s camera events.  Write a cohesive
-        evening briefing summarizing the activity. Group similar events together.
-        If the log is completely blank, simply output: "<h3>All clear. No porch activity
-        detected today.</h3>" Format your entire response using basic HTML (use <h3>
-        for headers, <ul> and <li> for bullet points, and <b> for bold text). Do not
-        use markdown.
+  - action: shell_command.read_daily_camera_log
+    response_variable: daily_log
+  - variables:
+      raw_log: "{{ (daily_log.stdout | default('', true)).strip() if daily_log is defined and daily_log.stdout is defined else '' }}"
+  - if:
+      - condition: template
+        value_template: "{{ raw_log | length > 0 }}"
+    then:
+      - action: conversation.process
+        continue_on_error: true
+        data:
+          agent_id: conversation.extended_openai_conversation_2
+          text: >-
+            Today is {{ now().strftime('%A, %B %d, %Y') }}.
+            Read the following log of today's camera events:
+            <camera_log>
+            {{ raw_log }}
+            </camera_log>
 
-        '
-      attachments:
-      - media_content_id: media-source://media_source/local/snapshots/daily_camera_log.txt
-        media_content_type: text/plain
-    response_variable: evening_rollup
+            Write a cohesive evening security briefing summarizing the activity. Group similar events together (e.g. package deliveries, visitors, solicitors, unusual activity).
+            Format your entire response using clean HTML (use <h3> for headers, <ul> and <li> for bullet points, and <b> for bold text).
+            Do not wrap your response in markdown code blocks. Return ONLY raw HTML.
+        response_variable: evening_rollup
   - action: smtp.send_message
     target:
       entity_id: notify.email_daily_rollup_flamingotter_hass_gmail_com
@@ -3401,7 +3390,16 @@
       title: Security Briefing - {{ now().strftime('%b %d, %Y') }}
       message: Please view this email in an HTML-compatible client.
       html: >-
-        {{ (evening_rollup | default({})).data | default('<h3>The daily security briefing could not be generated at this time.</h3>') }}
+        {% if raw_log | length == 0 %}
+          <h3>All clear. No porch activity detected today.</h3>
+        {% else %}
+          {% set resp = evening_rollup.response.speech.plain.speech | default('', true) if evening_rollup is defined and evening_rollup.response is defined and evening_rollup.response.speech is defined and evening_rollup.response.speech.plain is defined else '' %}
+          {% if resp | length > 0 %}
+            {{ resp | replace('```html', '') | replace('```', '') | trim }}
+          {% else %}
+            <h3>The daily security briefing could not be generated at this time.</h3>
+          {% endif %}
+        {% endif %}
 - id: '1772743146418'
   alias: System - Cameras - Clear Daily Log
   description: ''
@@ -4271,25 +4269,29 @@
     data:
       filename: /media/snapshots/porch/doorbell_visitor.jpg
   - alias: AI Visitor Analysis
-    action: ai_task.generate_data
+    action: extended_openai_conversation.query_image
     data:
-      task_name: Doorbell Visitor Analysis
-      instructions: Analyze the attached image from the front doorbell.  Describe
-        the person at the door (e.g. delivery driver, solicitor, child)  and their
-        likely intent (e.g. leaving a package, ringing for attention). If it is a
-        delivery, mention the company if visible on a uniform or vehicle. Keep the
-        response brief and natural, under 25 words.
-      attachments:
-      - media_content_id: media-source://media_source/local/snapshots/porch/doorbell_visitor.jpg
-        media_content_type: image/jpeg
+      config_entry: 01M3YG3WVESNZR8QG41VKNSXHE
+      model: qwen-vl-7b
+      prompt: >-
+        You are an AI generating an audio announcement for a home doorbell speaker.
+        In one short, natural spoken sentence (max 15 words), announce who is at the
+        door and their action. Focus on intent: delivery driver, mail carrier, visitor,
+        or solicitor. Do not include clothing details or weather unless relevant to
+        their intent. Never use labels like 'Person:' or 'Action:'.
+      images:
+        - url: /media/snapshots/porch/doorbell_visitor.jpg
+      max_tokens: 60
     response_variable: visitor_analysis
     continue_on_error: true
   - alias: AI TTS Announcement
     action: notify.alexa_media
     data:
       target: media_player.all_echos
-      message: '{{ (visitor_analysis | default({})).data | default("Someone is at
-        the front door.") }}'
+      message: >-
+        {{ visitor_analysis.choices[0].message.content | default("Someone is at the front door.", true)
+           if visitor_analysis is defined and visitor_analysis.choices is defined and visitor_analysis.choices | length > 0
+           else "Someone is at the front door." }}
       data:
         type: tts
   - delay:

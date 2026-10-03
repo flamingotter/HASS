@@ -345,10 +345,11 @@ welcome_home_ai_debrief:
   sequence:
   - delay:
       seconds: 15
-  - action: ai_task.generate_data
+  - action: conversation.process
     continue_on_error: true
     data:
-      instructions: >-
+      agent_id: conversation.extended_openai_conversation_2
+      text: >-
         {# 1. Extract Real-Time Contextual Signals #}
         {% set josh_home = states('input_select.josh_status') in ['Home', 'Just Arrived'] %}
         {% set mj_home = states('input_select.mj_status') in ['Home', 'Just Arrived'] %}
@@ -384,7 +385,7 @@ welcome_home_ai_debrief:
         
         CRITICAL RULES:
         - The message MUST be contextually realistic and consistent with the current weather and time (e.g. if it is raining, overcast, or night, do NOT mention laying in the sunshine or sunbathing. Instead, describe them curled up seeking warmth, listening to the rain, watching the stars, or running to greet you to escape the elements).
-        - Limit the entire response to 35 words.
+        - Limit the entire response to 35 words. Return no quotes or quotation marks.
         
         {% if is_vacation %}
           Mention they are returning from a long trip and the Home is secure.
@@ -392,7 +393,6 @@ welcome_home_ai_debrief:
         
         {{ pet_prompt }}
         {{ visitor_status }}
-      task_name: Generate Welcome Message
     response_variable: ai_greeting
   - wait_template: '{{ is_state(''binary_sensor.motion_indoors_kitchen'', ''on'')
       }}'
@@ -408,11 +408,8 @@ welcome_home_ai_debrief:
     continue_on_error: true
     data:
       message: >-
-        {%- if ai_greeting is defined and ai_greeting is not none and ai_greeting.data is defined -%}
-          {{ ai_greeting.data }}
-        {%- else -%}
-          Welcome home! The house is secure, and Mars and the cats are waiting for you.
-        {%- endif -%}
+        {% set resp = ai_greeting.response.speech.plain.speech | default('', true) if ai_greeting is defined and ai_greeting.response is defined and ai_greeting.response.speech is defined and ai_greeting.response.speech.plain is defined else '' %}
+        {{ resp | trim | replace('\"', '') if resp | length > 0 else 'Welcome home! The house is secure, and Mars and the cats are waiting for you.' }}
       target: media_player.counter
   - delay:
       hours: 0
