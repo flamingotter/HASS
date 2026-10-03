@@ -3759,23 +3759,19 @@
           | float(100) -%} {%- set out_hum = states(''sensor.weather_station_humidity_outdoor'')
           | float(100) -%} {{ out_temp <= (actual - 3.0) and out_hum < 65 }}'
       sequence:
-      - action: ai_task.generate_data
+      - action: conversation.process
         continue_on_error: true
         data:
-          task_name: Free Cooling Strategist
-          instructions: Outdoor temp is {{ states('sensor.weather_station_temperature_outdoor')
-            }}F with {{ states('sensor.weather_station_humidity_outdoor') }}% humidity.
-            Bedroom temp is {{ actual }}F. Give a short, helpful 1-sentence tip recommending
-            opening the screened patio door for free cooling. Keep response under
-            25 words.
+          agent_id: conversation.extended_openai_conversation_2
+          text: >-
+            Outdoor temp is {{ states('sensor.weather_station_temperature_outdoor') }}F with {{ states('sensor.weather_station_humidity_outdoor') }}% humidity. Bedroom temp is {{ actual }}F. Give a short, helpful 1-sentence tip recommending opening the screened patio door for free cooling. Keep response under 25 words, no quotes.
         response_variable: strategist_advice
       - action: notify.mobile_app_josh_mobile
         data:
-          title: "\U0001F343 Free Cooling Opportunity"
-          message: '{{ (strategist_advice | default({})).data | default(''Outdoor
-            air is cooler and dry ('' ~ states(''sensor.weather_station_temperature_outdoor'')
-            ~ ''°F / '' ~ states(''sensor.weather_station_humidity_outdoor'') ~ ''%).
-            Consider opening the patio door to save energy.'') }}'
+          title: "🍃 Free Cooling Opportunity"
+          message: >-
+            {% set resp = strategist_advice.response.speech.plain.speech | default('', true) if strategist_advice is defined and strategist_advice.response is defined and strategist_advice.response.speech is defined and strategist_advice.response.speech.plain is defined else '' %}
+            {{ resp | trim | replace('\"', '') if resp | length > 0 else ('Outdoor air is cooler and dry (' ~ states('sensor.weather_station_temperature_outdoor') ~ '°F / ' ~ states('sensor.weather_station_humidity_outdoor') ~ '%). Consider opening the patio door to save energy.') }}
       - action: notify.send_message
         target:
           entity_id: '{{ log_entity }}'
@@ -3806,22 +3802,19 @@
         value_template: '{{ is_precooling and not is_sleep_window and t6_target !=
           60 and actual > (target + 0.5) }}'
       sequence:
-      - action: ai_task.generate_data
+      - action: conversation.process
         continue_on_error: true
         data:
-          task_name: Comfort Optimizer
-          instructions: 'The current target is {{ target }}F. The indoor humidity
-            is {{ states(''sensor.bedroom_sensor_humidity'') }}%. If humidity is >
-            55%, recommend dropping target by 1 degree for ''Comfort-Adjusted'' cooling.
-            Return your response in the format: [VALUE] Reasoning: [One sentence explanation].'
+          agent_id: conversation.extended_openai_conversation_2
+          text: >-
+            The current target is {{ target }}F. The indoor humidity is {{ states('sensor.bedroom_sensor_humidity') }}%. If humidity is > 55%, recommend dropping target by 1 degree for 'Comfort-Adjusted' cooling. Return your response in the format: [VALUE] Reasoning: [One sentence explanation].
         response_variable: comfort_target
       - variables:
-          ai_raw: '{{ (comfort_target | default({})).data | default(target|string)
-            }}'
-          ai_target: '{{ ai_raw.split('']'')[0] | replace(''['', '''') | float(target)
-            }}'
-          ai_reason: '{{ ai_raw.split(''Reasoning:'')[1] | default(''Standard target
-            used.'') }}'
+          ai_raw: >-
+            {% set resp = comfort_target.response.speech.plain.speech | default('', true) if comfort_target is defined and comfort_target.response is defined and comfort_target.response.speech is defined and comfort_target.response.speech.plain is defined else '' %}
+            {{ resp | trim if resp | length > 0 else (target | string) }}
+          ai_target: "{{ ai_raw.split(']')[0] | replace('[', '') | replace('F', '') | trim | float(target) }}"
+          ai_reason: "{{ ai_raw.split('Reasoning:')[1] | default('Standard target used.') | trim }}"
       - delay: 00:02:00
       - variables:
           actual_now: '{% set bdr = states(''sensor.bedroom_temperature_smoothed'')
@@ -3925,24 +3918,17 @@
               | float(70) %} {{ ((start + current) / 2) | round(1) }}'
             lookup_key: '{{ ((avg_outdoor | float / 5) | round(0) | int * 5) | string
               | trim }}'
-        - action: ai_task.generate_data
+        - action: conversation.process
           continue_on_error: true
           data:
-            task_name: Learning Auditor
-            instructions: 'A cooling session dropped {{ drop }}F in {{ duration }}
-              minutes. Calculated rate: {{ obs_rate }} min/deg. Average outdoor temperature
-              during this session was {{ avg_outdoor }}F. Is this rate physically
-              plausible for a residential AC? Note: Typical rates are 10-45 min/deg.
-              However, on hot days (average outdoors above 85F), severe solar radiation
-              and attic heat-soak loads mean the AC must work much harder, and cooling
-              rates between 45.0 and 90.0 min/deg are completely expected and physically
-              VALID. If the rate is < 5 min/deg, it is likely a sensor/flash-freeze
-              anomaly. Return your verdict starting with ''VALID'' or ''ANOMALY''
-              followed by a one-sentence explanation.'
+            agent_id: conversation.extended_openai_conversation_2
+            text: >-
+              A cooling session dropped {{ drop }}F in {{ duration }} minutes. Calculated rate: {{ obs_rate }} min/deg. Average outdoor temperature during this session was {{ avg_outdoor }}F. Is this rate physically plausible for a residential AC? Note: Typical rates are 10-45 min/deg. However, on hot days (average outdoors above 85F), severe solar radiation and attic heat-soak loads mean the AC must work much harder, and cooling rates between 45.0 and 90.0 min/deg are completely expected and physically VALID. If the rate is < 5 min/deg, it is likely a sensor/flash-freeze anomaly. Return your verdict starting with 'VALID' or 'ANOMALY' followed by a one-sentence explanation.
           response_variable: audit_result
         - variables:
-            audit_verdict: '{{ (audit_result | default({''data'': ''VALID: No AI response''})).data
-              }}'
+            audit_verdict: >-
+              {% set resp = audit_result.response.speech.plain.speech | default('', true) if audit_result is defined and audit_result.response is defined and audit_result.response.speech is defined and audit_result.response.speech.plain is defined else '' %}
+              {{ resp | trim if resp | length > 0 else 'VALID: No AI response' }}
             new_repo_data: "{# 1. LOAD & LOOKUP (Type-Resilient) #} {%- set lkey =
               lookup_key | string | trim -%} {%- set raw = states('input_text.mbr_cooling_performance_data')
               | from_json -%} {%- set ns = namespace(orate=obs_rate, match=false)
