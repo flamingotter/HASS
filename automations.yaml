@@ -3923,7 +3923,14 @@
           data:
             agent_id: conversation.extended_openai_conversation_2
             text: >-
-              A cooling session dropped {{ drop }}F in {{ duration }} minutes. Calculated rate: {{ obs_rate }} min/deg. Average outdoor temperature during this session was {{ avg_outdoor }}F. Is this rate physically plausible for a residential AC? Note: Typical rates are 10-45 min/deg. However, on hot days (average outdoors above 85F), severe solar radiation and attic heat-soak loads mean the AC must work much harder, and cooling rates between 45.0 and 90.0 min/deg are completely expected and physically VALID. If the rate is < 5 min/deg, it is likely a sensor/flash-freeze anomaly. Return your verdict starting with 'VALID' or 'ANOMALY' followed by a one-sentence explanation.
+              A residential AC cooling session took {{ duration | round(1) }} minutes to lower room temperature by {{ drop | round(1) }}°F (equivalent to {{ obs_rate }} minutes per degree). Average outdoor temperature during this session was {{ avg_outdoor }}°F.
+              Is taking {{ obs_rate }} minutes per 1°F drop physically plausible and valid?
+              Rules:
+              - Normal cooling takes between 10.0 and 45.0 minutes per degree. Cool or mild outdoor conditions (50-70°F) result in fast, efficient cooling (10-30 min/deg).
+              - Severe solar heat soak (>85°F outdoors) takes 45.0 to 90.0 minutes per degree.
+              - Only flag ANOMALY if physically impossible: less than 5.0 minutes per degree (sensor flash-freeze glitch) or greater than 90.0 minutes per degree on mild days (equipment failure).
+              Any session taking between 5.0 and 90.0 minutes per degree is physically VALID.
+              Return your verdict starting strictly with 'VALID' or 'ANOMALY' followed by a one-sentence explanation.
           response_variable: audit_result
         - variables:
             audit_verdict: >-
@@ -3956,7 +3963,8 @@
             new_rate: '{{ res.new_rate }}'
         - if:
           - condition: template
-            value_template: '{{ ''VALID'' in audit_verdict | upper }}'
+            value_template: >-
+              {{ ('VALID' in audit_verdict | upper) or (obs_rate >= 10.0 and obs_rate <= 45.0) or (avg_outdoor >= 85.0 and obs_rate <= 90.0) }}
           then:
           - action: input_text.set_value
             target:

@@ -2,7 +2,7 @@
 - **Structure:** Modular Package-based config in `integrations/` and `entities/`.
 - **Environment:** Docker container on Ubuntu 26.04.1 LTS host (kernel 7.0). Home Assistant 2026.9.2. Python 3.14.6 in container, Python 3.14.4 on host.
 - **Paths:** Internal container path is `/config/`. External host path is `/opt/docker/appdata/hub/hass/`.
-- **ClickHouse Analytics:** Replaced legacy BigQuery. All 25M+ rows of historical whole-home and climate telemetry migrated to local ClickHouse at `127.0.0.1:8124` (database `home_assistant_data`, tables `whole_home_telemetry` and `climate_analytics`). Continuous 60s ingestion streamed by `ha_telemetry_exporter`.
+- **ClickHouse Analytics:** Replaced legacy BigQuery. All 25M+ rows of historical whole-home and climate telemetry migrated to local ClickHouse at `127.0.0.1:8124` (database `home_assistant_data`, tables `whole_home_telemetry` and `climate_analytics`). Continuous 60s ingestion streamed by `ha_telemetry_exporter`, hardened with rate-limiting watermarks (5m for cumulative daily energy, 15m for barometric pressure) to filter ~200k redundant rows/day.
 - **AppArmor / Bluetooth:** `homeassistant` container configured with `security_opt: - apparmor:unconfined` in `/opt/docker/compose/home/compose.yaml` to grant full BlueZ D-Bus socket access on Ubuntu 26.04.
 
 ## 1. Documentation Map

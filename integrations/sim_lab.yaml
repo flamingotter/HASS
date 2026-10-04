@@ -250,7 +250,8 @@ automation:
                       audit_verdict: "VALID: MOCK"
                   - if:
                       - condition: template
-                        value_template: "{{ 'VALID' in audit_verdict | upper }}"
+                        value_template: >-
+                          {{ ('VALID' in audit_verdict | upper) or (obs_rate >= 10.0 and obs_rate <= 45.0) or (avg_outdoor >= 85.0 and obs_rate <= 90.0) }}
                     then:
                       - action: input_text.set_value
                         target:

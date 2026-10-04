@@ -2,3 +2,5 @@
 shell_command:
   clear_daily_camera_log: 'echo "" > /media/snapshots/daily_camera_log.txt'
   kickoff_bq_exporter: "curl -s -X POST http://127.0.0.1:2375/containers/ha_telemetry_exporter/restart || true"
+  read_daily_camera_log: 'cat /media/snapshots/daily_camera_log.txt 2>/dev/null || true'
+  sample_approach_video: 'ffmpeg -y -i /media/snapshots/porch/approach.mp4 -vf "scale=640:-2,fps=1" -c:v libx264 -preset ultrafast -crf 28 -an /media/snapshots/porch/approach_sample.mp4'
