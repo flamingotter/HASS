@@ -1577,7 +1577,21 @@
         data:
           agent_id: conversation.extended_openai_conversation_2
           text: >-
-            Demanding but short: It is time to feed the cats (Battle Cat, Josie, Custard) and the dog Mars. Max 25 words, no quotes.
+            {%- set day = now().strftime('%A') -%}
+            {%- set styles = [
+              'Battle Cat (he/him, the grumpy feline commander) demanding immediate dinner tribute from the kitchen minions.',
+              'Josie (she/her, aristocratic feline princess) politely but firmly decreeing that dinner is overdue.',
+              'Custard (she/her, dramatic queen) staging a tragic protest claiming she has never once eaten in her entire life.',
+              'Mars (he/him, goofy energetic dog) doing tippy-taps and vibrating with puppy hype for kibble.',
+              'A top-secret spy briefing codenamed Operation Dinner Bowl for agents Battle Cat, Josie, Custard, and Mars.',
+              'A dramatic breaking news bulletin warning of catastrophic 5 PM food bowl depletion in the kitchen.',
+              'An exasperated pet union representative filing an official grievance over delayed 5 PM rations.',
+              'An enthusiastic sports announcer doing high-energy play-by-play on the pets surrounding their dinner bowls.',
+              'A snooty five-star Michelin food critic demanding the evening service commence immediately for the quartet.'
+            ] -%}
+            Today is {{ day }} at 5:00 PM. Write a unique, hilarious, creative 1-2 sentence pet dinner announcement for the household pets: Battle Cat (he/him), Josie (she/her), Custard (she/her), and Mars (he/him, the dog).
+            Perspective/Style: {{ styles | random }}
+            Rules: Write 1-2 complete natural spoken sentences with proper punctuation. Limit to 25 words total. No quotation marks. Never repeat generic phrases like "ensure fresh water".
         response_variable: gen_text
       - delay:
           hours: 0
@@ -1674,7 +1688,17 @@
         data:
           agent_id: conversation.extended_openai_conversation_2
           text: >-
-            The user swiped away the pet feeding notification without completing it. Write a creative, firm nag from the joint perspective of the cats and the dog Mars. Limit to 20 words, no quotes.
+            {%- set nag_styles = [
+              'Battle Cat recording this unauthorized notification swipe on your permanent human record.',
+              'Mars looking utterly heartbroken with giant puppy dog eyes that a swipe replaced his dinner.',
+              'Custard dramatically declaring this dismissed reminder an international feline emergency.',
+              'Josie expressing refined, high-society aristocratic disgust at being dismissed.',
+              'The four pets organizing an immediate kitchen sit-in protest until bowls are filled.'
+            ] -%}
+            The user swiped away the 5 PM pet feeding reminder without feeding the pets.
+            Write a witty, firm 1-sentence nag from the perspective of: {{ nag_styles | random }}
+            Pets: Battle Cat (he/him), Josie (she/her), Custard (she/her), and Mars (he/him).
+            Rules: Write 1 complete natural spoken sentence with proper punctuation. Limit to 20 words total. No quotation marks.
         response_variable: nag_text
       - action: script.activate_mobile_actionable_notification
         data:
