@@ -42,6 +42,6 @@
 - **Host Migration:** Successfully migrated to Ubuntu 26.04.1 LTS host. Docker AppArmor unconfined configured for `hass` to enable dual host Bluetooth adapters (`hci0`, `hci1`).
 - **Telemetry Migration:** Fully migrated from Google BigQuery to local ClickHouse (`127.0.0.1:8124`). `hvac_health_check.py` upgraded to zero-dependency native ClickHouse HTTP query.
 - **Climate Engine (v7.8.6):** Logic Certified stable. Uses sorted string-keyed JSON repository with Overrides/Attic sensors integrated.
-- **Vision Engine (v1.5):** Resilient recording with 2s flush delay to survive DTS stream drift.
+- **Vision Engine (v1.6):** Resilient recording with 2s flush delay to survive DTS stream drift, and 3-minute visitor event cooldown against `notify.daily_camera_log` to prevent duplicate arrival/departure reporting.
 - **Security & Alarm State:** Staged aggregate watcher `binary_sensor.door_locks` checking the native `lock.door_locks` helper group, optimized sirens automations to prevent triggering during `armed_night` status, and hardened lock controls in Bedtime/Away automations with state filters to prevent Yale Assure 2 deadbolt-hanging issues.
 - **Startup:** Zero-error boot verified on HA 2026.9.2. `sensor.last_alexa` guarded with `'defined'` filter.

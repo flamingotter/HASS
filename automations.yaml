@@ -3205,9 +3205,9 @@
   mode: parallel
   max: 10
 - id: '1772728212323'
-  alias: 'Security: Front Porch - AI Video Analysis (v1.5)'
-  description: 'v1.5: Sequential processing to prevent file-locking race conditions.
-    Resilient recording failsafe.'
+  alias: 'Security: Front Porch - AI Video Analysis (v1.6)'
+  description: 'v1.6: Sequential processing with 3-minute visitor event cooldown against
+    notify.daily_camera_log to prevent duplicate arrival/departure reporting.'
   triggers:
   - trigger: state
     entity_id: binary_sensor.front_porch_ptz_person_detected
@@ -3218,6 +3218,10 @@
   - condition: state
     entity_id: input_boolean.camera_alerts
     state: 'on'
+  - condition: template
+    value_template: >-
+      {{ (trigger is defined and trigger.entity_id == 'input_button.test_porch_ai') or
+         (as_timestamp(now()) - as_timestamp(states('notify.daily_camera_log'), 0) > 180) }}
   - condition: template
     value_template: '{# Increase cooldown to 10 minutes (600s) to save quota #} {{
       this.attributes.last_triggered == None or (now() - this.attributes.last_triggered).total_seconds()
@@ -3380,6 +3384,7 @@
             </camera_log>
 
             Write a cohesive evening security briefing summarizing the activity. Group similar events together (e.g. package deliveries, visitors, solicitors, unusual activity).
+            Consolidate multiple events occurring within a few minutes of each other for the same visitor or delivery into a single entry (arrival and departure are part of the same visit; do not create duplicate bullet points for the same person arriving and leaving).
             Format your entire response using clean HTML (use <h3> for headers, <ul> and <li> for bullet points, and <b> for bold text).
             Do not wrap your response in markdown code blocks. Return ONLY raw HTML.
         response_variable: evening_rollup
