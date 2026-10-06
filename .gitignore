@@ -52,4 +52,6 @@ bq_venv/
 climate_control_log.csv
 __pycache__/
 skills/__pycache__/
+.continue/
+*.mp4
 
