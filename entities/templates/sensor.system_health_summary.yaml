@@ -27,3 +27,5 @@ sensor:
            | selectattr('state', 'in', ['unavailable', 'unknown', 'off']) 
            | map(attribute='entity_id') | list | join(', ') }}
       uptime: "{{ states('sensor.ha_uptime') }}"
+      low_battery_count: "{{ states('sensor.low_batteries') }}"
+      low_battery_devices: "{{ state_attr('sensor.low_batteries', 'low_battery_devices') }}"

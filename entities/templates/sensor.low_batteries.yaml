@@ -1,0 +1,59 @@
+---
+sensor:
+  - name: "Low Batteries"
+    unique_id: low_batteries
+    icon: >-
+      {%- if states('sensor.low_batteries') | int(0) > 0 -%}
+        mdi:battery-alert
+      {%- else -%}
+        mdi:battery-check
+      {%- endif -%}
+    state: >-
+      {%- set threshold = 20 -%}
+      {%- set ns = namespace(count=0) -%}
+      {%- set bat_sensors = label_devices('battery') | map('device_entities') | sum(start=[]) | select('match', '^sensor\.') | select('is_state_attr', 'device_class', 'battery') | list -%}
+      {%- for s in bat_sensors -%}
+        {%- set val = states(s) | float(-1) -%}
+        {%- if 0 <= val <= threshold -%}
+          {%- set ns.count = ns.count + 1 -%}
+        {%- endif -%}
+      {%- endfor -%}
+      {%- set bin_sensors = label_devices('battery') | map('device_entities') | sum(start=[]) | select('match', '^binary_sensor\.') | select('is_state_attr', 'device_class', 'battery') | select('is_state', 'on') | list -%}
+      {{ ns.count + (bin_sensors | count) }}
+    attributes:
+      low_battery_devices: >-
+        {%- set threshold = 20 -%}
+        {%- set ns = namespace(low=[]) -%}
+        {%- set bat_sensors = label_devices('battery') | map('device_entities') | sum(start=[]) | select('match', '^sensor\.') | select('is_state_attr', 'device_class', 'battery') | list -%}
+        {%- for s in bat_sensors -%}
+          {%- set val = states(s) | float(-1) -%}
+          {%- if 0 <= val <= threshold -%}
+            {%- set dev = device_attr(device_id(s), 'name_by_user') | default(device_attr(device_id(s), 'name'), true) -%}
+            {%- set ns.low = ns.low + [dev ~ ' (' ~ (val | round(0)) ~ '%)'] -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {%- set bin_sensors = label_devices('battery') | map('device_entities') | sum(start=[]) | select('match', '^binary_sensor\.') | select('is_state_attr', 'device_class', 'battery') | select('is_state', 'on') | list -%}
+        {%- for b in bin_sensors -%}
+          {%- set dev = device_attr(device_id(b), 'name_by_user') | default(device_attr(device_id(b), 'name'), true) -%}
+          {%- set entry = dev ~ ' (replace)' -%}
+          {%- if entry not in ns.low and dev not in (ns.low | join(', ')) -%}
+            {%- set ns.low = ns.low + [entry] -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {{ ns.low | to_json }}
+      unavailable_battery_devices: >-
+        {%- set ns = namespace(unavail=[]) -%}
+        {%- set bat_sensors = label_devices('battery') | map('device_entities') | sum(start=[]) | select('match', '^sensor\.') | select('is_state_attr', 'device_class', 'battery') | list -%}
+        {%- for s in bat_sensors -%}
+          {%- set st = states(s) -%}
+          {%- if st in ['unavailable', 'unknown'] -%}
+            {%- set dev = device_attr(device_id(s), 'name_by_user') | default(device_attr(device_id(s), 'name'), true) -%}
+            {%- set ns.unavail = ns.unavail + [dev] -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {{ ns.unavail | to_json }}
+      monitored_device_count: >-
+        {{ label_devices('battery') | count }}
+      monitored_entity_count: >-
+        {{ label_devices('battery') | map('device_entities') | sum(start=[]) | select('match', '^sensor\.') | select('is_state_attr', 'device_class', 'battery') | list | count }}
+
