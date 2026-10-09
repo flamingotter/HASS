@@ -71,6 +71,13 @@ This document tracks active projects, pending infrastructure fixes, and long-ter
 - [ ] **Multi-Modal Strategy:** Research a hybrid approach for non-camera rooms (e.g., combining PIR with appliance states or interactive signifiers).
 - [ ] **Vision AI Expansion:** Explore using the parlor/kitchen vision pattern for more complex occupancy sensing (e.g., distinguishing between owners and guests).
 - [ ] **Natural Language Control:** Expand the `ai_task` timer parser to handle more complex scheduling requests via actionable notifications.
+- [ ] **Multi-Tier AI Architecture & UniFi Protect Awareness:**
+    - *Design:* Formalize the Three-Plane separation of AI responsibilities:
+        1. **Engineering Plane:** Antigravity (Gemini Cloud) handles all architecture, codebase edits, simulation stress testing, and ClickHouse telemetry diagnostics.
+        2. **Reflex Plane:** Home Assistant Core drives deterministic 24/7 automations, calling local `vllm-vision` (Qwen 2.5 VL 7B) and `vllm-coder` (32B) using focused, single-purpose prompts (zero-tool overhead, sub-second responses) for video/snapshot classification and status briefs.
+        3. **Awareness Plane:** Evaluate deploying containerized UniFi Protect MCP (`ghcr.io/sirkirby/unifi-protect-mcp`) over Streamable HTTP for Open WebUI and ad-hoc assistants.
+    - *Protect Capabilities to Leverage:* Dynamic PTZ preset targeting for perimeter alarms, temporal NVR event recall (delivery/visitor triage), G4 Doorbell dynamic LCD messaging, and post-action visual verification (e.g., confirming garage doors physically down before arming Bedtime mode).
+
 
 ## 6. Legacy Device Bridging (Broadlink RF/IR)
 - [ ] **Office Mini-Split Integration:** Use Broadlink RM4 Mini + SmartIR to convert the "dumb" MrCool unit into a `climate` entity.

@@ -182,30 +182,36 @@
               entity_id: switch.bedroom_humidifier
             data: {}
           alias: Thermostat set to Heat actions
+      - variables:
+          to_lock: >-
+            {%- set locks = state_attr('lock.door_locks', 'entity_id') | default([], true) -%}
+            {%- set bedroom_open = is_state('binary_sensor.bedroom_door', 'on') -%}
+            {%- set ns = namespace(entities=[]) -%}
+            {%- for l in locks -%}
+              {%- if is_state(l, 'unlocked') -%}
+                {%- if not (l == 'lock.bedroom_door' and bedroom_open) -%}
+                  {%- set ns.entities = ns.entities + [l] -%}
+                {%- endif -%}
+              {%- endif -%}
+            {%- endfor -%}
+            {{ ns.entities }}
       - if:
         - condition: template
-          value_template: >-
-            {%- set locks = state_attr('lock.door_locks', 'entity_id') -%}
-            {%- if locks -%}
-              {{- locks | select('is_state', 'unlocked') | list | length > 0 -}}
-            {%- else -%}
-              false
-            {%- endif -%}
+          value_template: "{{ to_lock | length > 0 }}"
         then:
         - action: lock.lock
           continue_on_error: true
           target:
-            entity_id: >-
-              {%- set locks = state_attr('lock.door_locks', 'entity_id') -%}
-              {{- locks | select('is_state', 'unlocked') | list -}}
-        alias: Lock Unlocked Doors (Resilient)
+            entity_id: "{{ to_lock }}"
+        alias: Lock Unlocked Doors (Skip Open Bedroom Door)
       - if:
         - condition: state
           entity_id: input_boolean.trash_reminder
           state: 'on'
         then:
         - data:
-            message: It looks like you may have forgotten to take the trash to the street.
+            message: It looks like you may have forgotten to take the trash to the
+              street.
             target: media_player.bedroom
             data:
               type: tts
@@ -1279,16 +1285,19 @@
             continue_on_error: true
             data:
               agent_id: conversation.extended_openai_conversation_2
-              text: >-
-                The maintenance task "{{ t_name }}" is due. Write a short, creative reminder for Josh. Make it sound like a high-end estate manager reporting a necessary maintenance item. Limit to 25 words, no quotes.
+              text: The maintenance task "{{ t_name }}" is due. Write a short, creative
+                reminder for Josh. Make it sound like a high-end estate manager reporting
+                a necessary maintenance item. Limit to 25 words, no quotes.
             response_variable: nag_content
           - action: script.activate_mobile_actionable_notification
             data:
               notify_target: notify.mobile_app_josh_mobile
               title: 'Maintenance Alert: {{ t_name }}'
-              message: >-
-                {% set resp = nag_content.response.speech.plain.speech | default('', true) if nag_content is defined and nag_content.response is defined and nag_content.response.speech is defined and nag_content.response.speech.plain is defined else '' %}
-                {{ resp | trim | replace('\"', '') if resp | length > 0 else "Maintenance is due for " ~ t_name }}
+              message: '{% set resp = nag_content.response.speech.plain.speech | default('''',
+                true) if nag_content is defined and nag_content.response is defined
+                and nag_content.response.speech is defined and nag_content.response.speech.plain
+                is defined else '''' %} {{ resp | trim | replace(''\"'', '''') if
+                resp | length > 0 else "Maintenance is due for " ~ t_name }}'
               notify_tag: '{{ repeat.item }}'
               notify_action_1: '{{ repeat.item }}_done'
               notify_action_1_title: Done
@@ -1418,9 +1427,11 @@
           data:
             tag: trash-notify
       - variables:
-          scanned_device: '{{ trigger.device_id | default(trigger.event.data.device_id) | default("unknown") }}'
+          scanned_device: '{{ trigger.device_id | default(trigger.event.data.device_id)
+            | default("unknown") }}'
           scanned_name: '{{ "Josh" if scanned_device == josh_device_id else "MJ" }}'
-          target_notify: '{{ "notify.mobile_app_mj_pixel_8_pro" if scanned_name == "Josh" else "notify.mobile_app_josh_mobile" }}'
+          target_notify: '{{ "notify.mobile_app_mj_pixel_8_pro" if scanned_name ==
+            "Josh" else "notify.mobile_app_josh_mobile" }}'
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: '{{ target_notify }}'
@@ -1432,14 +1443,16 @@
         id: trash_passon
       sequence:
       - variables:
-          scanned_device: '{{ trigger.device_id | default(trigger.event.data.device_id) | default("unknown") }}'
+          scanned_device: '{{ trigger.device_id | default(trigger.event.data.device_id)
+            | default("unknown") }}'
           scanned_name: '{{ "Josh" if scanned_device == josh_device_id else "MJ" }}'
-          target_notify: '{{ "notify.mobile_app_mj_pixel_8_pro" if scanned_name == "Josh" else "notify.mobile_app_josh_mobile" }}'
+          target_notify: '{{ "notify.mobile_app_mj_pixel_8_pro" if scanned_name ==
+            "Josh" else "notify.mobile_app_josh_mobile" }}'
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: '{{ target_notify }}'
           title: Trash and Recycling
-          message: "YOU'RE MY ONLY HOPE."
+          message: YOU'RE MY ONLY HOPE.
           notify_tag: trash-notify
           notify_action_1: trash_done
           notify_action_1_title: Done
@@ -1454,9 +1467,8 @@
         continue_on_error: true
         data:
           agent_id: conversation.extended_openai_conversation_2
-          text: >-
-            Rewrite this in a creative, witty, or humorous way (limit to about 35 words, no quotes):
-            "The trash isn't going to take itself out."
+          text: 'Rewrite this in a creative, witty, or humorous way (limit to about
+            35 words, no quotes): "The trash isn''t going to take itself out."'
         response_variable: generated_content
       - delay:
           seconds: 2
@@ -1464,9 +1476,11 @@
         data:
           notify_target: notify.all_devices
           title: Trash and Recycling
-          message: >-
-            {% set resp = generated_content.response.speech.plain.speech | default('', true) if generated_content is defined and generated_content.response is defined and generated_content.response.speech is defined and generated_content.response.speech.plain is defined else '' %}
-            {{ resp | trim | replace('\"', '') if resp | length > 0 else "The trash isn't going to take itself out." }}
+          message: '{% set resp = generated_content.response.speech.plain.speech |
+            default('''', true) if generated_content is defined and generated_content.response
+            is defined and generated_content.response.speech is defined and generated_content.response.speech.plain
+            is defined else '''' %} {{ resp | trim | replace(''\"'', '''') if resp
+            | length > 0 else "The trash isn''t going to take itself out." }}'
           notify_tag: trash-notify
           notify_action_1: trash_done
           notify_action_1_title: Done
@@ -1576,22 +1590,26 @@
         continue_on_error: true
         data:
           agent_id: conversation.extended_openai_conversation_2
-          text: >-
-            {%- set day = now().strftime('%A') -%}
-            {%- set styles = [
-              'Battle Cat (he/him, the grumpy feline commander) demanding immediate dinner tribute from the kitchen minions.',
-              'Josie (she/her, aristocratic feline princess) politely but firmly decreeing that dinner is overdue.',
-              'Custard (she/her, dramatic queen) staging a tragic protest claiming she has never once eaten in her entire life.',
-              'Mars (he/him, goofy energetic dog) doing tippy-taps and vibrating with puppy hype for kibble.',
-              'A top-secret spy briefing codenamed Operation Dinner Bowl for agents Battle Cat, Josie, Custard, and Mars.',
-              'A dramatic breaking news bulletin warning of catastrophic 5 PM food bowl depletion in the kitchen.',
-              'An exasperated pet union representative filing an official grievance over delayed 5 PM rations.',
-              'An enthusiastic sports announcer doing high-energy play-by-play on the pets surrounding their dinner bowls.',
-              'A snooty five-star Michelin food critic demanding the evening service commence immediately for the quartet.'
-            ] -%}
-            Today is {{ day }} at 5:00 PM. Write a unique, hilarious, creative 1-2 sentence pet dinner announcement for the household pets: Battle Cat (he/him), Josie (she/her), Custard (she/her), and Mars (he/him, the dog).
-            Perspective/Style: {{ styles | random }}
-            Rules: Write 1-2 complete natural spoken sentences with proper punctuation. Limit to 25 words total. No quotation marks. Never repeat generic phrases like "ensure fresh water".
+          text: "{%- set day = now().strftime('%A') -%} {%- set styles = [\n  'Battle
+            Cat (he/him, the grumpy feline commander) demanding immediate dinner tribute
+            from the kitchen minions.',\n  'Josie (she/her, aristocratic feline princess)
+            politely but firmly decreeing that dinner is overdue.',\n  'Custard (she/her,
+            dramatic queen) staging a tragic protest claiming she has never once eaten
+            in her entire life.',\n  'Mars (he/him, goofy energetic dog) doing tippy-taps
+            and vibrating with puppy hype for kibble.',\n  'A top-secret spy briefing
+            codenamed Operation Dinner Bowl for agents Battle Cat, Josie, Custard,
+            and Mars.',\n  'A dramatic breaking news bulletin warning of catastrophic
+            5 PM food bowl depletion in the kitchen.',\n  'An exasperated pet union
+            representative filing an official grievance over delayed 5 PM rations.',\n
+            \ 'An enthusiastic sports announcer doing high-energy play-by-play on
+            the pets surrounding their dinner bowls.',\n  'A snooty five-star Michelin
+            food critic demanding the evening service commence immediately for the
+            quartet.'\n] -%} Today is {{ day }} at 5:00 PM. Write a unique, hilarious,
+            creative 1-2 sentence pet dinner announcement for the household pets:
+            Battle Cat (he/him), Josie (she/her), Custard (she/her), and Mars (he/him,
+            the dog). Perspective/Style: {{ styles | random }} Rules: Write 1-2 complete
+            natural spoken sentences with proper punctuation. Limit to 25 words total.
+            No quotation marks. Never repeat generic phrases like \"ensure fresh water\"."
         response_variable: gen_text
       - delay:
           hours: 0
@@ -1602,17 +1620,21 @@
         continue_on_error: true
         metadata: {}
         data:
-          message: >-
-            {% set resp = gen_text.response.speech.plain.speech | default('', true) if gen_text is defined and gen_text.response is defined and gen_text.response.speech is defined and gen_text.response.speech.plain is defined else '' %}
-            {{ resp | trim | replace('\"', '') if resp | length > 0 else 'It is time to feed the cats and Mars.' }}
+          message: '{% set resp = gen_text.response.speech.plain.speech | default('''',
+            true) if gen_text is defined and gen_text.response is defined and gen_text.response.speech
+            is defined and gen_text.response.speech.plain is defined else '''' %}
+            {{ resp | trim | replace(''\"'', '''') if resp | length > 0 else ''It
+            is time to feed the cats and Mars.'' }}'
           target: media_player.counter
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.all_devices
           title: Feeding Mission
-          message: >-
-            {% set resp = gen_text.response.speech.plain.speech | default('', true) if gen_text is defined and gen_text.response is defined and gen_text.response.speech is defined and gen_text.response.speech.plain is defined else '' %}
-            {{ resp | trim | replace('\"', '') if resp | length > 0 else 'It is time to feed the cats and Mars.' }}
+          message: '{% set resp = gen_text.response.speech.plain.speech | default('''',
+            true) if gen_text is defined and gen_text.response is defined and gen_text.response.speech
+            is defined and gen_text.response.speech.plain is defined else '''' %}
+            {{ resp | trim | replace(''\"'', '''') if resp | length > 0 else ''It
+            is time to feed the cats and Mars.'' }}'
           notify_tag: pets-notify
           notify_action_1: feed_done
           notify_action_1_title: Done
@@ -1687,26 +1709,28 @@
         continue_on_error: true
         data:
           agent_id: conversation.extended_openai_conversation_2
-          text: >-
-            {%- set nag_styles = [
-              'Battle Cat recording this unauthorized notification swipe on your permanent human record.',
-              'Mars looking utterly heartbroken with giant puppy dog eyes that a swipe replaced his dinner.',
-              'Custard dramatically declaring this dismissed reminder an international feline emergency.',
-              'Josie expressing refined, high-society aristocratic disgust at being dismissed.',
-              'The four pets organizing an immediate kitchen sit-in protest until bowls are filled.'
-            ] -%}
-            The user swiped away the 5 PM pet feeding reminder without feeding the pets.
-            Write a witty, firm 1-sentence nag from the perspective of: {{ nag_styles | random }}
-            Pets: Battle Cat (he/him), Josie (she/her), Custard (she/her), and Mars (he/him).
-            Rules: Write 1 complete natural spoken sentence with proper punctuation. Limit to 20 words total. No quotation marks.
+          text: "{%- set nag_styles = [\n  'Battle Cat recording this unauthorized
+            notification swipe on your permanent human record.',\n  'Mars looking
+            utterly heartbroken with giant puppy dog eyes that a swipe replaced his
+            dinner.',\n  'Custard dramatically declaring this dismissed reminder an
+            international feline emergency.',\n  'Josie expressing refined, high-society
+            aristocratic disgust at being dismissed.',\n  'The four pets organizing
+            an immediate kitchen sit-in protest until bowls are filled.'\n] -%} The
+            user swiped away the 5 PM pet feeding reminder without feeding the pets.
+            Write a witty, firm 1-sentence nag from the perspective of: {{ nag_styles
+            | random }} Pets: Battle Cat (he/him), Josie (she/her), Custard (she/her),
+            and Mars (he/him). Rules: Write 1 complete natural spoken sentence with
+            proper punctuation. Limit to 20 words total. No quotation marks."
         response_variable: nag_text
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.mobile_app_josh_mobile
           title: Feeding Required
-          message: >-
-            {% set resp = nag_text.response.speech.plain.speech | default('', true) if nag_text is defined and nag_text.response is defined and nag_text.response.speech is defined and nag_text.response.speech.plain is defined else '' %}
-            {{ resp | trim | replace('\"', '') if resp | length > 0 else "The felines and Mars are still hungry! Please feed them." }}
+          message: '{% set resp = nag_text.response.speech.plain.speech | default('''',
+            true) if nag_text is defined and nag_text.response is defined and nag_text.response.speech
+            is defined and nag_text.response.speech.plain is defined else '''' %}
+            {{ resp | trim | replace(''\"'', '''') if resp | length > 0 else "The
+            felines and Mars are still hungry! Please feed them." }}'
           notify_tag: pets-notify
           sticky: true
           notify_action_1: feed_done
@@ -1830,15 +1854,21 @@
         continue_on_error: true
         data:
           agent_id: conversation.extended_openai_conversation_2
-          text: >-
-            Today is {{ now().strftime('%A') }}. The user wants to extend an HVAC timer. Their reply was: "{{ trigger.event.data.reply_text }}". Convert this into a number of DAYS from now. If they just gave a number, return that number. If they gave a day of the week, calculate days until that day. Return ONLY the integer number of days as a single number with no other text, words, or punctuation.
+          text: 'Today is {{ now().strftime(''%A'') }}. The user wants to extend an
+            HVAC timer. Their reply was: "{{ trigger.event.data.reply_text }}". Convert
+            this into a number of DAYS from now. If they just gave a number, return
+            that number. If they gave a day of the week, calculate days until that
+            day. Return ONLY the integer number of days as a single number with no
+            other text, words, or punctuation.'
         response_variable: extension_days
       - variables:
-          raw_days: >-
-            {% set resp = extension_days.response.speech.plain.speech | default('', true) if extension_days is defined and extension_days.response is defined and extension_days.response.speech is defined and extension_days.response.speech.plain is defined else '' %}
-            {{ resp | trim }}
-          days: "{{ (raw_days | int(1)) if (raw_days | is_number) else 1 }}"
-          seconds: "{{ ((raw_days | int(1)) if (raw_days | is_number) else 1) * 86400 }}"
+          raw_days: '{% set resp = extension_days.response.speech.plain.speech | default('''',
+            true) if extension_days is defined and extension_days.response is defined
+            and extension_days.response.speech is defined and extension_days.response.speech.plain
+            is defined else '''' %} {{ resp | trim }}'
+          days: '{{ (raw_days | int(1)) if (raw_days | is_number) else 1 }}'
+          seconds: '{{ ((raw_days | int(1)) if (raw_days | is_number) else 1) * 86400
+            }}'
       - action: timer.start
         data:
           duration: '{{ seconds }}'
@@ -1978,14 +2008,17 @@
         continue_on_error: true
         data:
           agent_id: conversation.extended_openai_conversation_2
-          text: >-
-            The user just finished cleaning. Write a high-energy, hilarious, and extremely enthusiastic congratulatory message. Use some 'Army-style' colorful language. Limit to 25 words, no quotes.
+          text: The user just finished cleaning. Write a high-energy, hilarious, and
+            extremely enthusiastic congratulatory message. Use some 'Army-style' colorful
+            language. Limit to 25 words, no quotes.
         response_variable: clean_complete_ai
       - action: notify.alexa_media
         data:
-          message: >-
-            {% set resp = clean_complete_ai.response.speech.plain.speech | default('', true) if clean_complete_ai is defined and clean_complete_ai.response is defined and clean_complete_ai.response.speech is defined and clean_complete_ai.response.speech.plain is defined else '' %}
-            {{ resp | trim | replace('\"', '') if resp | length > 0 else 'Cleaning mission complete! Outstanding work!' }}
+          message: '{% set resp = clean_complete_ai.response.speech.plain.speech |
+            default('''', true) if clean_complete_ai is defined and clean_complete_ai.response
+            is defined and clean_complete_ai.response.speech is defined and clean_complete_ai.response.speech.plain
+            is defined else '''' %} {{ resp | trim | replace(''\"'', '''') if resp
+            | length > 0 else ''Cleaning mission complete! Outstanding work!'' }}'
           target: '{{ states.sensor.last_alexa.state }}'
     - conditions:
       - condition: trigger
@@ -1998,16 +2031,19 @@
         continue_on_error: true
         data:
           agent_id: conversation.extended_openai_conversation_2
-          text: >-
-            The house is still in 'Cleaning Mode'. Write a short, slightly annoying but helpful reminder asking if they are done. Limit to 20 words, no quotes.
+          text: The house is still in 'Cleaning Mode'. Write a short, slightly annoying
+            but helpful reminder asking if they are done. Limit to 20 words, no quotes.
         response_variable: cleaning_nag
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.all_devices
           title: Cleaning Mode
-          message: >-
-            {% set resp = cleaning_nag.response.speech.plain.speech | default('', true) if cleaning_nag is defined and cleaning_nag.response is defined and cleaning_nag.response.speech is defined and cleaning_nag.response.speech.plain is defined else '' %}
-            {{ resp | trim | replace('\"', '') if resp | length > 0 else "The house is still in Cleaning Mode. Are you done?" }}
+          message: '{% set resp = cleaning_nag.response.speech.plain.speech | default('''',
+            true) if cleaning_nag is defined and cleaning_nag.response is defined
+            and cleaning_nag.response.speech is defined and cleaning_nag.response.speech.plain
+            is defined else '''' %} {{ resp | trim | replace(''\"'', '''') if resp
+            | length > 0 else "The house is still in Cleaning Mode. Are you done?"
+            }}'
           notify_tag: cleaning-warning
           notify_action_1: cleaning_off
           notify_action_1_title: Turn Off
@@ -2088,11 +2124,10 @@
       id:
       - cleared
     - condition: template
-      value_template: >-
-        {{ states('input_select.josh_status') in ['Away', 'Extended Away', 'Work']
-           and states('input_select.mj_status') in ['Away', 'Extended Away', 'Work']
-           and is_state('input_boolean.house_guests', 'on')
-           and states('alarm_control_panel.home_alarm') == 'disarmed' }}
+      value_template: "{{ states('input_select.josh_status') in ['Away', 'Extended
+        Away', 'Work']\n   and states('input_select.mj_status') in ['Away', 'Extended
+        Away', 'Work']\n   and is_state('input_boolean.house_guests', 'on')\n   and
+        states('alarm_control_panel.home_alarm') == 'disarmed' }}"
     then:
     - action: script.activate_mobile_actionable_notification
       data:
@@ -2562,7 +2597,8 @@
       - action: system_log.write
         data:
           level: warning
-          message: 'Garage Door 01 notification cleared on device {{ device_id }} while door is open'
+          message: Garage Door 01 notification cleared on device {{ device_id }} while
+            door is open
   mode: single
 - id: '1752169679107'
   alias: Motion Bedroom
@@ -3119,26 +3155,22 @@
       entity_id: alarm_control_panel.home_alarm
       state: armed_night
   - condition: template
-    value_template: >-
-      {%- set raw = states('input_text.door_announce_cooldown') -%}
-      {%- set repo = raw | from_json(default={}) if raw not in ['', 'unknown', 'unavailable', None] else {} -%}
-      {%- set last_ts = repo.get(trigger.entity_id, 0) | float(0) -%}
-      {{ (as_timestamp(now()) - last_ts) >= 30 }}
+    value_template: '{%- set raw = states(''input_text.door_announce_cooldown'') -%}
+      {%- set repo = raw | from_json(default={}) if raw not in ['''', ''unknown'',
+      ''unavailable'', None] else {} -%} {%- set last_ts = repo.get(trigger.entity_id,
+      0) | float(0) -%} {{ (as_timestamp(now()) - last_ts) >= 30 }}'
   actions:
   - action: input_text.set_value
     target:
       entity_id: input_text.door_announce_cooldown
     data:
-      value: >-
-        {%- set raw = states('input_text.door_announce_cooldown') -%}
-        {%- set repo = raw | from_json(default={}) if raw not in ['', 'unknown', 'unavailable', None] else {} -%}
-        {{ repo | combine({trigger.entity_id: as_timestamp(now()) | int}) | to_json }}
+      value: '{%- set raw = states(''input_text.door_announce_cooldown'') -%} {%-
+        set repo = raw | from_json(default={}) if raw not in ['''', ''unknown'', ''unavailable'',
+        None] else {} -%} {{ repo | combine({trigger.entity_id: as_timestamp(now())
+        | int}) | to_json }}'
   - action: siren.turn_on
     target:
-      entity_id:
-      - siren.downstairs_siren_chime_play_tone
-      - siren.office_siren_chime_play_tone
-      - siren.bedroom_siren_chime_play_tone
+      label_id: siren_chime
     data:
       tone: '{{ door_map[trigger.entity_id].instant | default(1) }}'
   variables:
@@ -3182,17 +3214,15 @@
       entity_id: '{{ target_switch }}'
   - wait_for_trigger:
     - trigger: template
-      value_template: >-
-        {%- set sensors = light_map[trigger.entity_id].motion_clear -%}
-        {{- sensors | select('is_state', 'on') | list | length == 0 -}}
+      value_template: '{%- set sensors = light_map[trigger.entity_id].motion_clear
+        -%} {{- sensors | select(''is_state'', ''on'') | list | length == 0 -}}'
       for:
         minutes: 2
     timeout: 01:00:00
   - if:
     - condition: template
-      value_template: >-
-        {%- set sensors = light_map[trigger.entity_id].motion_clear -%}
-        {{- sensors | select('is_state', 'on') | list | length == 0 -}}
+      value_template: '{%- set sensors = light_map[trigger.entity_id].motion_clear
+        -%} {{- sensors | select(''is_state'', ''on'') | list | length == 0 -}}'
     then:
     - action: switch.turn_off
       target:
@@ -3229,9 +3259,9 @@
   mode: parallel
   max: 10
 - id: '1772728212323'
-  alias: 'Security: Front Porch - AI Video Analysis (v1.6)'
-  description: 'v1.6: Sequential processing with 3-minute visitor event cooldown against
-    notify.daily_camera_log to prevent duplicate arrival/departure reporting.'
+  alias: 'Security: Front Porch - AI Video Analysis (v1.7)'
+  description: 'v1.7: Dual-camera AI coverage (doorbell snapshot + walkway approach video)
+    with 3-minute visitor event cooldown against notify.daily_camera_log to prevent duplicate arrival/departure reporting.'
   triggers:
   - trigger: state
     entity_id: binary_sensor.front_porch_ptz_person_detected
@@ -3243,9 +3273,9 @@
     entity_id: input_boolean.camera_alerts
     state: 'on'
   - condition: template
-    value_template: >-
-      {{ (trigger is defined and trigger.entity_id == 'input_button.test_porch_ai') or
-         (as_timestamp(now()) - as_timestamp(states('notify.daily_camera_log'), 0) > 180) }}
+    value_template: "{{ (trigger is defined and trigger.entity_id == 'input_button.test_porch_ai')
+      or\n   (as_timestamp(now()) - as_timestamp(states('notify.daily_camera_log'),
+      0) > 180) }}"
   - condition: template
     value_template: '{# Increase cooldown to 10 minutes (600s) to save quota #} {{
       this.attributes.last_triggered == None or (now() - this.attributes.last_triggered).total_seconds()
@@ -3302,88 +3332,109 @@
       config_entry: 01M3YG3WVESNZR8QG41VKNSXHE
       model: qwen-vl-7b
       prompt: >-
-        You are analyzing a security event from a front porch camera.
-        - Item 1 is a reference photo of resident Josh (identification profile only).
-        - Item 2 is a reference photo of resident MJ (identification profile only).
-        - Item 3 is a video recording of the entire front porch approach.
+        You are an intelligent security camera analyst evaluating a front porch event.
+        - Item 1 is a reference photo of resident Josh (profile reference only).
+        - Item 2 is a reference photo of resident MJ (profile reference only).
+        - Item 3 is a photo from the front doorbell camera (doorstep area).
+        - Item 4 is a video from the yard PTZ camera (walkway approach).
+        Do NOT describe Item 1 or Item 2. Evaluate Item 3 and Item 4 together.
 
-        Do NOT describe Item 1 or Item 2. Focus strictly on the video (Item 3).
+        CRITICAL VIDEO & CAMERA RULES:
+        - If a person or package is visible in EITHER the doorbell photo (Item 3) OR the walkway video (Item 4), report the activity!
+        - Item 4 consists of sequential frames showing motion OVER TIME. One person moving across different locations in the video is a SINGLE INDIVIDUAL, NOT multiple people. Never report multiple individuals unless two or more distinct people are visibly present together at the exact same moment.
+        - Residents Josh (Item 1) and MJ (Item 2) live here. Residents often step onto the porch to retrieve, open, unpack, or carry packages into the house, or to do chores. If the person matches Josh or MJ, or is opening/retrieving packages on the porch, they are a RESIDENT, NEVER a delivery driver.
+        - Delivery couriers (Amazon, UPS, FedEx, USPS) arrive from outside, wear courier uniforms/vests, drop off deliveries, and leave. Couriers NEVER open or unpack boxes on the porch.
 
-        Rules:
-        1. Examine Item 3: If NO person and NO delivery vehicle is visible in the video:
+        CLASSIFICATION STEPS (Evaluate in strict order):
+        1. NO ACTIVITY: If no human and no vehicle appears in Item 3 AND Item 4:
            Output: [ALL_CLEAR] No activity on porch.
 
-        2. If a person or vehicle IS in the video:
-           - Check if they are delivering a package, wearing a delivery uniform (Amazon, UPS, FedEx, USPS), or driving a delivery truck:
-             Output: [ALERT] Person: [delivery driver/uniform/company]. Action: [delivery action]. Intent: Delivery.
-           - If NOT delivering, compare them to resident reference photos (Item 1 = Josh, Item 2 = MJ). If they match a resident:
-             Output: [RESIDENT] Person: Josh (or MJ). Action: [action]. Intent: Resident.
-           - If they entered the front door or were let inside:
-             Output: [ENTERED] Person: [visitor description]. Action: Entered home. Intent: Visitor.
-           - If they are an unfamiliar visitor, solicitor, or unrecognized person:
-             Output: [ALERT] Person: [visitor description]. Action: [action]. Intent: Visitor.
+        2. RESIDENT CHECK (Highest Priority):
+           Compare the person to resident reference photos (Item 1 = Josh, Item 2 = MJ).
+           If they match Josh or MJ, OR if they are retrieving, picking up, opening, or unpacking packages/boxes, OR engaged in yard work, maintenance, or walking around the porch/home:
+           Output: [RESIDENT] Person: Josh (or MJ). Action: [specific action, e.g. retrieving packages / opening box / yard work]. Intent: Resident.
 
-        Output must be a SINGLE line without markdown or newlines.
+        3. DELIVERY CHECK:
+           If an unfamiliar delivery courier is dropping off a parcel at the door, placing a package down, or wearing a clearly branded courier uniform (Amazon vest, UPS brown, FedEx, USPS):
+           Output: [ALERT] Person: [Amazon/UPS/FedEx/USPS delivery driver]. Action: Delivered package. Intent: Delivery.
+
+        4. ENTERED HOME:
+           If an authorized guest or visitor opens the door with a key/code or is greeted and enters:
+           Output: [ENTERED] Person: [visitor description]. Action: Entered home. Intent: Visitor.
+
+        5. UNRECOGNIZED VISITOR / STRANGER:
+           If an unfamiliar visitor, solicitor, or unknown person approaches the door:
+           Output: [ALERT] Person: [visitor description]. Action: [action]. Intent: Visitor.
+
+        Format: Output must be a SINGLE line starting with [ALL_CLEAR], [RESIDENT], [ENTERED], or [ALERT]. No markdown fences.
       images:
-        - url: /media/snapshots/reference/josh_thumb.jpg
-        - url: /media/snapshots/reference/mj_thumb.jpg
-        - url: /media/snapshots/porch/approach_sample.mp4
+      - url: /media/snapshots/reference/josh_thumb.jpg
+      - url: /media/snapshots/reference/mj_thumb.jpg
+      - url: /media/snapshots/porch/doorbell_sample.jpg
+      - url: /media/snapshots/porch/approach_sample.mp4
       max_tokens: 150
     response_variable: porch_report
     continue_on_error: true
   - variables:
-      report: >-
-        {{ porch_report.choices[0].message.content | default('[ALL_CLEAR] No person on porch.', true)
-           if porch_report is defined and porch_report.choices is defined and porch_report.choices | length > 0
-           else '[ALL_CLEAR] No person on porch.' }}
+      report: "{{ porch_report.choices[0].message.content | default('[ALL_CLEAR] No
+        person on porch.', true)\n   if porch_report is defined and porch_report.choices
+        is defined and porch_report.choices | length > 0\n   else '[ALL_CLEAR] No
+        person on porch.' }}"
+  - alias: Archive Porch Detection Media
+    action: shell_command.archive_porch_snapshots
+    continue_on_error: true
+    data:
+      tag: >-
+        {%- set tag = report.split(']')[0] | replace('[', '') if ']' in report else 'ALL_CLEAR' -%}
+        {{ tag | trim }}
   - if:
-      - condition: template
-        value_template: "{{ '[ALL_CLEAR]' not in report }}"
+    - condition: template
+      value_template: '{{ ''[ALL_CLEAR]'' not in report }}'
     then:
-      - action: notify.send_message
-        target:
-          entity_id: notify.daily_camera_log
+    - action: notify.send_message
+      target:
+        entity_id: notify.daily_camera_log
+      data:
+        message: '{{ now().strftime(''%I:%M %p'') }} - Front Porch: {{ report }}'
+    - action: notify.send_message
+      target:
+        entity_id:
+        - notify.porch_history
+      data:
+        message: '{% set tag = report.split('']'')[0] ~ '']'' if '']'' in report else
+          ''[ERROR]'' %} {% set content = report.replace(tag, '''').strip() %} "{{
+          now().strftime(''%Y-%m-%d'') }}","{{ now().strftime(''%H:%M:%S'') }}","{{
+          tag }}","{{ content | replace(''"'', ''""'') }}"'
+    - if:
+      - condition: template
+        value_template: '{{ ''[ALERT]'' in report }}'
+      then:
+      - action: notify.persistent_notification
         data:
-          message: "{{ now().strftime('%I:%M %p') }} - Front Porch: {{ report }}"
-      - action: notify.send_message
-        target:
-          entity_id:
-            - notify.porch_history
+          title: Porch Intel (Full Report)
+          message: '{% set tag = report.split('']'')[0] ~ '']'' if '']'' in report
+            else ''[ALERT]'' %} {{ report.replace(tag, '''').strip() }}'
+      - action: notify.mobile_app_josh_mobile
         data:
-          message: >-
-            {% set tag = report.split(']')[0] ~ ']' if ']' in report else '[ERROR]' %}
-            {% set content = report.replace(tag, '').strip() %}
-            "{{ now().strftime('%Y-%m-%d') }}","{{ now().strftime('%H:%M:%S') }}","{{ tag }}","{{ content | replace('"', '""') }}"
+          title: Porch Intel
+          message: '{% set tag = report.split('']'')[0] ~ '']'' if '']'' in report
+            else ''[ALERT]'' %} {{ report.replace(tag, '''').strip() | truncate(150,
+            true, ''...'') }}'
       - if:
-          - condition: template
-            value_template: "{{ '[ALERT]' in report }}"
+        - condition: state
+          entity_id: alarm_control_panel.home_alarm
+          state:
+          - armed_away
+          - armed_vacation
         then:
-          - action: notify.persistent_notification
-            data:
-              title: Porch Intel (Full Report)
-              message: >-
-                {% set tag = report.split(']')[0] ~ ']' if ']' in report else '[ALERT]' %}
-                {{ report.replace(tag, '').strip() }}
-          - action: notify.mobile_app_josh_mobile
-            data:
-              title: Porch Intel
-              message: >-
-                {% set tag = report.split(']')[0] ~ ']' if ']' in report else '[ALERT]' %}
-                {{ report.replace(tag, '').strip() | truncate(150, true, '...') }}
-          - if:
-              - condition: state
-                entity_id: alarm_control_panel.home_alarm
-                state:
-                  - armed_away
-                  - armed_vacation
-            then:
-              - action: input_boolean.turn_on
-                target:
-                  entity_id: input_boolean.porch_visitor_while_away
+        - action: input_boolean.turn_on
+          target:
+            entity_id: input_boolean.porch_visitor_while_away
   mode: single
 - id: '1772742848092'
   alias: System - Cameras - Evening AI Rollup
-  description: Reads daily porch events and generates an evening HTML security briefing via Local Brain (Qwen 32B).
+  description: Reads daily porch events and generates an evening HTML security briefing
+    via Local Brain (Qwen 32B).
   triggers:
   - at: '20:00:00'
     trigger: time
@@ -3391,44 +3442,49 @@
   - action: shell_command.read_daily_camera_log
     response_variable: daily_log
   - variables:
-      raw_log: "{{ (daily_log.stdout | default('', true)).strip() if daily_log is defined and daily_log.stdout is defined else '' }}"
+      raw_log: '{{ (daily_log.stdout | default('''', true)).strip() if daily_log is
+        defined and daily_log.stdout is defined else '''' }}'
+      filtered_log: >-
+        {%- if raw_log | length > 0 -%}
+          {{ raw_log.split('\n') | reject('search', '\[RESIDENT\]') | list | join('\n') | trim }}
+        {%- else -%}
+          
+        {%- endif -%}
   - if:
-      - condition: template
-        value_template: "{{ raw_log | length > 0 }}"
+    - condition: template
+      value_template: '{{ filtered_log | length > 0 }}'
     then:
-      - action: conversation.process
-        continue_on_error: true
-        data:
-          agent_id: conversation.extended_openai_conversation_2
-          text: >-
-            Today is {{ now().strftime('%A, %B %d, %Y') }}.
-            Read the following log of today's camera events:
-            <camera_log>
-            {{ raw_log }}
-            </camera_log>
+    - action: conversation.process
+      continue_on_error: true
+      data:
+        agent_id: conversation.extended_openai_conversation_2
+        text: >-
+          Today is {{ now().strftime('%A, %B %d, %Y') }}. Read the following log of today's camera events:
+          <camera_log>
+          {{ filtered_log }}
+          </camera_log>
 
-            Write a cohesive evening security briefing summarizing the activity. Group similar events together (e.g. package deliveries, visitors, solicitors, unusual activity).
-            Consolidate multiple events occurring within a few minutes of each other for the same visitor or delivery into a single entry (arrival and departure are part of the same visit; do not create duplicate bullet points for the same person arriving and leaving).
-            Format your entire response using clean HTML (use <h3> for headers, <ul> and <li> for bullet points, and <b> for bold text).
-            Do not wrap your response in markdown code blocks. Return ONLY raw HTML.
-        response_variable: evening_rollup
+          Write a cohesive evening security briefing summarizing the activity.
+          Group similar events together (e.g. Package Deliveries, Visitors, Solicitors, Unusual Activity).
+          Consolidate multiple events occurring within a few minutes of each other for the same visitor or delivery into a single entry (arrival and departure are part of the same visit; do not create duplicate bullet points for the same person arriving and leaving).
+          Common-sense rules: Couriers and delivery drivers deliver packages; they never perform yard work or leaf blowing. If any entry mentions lawn tools or yard maintenance, treat it as household activity or exclude it from security alerts.
+          Format your entire response using clean HTML (use <h3> for headers, <ul> and <li> for bullet points, and <b> for bold text). Do not wrap your response in markdown code blocks.
+          Return ONLY raw HTML.
+      response_variable: evening_rollup
   - action: smtp.send_message
     target:
       entity_id: notify.email_daily_rollup_flamingotter_hass_gmail_com
     data:
       title: Security Briefing - {{ now().strftime('%b %d, %Y') }}
       message: Please view this email in an HTML-compatible client.
-      html: >-
-        {% if raw_log | length == 0 %}
-          <h3>All clear. No porch activity detected today.</h3>
-        {% else %}
-          {% set resp = evening_rollup.response.speech.plain.speech | default('', true) if evening_rollup is defined and evening_rollup.response is defined and evening_rollup.response.speech is defined and evening_rollup.response.speech.plain is defined else '' %}
-          {% if resp | length > 0 %}
-            {{ resp | replace('```html', '') | replace('```', '') | trim }}
-          {% else %}
-            <h3>The daily security briefing could not be generated at this time.</h3>
-          {% endif %}
-        {% endif %}
+      html: "{% if filtered_log | length == 0 %}\n  <h3>All clear. No visitor or delivery activity detected
+        today.</h3>\n{% else %}\n  {% set resp = evening_rollup.response.speech.plain.speech
+        | default('', true) if evening_rollup is defined and evening_rollup.response
+        is defined and evening_rollup.response.speech is defined and evening_rollup.response.speech.plain
+        is defined else '' %}\n  {% if resp | length > 0 %}\n    {{ resp | replace('```html',
+        '') | replace('```', '') | trim }}\n  {% else %}\n    <h3>The daily security
+        briefing could not be generated at this time.</h3>\n  {% endif %}\n{% endif
+        %}"
 - id: '1772743146418'
   alias: System - Cameras - Clear Daily Log
   description: ''
@@ -3446,6 +3502,7 @@
     - binary_sensor.garage_man_door
     - binary_sensor.front_door
     - binary_sensor.bedroom_door
+    - binary_sensor.catio_door
     from:
     - 'off'
     to:
@@ -3456,6 +3513,7 @@
     - binary_sensor.garage_man_door
     - binary_sensor.front_door
     - binary_sensor.bedroom_door
+    - binary_sensor.catio_door
     - binary_sensor.pantry_door
     from:
     - 'off'
@@ -3481,7 +3539,8 @@
         data:
           notify_target: notify.mobile_app_josh_mobile
           title: ⚠️ SECURITY ALERT
-          message: The {{ state_attr(trigger.entity_id, 'friendly_name') }} was opened while ARMED!
+          message: The {{ state_attr(trigger.entity_id, 'friendly_name') }} was opened
+            while ARMED!
           priority: high
           channel: alarm_stream
     - conditions:
@@ -3497,10 +3556,7 @@
         then:
         - action: siren.turn_on
           target:
-            entity_id:
-            - siren.downstairs_siren_chime_play_tone
-            - siren.bedroom_siren_chime_play_tone
-            - siren.office_siren_chime_play_tone
+            label_id: siren_chime
           data:
             tone: '{{ door_map[trigger.entity_id].long | default(1) }}'
       - action: script.activate_mobile_actionable_notification
@@ -3512,6 +3568,8 @@
     door_map:
       binary_sensor.bedroom_door:
         long: 9
+      binary_sensor.catio_door:
+        long: 2
       binary_sensor.front_door:
         long: 7
       binary_sensor.garage_man_door:
@@ -3546,7 +3604,7 @@
   mode: single
 - id: '1775057723989'
   alias: Nightly Telemetry Exporter Sync
-  description: 'Triggers exporter sync/health verification'
+  description: Triggers exporter sync/health verification
   triggers:
   - at: 03:01:00
     trigger: time
@@ -3653,7 +3711,8 @@
   mode: restart
 - id: hvac_health_alert
   alias: 'Climate: HVAC Health Alert'
-  description: Monitors BigQuery COP health check and alerts if cooling efficiency degrades.
+  description: Monitors BigQuery COP health check and alerts if cooling efficiency
+    degrades.
   triggers:
   - trigger: state
     entity_id: sensor.hvac_health_status
@@ -3666,18 +3725,23 @@
     data:
       notify_target: notify.mobile_app_josh_mobile
       title: '⚠️ HVAC Efficiency Alert: {{ trigger.to_state.state }}'
-      message: >-
-        HVAC cooling efficiency has dropped by {{ state_attr('sensor.hvac_health_status', 'degradation_pct') }}%.
-        Recent consumption: {{ state_attr('sensor.hvac_health_status', 'recent_rate') }} kWh/°F (Baseline: {{ state_attr('sensor.hvac_health_status', 'baseline_rate') }} kWh/°F).
-        Downstairs: {{ state_attr('sensor.hvac_health_status', 'downstairs').status }} ({{ state_attr('sensor.hvac_health_status', 'downstairs').degradation_pct }}%),
-        Upstairs: {{ state_attr('sensor.hvac_health_status', 'upstairs').status }} ({{ state_attr('sensor.hvac_health_status', 'upstairs').degradation_pct }}%),
-        Office Mini-Split: {{ state_attr('sensor.hvac_health_status', 'office_minisplit').status }} ({{ state_attr('sensor.hvac_health_status', 'office_minisplit').degradation_pct }}%).
+      message: 'HVAC cooling efficiency has dropped by {{ state_attr(''sensor.hvac_health_status'',
+        ''degradation_pct'') }}%. Recent consumption: {{ state_attr(''sensor.hvac_health_status'',
+        ''recent_rate'') }} kWh/°F (Baseline: {{ state_attr(''sensor.hvac_health_status'',
+        ''baseline_rate'') }} kWh/°F). Downstairs: {{ state_attr(''sensor.hvac_health_status'',
+        ''downstairs'').status }} ({{ state_attr(''sensor.hvac_health_status'', ''downstairs'').degradation_pct
+        }}%), Upstairs: {{ state_attr(''sensor.hvac_health_status'', ''upstairs'').status
+        }} ({{ state_attr(''sensor.hvac_health_status'', ''upstairs'').degradation_pct
+        }}%), Office Mini-Split: {{ state_attr(''sensor.hvac_health_status'', ''office_minisplit'').status
+        }} ({{ state_attr(''sensor.hvac_health_status'', ''office_minisplit'').degradation_pct
+        }}%).'
       notify_tag: hvac-health-alert
       priority: high
   mode: single
 - id: hvac_upstairs_runaway_alert
   alias: 'Climate: Upstairs Compressor Runaway Alert'
-  description: Alerts if upstairs central heat pump runs continuously above 1100W for > 2.5 hours.
+  description: Alerts if upstairs central heat pump runs continuously above 1100W
+    for > 2.5 hours.
   triggers:
   - trigger: numeric_state
     entity_id: sensor.panel_01_upstairs_heat_pump_power
@@ -3690,17 +3754,17 @@
   - action: script.activate_mobile_actionable_notification
     data:
       notify_target: notify.mobile_app_josh_mobile
-      title: '⚠️ Upstairs HVAC Runaway Warning'
-      message: >-
-        Upstairs heat pump has been pinned in Stage 2 ({{ states('sensor.panel_01_upstairs_heat_pump_power') | round(0) }}W) for over 2.5 hours continuously. 
-        Upstairs Temp: {{ states('climate.t6_pro_upstairs') }}°F. 
-        Check for open doors, thermal leakage from office, or failed zone equipment.
+      title: ⚠️ Upstairs HVAC Runaway Warning
+      message: 'Upstairs heat pump has been pinned in Stage 2 ({{ states(''sensor.panel_01_upstairs_heat_pump_power'')
+        | round(0) }}W) for over 2.5 hours continuously.  Upstairs Temp: {{ states(''climate.t6_pro_upstairs'')
+        }}°F.  Check for open doors, thermal leakage from office, or failed zone equipment.'
       notify_tag: upstairs-hvac-runaway
       priority: high
   mode: single
 - id: hvac_office_minisplit_failure_alert
   alias: 'Climate: Office Mini-Split Failure Alert'
-  description: Alerts if office temperature is elevated during the day while mini-split power is idle/off.
+  description: Alerts if office temperature is elevated during the day while mini-split
+    power is idle/off.
   triggers:
   - trigger: numeric_state
     entity_id: sensor.office_sensor_air_temperature
@@ -3712,15 +3776,16 @@
     entity_id: sensor.panel_01_mini_split_power
     below: 30
   - condition: time
-    after: '08:00:00'
+    after: 08:00:00
     before: '18:00:00'
   actions:
   - action: script.activate_mobile_actionable_notification
     data:
       notify_target: notify.mobile_app_josh_mobile
-      title: '⚠️ Office Mini-Split Failure / Offline'
-      message: >-
-        Office temperature has reached {{ states('sensor.office_sensor_air_temperature') }}°F, but the mini-split is drawing only {{ states('sensor.panel_01_mini_split_power') | round(1) }}W. Verify power and unit status.
+      title: ⚠️ Office Mini-Split Failure / Offline
+      message: Office temperature has reached {{ states('sensor.office_sensor_air_temperature')
+        }}°F, but the mini-split is drawing only {{ states('sensor.panel_01_mini_split_power')
+        | round(1) }}W. Verify power and unit status.
       notify_tag: office-minisplit-offline
       priority: high
   mode: single
@@ -3792,15 +3857,22 @@
         continue_on_error: true
         data:
           agent_id: conversation.extended_openai_conversation_2
-          text: >-
-            Outdoor temp is {{ states('sensor.weather_station_temperature_outdoor') }}F with {{ states('sensor.weather_station_humidity_outdoor') }}% humidity. Bedroom temp is {{ actual }}F. Give a short, helpful 1-sentence tip recommending opening the screened patio door for free cooling. Keep response under 25 words, no quotes.
+          text: Outdoor temp is {{ states('sensor.weather_station_temperature_outdoor')
+            }}F with {{ states('sensor.weather_station_humidity_outdoor') }}% humidity.
+            Bedroom temp is {{ actual }}F. Give a short, helpful 1-sentence tip recommending
+            opening the screened patio door for free cooling. Keep response under
+            25 words, no quotes.
         response_variable: strategist_advice
       - action: notify.mobile_app_josh_mobile
         data:
-          title: "🍃 Free Cooling Opportunity"
-          message: >-
-            {% set resp = strategist_advice.response.speech.plain.speech | default('', true) if strategist_advice is defined and strategist_advice.response is defined and strategist_advice.response.speech is defined and strategist_advice.response.speech.plain is defined else '' %}
-            {{ resp | trim | replace('\"', '') if resp | length > 0 else ('Outdoor air is cooler and dry (' ~ states('sensor.weather_station_temperature_outdoor') ~ '°F / ' ~ states('sensor.weather_station_humidity_outdoor') ~ '%). Consider opening the patio door to save energy.') }}
+          title: "\U0001F343 Free Cooling Opportunity"
+          message: '{% set resp = strategist_advice.response.speech.plain.speech |
+            default('''', true) if strategist_advice is defined and strategist_advice.response
+            is defined and strategist_advice.response.speech is defined and strategist_advice.response.speech.plain
+            is defined else '''' %} {{ resp | trim | replace(''\"'', '''') if resp
+            | length > 0 else (''Outdoor air is cooler and dry ('' ~ states(''sensor.weather_station_temperature_outdoor'')
+            ~ ''°F / '' ~ states(''sensor.weather_station_humidity_outdoor'') ~ ''%).
+            Consider opening the patio door to save energy.'') }}'
       - action: notify.send_message
         target:
           entity_id: '{{ log_entity }}'
@@ -3835,15 +3907,21 @@
         continue_on_error: true
         data:
           agent_id: conversation.extended_openai_conversation_2
-          text: >-
-            The current target is {{ target }}F. The indoor humidity is {{ states('sensor.bedroom_sensor_humidity') }}%. If humidity is > 55%, recommend dropping target by 1 degree for 'Comfort-Adjusted' cooling. Return your response in the format: [VALUE] Reasoning: [One sentence explanation].
+          text: 'The current target is {{ target }}F. The indoor humidity is {{ states(''sensor.bedroom_sensor_humidity'')
+            }}%. If humidity is > 55%, recommend dropping target by 1 degree for ''Comfort-Adjusted''
+            cooling. Return your response in the format: [VALUE] Reasoning: [One sentence
+            explanation].'
         response_variable: comfort_target
       - variables:
-          ai_raw: >-
-            {% set resp = comfort_target.response.speech.plain.speech | default('', true) if comfort_target is defined and comfort_target.response is defined and comfort_target.response.speech is defined and comfort_target.response.speech.plain is defined else '' %}
-            {{ resp | trim if resp | length > 0 else (target | string) }}
-          ai_target: "{{ ai_raw.split(']')[0] | replace('[', '') | replace('F', '') | trim | float(target) }}"
-          ai_reason: "{{ ai_raw.split('Reasoning:')[1] | default('Standard target used.') | trim }}"
+          ai_raw: '{% set resp = comfort_target.response.speech.plain.speech | default('''',
+            true) if comfort_target is defined and comfort_target.response is defined
+            and comfort_target.response.speech is defined and comfort_target.response.speech.plain
+            is defined else '''' %} {{ resp | trim if resp | length > 0 else (target
+            | string) }}'
+          ai_target: '{{ ai_raw.split('']'')[0] | replace(''['', '''') | replace(''F'',
+            '''') | trim | float(target) }}'
+          ai_reason: '{{ ai_raw.split(''Reasoning:'')[1] | default(''Standard target
+            used.'') | trim }}'
       - delay: 00:02:00
       - variables:
           actual_now: '{% set bdr = states(''sensor.bedroom_temperature_smoothed'')
@@ -3951,20 +4029,27 @@
           continue_on_error: true
           data:
             agent_id: conversation.extended_openai_conversation_2
-            text: >-
-              A residential AC cooling session took {{ duration | round(1) }} minutes to lower room temperature by {{ drop | round(1) }}°F (equivalent to {{ obs_rate }} minutes per degree). Average outdoor temperature during this session was {{ avg_outdoor }}°F.
-              Is taking {{ obs_rate }} minutes per 1°F drop physically plausible and valid?
-              Rules:
-              - Normal cooling takes between 10.0 and 45.0 minutes per degree. Cool or mild outdoor conditions (50-70°F) result in fast, efficient cooling (10-30 min/deg).
-              - Severe solar heat soak (>85°F outdoors) takes 45.0 to 90.0 minutes per degree.
-              - Only flag ANOMALY if physically impossible: less than 5.0 minutes per degree (sensor flash-freeze glitch) or greater than 90.0 minutes per degree on mild days (equipment failure).
-              Any session taking between 5.0 and 90.0 minutes per degree is physically VALID.
-              Return your verdict starting strictly with 'VALID' or 'ANOMALY' followed by a one-sentence explanation.
+            text: 'A residential AC cooling session took {{ duration | round(1) }}
+              minutes to lower room temperature by {{ drop | round(1) }}°F (equivalent
+              to {{ obs_rate }} minutes per degree). Average outdoor temperature during
+              this session was {{ avg_outdoor }}°F. Is taking {{ obs_rate }} minutes
+              per 1°F drop physically plausible and valid? Rules: - Normal cooling
+              takes between 10.0 and 45.0 minutes per degree. Cool or mild outdoor
+              conditions (50-70°F) result in fast, efficient cooling (10-30 min/deg).
+              - Severe solar heat soak (>85°F outdoors) takes 45.0 to 90.0 minutes
+              per degree. - Only flag ANOMALY if physically impossible: less than
+              5.0 minutes per degree (sensor flash-freeze glitch) or greater than
+              90.0 minutes per degree on mild days (equipment failure). Any session
+              taking between 5.0 and 90.0 minutes per degree is physically VALID.
+              Return your verdict starting strictly with ''VALID'' or ''ANOMALY''
+              followed by a one-sentence explanation.'
           response_variable: audit_result
         - variables:
-            audit_verdict: >-
-              {% set resp = audit_result.response.speech.plain.speech | default('', true) if audit_result is defined and audit_result.response is defined and audit_result.response.speech is defined and audit_result.response.speech.plain is defined else '' %}
-              {{ resp | trim if resp | length > 0 else 'VALID: No AI response' }}
+            audit_verdict: '{% set resp = audit_result.response.speech.plain.speech
+              | default('''', true) if audit_result is defined and audit_result.response
+              is defined and audit_result.response.speech is defined and audit_result.response.speech.plain
+              is defined else '''' %} {{ resp | trim if resp | length > 0 else ''VALID:
+              No AI response'' }}'
             new_repo_data: "{# 1. LOAD & LOOKUP (Type-Resilient) #} {%- set lkey =
               lookup_key | string | trim -%} {%- set raw = states('input_text.mbr_cooling_performance_data')
               | from_json -%} {%- set ns = namespace(orate=obs_rate, match=false)
@@ -3992,8 +4077,9 @@
             new_rate: '{{ res.new_rate }}'
         - if:
           - condition: template
-            value_template: >-
-              {{ ('VALID' in audit_verdict | upper) or (obs_rate >= 10.0 and obs_rate <= 45.0) or (avg_outdoor >= 85.0 and obs_rate <= 90.0) }}
+            value_template: '{{ (''VALID'' in audit_verdict | upper) or (obs_rate
+              >= 10.0 and obs_rate <= 45.0) or (avg_outdoor >= 85.0 and obs_rate <=
+              90.0) }}'
           then:
           - action: input_text.set_value
             target:
@@ -4140,7 +4226,8 @@
   mode: restart
 - id: '1778103562000'
   alias: 'Light Control: Office (v1.0)'
-  description: Synchronizes Zooz ZEN73 switch (light.switch_office_light) with Office LIFX lights (light.office_lights).
+  description: Synchronizes Zooz ZEN73 switch (light.switch_office_light) with Office
+    LIFX lights (light.office_lights).
   triggers:
   - id: top
     trigger: event
@@ -4178,34 +4265,36 @@
   - choose:
     - conditions:
       - condition: template
-        value_template: >-
-          {{ trigger.id in ['switch_state_on', 'light_state_on'] or (trigger.id == 'top' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}
+        value_template: '{{ trigger.id in [''switch_state_on'', ''light_state_on'']
+          or (trigger.id == ''top'' and trigger.event.data.value in [''KeyPressed'',
+          ''KeyPressed2x'']) }}'
       sequence:
       - variables:
-          targets: >-
-            {{ ['light.office_lights', 'light.switch_office_light'] | reject('is_state', 'on') | list }}
+          targets: '{{ [''light.office_lights'', ''light.switch_office_light''] |
+            reject(''is_state'', ''on'') | list }}'
       - if:
         - condition: template
-          value_template: "{{ targets | length > 0 }}"
+          value_template: '{{ targets | length > 0 }}'
         then:
         - action: light.turn_on
           target:
-            entity_id: "{{ targets }}"
+            entity_id: '{{ targets }}'
     - conditions:
       - condition: template
-        value_template: >-
-          {{ trigger.id in ['switch_state_off', 'light_state_off'] or (trigger.id == 'bottom' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}
+        value_template: '{{ trigger.id in [''switch_state_off'', ''light_state_off'']
+          or (trigger.id == ''bottom'' and trigger.event.data.value in [''KeyPressed'',
+          ''KeyPressed2x'']) }}'
       sequence:
       - variables:
-          targets: >-
-            {{ ['light.office_lights', 'light.switch_office_light'] | reject('is_state', 'off') | list }}
+          targets: '{{ [''light.office_lights'', ''light.switch_office_light''] |
+            reject(''is_state'', ''off'') | list }}'
       - if:
         - condition: template
-          value_template: "{{ targets | length > 0 }}"
+          value_template: '{{ targets | length > 0 }}'
         then:
         - action: light.turn_off
           target:
-            entity_id: "{{ targets }}"
+            entity_id: '{{ targets }}'
   mode: restart
 - id: poop_robot_maintenance_alerts
   alias: 'Pet: Poop Robot Maintenance Alerts'
@@ -4296,14 +4385,13 @@
     data:
       config_entry: 01M3YG3WVESNZR8QG41VKNSXHE
       model: qwen-vl-7b
-      prompt: >-
-        You are an AI generating an audio announcement for a home doorbell speaker.
-        In one short, natural spoken sentence (max 15 words), announce who is at the
-        door and their action. Focus on intent: delivery driver, mail carrier, visitor,
-        or solicitor. Do not include clothing details or weather unless relevant to
-        their intent. Never use labels like 'Person:' or 'Action:'.
+      prompt: 'You are an AI generating an audio announcement for a home doorbell
+        speaker. In one short, natural spoken sentence (max 15 words), announce who
+        is at the door and their action. Focus on intent: delivery driver, mail carrier,
+        visitor, or solicitor. Do not include clothing details or weather unless relevant
+        to their intent. Never use labels like ''Person:'' or ''Action:''.'
       images:
-        - url: /media/snapshots/porch/doorbell_visitor.jpg
+      - url: /media/snapshots/porch/doorbell_visitor.jpg
       max_tokens: 60
     response_variable: visitor_analysis
     continue_on_error: true
@@ -4311,10 +4399,10 @@
     action: notify.alexa_media
     data:
       target: media_player.all_echos
-      message: >-
-        {{ visitor_analysis.choices[0].message.content | default("Someone is at the front door.", true)
-           if visitor_analysis is defined and visitor_analysis.choices is defined and visitor_analysis.choices | length > 0
-           else "Someone is at the front door." }}
+      message: "{{ visitor_analysis.choices[0].message.content | default(\"Someone
+        is at the front door.\", true)\n   if visitor_analysis is defined and visitor_analysis.choices
+        is defined and visitor_analysis.choices | length > 0\n   else \"Someone is
+        at the front door.\" }}"
       data:
         type: tts
   - delay:
@@ -4610,42 +4698,43 @@
     to: 'off'
   conditions:
   - condition: template
-    value_template: "{{ trigger.id in ['motion_on', 'motion_off', 'switch_state_on', 'switch_state_off'] or\n
-      \  trigger.event.data.device_id in [\n     device_id('switch.garage_entry_switch'),\n
+    value_template: "{{ trigger.id in ['motion_on', 'motion_off', 'switch_state_on',
+      'switch_state_off'] or\n   trigger.event.data.device_id in [\n     device_id('switch.garage_entry_switch'),\n
       \    device_id('light.garage_motion_switch')\n   ] }}"
   actions:
   - choose:
     - conditions:
       - condition: template
-        value_template: "{{ trigger.id in ['motion_on', 'switch_state_on'] or\n   (trigger.id ==
-          'top' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}"
-      sequence:
-      - variables:
-          targets: >-
-            {{ ['switch.garage_entry_switch', 'light.garage_motion_switch'] | reject('is_state', 'on') | list }}
-      - if:
-        - condition: template
-          value_template: "{{ targets | length > 0 }}"
-        then:
-        - action: homeassistant.turn_on
-          target:
-            entity_id: "{{ targets }}"
-    - conditions:
-      - condition: template
-        value_template: "{{ trigger.id in ['motion_off', 'switch_state_off'] or\n   (trigger.id ==
-          'bottom' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x'])
+        value_template: "{{ trigger.id in ['motion_on', 'switch_state_on'] or\n   (trigger.id
+          == 'top' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x'])
           }}"
       sequence:
       - variables:
-          targets: >-
-            {{ ['switch.garage_entry_switch', 'light.garage_motion_switch'] | reject('is_state', 'off') | list }}
+          targets: '{{ [''switch.garage_entry_switch'', ''light.garage_motion_switch'']
+            | reject(''is_state'', ''on'') | list }}'
       - if:
         - condition: template
-          value_template: "{{ targets | length > 0 }}"
+          value_template: '{{ targets | length > 0 }}'
+        then:
+        - action: homeassistant.turn_on
+          target:
+            entity_id: '{{ targets }}'
+    - conditions:
+      - condition: template
+        value_template: "{{ trigger.id in ['motion_off', 'switch_state_off'] or\n
+          \  (trigger.id == 'bottom' and trigger.event.data.value in ['KeyPressed',
+          'KeyPressed2x']) }}"
+      sequence:
+      - variables:
+          targets: '{{ [''switch.garage_entry_switch'', ''light.garage_motion_switch'']
+            | reject(''is_state'', ''off'') | list }}'
+      - if:
+        - condition: template
+          value_template: '{{ targets | length > 0 }}'
         then:
         - action: homeassistant.turn_off
           target:
-            entity_id: "{{ targets }}"
+            entity_id: '{{ targets }}'
   mode: restart
 - id: light_control_hallway_zen73_lifx
   alias: 'Light Control: Downstairs Hallway (v1.0)'
@@ -4707,7 +4796,9 @@
   mode: restart
 - id: fan_control_catio_zen73_zen51
   alias: 'Fan Control: Catio (v1.0)'
-  description: Synchronizes Zooz ZEN73 wall switches (switch.catio_fan_01, switch.catio_fan_02) with ZEN51 fan relays (fan.catio_fan_001, fan.catio_fan_002) in a unified dual pair setup with full guide-light LED synchronization.
+  description: Synchronizes Zooz ZEN73 wall switches (switch.catio_fan_01, switch.catio_fan_02)
+    with ZEN51 fan relays (fan.catio_fan_001, fan.catio_fan_002) in a unified dual
+    pair setup with full guide-light LED synchronization.
   triggers:
   - id: top
     trigger: event
@@ -4745,19 +4836,16 @@
     to: 'off'
   conditions:
   - condition: template
-    value_template: >-
-      {{ trigger.id in ['fan_state_on', 'fan_state_off', 'switch_state_on', 'switch_state_off'] or
-         trigger.event.data.device_id in [
-           device_id('switch.catio_fan_01'),
-           device_id('switch.catio_fan_02')
-         ] }}
+    value_template: "{{ trigger.id in ['fan_state_on', 'fan_state_off', 'switch_state_on',
+      'switch_state_off'] or\n   trigger.event.data.device_id in [\n     device_id('switch.catio_fan_01'),\n
+      \    device_id('switch.catio_fan_02')\n   ] }}"
   actions:
   - choose:
     - conditions:
       - condition: template
-        value_template: >-
-          {{ trigger.id in ['fan_state_on', 'switch_state_on'] or
-             (trigger.id == 'top' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}
+        value_template: "{{ trigger.id in ['fan_state_on', 'switch_state_on'] or\n
+          \  (trigger.id == 'top' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x'])
+          }}"
       sequence:
       - action: fan.turn_on
         target:
@@ -4771,9 +4859,9 @@
           - switch.catio_fan_02
     - conditions:
       - condition: template
-        value_template: >-
-          {{ trigger.id in ['fan_state_off', 'switch_state_off'] or
-             (trigger.id == 'bottom' and trigger.event.data.value in ['KeyPressed', 'KeyPressed2x']) }}
+        value_template: "{{ trigger.id in ['fan_state_off', 'switch_state_off'] or\n
+          \  (trigger.id == 'bottom' and trigger.event.data.value in ['KeyPressed',
+          'KeyPressed2x']) }}"
       sequence:
       - action: fan.turn_off
         target:
@@ -4990,8 +5078,9 @@
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.mobile_app_josh_mobile
-          title: "🧺 Detergent Restocked"
-          message: Laundry detergent inventory reset to {{ states('input_number.laundry_detergent_loads_remaining') | int(96) }} loads.
+          title: "\U0001F9FA Detergent Restocked"
+          message: Laundry detergent inventory reset to {{ states('input_number.laundry_detergent_loads_remaining')
+            | int(96) }} loads.
           notify_tag: detergent-restock
     - conditions:
       - condition: trigger
@@ -5006,14 +5095,16 @@
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.mobile_app_josh_mobile
-          title: "🍽️ Dishwasher Tabs Restocked"
-          message: Dishwasher tabs inventory reset to {{ states('input_number.dishwasher_tabs_remaining') | int(60) }} tabs.
+          title: "\U0001F37D️ Dishwasher Tabs Restocked"
+          message: Dishwasher tabs inventory reset to {{ states('input_number.dishwasher_tabs_remaining')
+            | int(60) }} tabs.
           notify_tag: dishwasher-restock
   mode: parallel
   max: 5
 - id: security_patio_perimeter_alert
   alias: 'Security: Patio Perimeter Alert (Night & Away)'
-  description: Sends actionable security alerts with live camera snapshot and UniFi Protect deep-link when person is detected on Patio while sleeping or away.
+  description: Sends actionable security alerts with live camera snapshot and UniFi
+    Protect deep-link when person is detected on Patio while sleeping or away.
   triggers:
   - trigger: state
     entity_id:
@@ -5055,28 +5146,30 @@
             state: not_home
       sequence:
       - variables:
-          cam_entity: >-
-            {{ 'camera.patio_left_high_resolution_channel' if 'patio_left' in trigger.entity_id else 'camera.patio_right_high_resolution_channel' }}
-          cam_name: >-
-            {{ 'Patio Left' if 'patio_left' in trigger.entity_id else 'Patio Right' }}
-          alert_mode: >-
-            {{ 'Perimeter Alert (Armed Night)' if is_state('alarm_control_panel.home_alarm', 'armed_night') else 'Perimeter Alert (Away)' }}
+          cam_entity: '{{ ''camera.patio_left_high_resolution_channel'' if ''patio_left''
+            in trigger.entity_id else ''camera.patio_right_high_resolution_channel''
+            }}'
+          cam_name: '{{ ''Patio Left'' if ''patio_left'' in trigger.entity_id else
+            ''Patio Right'' }}'
+          alert_mode: '{{ ''Perimeter Alert (Armed Night)'' if is_state(''alarm_control_panel.home_alarm'',
+            ''armed_night'') else ''Perimeter Alert (Away)'' }}'
       - action: script.activate_mobile_actionable_notification
         data:
           notify_target: notify.all_devices
-          title: '🚨 {{ alert_mode }}: {{ cam_name }}'
-          message: 'Person detected on {{ cam_name }}. Tap image to open live UniFi Protect feed.'
+          title: "\U0001F6A8 {{ alert_mode }}: {{ cam_name }}"
+          message: Person detected on {{ cam_name }}. Tap image to open live UniFi
+            Protect feed.
           notify_tag: patio-security-alert
           priority: high
-          image: '/api/camera_proxy/{{ cam_entity }}'
-          clickAction: 'app://com.ubnt.unifi.protect'
-          notify_action_1: 'URI'
-          notify_action_1_title: '🔴 Open Protect'
-          notify_action_1_uri: 'app://com.ubnt.unifi.protect'
-          notify_action_2: 'patio_turn_on_floodlights'
-          notify_action_2_title: '💡 Turn On Lights'
-          notify_action_3: 'patio_dismiss_alert'
-          notify_action_3_title: 'Dismiss'
+          image: /api/camera_proxy/{{ cam_entity }}
+          clickAction: app://com.ubnt.unifi.protect
+          notify_action_1: URI
+          notify_action_1_title: "\U0001F534 Open Protect"
+          notify_action_1_uri: app://com.ubnt.unifi.protect
+          notify_action_2: patio_turn_on_floodlights
+          notify_action_2_title: "\U0001F4A1 Turn On Lights"
+          notify_action_3: patio_dismiss_alert
+          notify_action_3_title: Dismiss
     - conditions:
       - condition: trigger
         id: turn_on_lights
@@ -5100,3 +5193,83 @@
             tag: patio-security-alert
   mode: single
   max_exceeded: silent
+- id: 'bedroom_winter_free_cooling_and_freeze_guard'
+  alias: 'Climate: Bedroom Winter Free-Cooling & Freeze Guard'
+  description: Announces on media players when the bedroom reaches 55°F sweet spot or drops below 48°F freeze floor while the bedroom door is open.
+  triggers:
+  - trigger: numeric_state
+    entity_id: sensor.bedroom_temperature_smoothed
+    below: 55.1
+    id: sweet_spot
+  - trigger: numeric_state
+    entity_id: sensor.bedroom_temperature_smoothed
+    below: 48.0
+    id: freeze_guard
+  conditions:
+  - condition: state
+    entity_id: binary_sensor.bedroom_door
+    state: 'on'
+  actions:
+  - choose:
+    - conditions:
+      - condition: trigger
+        id: sweet_spot
+      sequence:
+      - action: notify.alexa_media
+        data:
+          target:
+          - media_player.bedroom
+          - media_player.living_room
+          data:
+            type: tts
+          message: Master bedroom has reached 55 degrees.
+      - action: notify.all_devices
+        data:
+          title: 'Master Bedroom: 55°F Reached'
+          message: Bedroom temperature has dropped to 55°F with the bedroom door open.
+          data:
+            tag: bedroom-temp-sweet-spot
+    - conditions:
+      - condition: trigger
+        id: freeze_guard
+      sequence:
+      - action: notify.alexa_media
+        data:
+          target:
+          - media_player.bedroom
+          - media_player.living_room
+          data:
+            type: tts
+          message: Freeze warning. Master bedroom has dropped below 48 degrees with the door open.
+      - action: script.activate_mobile_actionable_notification
+        data:
+          notify_target: notify.all_devices
+          title: "\u2744\uFE0F FREEZE WARNING: Master Bedroom"
+          message: "Bedroom temperature has dropped to {{ states('sensor.bedroom_temperature_smoothed') }}°F with the door open! Close the door to protect plumbing."
+          priority: high
+          channel: alarm_stream
+          notify_tag: bedroom-freeze-guard
+  mode: single
+- id: system_low_battery_daily_alert
+  alias: 'System: Low Battery Daily Alert (Josh)'
+  description: Sends a daily morning push notification to Josh if any battery-powered devices are below 20%.
+  triggers:
+  - trigger: time
+    at: '10:00:00'
+  conditions:
+  - condition: numeric_state
+    entity_id: sensor.low_batteries
+    above: 0
+  actions:
+  - action: script.activate_mobile_actionable_notification
+    data:
+      notify_target: notify.mobile_app_josh_mobile
+      title: "🪫 Low Battery Alert ({{ states('sensor.low_batteries') }})"
+      message: >-
+        {%- set devices = state_attr('sensor.low_batteries', 'low_battery_devices') | default([], true) -%}
+        The following {{ devices | count }} device{{ 's are' if devices | count != 1 else ' is' }} below 20% battery:
+        {% for dev in devices -%}
+        • {{ dev }}
+        {% endfor -%}
+      notify_tag: low-battery-daily-alert
+  mode: single
