@@ -21,6 +21,8 @@ The system manages occupancy via a centralized "Authority" state machine.
     - **Activation:** Josh or MJ cross 500-mile radius OR 24-hour absence.
     - **Deactivation:** BOTH residents cross back within 50-mile radius.
 - **Reaction:** When Eco Mode is ON, the Climate Engine switches to pet-safe targets (66°F Heat / 74°F Cool) and non-critical automations are suppressed.
+- **Guest Presence State:** Keypad credential unlocks (`event.home_locks_*`) automatically activate `input_boolean.house_guests`, reflect `House Guests` state in `sensor.home_status`, disarm the security perimeter, illuminate guest paths, and adjust Kitchen Adaptive Lighting night floors.
+- **Micro-Occupancy Engine (`binary_sensor.josh_in_office`):** Employs Bermuda BLE beacon distance estimation ($\le 18.0\text{ ft}$ with a 30s debounce delay) to verify Josh's localized desk presence in the second-floor office.
 
 ---
 
@@ -62,7 +64,7 @@ A high-precision engine designed to reach sleep temperature exactly at bedtime.
         1. *Downstairs Zone (Floor 1):* `sensor.panel_02_downstairs_heat_pump_power` vs `climate.t6_pro_downstairs` (Master Bedroom Suite & Great Room).
         2. *Upstairs Zone (Floor 2):* `sensor.panel_01_upstairs_heat_pump_power` vs `climate.t6_pro_upstairs` (Hallway, Guest Bedroom, Bonus Room).
         3. *Office Mini-Split (Floor 2):* `sensor.panel_01_mini_split_power` vs `sensor.office_sensor_air_temperature` (Isolated Office / Server Corner).
-    - **Batch Health Engine (`bin/hvac_health_check.py`):** Calculates true thermodynamic $\text{kWh / } ^\circ\text{F drop}$ across all 3 zones with `MIN_SAMPLE_CYCLES = 2` statistical gate and August 24 calibration cutoff.
+    - **Batch Health Engine (`bin/hvac_health_check.py`):** Calculates true thermodynamic $\text{kWh / } ^\circ\text{F drop}$ across all 3 zones with `MIN_SAMPLE_CYCLES = 5` statistical gate, 8–90 min pull-down duration filter, and August 24 calibration cutoff.
     - **Real-Time Runaway Watchdogs:** Instant HA automation sentinels that alert if central compressors run pinned above 1,100W for > 2.5 hours (`hvac_upstairs_runaway_alert`) or if the office mini-split is offline during daytime work hours when office temperature exceeds 77°F (`hvac_office_minisplit_failure_alert`).
 
 
@@ -91,19 +93,22 @@ Standardizes actionable and informational push notifications across iOS and Andr
 
 ---
 
-## 6. Vision & Security Engine (v1.5)
-**Authority:** `Security: Front Porch - AI Video Analysis`
-Handles identity verification and suspicious activity detection.
+## 6. Vision & Security Engine (v1.7)
+**Authority:** `Security: Front Porch - AI Video Analysis` (`automation.ai_porch_intelligence`)
+Handles identity verification, visitor triage, and suspicious activity detection at the perimeter.
 
-- **Resilient Recording:** Uses `continue_on_error: true` for `camera.record` to survive DTS stream errors (caused by 5s GOP intervals found in camera hardware).
-- **Sequential Processing:** Data collection (video/snapshots) must complete and include a 2s "Flush Delay" before AI analysis begins to prevent file-locking errors.
-- **AI Context:** Uses MJ and Josh reference photos to identify residents vs. delivery personnel.
+- **Walkway Approach Trigger:** Exclusively triggered by `binary_sensor.front_porch_ptz_person_detected` to detect approaching visitors early while traversing the front walkway.
+- **Dual-Camera AI Coverage:** Simultaneously captures a high-resolution doorbell snapshot (`t0`) and walkway approach MP4 video clip, evaluating both jointly using local `qwen-vl-7b` (staying strictly under 2,300/4,096 tokens).
+- **Resilient Recording:** Uses `continue_on_error: true` on `camera.record` and a mandatory 2-second "Flush Delay" before AI processing to survive DTS stream jitter caused by 5s GOP intervals on UniFi cameras without crashing the automation.
+- **Cooldown Safeguard:** Enforces a 3-minute visitor event cooldown against `notify.daily_camera_log` to prevent duplicate arrival/departure notifications within short windows.
+- **Rolling Media Archive:** Supported by `bin/archive_porch_snapshots.sh` (`integrations/shell.yaml`), maintaining a 3-day rolling history in `/media/snapshots/porch/archive/` preserving full 3-snapshot sequences (`t0`, `t1`, `t3`) and approach video clips with automated disk pruning.
+- **Dependency Armor (Extended OpenAI):** Requires `manifest.json` patched to `openai>=2.45.0` (matching HA Core 2026.9.2 pinned version) to prevent integration setup aborts and ensure `extended_openai_conversation.query_image` remains persistently registered.
 - **Patio Camera Detection & Security Architecture:** Smart detections on Patio Left and Patio Right cameras remain permanently active 24/7. This guarantees that `binary_sensor.patio_left_person_detected` and `binary_sensor.patio_right_person_detected` remain fully online and responsive to trigger `Lighting: Outdoor Motion Presence` (`switch.backyard_lights`) whenever someone is outside after dark (`sun.sun: below_horizon`), regardless of alarm or waking state.
 - **Software-Gated Security Notifications:** Perimeter security alerts for Patio Left and Patio Right are decoupled from hardware sensor power and handled purely at the software logic layer via `Security: Patio Perimeter Alert (Night & Away)`. When the alarm is armed (`armed_night`, `armed_away`, `armed_vacation`) or residents are away, person detection dispatches rich actionable mobile notifications with live camera snapshots, direct UniFi Protect deep-linking (`app://com.ubnt.unifi.protect`), and one-tap backyard floodlight controls. During waking home hours, Protect app notifications for patio cameras are silenced to eliminate daytime notification fatigue while preserving full motion lighting automation.
 
 ---
 
-## 6. Whole-Home Energy Architecture (Emporia Vue 3)
+## 7. Whole-Home Energy Architecture (Emporia Vue 3)
 **Hardware:** Dual ESPHome-flashed Emporia Vue 3 units (`emporiavue3_panel_01` and `emporiavue3_panel_02`).
 - **Feeder Standard:** Phase A (Left Main / Black Voltage Wire) and Phase B (Right Main / Red Voltage Wire) across both 200A panels.
 - **Circuit Hierarchical Aggregates:** Defined in `entities/templates/sensor.energy_hierarchical_aggregates.yaml` (calculating Grid Total, 1st/2nd Floor Totals, Kitchen, IT/Office, Living, and HVAC/Utility subsystems).
@@ -112,16 +117,25 @@ Handles identity verification and suspicious activity detection.
 
 ---
 
-## 7. Analytics & Infrastructure
+## 8. Audio, Media & Satellite Ecosystem
+**Hardware:** Echo Show 5 (TECHO5 v1.2.6) at `10.0.10.161` (`Desk`), Echo devices, and Music Assistant.
+
+- **Desk Smart Display Integration:** Connected via ESPHome / HA API as `Desk`.
+    - **Live Doorbell Popups:** Automation `Security: Desk Echo - Doorbell Video on Person Detected` (`automation.security_desk_echo_doorbell_popup`) automatically pushes a 45-second live video feed (`camera.doorbell_outside_medium_resolution_channel`) via `esphome.desk_home_show_camera` whenever person activity or doorbell presses occur while `input_boolean.camera_alerts` is active.
+    - **Music Assistant & Audiobookshelf Tracking:** Linked as `media_player.desk` within Music Assistant. Configured with Audiobookshelf provider for bidirectional audiobook progress synchronization. On-screen controls, album art, and transport states follow playback dynamically via `select.desk_now_playing_follows` set to `media_player.desk`.
+
+---
+
+## 9. Analytics & Infrastructure
 - **ClickHouse Pipeline:** Whole-home high-frequency telemetry is streamed continuously into a local ClickHouse instance (`127.0.0.1:8124`) by `ha_telemetry_exporter`. ClickHouse maintains over 25M+ rows of historical telemetry across `home_assistant_data.whole_home_telemetry` and `home_assistant_data.climate_analytics` with sub-millisecond query execution.
-- **COP-Based Multi-Zone HVAC Health Engine (`bin/hvac_health_check.py`):** Runs daily to evaluate real-time cooling efficiency across Upstairs (Panel 01 Cir 3), Downstairs (Panel 02 Cir 3) Trane heat pumps, and the Office Mini-Split. Queries ClickHouse directly via HTTP using Python's standard library (`urllib.request`) with zero external virtualenv dependencies. Segments discrete cooling sessions ($P > 300\text{W}$, $\text{duration} \ge 8\text{ min}$), extracts temperature drops ($\Delta T$) and outdoor ambient temperatures, and computes true electrical energy consumed per degree drop ($\text{kWh / } ^\circ\text{F}$). Exposes structured JSON telemetry to `sensor.hvac_health_status`.
+- **COP-Based Multi-Zone HVAC Health Engine (`bin/hvac_health_check.py`):** Runs daily to evaluate real-time cooling efficiency across Upstairs (Panel 01 Cir 3), Downstairs (Panel 02 Cir 3) Trane heat pumps, and the Office Mini-Split. Queries ClickHouse directly via HTTP using Python's standard library (`urllib.request`) with zero external virtualenv dependencies. Segments discrete cooling sessions ($P > \text{min\_run\_power}$, $\text{duration } 8\text{–}90\text{ min}$, $\Delta T \ge 0.3^\circ\text{F}$), extracts temperature drops ($\Delta T$) and outdoor ambient temperatures, and computes true electrical energy consumed per degree drop ($\text{kWh / } ^\circ\text{F}$). Exposes structured JSON telemetry to `sensor.hvac_health_status`.
 - **Local ClickHouse Analytics Tooling (`skills/ch_analytics.py`):** Provides instant SQL execution and pre-compiled diagnostic presets (`energy`, `asymmetry`, `entities`) against the local ClickHouse database with zero third-party dependencies.
 - **Docker Management:** Container control is handled via `curl` to the `socket-proxy` Docker API.
 - **Sim Lab:** A Digital Twin environment (`integrations/sim_lab.yaml`) used to stress-test logic against 10 specific scenarios (e.g., Short-Cycle, Type Mismatch, High Humidity) before deployment.
 
 ---
 
-## 8. Diagnostic Cheat Sheet
+## 10. Diagnostic Cheat Sheet
 - **Climate Check:** `grep "PHASE_" climate_control_log.csv | tail -n 20`
 - **ClickHouse Analytics:** `python3 skills/ch_analytics.py --preset energy` or `--preset asymmetry`
 - **HVAC Health Telemetry:** `python3 bin/hvac_health_check.py`
@@ -130,7 +144,7 @@ Handles identity verification and suspicious activity detection.
 
 ---
 
-## 9. Custom Agent Skills Suite
+## 11. Custom Agent Skills Suite
 To empower programmatic, local, and secure AI-agent operations, the system deploys a suite of local Python-executable tools in the `skills/` directory. These tools are designed with zero external host-level dependencies to execute natively on the host's standard Python interpreter (`/usr/bin/python3`), while utilizing secure credential parsing or container-delegation pathways for privileged operations.
 
 ### Component Map

@@ -1,0 +1,33 @@
+---
+binary_sensor:
+  - name: "Josh in Office (BLE)"
+    unique_id: josh_in_office_ble
+    device_class: occupancy
+    icon: mdi:briefcase-account
+    state: >-
+      {% set active_sensors = states.sensor 
+        | selectattr('entity_id', 'search', '76d47f8c_6bde_4845_bd61_9fcd089c6bc7') 
+        | selectattr('entity_id', 'search', 'estimated_distance') 
+        | rejectattr('state', 'in', ['unavailable', 'unknown']) 
+        | list 
+      %}
+      {{ active_sensors | count > 0 and (active_sensors | map(attribute='state') | map('float') | min <= 18.0) }}
+    delay_off:
+      seconds: 30
+    attributes:
+      active_sensor: >-
+        {% set active_sensors = states.sensor 
+          | selectattr('entity_id', 'search', '76d47f8c_6bde_4845_bd61_9fcd089c6bc7') 
+          | selectattr('entity_id', 'search', 'estimated_distance') 
+          | rejectattr('state', 'in', ['unavailable', 'unknown']) 
+          | list 
+        %}
+        {{ (active_sensors | first).entity_id if active_sensors else none }}
+      estimated_distance_ft: >-
+        {% set active_sensors = states.sensor 
+          | selectattr('entity_id', 'search', '76d47f8c_6bde_4845_bd61_9fcd089c6bc7') 
+          | selectattr('entity_id', 'search', 'estimated_distance') 
+          | rejectattr('state', 'in', ['unavailable', 'unknown']) 
+          | list 
+        %}
+        {{ (active_sensors | map(attribute='state') | map('float') | min | round(1)) if active_sensors else none }}

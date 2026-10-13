@@ -109,7 +109,7 @@ cycle_stats AS (
   FROM sessions
   WHERE hp_power > min_run_power
   GROUP BY zone, session_id, min_run_power
-  HAVING duration_min >= 8
+  HAVING duration_min BETWEEN 8 AND 90
      AND (argMin(indoor_temp, timestamp) - argMax(indoor_temp, timestamp)) >= 0.3
 )
 SELECT 
@@ -158,7 +158,7 @@ def run_health_check():
                 "kwh_per_deg_drop": round(float(kwh_deg), 3) if kwh_deg else None
             }
 
-        MIN_SAMPLE_CYCLES = 2
+        MIN_SAMPLE_CYCLES = 5
 
         def evaluate_zone(zone_name):
             base = zone_data.get(zone_name, {}).get("baseline", {}).get("kwh_per_deg_drop")
@@ -168,15 +168,17 @@ def run_health_check():
             avg_w = (zone_data.get(zone_name, {}).get("recent", {}).get("avg_compressor_watts") or 
                      zone_data.get(zone_name, {}).get("baseline", {}).get("avg_compressor_watts"))
 
-            if base and rec and base > 0:
+            if rec_cycles < MIN_SAMPLE_CYCLES:
+                status = "Insufficient Data"
+                deg = 0.0
+            elif base and rec and base > 0:
                 deg = round(((rec - base) / base) * 100, 1)
                 status = "Healthy"
-                if rec_cycles >= MIN_SAMPLE_CYCLES:
-                    if deg > 25: status = "Degraded"
-                    if deg > 50: status = "Critical"
+                if deg > 25: status = "Degraded"
+                if deg > 50: status = "Critical"
             else:
                 deg = 0.0
-                status = "Healthy" if (rec or base) else "Insufficient Data"
+                status = "Insufficient Data"
 
             return {
                 "status": status,
@@ -204,8 +206,18 @@ def run_health_check():
 
         valid_degs = [r["degradation_pct"] for r in [downstairs_res, upstairs_res, office_res] if r["recent_cycles"] >= MIN_SAMPLE_CYCLES]
         max_deg = max(valid_degs) if valid_degs else 0.0
-        primary_baseline = upstairs_res["baseline_kwh_per_deg"] or downstairs_res["baseline_kwh_per_deg"]
-        primary_recent = upstairs_res["recent_kwh_per_deg"] or downstairs_res["recent_kwh_per_deg"]
+
+        # Select active central zone with sufficient data (downstairs then upstairs), fallback to baseline
+        active_zone = None
+        for z_res in [downstairs_res, upstairs_res]:
+            if z_res["recent_cycles"] >= MIN_SAMPLE_CYCLES:
+                active_zone = z_res
+                break
+        if not active_zone:
+            active_zone = downstairs_res if downstairs_res.get("baseline_kwh_per_deg") else upstairs_res
+
+        primary_baseline = active_zone.get("baseline_kwh_per_deg")
+        primary_recent = active_zone.get("recent_kwh_per_deg")
 
         output = {
             "status": overall_status,

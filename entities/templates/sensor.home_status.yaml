@@ -3,25 +3,37 @@
 sensor:
   - name: 'Home Status'
     unique_id: home_status_sensor
-    state: >
+    state: >-
       {% set alarm_state = states('alarm_control_panel.home_alarm') %}
-      {% set state_map = {
-        'disarmed': 'Disarmed',
-        'armed_away': 'Armed Away',
-        'armed_vacation': 'Vacation',
-        'armed_night': 'Armed Night',
-        'armed_home': 'Armed Home',
-        'triggered': 'Triggered'
-      } %}
-      {{ state_map.get(alarm_state, 'Unknown') }}
-    icon: >
+      {% set has_guests = is_state('input_boolean.house_guests', 'on') %}
+      {% if alarm_state == 'triggered' %}
+        Triggered
+      {% elif has_guests and alarm_state == 'disarmed' %}
+        House Guests
+      {% else %}
+        {% set state_map = {
+          'disarmed': 'Disarmed',
+          'armed_away': 'Armed Away',
+          'armed_vacation': 'Vacation',
+          'armed_night': 'Armed Night',
+          'armed_home': 'Armed Home'
+        } %}
+        {{ state_map.get(alarm_state, 'Unknown') }}
+      {% endif %}
+    icon: >-
       {% set alarm_state = states('alarm_control_panel.home_alarm') %}
-      {% set icon_map = {
-        'disarmed': 'mdi:bell-off-outline',
-        'armed_away': 'mdi:bell-outline',
-        'armed_vacation': 'mdi:airplane-takeoff',
-        'armed_night': 'mdi:weather-night',
-        'armed_home': 'mdi:bell-outline',
-        'triggered': 'mdi:bullhorn'
-      } %}
-      {{ icon_map.get(alarm_state, 'mdi:help-circle') }}
+      {% set has_guests = is_state('input_boolean.house_guests', 'on') %}
+      {% if alarm_state == 'triggered' %}
+        mdi:bullhorn
+      {% elif has_guests and alarm_state == 'disarmed' %}
+        mdi:account-multiple-plus
+      {% else %}
+        {% set icon_map = {
+          'disarmed': 'mdi:bell-off-outline',
+          'armed_away': 'mdi:bell-outline',
+          'armed_vacation': 'mdi:airplane-takeoff',
+          'armed_night': 'mdi:weather-night',
+          'armed_home': 'mdi:bell-outline'
+        } %}
+        {{ icon_map.get(alarm_state, 'mdi:help-circle') }}
+      {% endif %}
